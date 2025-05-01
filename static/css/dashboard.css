@@ -448,6 +448,29 @@
     box-shadow: var(--shadow-md);
 }
 
+/* Estilos personalizados para el mapa */
+.custom-popup .leaflet-popup-content-wrapper {
+    background: white;
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--shadow-md);
+    border: none;
+}
+
+.custom-popup .leaflet-popup-tip {
+    background: white;
+}
+
+.custom-popup .leaflet-popup-content {
+    margin: 0;
+    line-height: 1.4;
+}
+
+.map-legend {
+    font-family: var(--font-primary);
+    line-height: 1.4;
+}
+
+
 .strategy-cell-title {
     font-weight: 600;
     margin-bottom: var(--spacing-sm);
