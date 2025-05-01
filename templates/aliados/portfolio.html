@@ -1,0 +1,281 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="dashboard-section-title">
+        <h4>Portafolio de Proyectos</h4>
+        <div class="dashboard-section-actions">
+            <button type="button" class="dashboard-section-action" title="Exportar">
+                <i data-feather="download"></i>
+            </button>
+            <button type="button" class="dashboard-section-action" title="Añadir Proyecto">
+                <i data-feather="plus"></i>
+            </button>
+        </div>
+    </div>
+    
+    <!-- Filter Section -->
+    <div class="filter-section mb-4">
+        <form class="filter-form">
+            <div class="filter-row">
+                <div class="filter-col">
+                    <label class="filter-label" for="aliado">Aliado</label>
+                    <select class="filter-control" id="aliado" name="aliado">
+                        <option value="">Todos</option>
+                        {% for aliado_id, aliado in aliados.items() %}
+                        <option value="{{ aliado_id }}">{{ aliado.nombre }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="filter-col">
+                    <label class="filter-label" for="etapa">Etapa</label>
+                    <select class="filter-control" id="etapa" name="etapa">
+                        <option value="">Todas</option>
+                        <option value="propuesta">Propuesta</option>
+                        <option value="planificacion">Planificación</option>
+                        <option value="ejecucion">Ejecución</option>
+                        <option value="cierre">Cierre</option>
+                        <option value="post-evaluacion">Post-evaluación</option>
+                    </select>
+                </div>
+                <div class="filter-col">
+                    <label class="filter-label" for="fechaInicio">Fecha Inicio</label>
+                    <input type="date" class="filter-control" id="fechaInicio" name="fechaInicio">
+                </div>
+                <div class="filter-col">
+                    <label class="filter-label" for="monto">Monto Mínimo</label>
+                    <input type="number" class="filter-control" id="monto" name="monto" placeholder="$ Monto mínimo">
+                </div>
+            </div>
+            <div class="filter-actions">
+                <button type="button" class="btn btn-secondary filter-reset">Limpiar</button>
+                <button type="button" class="btn btn-primary filter-apply">Aplicar</button>
+            </div>
+        </form>
+    </div>
+    
+    <!-- Projects Cards View -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="mb-0">Proyectos Activos</h5>
+                <div>
+                    <button type="button" class="btn btn-sm btn-outline-secondary me-2 active" id="viewCards">
+                        <i data-feather="grid" style="width: 16px; height: 16px;"></i>
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" id="viewTable">
+                        <i data-feather="list" style="width: 16px; height: 16px;"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Projects as Cards -->
+    <div class="row" id="projectsCards">
+        {% for proyecto in proyectos %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">{{ proyecto.nombre }}</h5>
+                    <span class="badge 
+                        {% if proyecto.etapa == 'propuesta' %}bg-info
+                        {% elif proyecto.etapa == 'planificacion' %}bg-primary
+                        {% elif proyecto.etapa == 'ejecucion' %}bg-warning
+                        {% elif proyecto.etapa == 'cierre' %}bg-success
+                        {% else %}bg-secondary{% endif %}">
+                        {{ proyecto.etapa|capitalize }}
+                    </span>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <strong>Aliado:</strong> {{ aliados[proyecto.aliado_id].nombre }}
+                    </div>
+                    <div class="mb-3">
+                        <strong>Fechas:</strong> {{ proyecto.fecha_inicio }} - {{ proyecto.fecha_fin }}
+                    </div>
+                    <div class="mb-3">
+                        <strong>Monto:</strong> ${{ '{:,.0f}'.format(proyecto.monto) }}
+                    </div>
+                    <div class="mb-3">
+                        <strong>Consultores asignados:</strong> {{ proyecto.consultores_asignados }}
+                    </div>
+                    
+                    <!-- Project progress status -->
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span>Progreso</span>
+                            <span>
+                            {% if proyecto.etapa == 'propuesta' %}15%
+                            {% elif proyecto.etapa == 'planificacion' %}35%
+                            {% elif proyecto.etapa == 'ejecucion' %}65%
+                            {% elif proyecto.etapa == 'cierre' %}90%
+                            {% else %}100%{% endif %}
+                            </span>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar 
+                                {% if proyecto.etapa == 'propuesta' %}bg-info
+                                {% elif proyecto.etapa == 'planificacion' %}bg-primary
+                                {% elif proyecto.etapa == 'ejecucion' %}bg-warning
+                                {% elif proyecto.etapa == 'cierre' %}bg-success
+                                {% else %}bg-secondary{% endif %}" 
+                                role="progressbar" 
+                                style="width: {% if proyecto.etapa == 'propuesta' %}15%
+                                        {% elif proyecto.etapa == 'planificacion' %}35%
+                                        {% elif proyecto.etapa == 'ejecucion' %}65%
+                                        {% elif proyecto.etapa == 'cierre' %}90%
+                                        {% else %}100%{% endif %}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="d-flex justify-content-between">
+                        <button class="btn btn-sm btn-outline-primary">
+                            <i data-feather="eye" style="width: 14px; height: 14px; margin-right: 5px;"></i>
+                            Ver detalles
+                        </button>
+                        <button class="btn btn-sm btn-outline-secondary">
+                            <i data-feather="edit" style="width: 14px; height: 14px; margin-right: 5px;"></i>
+                            Editar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <!-- Projects as Table (Hidden by default) -->
+    <div class="card d-none" id="projectsTable">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped mb-0">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Aliado</th>
+                            <th>Etapa</th>
+                            <th>Fechas</th>
+                            <th>Monto</th>
+                            <th>Consultores</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for proyecto in proyectos %}
+                        <tr>
+                            <td>{{ proyecto.id }}</td>
+                            <td>{{ proyecto.nombre }}</td>
+                            <td>{{ aliados[proyecto.aliado_id].nombre }}</td>
+                            <td>
+                                <span class="badge 
+                                    {% if proyecto.etapa == 'propuesta' %}bg-info
+                                    {% elif proyecto.etapa == 'planificacion' %}bg-primary
+                                    {% elif proyecto.etapa == 'ejecucion' %}bg-warning
+                                    {% elif proyecto.etapa == 'cierre' %}bg-success
+                                    {% else %}bg-secondary{% endif %}">
+                                    {{ proyecto.etapa|capitalize }}
+                                </span>
+                            </td>
+                            <td>{{ proyecto.fecha_inicio }} <br> {{ proyecto.fecha_fin }}</td>
+                            <td>${{ '{:,.0f}'.format(proyecto.monto) }}</td>
+                            <td>{{ proyecto.consultores_asignados }}</td>
+                            <td>
+                                <div class="d-flex">
+                                    <button class="btn btn-sm btn-outline-primary me-1">
+                                        <i data-feather="eye" style="width: 14px; height: 14px;"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-secondary me-1">
+                                        <i data-feather="edit" style="width: 14px; height: 14px;"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger">
+                                        <i data-feather="trash-2" style="width: 14px; height: 14px;"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Project Workflow Stages -->
+    <div class="dashboard-section-title mt-4">
+        <h4>Etapas del Flujo de Trabajo</h4>
+    </div>
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="d-flex flex-wrap justify-content-between">
+                <div class="workflow-stage p-3 m-2 text-center" style="flex: 1; min-width: 200px; border: 1px solid #e0e0e0; border-radius: 8px; background-color: rgba(52, 152, 219, 0.1);">
+                    <div><i data-feather="clipboard" class="mb-2" style="width: 24px; height: 24px; color: var(--info);"></i></div>
+                    <h5>1. Onboarding</h5>
+                    <p class="text-muted mb-2">Integración de aliados y consultores</p>
+                    <div class="badge bg-info">{{ proyectos|selectattr('etapa', 'equalto', 'propuesta')|list|length }} proyectos</div>
+                </div>
+                
+                <div class="workflow-stage p-3 m-2 text-center" style="flex: 1; min-width: 200px; border: 1px solid #e0e0e0; border-radius: 8px; background-color: rgba(52, 152, 219, 0.1);">
+                    <div><i data-feather="compass" class="mb-2" style="width: 24px; height: 24px; color: var(--primary);"></i></div>
+                    <h5>2. Propuesta y Planificación</h5>
+                    <p class="text-muted mb-2">Definición del alcance y estrategia</p>
+                    <div class="badge bg-primary">{{ proyectos|selectattr('etapa', 'equalto', 'planificacion')|list|length }} proyectos</div>
+                </div>
+                
+                <div class="workflow-stage p-3 m-2 text-center" style="flex: 1; min-width: 200px; border: 1px solid #e0e0e0; border-radius: 8px; background-color: rgba(52, 152, 219, 0.1);">
+                    <div><i data-feather="play-circle" class="mb-2" style="width: 24px; height: 24px; color: var(--warning);"></i></div>
+                    <h5>3. Ejecución y Monitoreo</h5>
+                    <p class="text-muted mb-2">Implementación y seguimiento</p>
+                    <div class="badge bg-warning">{{ proyectos|selectattr('etapa', 'equalto', 'ejecucion')|list|length }} proyectos</div>
+                </div>
+                
+                <div class="workflow-stage p-3 m-2 text-center" style="flex: 1; min-width: 200px; border: 1px solid #e0e0e0; border-radius: 8px; background-color: rgba(52, 152, 219, 0.1);">
+                    <div><i data-feather="check-circle" class="mb-2" style="width: 24px; height: 24px; color: var(--success);"></i></div>
+                    <h5>4. Cierre y Evaluación</h5>
+                    <p class="text-muted mb-2">Finalización y análisis</p>
+                    <div class="badge bg-success">{{ proyectos|selectattr('etapa', 'equalto', 'cierre')|list|length }} proyectos</div>
+                </div>
+                
+                <div class="workflow-stage p-3 m-2 text-center" style="flex: 1; min-width: 200px; border: 1px solid #e0e0e0; border-radius: 8px; background-color: rgba(52, 152, 219, 0.1);">
+                    <div><i data-feather="refresh-cw" class="mb-2" style="width: 24px; height: 24px; color: var(--secondary);"></i></div>
+                    <h5>5. Retención del Talento</h5>
+                    <p class="text-muted mb-2">Fidelización de consultores</p>
+                    <div class="badge bg-secondary">{{ proyectos|selectattr('etapa', 'equalto', 'post-evaluacion')|list|length }} proyectos</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Toggle between card and table view
+        const viewCardsBtn = document.getElementById('viewCards');
+        const viewTableBtn = document.getElementById('viewTable');
+        const projectsCards = document.getElementById('projectsCards');
+        const projectsTable = document.getElementById('projectsTable');
+        
+        viewCardsBtn.addEventListener('click', function() {
+            projectsCards.classList.remove('d-none');
+            projectsTable.classList.add('d-none');
+            viewCardsBtn.classList.add('active');
+            viewTableBtn.classList.remove('active');
+        });
+        
+        viewTableBtn.addEventListener('click', function() {
+            projectsCards.classList.add('d-none');
+            projectsTable.classList.remove('d-none');
+            viewCardsBtn.classList.remove('active');
+            viewTableBtn.classList.add('active');
+        });
+        
+        // Initialize Feather icons
+        feather.replace();
+    });
+</script>
+{% endblock %}

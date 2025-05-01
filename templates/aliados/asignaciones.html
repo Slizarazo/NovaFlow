@@ -1,0 +1,266 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="dashboard-section-title">
+        <h4>Asignaciones de Consultores</h4>
+        <div class="dashboard-section-actions">
+            <button type="button" class="dashboard-section-action" title="Exportar">
+                <i data-feather="download"></i>
+            </button>
+            <button type="button" class="dashboard-section-action" title="Nueva Asignación">
+                <i data-feather="plus"></i>
+            </button>
+        </div>
+    </div>
+    
+    <!-- Filter Section -->
+    <div class="filter-section mb-4">
+        <form class="filter-form">
+            <div class="filter-row">
+                <div class="filter-col">
+                    <label class="filter-label" for="consultor">Consultor</label>
+                    <select class="filter-control" id="consultor" name="consultor">
+                        <option value="">Todos</option>
+                        {% for consultor in consultores %}
+                        <option value="{{ consultor.id }}">{{ consultor.nombre }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="filter-col">
+                    <label class="filter-label" for="proyecto">Proyecto</label>
+                    <select class="filter-control" id="proyecto" name="proyecto">
+                        <option value="">Todos</option>
+                        {% for proyecto_id, proyecto in proyectos.items() %}
+                        <option value="{{ proyecto_id }}">{{ proyecto.nombre }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="filter-col">
+                    <label class="filter-label" for="especialidad">Especialidad</label>
+                    <select class="filter-control" id="especialidad" name="especialidad">
+                        <option value="">Todas</option>
+                        <option value="Tecnología">Tecnología</option>
+                        <option value="Finanzas">Finanzas</option>
+                        <option value="Manufactura">Manufactura</option>
+                        <option value="Marketing">Marketing</option>
+                        <option value="Operaciones">Operaciones</option>
+                        <option value="Estrategia">Estrategia</option>
+                    </select>
+                </div>
+                <div class="filter-col">
+                    <label class="filter-label" for="disponibilidad">Disponibilidad Mínima</label>
+                    <input type="number" class="filter-control" id="disponibilidad" name="disponibilidad" placeholder="% disponible" min="0" max="100">
+                </div>
+            </div>
+            <div class="filter-actions">
+                <button type="button" class="btn btn-secondary filter-reset">Limpiar</button>
+                <button type="button" class="btn btn-primary filter-apply">Aplicar</button>
+            </div>
+        </form>
+    </div>
+    
+    <!-- Consultants Availability View -->
+    <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Disponibilidad de Consultores</h5>
+            <div>
+                <span class="badge bg-success me-2">Disponible (>50%)</span>
+                <span class="badge bg-warning me-2">Parcial (20-50%)</span>
+                <span class="badge bg-danger">Ocupado (<20%)</span>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Consultor</th>
+                            <th>Especialidad</th>
+                            <th>Proyectos Asignados</th>
+                            <th>Disponibilidad</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for consultor in consultores %}
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div style="width: 40px; height: 40px; background-color: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 10px; color: white; font-weight: bold;">
+                                        {{ consultor.nombre[0] }}{{ consultor.nombre.split() | last | first }}
+                                    </div>
+                                    <div>
+                                        <div><strong>{{ consultor.nombre }}</strong></div>
+                                        <div class="text-muted">ID: {{ consultor.id }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>{{ consultor.especialidad }}</td>
+                            <td>
+                                {% for proyecto_id in consultor.proyectos_asignados %}
+                                    <span class="badge bg-secondary">{{ proyectos[proyecto_id].nombre }}</span>
+                                {% endfor %}
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="progress me-2" style="width: 100px; height: 10px;">
+                                        <div class="progress-bar 
+                                            {% if consultor.disponibilidad > 50 %}
+                                                bg-success
+                                            {% elif consultor.disponibilidad >= 20 %}
+                                                bg-warning
+                                            {% else %}
+                                                bg-danger
+                                            {% endif %}" 
+                                            style="width: {{ consultor.disponibilidad }}%">
+                                        </div>
+                                    </div>
+                                    <span>{{ consultor.disponibilidad }}%</span>
+                                </div>
+                            </td>
+                            <td>
+                                <button class="btn btn-sm btn-primary">
+                                    <i data-feather="plus" style="width: 14px; height: 14px; margin-right: 5px;"></i>
+                                    Asignar
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Current Assignments -->
+    <div class="dashboard-section-title">
+        <h4>Asignaciones Actuales</h4>
+    </div>
+    <div class="row">
+        {% for proyecto_id, proyecto in proyectos.items() %}
+        <!-- Only show projects with active assignments -->
+        {% if proyecto.consultores_asignados > 0 %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">{{ proyecto.nombre }}</h5>
+                    <span class="badge 
+                        {% if proyecto.etapa == 'propuesta' %}bg-info
+                        {% elif proyecto.etapa == 'planificacion' %}bg-primary
+                        {% elif proyecto.etapa == 'ejecucion' %}bg-warning
+                        {% elif proyecto.etapa == 'cierre' %}bg-success
+                        {% else %}bg-secondary{% endif %}">
+                        {{ proyecto.etapa|capitalize }}
+                    </span>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">Consultores asignados: {{ proyecto.consultores_asignados }}</p>
+                    
+                    <div class="mb-3">
+                        <h6>Equipo:</h6>
+                        <div class="d-flex flex-wrap">
+                            {% for consultor in consultores %}
+                                {% if proyecto_id|int in consultor.proyectos_asignados %}
+                                <div class="d-flex align-items-center me-3 mb-2" style="min-width: 100px;">
+                                    <div style="width: 30px; height: 30px; background-color: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 8px; color: white; font-size: 12px;">
+                                        {{ consultor.nombre[0] }}{{ consultor.nombre.split() | last | first }}
+                                    </div>
+                                    <div class="text-truncate" style="max-width: 150px;">{{ consultor.nombre }}</div>
+                                </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <h6>Fecha de Asignación:</h6>
+                        <p>{{ proyecto.fecha_inicio }}</p>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <h6>Fecha de Finalización:</h6>
+                        <p>{{ proyecto.fecha_fin }}</p>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="d-flex justify-content-between">
+                        <button class="btn btn-sm btn-outline-primary">
+                            <i data-feather="eye" style="width: 14px; height: 14px; margin-right: 5px;"></i>
+                            Ver detalles
+                        </button>
+                        <button class="btn btn-sm btn-outline-secondary">
+                            <i data-feather="users" style="width: 14px; height: 14px; margin-right: 5px;"></i>
+                            Gestionar equipo
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+    </div>
+    
+    <!-- Consultant Retention Process -->
+    <div class="dashboard-section-title mt-3">
+        <h4>Proceso de Retención de Talento</h4>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <div style="font-size: 2rem; color: var(--primary); margin-bottom: 1rem;">
+                                <i data-feather="award" style="width: 48px; height: 48px;"></i>
+                            </div>
+                            <h5 class="mb-3">Reconocimiento</h5>
+                            <p class="card-text">Programa de reconocimiento basado en métricas de desempeño, feedback de clientes y contribución a objetivos estratégicos.</p>
+                            <div class="text-muted mt-3">
+                                <small>Consultores reconocidos: 12</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <div style="font-size: 2rem; color: var(--info); margin-bottom: 1rem;">
+                                <i data-feather="trending-up" style="width: 48px; height: 48px;"></i>
+                            </div>
+                            <h5 class="mb-3">Desarrollo Profesional</h5>
+                            <p class="card-text">Plan de carrera personalizado con oportunidades de capacitación, certificaciones y mentoría en áreas de especialización.</p>
+                            <div class="text-muted mt-3">
+                                <small>Programas en curso: 8</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <div style="font-size: 2rem; color: var(--success); margin-bottom: 1rem;">
+                                <i data-feather="users" style="width: 48px; height: 48px;"></i>
+                            </div>
+                            <h5 class="mb-3">Comunidad & Pertenencia</h5>
+                            <p class="card-text">Creación de comunidad con eventos, colaboración abierta y participación en la toma de decisiones estratégicas.</p>
+                            <div class="text-muted mt-3">
+                                <small>Índice de satisfacción: 92%</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-3">
+                <a href="#" class="btn btn-primary">
+                    <i data-feather="info" style="width: 16px; height: 16px; margin-right: 5px;"></i>
+                    Más información sobre nuestro programa de retención
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    
+        <script>
+            L_NO_TOUCH = false;
+            L_DISABLE_3D = false;
+        </script>
+    
+    <style>html, body {width: 100%;height: 100%;margin: 0;padding: 0;}</style>
+    <style>#map {position:absolute;top:0;bottom:0;right:0;left:0;}</style>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_1bd19a18bfb89d255e96301a8ab41f47 {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+        
+</head>
+<body>
+    
+    
+            <div class="folium-map" id="map_1bd19a18bfb89d255e96301a8ab41f47" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_1bd19a18bfb89d255e96301a8ab41f47 = L.map(
+                "map_1bd19a18bfb89d255e96301a8ab41f47",
+                {
+                    center: [23.6345, -102.5528],
+                    crs: L.CRS.EPSG3857,
+                    ...{
+  "zoom": 5,
+  "zoomControl": true,
+  "preferCanvas": false,
+}
+
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_df8b2f1b127afb66b3f70bfd9cceb26e = L.tileLayer(
+                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {
+  "minZoom": 0,
+  "maxZoom": 19,
+  "maxNativeZoom": 19,
+  "noWrap": false,
+  "attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors",
+  "subdomains": "abc",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_df8b2f1b127afb66b3f70bfd9cceb26e.addTo(map_1bd19a18bfb89d255e96301a8ab41f47);
+        
+    
+            var marker_a058cdfcaa84b588b0b562147f269442 = L.marker(
+                [19.4326, -99.1332],
+                {
+}
+            ).addTo(map_1bd19a18bfb89d255e96301a8ab41f47);
+        
+    
+        var popup_211b847f8ac74cfc127953c3b041283d = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_e2902ee77f350d3f61e4895886ade599 = $(`<div id="html_e2902ee77f350d3f61e4895886ade599" style="width: 100.0%; height: 100.0%;"><strong>Sede Central CDMX</strong><br>Proyectos: 5<br>Consultores: 8</div>`)[0];
+                popup_211b847f8ac74cfc127953c3b041283d.setContent(html_e2902ee77f350d3f61e4895886ade599);
+            
+        
+
+        marker_a058cdfcaa84b588b0b562147f269442.bindPopup(popup_211b847f8ac74cfc127953c3b041283d)
+        ;
+
+        
+    
+    
+            marker_a058cdfcaa84b588b0b562147f269442.bindTooltip(
+                `<div>
+                     Sede Central CDMX
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var marker_a4ecde0309b547f3f1a7d96781dc2527 = L.marker(
+                [25.6866, -100.3161],
+                {
+}
+            ).addTo(map_1bd19a18bfb89d255e96301a8ab41f47);
+        
+    
+        var popup_35af1cc48d8b82b9158f79114be86577 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_16c4c1276cf36e8c2d345ba0316c6c36 = $(`<div id="html_16c4c1276cf36e8c2d345ba0316c6c36" style="width: 100.0%; height: 100.0%;"><strong>Oficina Monterrey</strong><br>Proyectos: 3<br>Consultores: 5</div>`)[0];
+                popup_35af1cc48d8b82b9158f79114be86577.setContent(html_16c4c1276cf36e8c2d345ba0316c6c36);
+            
+        
+
+        marker_a4ecde0309b547f3f1a7d96781dc2527.bindPopup(popup_35af1cc48d8b82b9158f79114be86577)
+        ;
+
+        
+    
+    
+            marker_a4ecde0309b547f3f1a7d96781dc2527.bindTooltip(
+                `<div>
+                     Oficina Monterrey
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var marker_a6bb6b088d0bf865c05b8fb3d7df6fe4 = L.marker(
+                [20.6597, -103.3496],
+                {
+}
+            ).addTo(map_1bd19a18bfb89d255e96301a8ab41f47);
+        
+    
+        var popup_6748144d0f700ab78eecd86072e23f1a = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_8a7306880aaa1706003ee4144f624c94 = $(`<div id="html_8a7306880aaa1706003ee4144f624c94" style="width: 100.0%; height: 100.0%;"><strong>Oficina Guadalajara</strong><br>Proyectos: 2<br>Consultores: 4</div>`)[0];
+                popup_6748144d0f700ab78eecd86072e23f1a.setContent(html_8a7306880aaa1706003ee4144f624c94);
+            
+        
+
+        marker_a6bb6b088d0bf865c05b8fb3d7df6fe4.bindPopup(popup_6748144d0f700ab78eecd86072e23f1a)
+        ;
+
+        
+    
+    
+            marker_a6bb6b088d0bf865c05b8fb3d7df6fe4.bindTooltip(
+                `<div>
+                     Oficina Guadalajara
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var marker_f785936844f4fd202483ed8b54c118a1 = L.marker(
+                [20.9674, -89.5926],
+                {
+}
+            ).addTo(map_1bd19a18bfb89d255e96301a8ab41f47);
+        
+    
+        var popup_41995f39e10992e7d3723edadeeca9ab = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_cde537a31e350a061c2f627a00caf599 = $(`<div id="html_cde537a31e350a061c2f627a00caf599" style="width: 100.0%; height: 100.0%;"><strong>Oficina Mérida</strong><br>Proyectos: 2<br>Consultores: 3</div>`)[0];
+                popup_41995f39e10992e7d3723edadeeca9ab.setContent(html_cde537a31e350a061c2f627a00caf599);
+            
+        
+
+        marker_f785936844f4fd202483ed8b54c118a1.bindPopup(popup_41995f39e10992e7d3723edadeeca9ab)
+        ;
+
+        
+    
+    
+            marker_f785936844f4fd202483ed8b54c118a1.bindTooltip(
+                `<div>
+                     Oficina Mérida
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var marker_cfcb40d37cfdeb7aa83370d97156de86 = L.marker(
+                [20.5888, -100.3899],
+                {
+}
+            ).addTo(map_1bd19a18bfb89d255e96301a8ab41f47);
+        
+    
+        var popup_cfd9449f7bf576deb2054c924ba05bcb = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_48f24302930eab69973313780a9c7b54 = $(`<div id="html_48f24302930eab69973313780a9c7b54" style="width: 100.0%; height: 100.0%;"><strong>Oficina Querétaro</strong><br>Proyectos: 1<br>Consultores: 2</div>`)[0];
+                popup_cfd9449f7bf576deb2054c924ba05bcb.setContent(html_48f24302930eab69973313780a9c7b54);
+            
+        
+
+        marker_cfcb40d37cfdeb7aa83370d97156de86.bindPopup(popup_cfd9449f7bf576deb2054c924ba05bcb)
+        ;
+
+        
+    
+    
+            marker_cfcb40d37cfdeb7aa83370d97156de86.bindTooltip(
+                `<div>
+                     Oficina Querétaro
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var marker_0915d45af654d8977a2c73f4169a67ce = L.marker(
+                [32.5027, -117.0037],
+                {
+}
+            ).addTo(map_1bd19a18bfb89d255e96301a8ab41f47);
+        
+    
+        var popup_9273c1c16376d760eb9acb7f71c1c101 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_eba52781e7f4b9039e7c1934d5d4da05 = $(`<div id="html_eba52781e7f4b9039e7c1934d5d4da05" style="width: 100.0%; height: 100.0%;"><strong>Oficina Tijuana</strong><br>Proyectos: 2<br>Consultores: 3</div>`)[0];
+                popup_9273c1c16376d760eb9acb7f71c1c101.setContent(html_eba52781e7f4b9039e7c1934d5d4da05);
+            
+        
+
+        marker_0915d45af654d8977a2c73f4169a67ce.bindPopup(popup_9273c1c16376d760eb9acb7f71c1c101)
+        ;
+
+        
+    
+    
+            marker_0915d45af654d8977a2c73f4169a67ce.bindTooltip(
+                `<div>
+                     Oficina Tijuana
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+</script>
+</html>

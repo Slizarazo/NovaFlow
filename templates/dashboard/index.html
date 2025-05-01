@@ -1,0 +1,322 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="dashboard-section-title">
+        <h4>Dashboard Principal</h4>
+        <div class="dashboard-section-actions">
+            <button type="button" class="dashboard-section-action" title="Actualizar">
+                <i data-feather="refresh-cw"></i>
+            </button>
+        </div>
+    </div>
+    
+    <!-- Bienvenida y Resumen -->
+    <div class="card mb-4">
+        <div class="card-body p-4">
+            <div class="d-flex flex-wrap justify-content-between align-items-center">
+                <div class="d-flex align-items-center mb-3 mb-md-0">
+                    <div class="topbar-user-avatar mr-3" style="width: 54px; height: 54px; font-size: 1.5rem;">
+                        {{ current_user.username[0].upper() }}
+                    </div>
+                    <div>
+                        <h5 class="mb-1">Bienvenido, {{ current_user.username }}</h5>
+                        <p class="mb-0 text-muted">Panel de gestión de aliados, consultores y proyectos</p>
+                    </div>
+                </div>
+                <div class="d-flex flex-column align-items-end">
+                    <div class="d-flex align-items-center mb-1">
+                        <i data-feather="shield" class="mr-2" style="width: 18px; height: 18px; color: var(--primary-purple);"></i>
+                        <span class="font-weight-500">
+                            {% if role == 'gestor' %}
+                                Gestor de Aliados
+                            {% elif role == 'aliado' %}
+                                Aliado
+                            {% elif role == 'supervisor' %}
+                                Supervisor
+                            {% elif role == 'consultor' %}
+                                Consultor
+                            {% endif %}
+                        </span>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <i data-feather="clock" class="mr-2" style="width: 18px; height: 18px; color: var(--dark-gray);"></i>
+                        <span class="text-muted">Última actividad: Hoy, 10:23 AM</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Accesos Rápidos -->
+    <div class="dashboard-section-title">
+        <h4>Accesos Rápidos</h4>
+    </div>
+    
+    <div class="d-flex flex-wrap mb-4">
+        <div class="p-2" style="flex: 1; min-width: 250px;">
+            <div class="card h-100 zoom-effect">
+                <div class="card-body p-4">
+                    <div class="d-flex flex-column align-items-center">
+                        <div style="width: 70px; height: 70px; background: linear-gradient(45deg, var(--primary-blue), var(--light-blue)); border-radius: var(--border-radius-circle); display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;">
+                            <i data-feather="trending-up" style="width: 35px; height: 35px; color: white;"></i>
+                        </div>
+                        <h5 class="mb-2">Crecimiento</h5>
+                        <p class="card-text text-center text-muted mb-3">Análisis de ventas y distribución geográfica</p>
+                        <a href="{{ url_for('dashboard_growth') }}" class="btn btn-primary">Ver Detalles</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="p-2" style="flex: 1; min-width: 250px;">
+            <div class="card h-100 zoom-effect">
+                <div class="card-body p-4">
+                    <div class="d-flex flex-column align-items-center">
+                        <div style="width: 70px; height: 70px; background: linear-gradient(45deg, var(--primary-purple), var(--light-purple)); border-radius: var(--border-radius-circle); display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;">
+                            <i data-feather="bar-chart-2" style="width: 35px; height: 35px; color: white;"></i>
+                        </div>
+                        <h5 class="mb-2">Desempeño</h5>
+                        <p class="card-text text-center text-muted mb-3">Métricas de rendimiento y actividades planificadas</p>
+                        <a href="{{ url_for('dashboard_performance') }}" class="btn btn-secondary">Ver Detalles</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="p-2" style="flex: 1; min-width: 250px;">
+            <div class="card h-100 zoom-effect">
+                <div class="card-body p-4">
+                    <div class="d-flex flex-column align-items-center">
+                        <div style="width: 70px; height: 70px; background: linear-gradient(45deg, var(--primary-pink), var(--light-pink)); border-radius: var(--border-radius-circle); display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;">
+                            <i data-feather="users" style="width: 35px; height: 35px; color: white;"></i>
+                        </div>
+                        <h5 class="mb-2">Aliados</h5>
+                        <p class="card-text text-center text-muted mb-3">Gestión de cuentas y portafolio de proyectos</p>
+                        <a href="{{ url_for('aliados_cuentas') }}" class="btn btn-outline-primary">Ver Detalles</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="p-2" style="flex: 1; min-width: 250px;">
+            <div class="card h-100 zoom-effect">
+                <div class="card-body p-4">
+                    <div class="d-flex flex-column align-items-center">
+                        <div style="width: 70px; height: 70px; background: linear-gradient(45deg, var(--success), var(--primary-blue)); border-radius: var(--border-radius-circle); display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;">
+                            <i data-feather="user-check" style="width: 35px; height: 35px; color: white;"></i>
+                        </div>
+                        <h5 class="mb-2">Consultores</h5>
+                        <p class="card-text text-center text-muted mb-3">Asignaciones y gestión de talento</p>
+                        <a href="{{ url_for('aliados_asignaciones') }}" class="btn btn-outline-secondary">Ver Detalles</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Resumen de las 5 Etapas del Sistema -->
+    <div class="dashboard-section-title">
+        <h4>Etapas del Sistema</h4>
+    </div>
+    
+    <div class="card mb-4">
+        <div class="card-body p-4">
+            <div class="d-flex flex-wrap">
+                <div class="p-2" style="flex: 1; min-width: 200px;">
+                    <div class="d-flex flex-column align-items-center p-3" style="border-radius: var(--border-radius-lg); background: linear-gradient(to bottom right, rgba(236, 56, 167, 0.05), rgba(0, 178, 227, 0.05)); border: 1px solid rgba(236, 56, 167, 0.1); height: 100%;">
+                        <div style="width: 50px; height: 50px; background: rgba(236, 56, 167, 0.1); border-radius: var(--border-radius-circle); display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;">
+                            <i data-feather="users" style="width: 25px; height: 25px; color: var(--primary-pink);"></i>
+                        </div>
+                        <h5 class="mb-2 text-center">1. Onboarding</h5>
+                        <p class="text-center text-muted mb-3" style="font-size: 0.85rem;">Integración de aliados y consultores al sistema</p>
+                        <a href="{{ url_for('aliados_cuentas') }}" class="btn btn-sm btn-outline-primary mt-auto">Gestionar</a>
+                    </div>
+                </div>
+                
+                <div class="p-2" style="flex: 1; min-width: 200px;">
+                    <div class="d-flex flex-column align-items-center p-3" style="border-radius: var(--border-radius-lg); background: linear-gradient(to bottom right, rgba(0, 178, 227, 0.05), rgba(103, 51, 176, 0.05)); border: 1px solid rgba(0, 178, 227, 0.1); height: 100%;">
+                        <div style="width: 50px; height: 50px; background: rgba(0, 178, 227, 0.1); border-radius: var(--border-radius-circle); display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;">
+                            <i data-feather="file-text" style="width: 25px; height: 25px; color: var(--primary-blue);"></i>
+                        </div>
+                        <h5 class="mb-2 text-center">2. Propuesta</h5>
+                        <p class="text-center text-muted mb-3" style="font-size: 0.85rem;">Planificación de proyectos y propuestas</p>
+                        <a href="{{ url_for('aliados_portfolio') }}" class="btn btn-sm btn-outline-primary mt-auto">Gestionar</a>
+                    </div>
+                </div>
+                
+                <div class="p-2" style="flex: 1; min-width: 200px;">
+                    <div class="d-flex flex-column align-items-center p-3" style="border-radius: var(--border-radius-lg); background: linear-gradient(to bottom right, rgba(103, 51, 176, 0.05), rgba(236, 56, 167, 0.05)); border: 1px solid rgba(103, 51, 176, 0.1); height: 100%;">
+                        <div style="width: 50px; height: 50px; background: rgba(103, 51, 176, 0.1); border-radius: var(--border-radius-circle); display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;">
+                            <i data-feather="play" style="width: 25px; height: 25px; color: var(--primary-purple);"></i>
+                        </div>
+                        <h5 class="mb-2 text-center">3. Ejecución</h5>
+                        <p class="text-center text-muted mb-3" style="font-size: 0.85rem;">Monitoreo de proyectos en curso</p>
+                        <a href="{{ url_for('dashboard_performance') }}" class="btn btn-sm btn-outline-secondary mt-auto">Gestionar</a>
+                    </div>
+                </div>
+                
+                <div class="p-2" style="flex: 1; min-width: 200px;">
+                    <div class="d-flex flex-column align-items-center p-3" style="border-radius: var(--border-radius-lg); background: linear-gradient(to bottom right, rgba(45, 204, 112, 0.05), rgba(0, 178, 227, 0.05)); border: 1px solid rgba(45, 204, 112, 0.1); height: 100%;">
+                        <div style="width: 50px; height: 50px; background: rgba(45, 204, 112, 0.1); border-radius: var(--border-radius-circle); display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;">
+                            <i data-feather="check-circle" style="width: 25px; height: 25px; color: var(--success);"></i>
+                        </div>
+                        <h5 class="mb-2 text-center">4. Cierre</h5>
+                        <p class="text-center text-muted mb-3" style="font-size: 0.85rem;">Evaluación de resultados</p>
+                        <a href="{{ url_for('aliados_portfolio') }}" class="btn btn-sm btn-outline-success mt-auto">Gestionar</a>
+                    </div>
+                </div>
+                
+                <div class="p-2" style="flex: 1; min-width: 200px;">
+                    <div class="d-flex flex-column align-items-center p-3" style="border-radius: var(--border-radius-lg); background: linear-gradient(to bottom right, rgba(236, 56, 167, 0.05), rgba(231, 76, 60, 0.05)); border: 1px solid rgba(236, 56, 167, 0.1); height: 100%;">
+                        <div style="width: 50px; height: 50px; background: rgba(231, 76, 60, 0.1); border-radius: var(--border-radius-circle); display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;">
+                            <i data-feather="award" style="width: 25px; height: 25px; color: var(--danger);"></i>
+                        </div>
+                        <h5 class="mb-2 text-center">5. Retención</h5>
+                        <p class="text-center text-muted mb-3" style="font-size: 0.85rem;">Fidelización de talento</p>
+                        <a href="{{ url_for('aliados_asignaciones') }}" class="btn btn-sm btn-outline-danger mt-auto">Gestionar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- KPIs Generales -->
+    <div class="d-flex flex-wrap">
+        <div class="p-2" style="flex: 2; min-width: 500px;">
+            <div class="dashboard-section-title">
+                <h4>Actividad Reciente</h4>
+            </div>
+            <div class="card h-100">
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        <div class="d-flex p-3 border-bottom">
+                            <div style="width: 45px; height: 45px; background: linear-gradient(135deg, var(--primary-blue), var(--light-blue)); border-radius: var(--border-radius-circle); display: flex; align-items: center; justify-content: center; margin-right: 15px;">
+                                <i data-feather="file-plus" style="width: 22px; height: 22px; color: white;"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h6 class="mb-0">Nuevo proyecto creado</h6>
+                                    <small class="text-muted">Hace 2 horas</small>
+                                </div>
+                                <p class="text-muted mb-0" style="font-size: 0.875rem;">Transformación Digital para Aliado Tech</p>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex p-3 border-bottom">
+                            <div style="width: 45px; height: 45px; background: linear-gradient(135deg, var(--primary-pink), var(--light-pink)); border-radius: var(--border-radius-circle); display: flex; align-items: center; justify-content: center; margin-right: 15px;">
+                                <i data-feather="user-plus" style="width: 22px; height: 22px; color: white;"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h6 class="mb-0">Nuevo consultor registrado</h6>
+                                    <small class="text-muted">Hace 5 horas</small>
+                                </div>
+                                <p class="text-muted mb-0" style="font-size: 0.875rem;">Laura García - Especialista en BI</p>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex p-3 border-bottom">
+                            <div style="width: 45px; height: 45px; background: linear-gradient(135deg, var(--success), #85e9b0); border-radius: var(--border-radius-circle); display: flex; align-items: center; justify-content: center; margin-right: 15px;">
+                                <i data-feather="check-square" style="width: 22px; height: 22px; color: white;"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h6 class="mb-0">Proyecto finalizado</h6>
+                                    <small class="text-muted">Hace 1 día</small>
+                                </div>
+                                <p class="text-muted mb-0" style="font-size: 0.875rem;">Estrategia de Mercado - Consultores Sur</p>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex p-3">
+                            <div style="width: 45px; height: 45px; background: linear-gradient(135deg, var(--primary-purple), var(--light-purple)); border-radius: var(--border-radius-circle); display: flex; align-items: center; justify-content: center; margin-right: 15px;">
+                                <i data-feather="calendar" style="width: 22px; height: 22px; color: white;"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h6 class="mb-0">Reunión programada</h6>
+                                    <small class="text-muted">Hace 2 días</small>
+                                </div>
+                                <p class="text-muted mb-0" style="font-size: 0.875rem;">Presentación de resultados Q3</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer text-center">
+                    <a href="#" class="btn btn-sm btn-link">Ver todas las actividades</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="p-2" style="flex: 1; min-width: 300px;">
+            <div class="dashboard-section-title">
+                <h4>Métricas Clave</h4>
+            </div>
+            <div class="d-flex flex-column">
+                <div class="kpi-card kpi-card-primary mb-3">
+                    <i data-feather="briefcase" class="kpi-icon"></i>
+                    <div class="kpi-title">Proyectos Activos</div>
+                    <div class="kpi-value">7</div>
+                    <div class="kpi-change kpi-change-up">
+                        <i data-feather="arrow-up" class="kpi-change-icon"></i>
+                        <span>2 nuevos este mes</span>
+                    </div>
+                </div>
+                
+                <div class="kpi-card kpi-card-secondary mb-3">
+                    <i data-feather="users" class="kpi-icon"></i>
+                    <div class="kpi-title">Aliados</div>
+                    <div class="kpi-value">5</div>
+                    <div class="kpi-change kpi-change-up">
+                        <i data-feather="arrow-up" class="kpi-change-icon"></i>
+                        <span>1 nuevo este mes</span>
+                    </div>
+                </div>
+                
+                <div class="kpi-card kpi-card-success mb-3">
+                    <i data-feather="user-check" class="kpi-icon"></i>
+                    <div class="kpi-title">Consultores</div>
+                    <div class="kpi-value">7</div>
+                    <div class="kpi-change kpi-change-up">
+                        <i data-feather="arrow-up" class="kpi-change-icon"></i>
+                        <span>3 nuevos este mes</span>
+                    </div>
+                </div>
+                
+                <div class="kpi-card kpi-card-warning">
+                    <i data-feather="dollar-sign" class="kpi-icon"></i>
+                    <div class="kpi-title">Ventas del Trimestre</div>
+                    <div class="kpi-value">$520,000</div>
+                    <div class="kpi-change kpi-change-up">
+                        <i data-feather="arrow-up" class="kpi-change-icon"></i>
+                        <span>12% vs trimestre anterior</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Términos y Condiciones (Flujo de aceptación) -->
+    <div class="card mt-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Términos y Condiciones</h5>
+            <span class="badge bg-success">Aceptados</span>
+        </div>
+        <div class="card-body p-4">
+            <p>Última revisión: <strong>15 de abril de 2025</strong></p>
+            <p>Como parte del proceso de integración y trabajo en la plataforma, todos los usuarios deben aceptar los términos y condiciones vigentes que regulan el uso del sistema, confidencialidad de la información y relaciones comerciales.</p>
+            <div class="d-flex justify-content-end">
+                <button class="btn btn-outline-primary mr-2">
+                    <i data-feather="file-text" style="width: 16px; height: 16px; margin-right: 5px;"></i>
+                    Ver términos completos
+                </button>
+                <button class="btn btn-outline-secondary">
+                    <i data-feather="clock" style="width: 16px; height: 16px; margin-right: 5px;"></i>
+                    Historial de aceptaciones
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,124 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="dashboard-section-title">
+        <h4>Comunidad</h4>
+        <div class="dashboard-section-actions">
+            <button type="button" class="dashboard-section-action" title="Actualizar">
+                <i data-feather="refresh-cw"></i>
+            </button>
+        </div>
+    </div>
+    
+    <!-- Coming Soon Placeholder -->
+    <div class="card">
+        <div class="card-body text-center p-5">
+            <div style="font-size: 5rem; color: var(--secondary); opacity: 0.5; margin-bottom: 1rem;">
+                <i data-feather="users" style="width: 5rem; height: 5rem;"></i>
+            </div>
+            <h3 class="mb-4">Próximamente: Módulo de Comunidad</h3>
+            <p class="mb-4">Estamos trabajando en nuevas funcionalidades para la gestión de la comunidad de aliados y consultores.</p>
+            <p class="text-muted">Este módulo incluirá:</p>
+            <div class="d-flex justify-content-center">
+                <ul class="text-start mt-3 mb-4">
+                    <li class="mb-2">Directorio de miembros</li>
+                    <li class="mb-2">Eventos y capacitaciones</li>
+                    <li class="mb-2">Foros de discusión</li>
+                    <li class="mb-2">Recursos compartidos</li>
+                    <li class="mb-2">Sistema de reconocimientos</li>
+                </ul>
+            </div>
+            <button class="btn btn-secondary">
+                <i data-feather="bell" style="width: 16px; height: 16px; margin-right: 5px;"></i>
+                Notificarme cuando esté disponible
+            </button>
+        </div>
+        <div class="card-footer text-center">
+            Fecha estimada de lanzamiento: <strong>Q1 2024</strong>
+        </div>
+    </div>
+    
+    <!-- Community Stats Placeholder -->
+    <div class="kpi-row" style="display:flex;justify-content:space-between;">
+        <div class="kpi-col">
+            <div class="kpi-card kpi-card-primary">
+                <i data-feather="users" class="kpi-icon"></i>
+                <div class="kpi-title">Miembros Activos</div>
+                <div class="kpi-value">184</div>
+                <div class="kpi-change kpi-change-up">
+                    <i data-feather="arrow-up" class="kpi-change-icon"></i>
+                    <span>12 nuevos este mes</span>
+                </div>
+            </div>
+        </div>
+        <div class="kpi-col">
+            <div class="kpi-card kpi-card-secondary">
+                <i data-feather="award" class="kpi-icon"></i>
+                <div class="kpi-title">Nivel de Compromiso</div>
+                <div class="kpi-value">73%</div>
+                <div class="kpi-change kpi-change-up">
+                    <i data-feather="arrow-up" class="kpi-change-icon"></i>
+                    <span>5% vs mes anterior</span>
+                </div>
+            </div>
+        </div>
+        <div class="kpi-col">
+            <div class="kpi-card kpi-card-success">
+                <i data-feather="calendar" class="kpi-icon"></i>
+                <div class="kpi-title">Próximos Eventos</div>
+                <div class="kpi-value">4</div>
+                <div class="kpi-change kpi-change-up">
+                    <i data-feather="arrow-up" class="kpi-change-icon"></i>
+                    <span>2 más que el mes anterior</span>
+                </div>
+            </div>
+        </div>
+        <div class="kpi-col">
+            <div class="kpi-card kpi-card-warning">
+                <i data-feather="star" class="kpi-icon"></i>
+                <div class="kpi-title">Puntuación Promedio</div>
+                <div class="kpi-value">4.8</div>
+                <div class="kpi-change kpi-change-up">
+                    <i data-feather="arrow-up" class="kpi-change-icon"></i>
+                    <span>0.2 vs mes anterior</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Community Feature Request -->
+    <div class="card mt-4">
+        <div class="card-header">
+            <h5 class="mb-0">Solicitud de Funcionalidades</h5>
+        </div>
+        <div class="card-body">
+            <p>Ayúdanos a mejorar el módulo de comunidad compartiendo tus ideas y necesidades.</p>
+            <form>
+                <div class="form-group mb-3">
+                    <label for="featureCategory" class="form-label">Categoría</label>
+                    <select class="form-control" id="featureCategory">
+                        <option>Comunicación</option>
+                        <option>Colaboración</option>
+                        <option>Formación</option>
+                        <option>Networking</option>
+                        <option>Incentivos</option>
+                        <option>Otra</option>
+                    </select>
+                </div>
+                <div class="form-group mb-3">
+                    <label for="featureDescription" class="form-label">Descripción de la funcionalidad</label>
+                    <textarea class="form-control" id="featureDescription" rows="3" placeholder="Describe la funcionalidad que te gustaría ver implementada..."></textarea>
+                </div>
+                <div class="form-group mb-3">
+                    <label for="featureBenefit" class="form-label">Beneficio esperado</label>
+                    <textarea class="form-control" id="featureBenefit" rows="2" placeholder="¿Qué beneficio o problema resolvería esta funcionalidad?"></textarea>
+                </div>
+                <div class="text-end">
+                    <button type="button" class="btn btn-primary">Enviar Solicitud</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

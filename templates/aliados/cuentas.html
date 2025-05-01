@@ -1,0 +1,355 @@
+{% extends "layout.html" %}
+
+{% block head %}
+<!-- Add page specific CSS if needed -->
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="dashboard-section-title">
+        <h4>Cuentas de Aliados</h4>
+        <div class="dashboard-section-actions">
+            <button type="button" class="dashboard-section-action" title="Exportar">
+                <i data-feather="download"></i>
+            </button>
+            <button type="button" class="dashboard-section-action" title="Añadir Cuenta">
+                <i data-feather="plus"></i>
+            </button>
+        </div>
+    </div>
+    
+    <!-- Filter Section -->
+    <div class="filter-section mb-4">
+        <form class="filter-form">
+            <div class="filter-row">
+                <div class="filter-col">
+                    <label class="filter-label" for="region">Región</label>
+                    <select class="filter-control" id="region" name="region">
+                        <option value="">Todas</option>
+                        <option value="Norte">Norte</option>
+                        <option value="Sur">Sur</option>
+                        <option value="Este">Este</option>
+                        <option value="Oeste">Oeste</option>
+                        <option value="Centro">Centro</option>
+                    </select>
+                </div>
+                <div class="filter-col">
+                    <label class="filter-label" for="industria">Industria</label>
+                    <select class="filter-control" id="industria" name="industria">
+                        <option value="">Todas</option>
+                        <option value="Tecnología">Tecnología</option>
+                        <option value="Finanzas">Finanzas</option>
+                        <option value="Manufactura">Manufactura</option>
+                        <option value="Consultoría">Consultoría</option>
+                        <option value="Servicios">Servicios</option>
+                    </select>
+                </div>
+                <div class="filter-col">
+                    <label class="filter-label" for="ventas">Ventas Mínimas</label>
+                    <input type="number" class="filter-control" id="ventas" name="ventas" placeholder="Monto mínimo">
+                </div>
+                <div class="filter-col">
+                    <label class="filter-label" for="estado">Estado</label>
+                    <select class="filter-control" id="estado" name="estado">
+                        <option value="">Todos</option>
+                        <option value="activo">Activo</option>
+                        <option value="inactivo">Inactivo</option>
+                        <option value="pendiente">Pendiente</option>
+                    </select>
+                </div>
+            </div>
+            <div class="filter-actions">
+                <button type="button" class="btn btn-secondary filter-reset">Limpiar</button>
+                <button type="button" class="btn btn-primary filter-apply">Aplicar</button>
+            </div>
+        </form>
+    </div>
+    
+    <!-- Aliados Table -->
+    <div class="card mb-4">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped mb-0">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Región</th>
+                            <th>Industria</th>
+                            <th>Ventas Trimestre</th>
+                            <th>Ventas Acumuladas</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for aliado in aliados %}
+                        <tr>
+                            <td>{{ aliado.id }}</td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div style="width: 32px; height: 32px; background-color: var(--secondary); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 10px; color: white; font-weight: bold;">
+                                        {{ aliado.nombre[0] }}
+                                    </div>
+                                    <div>{{ aliado.nombre }}</div>
+                                </div>
+                            </td>
+                            <td>{{ aliado.region }}</td>
+                            <td>{{ aliado.industria }}</td>
+                            <td>${{ '{:,.0f}'.format(aliado.ventas_trimestre) }}</td>
+                            <td>${{ '{:,.0f}'.format(aliado.ventas_acumuladas) }}</td>
+                            <td>
+                                <span class="badge {% if aliado.id % 3 == 0 %}bg-warning{% elif aliado.id % 2 == 0 %}bg-success{% else %}bg-primary{% endif %}">
+                                    {% if aliado.id % 3 == 0 %}
+                                        Pendiente
+                                    {% elif aliado.id % 2 == 0 %}
+                                        Activo
+                                    {% else %}
+                                        Nuevo
+                                    {% endif %}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="d-flex">
+                                    <button class="btn btn-sm btn-secondary me-1" title="Ver detalles">
+                                        <i data-feather="eye" style="width: 14px; height: 14px;"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-primary me-1" title="Editar">
+                                        <i data-feather="edit" style="width: 14px; height: 14px;"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-danger" title="Eliminar">
+                                        <i data-feather="trash-2" style="width: 14px; height: 14px;"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Aliados Stats -->
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Distribución por Industria</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Industria</th>
+                                    <th>Aliados</th>
+                                    <th>Ventas</th>
+                                    <th>% del Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Tecnología</td>
+                                    <td>2</td>
+                                    <td>$203,000</td>
+                                    <td>28%</td>
+                                </tr>
+                                <tr>
+                                    <td>Finanzas</td>
+                                    <td>1</td>
+                                    <td>$98,000</td>
+                                    <td>13.5%</td>
+                                </tr>
+                                <tr>
+                                    <td>Manufactura</td>
+                                    <td>1</td>
+                                    <td>$110,000</td>
+                                    <td>15.2%</td>
+                                </tr>
+                                <tr>
+                                    <td>Consultoría</td>
+                                    <td>1</td>
+                                    <td>$85,000</td>
+                                    <td>11.7%</td>
+                                </tr>
+                                <tr>
+                                    <td>Servicios</td>
+                                    <td>1</td>
+                                    <td>$102,000</td>
+                                    <td>14.1%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Distribución Regional</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Región</th>
+                                    <th>Aliados</th>
+                                    <th>Ventas</th>
+                                    <th>% del Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Norte</td>
+                                    <td>1</td>
+                                    <td>$125,000</td>
+                                    <td>17.3%</td>
+                                </tr>
+                                <tr>
+                                    <td>Centro</td>
+                                    <td>1</td>
+                                    <td>$98,000</td>
+                                    <td>13.5%</td>
+                                </tr>
+                                <tr>
+                                    <td>Este</td>
+                                    <td>1</td>
+                                    <td>$110,000</td>
+                                    <td>15.2%</td>
+                                </tr>
+                                <tr>
+                                    <td>Sur</td>
+                                    <td>1</td>
+                                    <td>$85,000</td>
+                                    <td>11.7%</td>
+                                </tr>
+                                <tr>
+                                    <td>Oeste</td>
+                                    <td>1</td>
+                                    <td>$102,000</td>
+                                    <td>14.1%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Onboarding Section -->
+    <div class="dashboard-section-title mt-4">
+        <h4>Proceso de Onboarding</h4>
+    </div>
+    <div class="card">
+        <div class="card-header">
+            <ul class="nav nav-tabs card-header-tabs" id="onboardingTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="solicitud-tab" data-bs-toggle="tab" data-bs-target="#solicitud" type="button" role="tab" aria-controls="solicitud" aria-selected="true">1. Solicitud</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="evaluacion-tab" data-bs-toggle="tab" data-bs-target="#evaluacion" type="button" role="tab" aria-controls="evaluacion" aria-selected="false">2. Evaluación</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="contrato-tab" data-bs-toggle="tab" data-bs-target="#contrato" type="button" role="tab" aria-controls="contrato" aria-selected="false">3. Contrato</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="capacitacion-tab" data-bs-toggle="tab" data-bs-target="#capacitacion" type="button" role="tab" aria-controls="capacitacion" aria-selected="false">4. Capacitación</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="activacion-tab" data-bs-toggle="tab" data-bs-target="#activacion" type="button" role="tab" aria-controls="activacion" aria-selected="false">5. Activación</button>
+                </li>
+            </ul>
+        </div>
+        <div class="card-body">
+            <div class="tab-content" id="onboardingTabsContent">
+                <div class="tab-pane fade show active" id="solicitud" role="tabpanel" aria-labelledby="solicitud-tab">
+                    <h5>Paso 1: Solicitud de Aliado</h5>
+                    <p>En esta etapa se reciben y procesan las solicitudes de nuevos aliados.</p>
+                    <ol>
+                        <li>Recepción de formulario de solicitud</li>
+                        <li>Validación inicial de datos</li>
+                        <li>Asignación a un gestor para contacto inicial</li>
+                    </ol>
+                    <button class="btn btn-primary">Ver solicitudes pendientes (3)</button>
+                </div>
+                <div class="tab-pane fade" id="evaluacion" role="tabpanel" aria-labelledby="evaluacion-tab">
+                    <h5>Paso 2: Evaluación</h5>
+                    <p>Evaluación de candidatos a aliados según criterios comerciales y técnicos.</p>
+                    <ol>
+                        <li>Análisis de capacidades técnicas</li>
+                        <li>Evaluación financiera</li>
+                        <li>Revisión de referencias y experiencia previa</li>
+                    </ol>
+                    <button class="btn btn-primary">Ver evaluaciones en curso (2)</button>
+                </div>
+                <div class="tab-pane fade" id="contrato" role="tabpanel" aria-labelledby="contrato-tab">
+                    <h5>Paso 3: Contrato</h5>
+                    <p>Formalización de la relación mediante acuerdos contractuales.</p>
+                    <ol>
+                        <li>Elaboración de propuesta comercial</li>
+                        <li>Negociación de términos y condiciones</li>
+                        <li>Firma de contrato y acuerdos de confidencialidad</li>
+                    </ol>
+                    <button class="btn btn-primary">Ver contratos pendientes (1)</button>
+                </div>
+                <div class="tab-pane fade" id="capacitacion" role="tabpanel" aria-labelledby="capacitacion-tab">
+                    <h5>Paso 4: Capacitación</h5>
+                    <p>Formación y transferencia de conocimiento para aliados aprobados.</p>
+                    <ol>
+                        <li>Inducción a los procesos y metodologías</li>
+                        <li>Capacitación en herramientas y sistemas</li>
+                        <li>Evaluación de aprendizaje</li>
+                    </ol>
+                    <button class="btn btn-primary">Ver programa de capacitación</button>
+                </div>
+                <div class="tab-pane fade" id="activacion" role="tabpanel" aria-labelledby="activacion-tab">
+                    <h5>Paso 5: Activación</h5>
+                    <p>Inicio formal de actividades operativas con el aliado.</p>
+                    <ol>
+                        <li>Configuración de accesos y credenciales</li>
+                        <li>Asignación de primer proyecto</li>
+                        <li>Monitoreo inicial reforzado</li>
+                    </ol>
+                    <button class="btn btn-primary">Ver aliados en activación (2)</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Simple tab functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const tabs = document.querySelectorAll('[data-bs-toggle="tab"]');
+        const tabContents = document.querySelectorAll('.tab-pane');
+        
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Remove active class from all tabs and tab contents
+                tabs.forEach(t => t.classList.remove('active'));
+                tabContents.forEach(tc => {
+                    tc.classList.remove('show', 'active');
+                });
+                
+                // Add active class to clicked tab
+                this.classList.add('active');
+                
+                // Show corresponding tab content
+                const targetId = this.getAttribute('data-bs-target').substring(1);
+                const targetContent = document.getElementById(targetId);
+                if (targetContent) {
+                    targetContent.classList.add('show', 'active');
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

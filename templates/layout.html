@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }} | DEEPNOVA</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='images/deepnova-icon.jpeg') }}">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/deepnova-theme.css') }}">
+    
+    <!-- Feather Icons -->
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    
+    <!-- Page specific head content -->
+    {% block head %}{% endblock %}
+</head>
+<body>
+    {% if current_user.is_authenticated %}
+    <!-- Top Bar -->
+    <div class="topbar">
+        <div class="d-flex align-items-center">
+            <button class="topbar-mobile-toggle" type="button" onclick="toggleSidebar()">
+                <i data-feather="menu"></i>
+            </button>
+            <a href="{{ url_for('dashboard') }}" class="topbar-brand">
+                <img src="{{ url_for('static', filename='images/deepnova-icon.jpeg') }}" alt="DEEPNOVA" class="mr-2">
+                <span>DEEPNOVA</span>
+            </a>
+            <div class="topbar-title ml-3">{{ title }}</div>
+        </div>
+        
+        <div class="topbar-nav">
+            <!-- Role indicator -->
+            <div class="topbar-role-indicator">
+                <i data-feather="shield" class="topbar-role-icon"></i>
+                <span>
+                    {% if role == 'gestor' %}
+                        Gestor de Aliados
+                    {% elif role == 'aliado' %}
+                        Aliado
+                    {% elif role == 'supervisor' %}
+                        Supervisor
+                    {% elif role == 'consultor' %}
+                        Consultor
+                    {% endif %}
+                </span>
+            </div>
+            
+            <!-- Notifications -->
+            <div class="topbar-nav-item dropdown">
+                <div class="topbar-nav-icon">
+                    <i data-feather="bell"></i>
+                    <span class="topbar-badge">3</span>
+                </div>
+                
+                <div class="topbar-dropdown" style="display: none;">
+                    <div class="topbar-dropdown-header">
+                        Notificaciones (3)
+                    </div>
+                    <div class="topbar-dropdown-item" data-notification-id="1">
+                        <i data-feather="alert-circle" class="topbar-dropdown-icon"></i>
+                        <div>
+                            <div><strong>Nuevo proyecto asignado</strong></div>
+                            <div class="text-muted">Se te ha asignado un nuevo proyecto. Revisa los detalles.</div>
+                            <small>Hace 5 minutos</small>
+                        </div>
+                    </div>
+                    <div class="topbar-dropdown-item" data-notification-id="2">
+                        <i data-feather="users" class="topbar-dropdown-icon"></i>
+                        <div>
+                            <div><strong>Nuevo aliado registrado</strong></div>
+                            <div class="text-muted">Hay un nuevo aliado en el sistema que requiere aprobación.</div>
+                            <small>Hace 2 horas</small>
+                        </div>
+                    </div>
+                    <div class="topbar-dropdown-item" data-notification-id="3">
+                        <i data-feather="calendar" class="topbar-dropdown-icon"></i>
+                        <div>
+                            <div><strong>Reunión programada</strong></div>
+                            <div class="text-muted">Tienes una reunión de seguimiento a las 15:00.</div>
+                            <small>Hace 1 día</small>
+                        </div>
+                    </div>
+                    <div class="topbar-dropdown-item text-center">
+                        <a href="#">Ver todas las notificaciones</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- User menu -->
+            <div class="topbar-nav-item dropdown ml-3">
+                <div class="topbar-user">
+                    <div class="topbar-user-avatar">
+                        {{ current_user.username[0].upper() }}
+                    </div>
+                    <span class="topbar-user-name d-none d-md-block">{{ current_user.username }}</span>
+                    <i data-feather="chevron-down" style="width: 16px; height: 16px;"></i>
+                </div>
+                
+                <div class="topbar-dropdown" style="display: none;">
+                    <div class="topbar-dropdown-header">
+                        {{ current_user.email }}
+                    </div>
+                    <a href="/perfil" class="topbar-dropdown-item">
+                        <i data-feather="user" class="topbar-dropdown-icon"></i>
+                        <span>Mi Perfil</span>
+                    </a>
+                    <a href="/configuracion" class="topbar-dropdown-item">
+                        <i data-feather="settings" class="topbar-dropdown-icon"></i>
+                        <span>Configuración</span>
+                    </a>
+                    <div class="topbar-dropdown-divider"></div>
+                    <a href="{{ url_for('logout') }}" class="topbar-dropdown-item">
+                        <i data-feather="log-out" class="topbar-dropdown-icon"></i>
+                        <span>Cerrar Sesión</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-nav">
+            <!-- Brand Logo for Sidebar -->
+            <div class="text-center mb-4 d-none d-lg-block">
+                <img src="{{ url_for('static', filename='images/deepnova-logo.jpeg') }}" alt="DEEPNOVA" style="max-width: 65%;">
+            </div>
+            
+            <!-- Navegación dinámica basada en roles (definida directamente en la plantilla) -->
+            {% if role == 'gestor' %}
+                {% set navigation = [
+                    {'name': 'Dashboard', 'icon': 'home', 'url': '/dashboard', 
+                     'submenu': [
+                         {'name': 'Crecimiento', 'url': '/dashboard/growth'},
+                         {'name': 'Desempeño', 'url': '/dashboard/performance'},
+                         {'name': 'Comunidad', 'url': '/dashboard/community'}
+                     ]},
+                    {'name': 'Aliados', 'icon': 'users', 'url': '/aliados',
+                     'submenu': [
+                         {'name': 'Cuentas', 'url': '/aliados/cuentas'},
+                         {'name': 'Portafolio', 'url': '/aliados/portfolio'},
+                         {'name': 'Asignaciones', 'url': '/aliados/asignaciones'}
+                     ]}
+                ] %}
+            {% elif role == 'aliado' %}
+                {% set navigation = [
+                    {'name': 'Dashboard', 'icon': 'home', 'url': '/dashboard'},
+                    {'name': 'Proyectos', 'icon': 'briefcase', 'url': '/proyectos'},
+                    {'name': 'Consultores', 'icon': 'user-check', 'url': '/consultores'}
+                ] %}
+            {% elif role == 'supervisor' %}
+                {% set navigation = [
+                    {'name': 'Dashboard', 'icon': 'home', 'url': '/dashboard'},
+                    {'name': 'Proyectos', 'icon': 'briefcase', 'url': '/proyectos'},
+                    {'name': 'Aliados', 'icon': 'users', 'url': '/aliados'},
+                    {'name': 'Consultores', 'icon': 'user-check', 'url': '/consultores'}
+                ] %}
+            {% elif role == 'consultor' %}
+                {% set navigation = [
+                    {'name': 'Dashboard', 'icon': 'home', 'url': '/dashboard'},
+                    {'name': 'Mis Proyectos', 'icon': 'briefcase', 'url': '/mis-proyectos'},
+                    {'name': 'Tareas', 'icon': 'check-square', 'url': '/tareas'}
+                ] %}
+            {% else %}
+                {% set navigation = [] %}
+            {% endif %}
+            
+            <!-- Loop through main menu items -->
+            {% for item in navigation %}
+                {% if item.submenu %}
+                    <!-- Item with submenu -->
+                    <div class="sidebar-item sidebar-item-dropdown">
+                        <a href="#" class="sidebar-link" onclick="toggleSubmenu(this)">
+                            <i data-feather="{{ item.icon }}" class="sidebar-icon"></i>
+                            <span class="sidebar-text">{{ item.name }}</span>
+                            <i data-feather="chevron-down" class="sidebar-toggle"></i>
+                        </a>
+                        <div class="sidebar-dropdown">
+                            {% for subitem in item.submenu %}
+                                <a href="{{ subitem.url }}" class="sidebar-link sidebar-dropdown-item {% if request.path == subitem.url %} active{% endif %}">
+                                    <span>{{ subitem.name }}</span>
+                                </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% else %}
+                    <!-- Regular item -->
+                    <div class="sidebar-item">
+                        <a href="{{ item.url }}" class="sidebar-link{% if request.path == item.url %} active{% endif %}">
+                            <i data-feather="{{ item.icon }}" class="sidebar-icon"></i>
+                            <span class="sidebar-text">{{ item.name }}</span>
+                        </a>
+                    </div>
+                {% endif %}
+                
+                {% if not loop.last %}
+                    <div class="sidebar-divider"></div>
+                {% endif %}
+            {% endfor %}
+            
+            <!-- User Support Section -->
+            <div class="sidebar-divider"></div>
+            <div class="sidebar-item">
+                <a href="#" class="sidebar-link">
+                    <i data-feather="help-circle" class="sidebar-icon"></i>
+                    <span class="sidebar-text">Ayuda & Soporte</span>
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main content area -->
+    <div class="content-area" id="content-area">
+        <!-- Flash messages -->
+        <div class="flash-messages">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="flash-message flash-{{ category }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        </div>
+        
+        <!-- Page content -->
+        {% block content %}{% endblock %}
+    </div>
+    {% else %}
+    <!-- Login/Auth page content -->
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <img src="{{ url_for('static', filename='images/deepnova-logo.jpeg') }}" alt="DEEPNOVA" class="login-logo">
+                <h3 class="login-title">Sistema de Gestión</h3>
+                <p class="login-subtitle">Analítica de Datos y Tecnología</p>
+            </div>
+            <div class="login-body">
+                {% block auth_content %}{% endblock %}
+            </div>
+            <div class="login-footer">
+                &copy; 2025 DEEPNOVA - Todos los derechos reservados
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- JavaScript -->
+    <script>
+        // Initialize Feather icons
+        document.addEventListener('DOMContentLoaded', function() {
+            feather.replace();
+            initDropdowns();
+            initSubmenuToggle();
+        });
+        
+        // Toggle sidebar on mobile
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            if (sidebar) {
+                sidebar.classList.toggle('active');
+            }
+        }
+        
+        // Toggle dropdown menus
+        function toggleDropdown(el) {
+            // Close all other dropdowns first
+            const allDropdowns = document.querySelectorAll('.topbar-dropdown');
+            allDropdowns.forEach(dropdown => {
+                if (dropdown !== el.nextElementSibling) {
+                    dropdown.style.display = 'none';
+                }
+            });
+            
+            // Toggle this dropdown
+            const dropdown = el.nextElementSibling;
+            if (dropdown) {
+                dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+            }
+            
+            // Prevent default if it's a link
+            if (el.tagName === 'A') {
+                return false;
+            }
+        }
+        
+        // Initialize all dropdowns
+        function initDropdowns() {
+            const dropdownTriggers = document.querySelectorAll('.topbar-nav-icon, .topbar-user');
+            dropdownTriggers.forEach(trigger => {
+                trigger.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    toggleDropdown(this);
+                });
+            });
+            
+            // Make dropdown items clickable
+            const dropdownItems = document.querySelectorAll('.topbar-dropdown-item');
+            dropdownItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    // Don't prevent default here - allow the link to work
+                    e.stopPropagation();
+                });
+            });
+            
+            // Close dropdowns when clicking outside
+            document.addEventListener('click', function() {
+                const allDropdowns = document.querySelectorAll('.topbar-dropdown');
+                allDropdowns.forEach(dropdown => {
+                    dropdown.style.display = 'none';
+                });
+            });
+        }
+        
+        // Toggle submenu in sidebar
+        function toggleSubmenu(el) {
+            const submenu = el.nextElementSibling;
+            if (submenu) {
+                submenu.style.display = submenu.style.display === 'block' ? 'none' : 'block';
+                
+                // Toggle the arrow icon
+                const arrow = el.querySelector('.sidebar-toggle');
+                if (arrow) {
+                    arrow.style.transform = submenu.style.display === 'block' ? 'rotate(180deg)' : 'rotate(0deg)';
+                }
+            }
+        }
+        
+        // Initialize submenu toggle
+        function initSubmenuToggle() {
+            const submenuLinks = document.querySelectorAll('.sidebar-item-dropdown > .sidebar-link');
+            submenuLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    toggleSubmenu(this);
+                });
+            });
+            
+            // Auto open submenu if child is active
+            const activeSubItems = document.querySelectorAll('.sidebar-dropdown-item.active');
+            activeSubItems.forEach(item => {
+                const parent = item.closest('.sidebar-item-dropdown');
+                if (parent) {
+                    const parentLink = parent.querySelector('.sidebar-link');
+                    const dropdown = parent.querySelector('.sidebar-dropdown');
+                    if (parentLink && dropdown) {
+                        dropdown.style.display = 'block';
+                        const arrow = parentLink.querySelector('.sidebar-toggle');
+                        if (arrow) {
+                            arrow.style.transform = 'rotate(180deg)';
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+    
+    <!-- Page specific scripts -->
+    {% block scripts %}{% endblock %}
+</body>
+</html>

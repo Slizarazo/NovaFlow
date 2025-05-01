@@ -1,0 +1,184 @@
+{% extends "layout.html" %}
+
+{% block head %}
+<script src="{{ url_for('static', filename='js/charts.js') }}"></script>
+<script src="{{ url_for('static', filename='js/maps.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <!-- Filter Section -->
+    <div class="filter-section mb-4" stye="margin:10px">
+        <h4 class="mb-3">Filtros</h4>
+        <form class="filter-form">
+            <div class="filter-row">
+                <div class="filter-col">
+                    <label class="filter-label" for="aliado">Aliado</label>
+                    <select class="filter-control" id="aliado" name="aliado">
+                        <option value="">Todos</option>
+                        {% for aliado in aliados %}
+                        <option value="{{ aliado.id }}">{{ aliado.nombre }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="filter-col">
+                    <label class="filter-label" for="periodo">Periodo</label>
+                    <select class="filter-control" id="periodo" name="periodo">
+                        <option value="q1_2023">Q1 2023</option>
+                        <option value="q2_2023">Q2 2023</option>
+                        <option value="q3_2023" selected>Q3 2023</option>
+                        <option value="q4_2023">Q4 2023</option>
+                    </select>
+                </div>
+                <div class="filter-col">
+                    <label class="filter-label" for="cuenta">Cuenta</label>
+                    <select class="filter-control" id="cuenta" name="cuenta">
+                        <option value="">Todas</option>
+                        <option value="1">Cuenta A</option>
+                        <option value="2">Cuenta B</option>
+                        <option value="3">Cuenta C</option>
+                    </select>
+                </div>
+                <div class="filter-col">
+                    <label class="filter-label" for="supervisor">Supervisor</label>
+                    <select class="filter-control" id="supervisor" name="supervisor">
+                        <option value="">Todos</option>
+                        <option value="1">Supervisor 1</option>
+                        <option value="2">Supervisor 2</option>
+                        <option value="3">Supervisor 3</option>
+                    </select>
+                </div>
+            </div>
+            <div class="filter-actions">
+                <button type="button" class="btn btn-secondary filter-reset">Restablecer</button>
+                <button type="button" class="btn btn-primary filter-apply">Aplicar Filtros</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- KPI Cards -->
+    <div class="kpi-row" style="display:grid;grid-template-columns: repeat(4, 1fr);margin:10px">
+        <div class="kpi-col">
+            <div class="kpi-card kpi-card-primary">
+                <i data-feather="dollar-sign" class="kpi-icon"></i>
+                <div class="kpi-title">Ventas Trimestre</div>
+                <div class="kpi-value">$<span>{{ '{:,.0f}'.format(kpis.ventas_trimestre) }}</span></div>
+                <div class="kpi-change kpi-change-up">
+                    <i data-feather="arrow-up" class="kpi-change-icon"></i>
+                    <span>12% vs trimestre anterior</span>
+                </div>
+            </div>
+        </div>
+        <div class="kpi-col">
+            <div class="kpi-card kpi-card-secondary">
+                <i data-feather="briefcase" class="kpi-icon"></i>
+                <div class="kpi-title">Ventas Promedio por Cuenta</div>
+                <div class="kpi-value">$<span>{{ '{:,.0f}'.format(kpis.ventas_promedio_cuenta) }}</span></div>
+                <div class="kpi-change kpi-change-up">
+                    <i data-feather="arrow-up" class="kpi-change-icon"></i>
+                    <span>8% vs trimestre anterior</span>
+                </div>
+            </div>
+        </div>
+        <div class="kpi-col">
+            <div class="kpi-card kpi-card-success">
+                <i data-feather="layers" class="kpi-icon"></i>
+                <div class="kpi-title">Ventas Promedio por Proyecto</div>
+                <div class="kpi-value">$<span>{{ '{:,.0f}'.format(kpis.ventas_promedio_proyecto) }}</span></div>
+                <div class="kpi-change kpi-change-down">
+                    <i data-feather="arrow-down" class="kpi-change-icon"></i>
+                    <span>3% vs trimestre anterior</span>
+                </div>
+            </div>
+        </div>
+        <div class="kpi-col">
+            <div class="kpi-card kpi-card-warning">
+                <i data-feather="trending-up" class="kpi-icon"></i>
+                <div class="kpi-title">Rentabilidad</div>
+                <div class="kpi-value">$<span>{{ '{:,.0f}'.format(kpis.rentabilidad) }}</span></div>
+                <div class="kpi-change kpi-change-up">
+                    <i data-feather="arrow-up" class="kpi-change-icon"></i>
+                    <span>15% vs trimestre anterior</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Visualizations -->
+    <div class="chart-row">
+        <!-- Map (Left Half) -->
+        <div class="chart-col-half">
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h5 class="chart-title">Mapa de Operaciones</h5>
+                </div>
+                <div class="chart-body" style="height: 400px; padding: 0;">
+                    <!-- {{ mapa_html|safe }} -->
+                      {{ mapa_sesiones|safe }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Side Charts -->
+        <div class="chart-col-half" style="display: grid;grid-template-columns: repeat(2, 1fr);">
+            <!-- Ventas por Portafolio (Upper Right) -->
+            <div class="chart-card mb-4">
+                <div class="chart-header">
+                    <h5 class="chart-title">Ventas por Portafolio</h5>
+                </div>
+                <div class="chart-body">
+                    <img src="data:image/png;base64,{{ datos_grafico }}" alt="Gráfico de Ventas" style="width: 100%; max-width: 800px; height: auto;"/>
+                </div>
+            </div>
+
+            <!-- Distribución por Industria (Upper Right) -->
+            <div class="chart-card mb-4">
+                <div class="chart-header">
+                    <h5 class="chart-title">Distribución por Industria</h5>
+                </div>
+                <div class="chart-body">
+                    <img src="data:image/png;base64,{{ distribucion_industria }}" alt="Gráfico de Distribución por Industria" style="width: 100%; max-width: 400px; height: auto;"/>
+                </div>
+            </div>
+
+            <!-- Crecimiento YoY (Lower Right) -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h5 class="chart-title">Crecimiento Año a Año (YoY)</h5>
+                    <div class="chart-actions">
+                        <button type="button" class="chart-action" onclick="toggleChartFullscreen('crecimientoYoYChart')">
+                            <i data-feather="maximize-2"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="chart-body">
+                    <canvas id="crecimientoYoYChart" data-chart="{{ crecimiento_anual|tojson|safe }}"></canvas>
+                </div>
+                <div class="chart-footer">
+                    Tendencia anual por mes
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Update KPI data periodically (simulation)
+        setInterval(function() {
+            const kpiValues = document.querySelectorAll('.kpi-value span');
+            kpiValues.forEach(function(el) {
+                // Randomly adjust the values slightly for simulation
+                const value = parseFloat(el.textContent.replace(/,/g, ''));
+                const newValue = value + (Math.random() - 0.5) * value * 0.02; // ±1% change
+                el.textContent = newValue.toLocaleString('en-US', {maximumFractionDigits: 0});
+            });
+        }, 30000); // Every 30 seconds
+    });
+</script>
+<!-- <script src="{{ url_for('static', filename='js/maps.js') }}"></script> -->
+<script src="{{ url_for('static', filename='js/ventas_portafolio.js') }}"></script>
+    
+{% endblock %}
