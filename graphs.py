@@ -79,9 +79,11 @@ def generar_grafico_ventas(ventas):
             yaxis_title='',
             plot_bgcolor='#FFFFFF',
             paper_bgcolor='#F0F0F3',
-            font=dict(color='#560591', size=12),
-            title_font=dict(size=16, color='#560591'),
-            margin=dict(l=100, r=40, t=60, b=40)
+            font=dict(color='#560591', size=10),
+            title_font=dict(size=14, color='#560591'),
+            margin=dict(l=80, r=30, t=50, b=30),
+            height=300,
+            width=400
         )
 
         # Retornar como HTML embebido sin configuración visible
@@ -141,8 +143,8 @@ def generar_grafico_distribucion_industria(distribucion):
     # Asignar colores cíclicamente si hay más industrias que colores
     colores_asignados = [colores[i % len(colores)] for i in range(len(etiquetas))]
 
-    # Crear la figura
-    fig, ax = plt.subplots(figsize=(6, 6))
+    # Crear la figura con dimensiones más pequeñas
+    fig, ax = plt.subplots(figsize=(4, 4))
     wedges, texts, autotexts = ax.pie(
         valores, 
         labels=etiquetas, 
