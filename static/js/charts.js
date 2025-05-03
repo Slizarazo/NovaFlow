@@ -30,6 +30,10 @@ document.addEventListener('DOMContentLoaded', function() {
     if (document.getElementById('funnelProyectosChart')) {
         initFunnelProyectosChart();
     }
+
+    if (document.getElementById('strategicPerformanceChart')) {
+        initStrategicPerformanceChart();
+    }
 });
 
 // Load Chart.js from CDN
@@ -263,4 +267,60 @@ function createProgressChart(elementId, value, maxValue, color) {
         </div>
         <div class="progress-value">${value} / ${maxValue}</div>
     `;
+}
+
+function initStrategicPerformanceChart() {
+    const metrics = [
+        'Cumplimiento de Objetivos',
+        'Satisfacción del Cliente',
+        'Retención de Consultores',
+        'Eficiencia Operativa'
+    ];
+    const values = [92, 88, 85, 94];
+
+    const data = [{
+        type: 'scatterpolar',
+        r: [...values, values[0]], // Repeat first value to close the shape
+        theta: [...metrics, metrics[0]], // Repeat first label to close the shape
+        fill: 'toself',
+        fillcolor: 'rgba(86, 5, 145, 0.2)',
+        line: {
+            color: '#560591',
+            width: 2
+        },
+        name: 'Desempeño Actual'
+    }];
+
+    const layout = {
+        polar: {
+            radialaxis: {
+                visible: true,
+                range: [0, 100],
+                ticksuffix: '%',
+                showline: false,
+                tickfont: {
+                    color: '#560591'
+                }
+            },
+            angularaxis: {
+                tickfont: {
+                    color: '#560591'
+                }
+            }
+        },
+        showlegend: false,
+        paper_bgcolor: '#F0F0F3',
+        plot_bgcolor: '#F0F0F3',
+        margin: {
+            l: 50,
+            r: 50,
+            t: 30,
+            b: 30
+        }
+    };
+
+    Plotly.newPlot('strategicPerformanceChart', data, layout, {
+        displayModeBar: false,
+        responsive: true
+    });
 }

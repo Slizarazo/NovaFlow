@@ -110,33 +110,22 @@
     <div class="dashboard-section-title">
         <h4>Desempeño Estratégico</h4>
     </div>
-    <div class="strategy-grid mb-4">
-        <div class="strategy-cell strategy-cell-high">
-            <div class="strategy-cell-title">Cumplimiento de Objetivos</div>
-            <div class="strategy-cell-value">92%</div>
-            <div class="strategy-cell-description">
-                Porcentaje de objetivos alcanzados vs planeados
+    <div class="chart-card mb-4">
+        <div class="chart-header">
+            <h5 class="chart-title">Desempeño Estratégico</h5>
+            <div class="chart-actions">
+                <button type="button" class="chart-action" onclick="toggleChartFullscreen('strategicPerformanceChart')">
+                    <i data-feather="maximize-2"></i>
+                </button>
             </div>
         </div>
-        <div class="strategy-cell strategy-cell-medium">
-            <div class="strategy-cell-title">Satisfacción del Cliente</div>
-            <div class="strategy-cell-value">88%</div>
-            <div class="strategy-cell-description">
-                Basado en encuestas post-proyecto
-            </div>
+        <div class="chart-body">
+            <div id="strategicPerformanceChart" style="height: 400px;"></div>
         </div>
-        <div class="strategy-cell strategy-cell-medium">
-            <div class="strategy-cell-title">Retención de Consultores</div>
-            <div class="strategy-cell-value">85%</div>
-            <div class="strategy-cell-description">
-                Porcentaje de consultores que permanecen activos
-            </div>
-        </div>
-        <div class="strategy-cell strategy-cell-high">
-            <div class="strategy-cell-title">Eficiencia Operativa</div>
-            <div class="strategy-cell-value">94%</div>
-            <div class="strategy-cell-description">
-                Relación de costo operativo vs valor entregado
+        <div class="chart-footer">
+            <div class="d-flex justify-content-between">
+                <div>Métricas clave de desempeño</div>
+                <div>Actualizado: <strong>Hoy 10:30 AM</strong></div>
             </div>
         </div>
     </div>
