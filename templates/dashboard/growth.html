@@ -173,20 +173,14 @@
             </div>
 
             <!-- Crecimiento YoY (Lower Right) -->
-            <div class="chart-card" style="grid-column: span 2;">
+            <div class="chart-card" style="grid-column: span 2">
                 <div class="chart-header">
                     <h5 class="chart-title">Crecimiento Año a Año (YoY)</h5>
-                    <div class="chart-actions">
-                        <button
-                            type="button"
-                            class="chart-action"
-                            onclick="toggleChartFullscreen('crecimientoYoYChart')"
-                        >
-                            <i data-feather="maximize-2"></i>
-                        </button>
-                    </div>
                 </div>
-                <div class="chart-body" style="display: flex; justify-content: center;">
+                <div
+                    class="chart-body"
+                    style="display: flex; justify-content: center"
+                >
                     {{ crecimiento_yoy|safe }}
                 </div>
                 <div class="chart-footer">Tendencia anual por mes</div>
