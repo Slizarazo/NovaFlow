@@ -295,6 +295,39 @@ def generar_grafico_distribucion_industria_html(distribucion):
     except Exception as e:
         print(f"Error generando gráfico de distribución: {e}")
         return None
+def generar_grafico_funnel_proyectos(funnel_data):
+    """
+    Genera un gráfico de embudo para mostrar las etapas de los proyectos
+    """
+    import plotly.graph_objects as go
+    import plotly.io as pio
+
+    etapas = [item['etapa'] for item in funnel_data]
+    valores = [item['cantidad'] for item in funnel_data]
+
+    fig = go.Figure()
+    
+    fig.add_trace(go.Funnel(
+        y=etapas,
+        x=valores,
+        textposition="inside",
+        textinfo="value+percent initial",
+        opacity=0.65,
+        marker=dict(color=['#560591', '#D400AC', '#00A0FF', '#000000', '#808080']),
+        connector=dict(line=dict(color="royalblue", width=1))
+    ))
+
+    fig.update_layout(
+        title_font=dict(size=14, color='#560591'),
+        font=dict(color='#560591', size=10),
+        paper_bgcolor='#F0F0F3',
+        plot_bgcolor='#F0F0F3',
+        margin=dict(l=50, r=50, t=30, b=30),
+        height=400
+    )
+
+    return pio.to_html(fig, full_html=False, include_plotlyjs='cdn')
+
 def generar_grafico_desempeno_estrategico(aliados=None, cuentas=None, supervisores=None, consultores=None):
     """
     Genera un gráfico de radar para mostrar el desempeño estratégico con filtros

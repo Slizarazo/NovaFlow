@@ -200,8 +200,9 @@ def dashboard_performance():
         proyectos_por_etapa = None
         app.logger.info("Usando datos estándar para dashboard de desempeño")
 
-    # Generar gráfico de desempeño estratégico
+    # Generar gráficos
     radar_chart = generar_grafico_desempeno_estrategico()
+    funnel_chart = generar_grafico_funnel_proyectos(DatosDashboard.FUNNEL_PROYECTOS)
     
     return render_template(
         'dashboard/performance.html',

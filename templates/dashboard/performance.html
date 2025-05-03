@@ -110,7 +110,9 @@
     <div class="dashboard-section-title">
         <h4>Desempeño Estratégico</h4>
     </div>
-    <div class="chart-card mb-4">
+    <div class="chart-row">
+        <div class="chart-col-half">
+            <div class="chart-card mb-4">
         <div class="chart-header">
             <h5 class="chart-title">Desempeño Estratégico</h5>
             <div class="chart-actions">
@@ -128,9 +130,20 @@
                 <div>Actualizado: <strong>Hoy 10:30 AM</strong></div>
             </div>
         </div>
+        </div>
+        <div class="chart-col-half">
+            <div class="chart-card mb-4">
+                <div class="chart-header">
+                    <h5 class="chart-title">Funnel de Proyectos</h5>
+                </div>
+                <div class="chart-body">
+                    {{ funnel_chart | safe }}
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- Project Funnel Chart -->
+    <!-- Project Progress -->
     <div class="chart-row">
         <div class="chart-col-half">
             <div class="chart-card">
