@@ -159,13 +159,7 @@
                 <div class="chart-header">
                     <h5 class="chart-title">Ventas por Portafolio</h5>
                 </div>
-                <div class="chart-body">
-                    <img
-                        src="data:image/png;base64,{{ datos_grafico|safe }}"
-                        alt="Gráfico de Ventas"
-                        style="width: 100%; max-width: 800px; height: auto"
-                    />
-                </div>
+                <div class="chart-body">{{ datos_grafico|safe }}</div>
             </div>
 
             <!-- Distribución por Industria (Upper Right) -->
@@ -173,13 +167,7 @@
                 <div class="chart-header">
                     <h5 class="chart-title">Distribución por Industria</h5>
                 </div>
-                <div class="chart-body">
-                    <img
-                        src="data:image/png;base64,{{ distribucion_industria }}"
-                        alt="Gráfico de Distribución por Industria"
-                        style="width: 100%; max-width: 400px; height: auto"
-                    />
-                </div>
+                <div class="chart-body">{{ distribucion_industria }}</div>
             </div>
 
             <!-- Crecimiento YoY (Lower Right) -->
