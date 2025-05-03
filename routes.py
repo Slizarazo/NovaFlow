@@ -128,7 +128,7 @@ def dashboard_growth():
 
     mapa_html = generar_html_mapa_operaciones(ubicaciones)
     datos_grafico = generar_grafico_ventas(ventas_por_portafolio)
-    distribucion_industria = generar_grafico_distribucion_industria(
+    distribucion_industria = generar_grafico_distribucion_industria_html(
         distribucion_industria_data)
     mapa_sesions = generar_mapa_sesiones_por_pais(sesiones)
 

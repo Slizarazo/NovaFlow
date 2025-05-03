@@ -167,7 +167,9 @@
                 <div class="chart-header">
                     <h5 class="chart-title">Distribución por Industria</h5>
                 </div>
-                <div class="chart-body">{{ distribucion_industria }}</div>
+                <div class="chart-body">
+                    {{ distribucion_industria | safe }}
+                </div>
             </div>
 
             <!-- Crecimiento YoY (Lower Right) -->
