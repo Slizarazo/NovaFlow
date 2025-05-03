@@ -1,11 +1,7 @@
-{% extends "layout.html" %}
-
-{% block head %}
+{% extends "layout.html" %} {% block head %}
 <script src="{{ url_for('static', filename='js/charts.js') }}"></script>
 <script src="{{ url_for('static', filename='js/gantt.js') }}"></script>
-{% endblock %}
-
-{% block content %}
+{% endblock %} {% block content %}
 <div class="dashboard-container">
     <!-- Filter Section -->
     <div class="filter-section mb-4">
@@ -42,8 +38,14 @@
                     </select>
                 </div>
                 <div class="filter-col">
-                    <label class="filter-label" for="supervisor">Supervisor</label>
-                    <select class="filter-control" id="supervisor" name="supervisor">
+                    <label class="filter-label" for="supervisor"
+                        >Supervisor</label
+                    >
+                    <select
+                        class="filter-control"
+                        id="supervisor"
+                        name="supervisor"
+                    >
                         <option value="">Todos</option>
                         <option value="1">Supervisor 1</option>
                         <option value="2">Supervisor 2</option>
@@ -52,19 +54,25 @@
                 </div>
             </div>
             <div class="filter-actions">
-                <button type="button" class="btn btn-secondary filter-reset">Restablecer</button>
-                <button type="button" class="btn btn-primary filter-apply">Aplicar Filtros</button>
+                <button type="button" class="btn btn-secondary filter-reset">
+                    Restablecer
+                </button>
+                <button type="button" class="btn btn-primary filter-apply">
+                    Aplicar Filtros
+                </button>
             </div>
         </form>
     </div>
 
     <!-- KPI Cards -->
-    <div class="kpi-row" style="display:flex;justify-content:space-between;">
+    <div class="kpi-row" style="display: flex; justify-content: space-between">
         <div class="kpi-col">
             <div class="kpi-card kpi-card-primary">
                 <i data-feather="briefcase" class="kpi-icon"></i>
                 <div class="kpi-title">Proyectos Activos</div>
-                <div class="kpi-value"><span>{{ kpis.proyectos_activos }}</span></div>
+                <div class="kpi-value">
+                    <span>{{ kpis.proyectos_activos }}</span>
+                </div>
                 <div class="kpi-change kpi-change-up">
                     <i data-feather="arrow-up" class="kpi-change-icon"></i>
                     <span>2 vs trimestre anterior</span>
@@ -75,7 +83,9 @@
             <div class="kpi-card kpi-card-secondary">
                 <i data-feather="users" class="kpi-icon"></i>
                 <div class="kpi-title">Consultores Activos</div>
-                <div class="kpi-value"><span>{{ kpis.consultores_activos }}</span></div>
+                <div class="kpi-value">
+                    <span>{{ kpis.consultores_activos }}</span>
+                </div>
                 <div class="kpi-change kpi-change-up">
                     <i data-feather="arrow-up" class="kpi-change-icon"></i>
                     <span>3 vs trimestre anterior</span>
@@ -86,7 +96,9 @@
             <div class="kpi-card kpi-card-success">
                 <i data-feather="percent" class="kpi-icon"></i>
                 <div class="kpi-title">Tasa de Conversión</div>
-                <div class="kpi-value"><span>{{ kpis.tasa_conversion }}</span>%</div>
+                <div class="kpi-value">
+                    <span>{{ kpis.tasa_conversion }}</span>%
+                </div>
                 <div class="kpi-change kpi-change-up">
                     <i data-feather="arrow-up" class="kpi-change-icon"></i>
                     <span>5% vs trimestre anterior</span>
@@ -97,7 +109,9 @@
             <div class="kpi-card kpi-card-warning">
                 <i data-feather="clock" class="kpi-icon"></i>
                 <div class="kpi-title">Ciclo Promedio de Ventas</div>
-                <div class="kpi-value"><span>{{ kpis.ciclo_promedio_ventas }}</span> días</div>
+                <div class="kpi-value">
+                    <span>{{ kpis.ciclo_promedio_ventas }}</span> días
+                </div>
                 <div class="kpi-change kpi-change-down">
                     <i data-feather="arrow-down" class="kpi-change-icon"></i>
                     <span>3 días vs trimestre anterior</span>
@@ -113,154 +127,180 @@
     <div class="chart-row">
         <div class="chart-col-half">
             <div class="chart-card mb-4">
-        <div class="chart-header">
-            <h5 class="chart-title">Desempeño Estratégico</h5>
-            <div class="chart-actions">
-                <button type="button" class="chart-action" onclick="toggleChartFullscreen('strategicPerformanceChart')">
-                    <i data-feather="maximize-2"></i>
-                </button>
-            </div>
-        </div>
-        <div class="chart-body">
-            {{ radar_chart | safe }}
-        </div>
-        <div class="chart-footer">
-            <div class="d-flex justify-content-between">
-                <div>Métricas clave de desempeño</div>
-                <div>Actualizado: <strong>Hoy 10:30 AM</strong></div>
-            </div>
-        </div>
-        </div>
-        <div class="chart-col-half">
-            <div class="chart-card mb-4">
                 <div class="chart-header">
-                    <h5 class="chart-title">Funnel de Proyectos</h5>
+                    <h5 class="chart-title">Desempeño Estratégico</h5>
                 </div>
-                <div class="chart-body">
-                    {{ funnel_chart | safe }}
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Project Progress -->
-    <div class="chart-row">
-        <div class="chart-col-half">
-            <div class="chart-card">
-                <div class="chart-header">
-                    <h5 class="chart-title">Funnel de Proyectos</h5>
-                    <div class="chart-actions">
-                        <button type="button" class="chart-action" onclick="toggleChartFullscreen('funnelProyectosChart')">
-                            <i data-feather="maximize-2"></i>
-                        </button>
-                    </div>
-                </div>
-                <div class="chart-body">
-                    <canvas id="funnelProyectosChart" data-chart="{{ funnel_proyectos|tojson }}"></canvas>
-                </div>
+                <div class="chart-body">{{ radar_chart | safe }}</div>
                 <div class="chart-footer">
-                    Total de proyectos en proceso: {{ funnel_proyectos|sum(attribute='cantidad') }}
-                </div>
-            </div>
-        </div>
-        
-        <!-- Progress Section -->
-        <div class="chart-col-half">
-            <div class="progress-section">
-                <h5 class="mb-3">Avance por Objetivo</h5>
-                
-                <div class="progress-item">
-                    <div class="progress-header">
-                        <div class="progress-title">Nuevos Aliados</div>
-                        <div class="progress-value">80%</div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-bar-fill" style="width: 80%"></div>
-                    </div>
-                </div>
-                
-                <div class="progress-item">
-                    <div class="progress-header">
-                        <div class="progress-title">Proyectos Entregados</div>
-                        <div class="progress-value">65%</div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-bar-fill" style="width: 65%"></div>
-                    </div>
-                </div>
-                
-                <div class="progress-item progress-bar-success">
-                    <div class="progress-header">
-                        <div class="progress-title">Ventas</div>
-                        <div class="progress-value">92%</div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-bar-fill" style="width: 92%"></div>
-                    </div>
-                </div>
-                
-                <div class="progress-item progress-bar-warning">
-                    <div class="progress-header">
-                        <div class="progress-title">Reclutamiento</div>
-                        <div class="progress-value">75%</div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-bar-fill" style="width: 75%"></div>
-                    </div>
-                </div>
-                
-                <div class="progress-item progress-bar-danger">
-                    <div class="progress-header">
-                        <div class="progress-title">Capacitación</div>
-                        <div class="progress-value">50%</div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-bar-fill" style="width: 50%"></div>
+                    <div class="d-flex justify-content-between">
+                        <div>Métricas clave de desempeño</div>
+                        <div>Actualizado: <strong>Hoy 10:30 AM</strong></div>
                     </div>
                 </div>
             </div>
+            <div class="chart-col-half">
+                <div class="chart-card mb-4">
+                    <div class="chart-header">
+                        <h5 class="chart-title">Funnel de Proyectos</h5>
+                    </div>
+                    <div class="chart-body">{{ funnel_chart | safe }}</div>
+                </div>
+            </div>
         </div>
-    </div>
 
-    <!-- Gantt Chart Section -->
-    <div class="dashboard-section-title mt-4">
-        <h4>Actividades Planificadas</h4>
-    </div>
-    <div class="chart-card">
-        <div class="chart-header">
-            <h5 class="chart-title">Cronograma de Actividades</h5>
-            <div class="chart-actions">
-                <button type="button" class="chart-action" title="Exportar">
-                    <i data-feather="download"></i>
-                </button>
-                <button type="button" class="chart-action" title="Filtrar">
-                    <i data-feather="filter"></i>
-                </button>
+        <!-- Project Progress -->
+        <div class="chart-row">
+            <div class="chart-col-half">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h5 class="chart-title">Funnel de Proyectos</h5>
+                        <div class="chart-actions">
+                            <button
+                                type="button"
+                                class="chart-action"
+                                onclick="toggleChartFullscreen('funnelProyectosChart')"
+                            >
+                                <i data-feather="maximize-2"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="chart-body">
+                        <canvas
+                            id="funnelProyectosChart"
+                            data-chart="{{ funnel_proyectos|tojson }}"
+                        ></canvas>
+                    </div>
+                    <div class="chart-footer">
+                        Total de proyectos en proceso: {{
+                        funnel_proyectos|sum(attribute='cantidad') }}
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="chart-body" style="height: auto;">
-            <div id="actividadesGantt" class="gantt-container" data-actividades="{{ actividades_planificadas|tojson }}"></div>
-        </div>
-        <div class="chart-footer">
-            <div class="d-flex justify-content-between">
-                <div>Total de actividades: {{ actividades_planificadas|length }}</div>
-                <div>Actualizado: <strong>Hoy 10:30 AM</strong></div>
-            </div>
-        </div>
-    </div>
-</div>
-{% endblock %}
 
-{% block scripts %}
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Add tooltips to progress bars
-        const progressBars = document.querySelectorAll('.progress-bar-fill');
-        progressBars.forEach(function(el) {
-            const width = el.style.width;
-            const title = el.parentElement.previousElementSibling.querySelector('.progress-title').textContent;
-            el.title = `${title}: ${width}`;
+            <!-- Progress Section -->
+            <div class="chart-col-half">
+                <div class="progress-section">
+                    <h5 class="mb-3">Avance por Objetivo</h5>
+
+                    <div class="progress-item">
+                        <div class="progress-header">
+                            <div class="progress-title">Nuevos Aliados</div>
+                            <div class="progress-value">80%</div>
+                        </div>
+                        <div class="progress-bar">
+                            <div
+                                class="progress-bar-fill"
+                                style="width: 80%"
+                            ></div>
+                        </div>
+                    </div>
+
+                    <div class="progress-item">
+                        <div class="progress-header">
+                            <div class="progress-title">
+                                Proyectos Entregados
+                            </div>
+                            <div class="progress-value">65%</div>
+                        </div>
+                        <div class="progress-bar">
+                            <div
+                                class="progress-bar-fill"
+                                style="width: 65%"
+                            ></div>
+                        </div>
+                    </div>
+
+                    <div class="progress-item progress-bar-success">
+                        <div class="progress-header">
+                            <div class="progress-title">Ventas</div>
+                            <div class="progress-value">92%</div>
+                        </div>
+                        <div class="progress-bar">
+                            <div
+                                class="progress-bar-fill"
+                                style="width: 92%"
+                            ></div>
+                        </div>
+                    </div>
+
+                    <div class="progress-item progress-bar-warning">
+                        <div class="progress-header">
+                            <div class="progress-title">Reclutamiento</div>
+                            <div class="progress-value">75%</div>
+                        </div>
+                        <div class="progress-bar">
+                            <div
+                                class="progress-bar-fill"
+                                style="width: 75%"
+                            ></div>
+                        </div>
+                    </div>
+
+                    <div class="progress-item progress-bar-danger">
+                        <div class="progress-header">
+                            <div class="progress-title">Capacitación</div>
+                            <div class="progress-value">50%</div>
+                        </div>
+                        <div class="progress-bar">
+                            <div
+                                class="progress-bar-fill"
+                                style="width: 50%"
+                            ></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gantt Chart Section -->
+        <div class="dashboard-section-title mt-4">
+            <h4>Actividades Planificadas</h4>
+        </div>
+        <div class="chart-card">
+            <div class="chart-header">
+                <h5 class="chart-title">Cronograma de Actividades</h5>
+                <div class="chart-actions">
+                    <button type="button" class="chart-action" title="Exportar">
+                        <i data-feather="download"></i>
+                    </button>
+                    <button type="button" class="chart-action" title="Filtrar">
+                        <i data-feather="filter"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="chart-body" style="height: auto">
+                <div
+                    id="actividadesGantt"
+                    class="gantt-container"
+                    data-actividades="{{ actividades_planificadas|tojson }}"
+                ></div>
+            </div>
+            <div class="chart-footer">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        Total de actividades: {{ actividades_planificadas|length
+                        }}
+                    </div>
+                    <div>Actualizado: <strong>Hoy 10:30 AM</strong></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endblock %} {% block scripts %}
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Add tooltips to progress bars
+            const progressBars =
+                document.querySelectorAll(".progress-bar-fill");
+            progressBars.forEach(function (el) {
+                const width = el.style.width;
+                const title =
+                    el.parentElement.previousElementSibling.querySelector(
+                        ".progress-title",
+                    ).textContent;
+                el.title = `${title}: ${width}`;
+            });
         });
-    });
-</script>
-{% endblock %}
+    </script>
+    {% endblock %}
+</div>

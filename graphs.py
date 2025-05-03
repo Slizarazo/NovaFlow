@@ -295,6 +295,7 @@ def generar_grafico_distribucion_industria_html(distribucion):
     except Exception as e:
         print(f"Error generando gráfico de distribución: {e}")
         return None
+
 def generar_grafico_funnel_proyectos(funnel_data):
     """
     Genera un gráfico de embudo para mostrar las etapas de los proyectos
