@@ -53,7 +53,7 @@ def generar_grafico_ventas(ventas):
     try:
         import plotly.graph_objects as go
         import plotly.io as pio
-        
+
         nombres = [v['nombre'] for v in ventas]
         valores = [v['ventas'] for v in ventas]
 
@@ -99,20 +99,20 @@ def generar_grafico_ventas_fallback(ventas):
     """
     import matplotlib.pyplot as plt
     import io
-    
+
     nombres = [v['nombre'] for v in ventas]
     valores = [v['ventas'] for v in ventas]
-    
+
     fig, ax = plt.subplots(figsize=(10, 6))
     ax.barh(nombres, valores, color='#560591')
-    
+
     ax.set_title('Ventas por Portafolio', color='#560591', pad=20)
     ax.set_xlabel('Ventas ($)', color='#560591')
-    
+
     # Estética
     ax.set_facecolor('#FFFFFF')
     fig.patch.set_facecolor('#F0F0F3')
-    
+
     # Guardar en memoria
     buffer = io.BytesIO()
     plt.savefig(buffer, format='png', bbox_inches='tight', dpi=300)
@@ -120,7 +120,7 @@ def generar_grafico_ventas_fallback(ventas):
     imagen_base64 = base64.b64encode(buffer.read()).decode('utf-8')
     buffer.close()
     plt.close()
-    
+
     return imagen_base64
 
 def generar_grafico_distribucion_industria(distribucion):
@@ -186,11 +186,11 @@ def generar_mapa_sesiones_por_pais(sesiones):
     """
     # Crear DataFrame
     df = pd.DataFrame(sesiones)
-    
+
     # Definir rangos para la leyenda
     max_sesiones = df['sesiones'].max()
     bins = list(range(0, int(max_sesiones) + 50, 50))
-    
+
     # Cargar GeoJSON de países
     url = 'https://raw.githubusercontent.com/python-visualization/folium/master/examples/data/world-countries.json'
     geo_json_data = requests.get(url).json()
@@ -240,7 +240,7 @@ def generar_mapa_sesiones_por_pais(sesiones):
         'fillOpacity': 0.1,
         'weight': 0.1
     }
-    
+
     highlight_function = lambda x: {
         'fillColor': '#560591',
         'color': '#000000',
@@ -289,9 +289,50 @@ def generar_mapa_sesiones_por_pais(sesiones):
 
     return m.get_root().render()
 
+def generar_grafico_distribucion_industria_html(distribucion):
+    """
+    Genera un gráfico de dona interactivo de la distribución por industria como HTML embebido.
 
+    Args:
+        distribucion (list): Lista de dicts con 'industria' y 'porcentaje'.
 
+    Returns:
+        str: HTML embebido del gráfico listo para insertar en una plantilla.
+    """
+    try:
+        import plotly.graph_objects as go
+        import plotly.io as pio
 
+        etiquetas = [item['industria'] for item in distribucion]
+        valores = [item['porcentaje'] for item in distribucion]
 
+        # Paleta Deepnova
+        colores = ['#560591', '#D400AC', '#00A0FF', '#000000', '#808080']
+        colores_asignados = [colores[i % len(colores)] for i in range(len(etiquetas))]
 
+        fig = go.Figure(data=[go.Pie(
+            labels=etiquetas,
+            values=valores,
+            hole=0.5,
+            marker=dict(colors=colores_asignados),
+            hoverinfo='label+percent',
+            textinfo='percent+label',
+            textfont=dict(size=10, color='white'),
+        )])
 
+        fig.update_layout(
+            title='Distribución por Industria',
+            title_font=dict(size=14, color='#560591'),
+            font=dict(color='#560591', size=10),
+            paper_bgcolor='#F0F0F3',
+            plot_bgcolor='#FFFFFF',
+            margin=dict(l=30, r=30, t=50, b=30),
+            height=300,
+            width=400
+        )
+
+        # Retornar como HTML embebido sin configuración visible
+        return pio.to_html(fig, full_html=False, include_plotlyjs='cdn', config={'displayModeBar': True, 'showLink': False})
+    except Exception as e:
+        print(f"Error generando gráfico de distribución: {e}")
+        return None
