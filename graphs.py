@@ -324,14 +324,15 @@ def generar_grafico_funnel_proyectos(funnel_data):
     ))
 
     fig.update_layout(
-        title="Embudo de Proyectos por Etapa",
-        title_font=dict(size=16, color='#560591'),
+        title=None,  # Removemos el título ya que está en el card
         font=dict(color='#560591', size=12),
         paper_bgcolor='#F0F0F3',
         plot_bgcolor='#F0F0F3',
-        margin=dict(l=50, r=50, t=50, b=30),
-        height=500,
-        showlegend=False
+        margin=dict(l=20, r=20, t=20, b=20),
+        height=400,
+        width=None,  # Auto-ajuste al contenedor
+        showlegend=False,
+        autosize=True
     )
 
     return pio.to_html(fig, full_html=False, include_plotlyjs='cdn')

@@ -143,6 +143,11 @@
             <div class="chart-card mb-4">
                 <div class="chart-header">
                     <h5 class="chart-title">Funnel de Proyectos</h5>
+                    <div class="chart-actions">
+                        <button type="button" class="chart-action" onclick="toggleChartFullscreen(this.closest('.chart-card'))">
+                            <i data-feather="maximize-2"></i>
+                        </button>
+                    </div>
                 </div>
                 <div class="chart-body">{{ funnel_chart | safe }}</div>
                 <div class="chart-footer">
@@ -158,30 +163,6 @@
         <!-- Project Progress -->
         <div class="chart-row">
             <div class="chart-col-half">
-                <div class="chart-card">
-                    <div class="chart-header">
-                        <h5 class="chart-title">Funnel de Proyectos</h5>
-                        <div class="chart-actions">
-                            <button
-                                type="button"
-                                class="chart-action"
-                                onclick="toggleChartFullscreen('funnelProyectosChart')"
-                            >
-                                <i data-feather="maximize-2"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="chart-body">
-                        <canvas
-                            id="funnelProyectosChart"
-                            data-chart="{{ funnel_proyectos|tojson }}"
-                        ></canvas>
-                    </div>
-                    <div class="chart-footer">
-                        Total de proyectos en proceso: {{
-                        funnel_proyectos|sum(attribute='cantidad') }}
-                    </div>
-                </div>
             </div>
 
             <!-- Progress Section -->
