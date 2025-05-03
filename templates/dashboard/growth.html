@@ -135,7 +135,7 @@
                     </div>
                 </div>
                 <div class="chart-body">
-                    <canvas id="ventasChart" data-chart='{{ datos_ventas|tojson|safe }}'></canvas>
+                    <div id="ventasChart" style="width: 100%; height: 400px;"></div>
                 </div>
             </div>
 
@@ -144,16 +144,13 @@
                 <div class="chart-header">
                     <h5 class="chart-title">Distribución por Industria</h5>
                     <div class="chart-actions">
-                        <button type="button" class="chart-action" onclick="toggleChartType('distribucionChart')">
-                            <i data-feather="refresh-cw"></i>
-                        </button>
                         <button type="button" class="chart-action" onclick="toggleChartFullscreen('distribucionChart')">
                             <i data-feather="maximize-2"></i>
                         </button>
                     </div>
                 </div>
                 <div class="chart-body">
-                    <canvas id="distribucionChart" data-chart='{{ datos_distribucion|tojson }}'></canvas>
+                    <div id="distribucionChart" style="width: 100%; height: 400px;"></div>
                 </div>
             </div>
 

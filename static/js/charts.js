@@ -1,29 +1,25 @@
 
-// Configuración global de Chart.js
-Chart.defaults.font.family = 'Poppins, sans-serif';
-Chart.defaults.color = '#560591';
-
-// Almacenar las instancias de los gráficos
-let charts = {};
-
 // Inicializar los gráficos cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', function() {
-    initCharts();
+    loadPlotly(() => {
+        initCharts();
+    });
 });
+
+// Cargar Plotly de forma dinámica
+function loadPlotly(callback) {
+    const script = document.createElement('script');
+    script.src = 'https://cdn.plot.ly/plotly-latest.min.js';
+    script.onload = callback;
+    document.head.appendChild(script);
+}
 
 function initCharts() {
     // Inicializar gráfico de ventas
-    const ventasCtx = document.getElementById('ventasChart');
-    if (ventasCtx) {
-        let data;
-        try {
-            data = JSON.parse(ventasCtx.getAttribute('data-chart'));
-            console.log('Datos de ventas:', data);
-        } catch (e) {
-            console.error('Error al parsear datos de ventas:', e);
-            return;
-        }
-        charts.ventas = new Chart(ventasCtx, {
+    const ventasContainer = document.getElementById('ventasChart');
+    if (ventasContainer) {
+        const data = JSON.parse(ventasContainer.getAttribute('data-chart'));
+        Plotly.newPlot('ventasChart', data.data, data.layout, {responsive: true});
             type: 'bar',
             data: data,
             options: {

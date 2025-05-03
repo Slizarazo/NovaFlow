@@ -48,31 +48,45 @@ def generar_html_mapa_operaciones(ubicaciones, centro_mapa=[23.6345, -102.5528],
 
 def generar_datos_graficos(ventas, distribucion):
     """
-    Genera los datos para los gráficos en formato JSON.
+    Genera los datos para los gráficos usando Plotly.
     """
-    datos_ventas = {
-        'labels': [str(v['nombre']) for v in ventas],
-        'datasets': [{
-            'label': 'Ventas',
-            'data': [float(v['ventas']) for v in ventas],
-            'backgroundColor': ['rgba(86,5,145,0.7)', 'rgba(212,0,172,0.7)', 'rgba(0,160,255,0.7)', 'rgba(0,0,0,0.7)', 'rgba(128,128,128,0.7)'],
-            'borderColor': 'rgba(255,255,255,1)',
-            'borderWidth': 1
-        }]
-    }
+    import plotly.express as px
+    import plotly.graph_objects as go
+    import json
 
-    datos_distribucion = {
-        'labels': [str(d['industria']) for d in distribucion],
-        'datasets': [{
-            'label': 'Distribución',
-            'data': [float(d['porcentaje']) for d in distribucion],
-            'backgroundColor': ['rgba(86,5,145,0.7)', 'rgba(212,0,172,0.7)', 'rgba(0,160,255,0.7)', 'rgba(0,0,0,0.7)', 'rgba(128,128,128,0.7)'],
-            'borderColor': 'rgba(255,255,255,1)',
-            'borderWidth': 1
-        }]
-    }
+    # Gráfico de ventas
+    fig_ventas = go.Figure(data=[
+        go.Bar(
+            x=[str(v['nombre']) for v in ventas],
+            y=[float(v['ventas']) for v in ventas],
+            marker_color=['rgba(86,5,145,0.7)', 'rgba(212,0,172,0.7)', 'rgba(0,160,255,0.7)', 
+                         'rgba(0,0,0,0.7)', 'rgba(128,128,128,0.7)']
+        )
+    ])
+    fig_ventas.update_layout(
+        title='Ventas por Portafolio',
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)',
+        font=dict(color='#560591')
+    )
 
-    return datos_ventas, datos_distribucion
+    # Gráfico de distribución
+    fig_distribucion = go.Figure(data=[
+        go.Pie(
+            labels=[str(d['industria']) for d in distribucion],
+            values=[float(d['porcentaje']) for d in distribucion],
+            marker=dict(colors=['rgba(86,5,145,0.7)', 'rgba(212,0,172,0.7)', 
+                              'rgba(0,160,255,0.7)', 'rgba(0,0,0,0.7)', 'rgba(128,128,128,0.7)'])
+        )
+    ])
+    fig_distribucion.update_layout(
+        title='Distribución por Industria',
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)',
+        font=dict(color='#560591')
+    )
+
+    return json.dumps(fig_ventas.to_dict()), json.dumps(fig_distribucion.to_dict())
 
 def generar_mapa_sesiones_por_pais(sesiones):
     """
