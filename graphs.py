@@ -298,7 +298,8 @@ def generar_grafico_distribucion_industria_html(distribucion):
 
 def generar_grafico_funnel_proyectos(funnel_data):
     """
-    Genera un gráfico de embudo para mostrar las etapas de los proyectos
+    Genera un gráfico de embudo interactivo con la estética Deepnova
+    para visualizar el avance de proyectos en sus diferentes etapas.
     """
     import plotly.graph_objects as go
     import plotly.io as pio
@@ -306,24 +307,29 @@ def generar_grafico_funnel_proyectos(funnel_data):
     etapas = [item['etapa'] for item in funnel_data]
     valores = [item['cantidad'] for item in funnel_data]
 
+    # Paleta Deepnova extendida
+    colores_base = ['#560591', '#D400AC', '#00A0FF', '#000000', '#808080']
+    colores_asignados = [colores_base[i % len(colores_base)] for i in range(len(etapas))]
+
     fig = go.Figure()
-    
+
     fig.add_trace(go.Funnel(
-        y=etapas,
-        x=valores,
+        y=etapas[::-1],  # De arriba hacia abajo
+        x=valores[::-1],  # Correspondencia inversa
         textposition="inside",
         textinfo="value+percent initial",
-        opacity=0.65,
-        marker=dict(color=['#560591', '#D400AC', '#00A0FF', '#000000', '#808080']),
-        connector=dict(line=dict(color="royalblue", width=1))
+        opacity=0.85,
+        marker=dict(color=colores_asignados),
+        connector=dict(line=dict(color="#560591", width=1))
     ))
 
     fig.update_layout(
-        title_font=dict(size=14, color='#560591'),
-        font=dict(color='#560591', size=10),
+        title="Embudo de Proyectos por Etapa",
+        title_font=dict(size=16, color='#560591'),
+        font=dict(color='#560591', size=12),
         paper_bgcolor='#F0F0F3',
         plot_bgcolor='#F0F0F3',
-        margin=dict(l=50, r=50, t=30, b=30),
+        margin=dict(l=50, r=50, t=50, b=30),
         height=500,
         showlegend=False
     )
