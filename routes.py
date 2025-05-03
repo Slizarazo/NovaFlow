@@ -317,6 +317,38 @@ def aliados_portfolio():
 
 @app.route('/aliados/asignaciones')
 @login_required
+def aliados_asignaciones():
+    consultores = Consultor.CONSULTORES
+    proyectos = {proyecto.id: proyecto for proyecto in Proyecto.PROYECTOS}
+
+    # Datos estándar o extendidos según disponibilidad
+    if USAR_DATOS_EXTENDIDOS:
+        # Usar datos extendidos para visualizaciones más completas
+        consultores_extendidos = DatosDemoCompleto.CONSULTORES_EXTENDIDOS
+        proyectos_extendidos = DatosDemoCompleto.PROYECTOS_EXTENDIDOS
+        desarrollo_profesional = DatosDemoCompleto.DESARROLLO_PROFESIONAL
+        app.logger.info(
+            "Usando datos extendidos para asignaciones de consultores")
+    else:
+        # Usar datos estándar
+        consultores_extendidos = None
+        proyectos_extendidos = None
+        desarrollo_profesional = None
+        app.logger.info(
+            "Usando datos estándar para asignaciones de consultores")
+
+    return render_template(
+        'aliados/asignaciones.html',
+        title='Asignaciones de Consultores',
+        consultores=consultores,
+        proyectos=proyectos,
+        config=app.config,
+        role=current_user.role,
+        # Nuevos datos extendidos
+        consultores_extendidos=consultores_extendidos,
+        proyectos_extendidos=proyectos_extendidos,
+        desarrollo_profesional=desarrollo_profesional,
+        usar_datos_extendidos=USAR_DATOS_EXTENDIDOS)
 
 @app.route('/api/filter_dashboard', methods=['POST'])
 @login_required
