@@ -132,6 +132,9 @@ def dashboard_growth():
         distribucion_industria_data)
     mapa_sesions = generar_mapa_sesiones_por_pais(sesiones)
 
+    # Generar gráfico de crecimiento YoY
+    crecimiento_yoy = generar_grafico_crecimiento_yoy(DatosDashboard.CRECIMIENTO_ANUAL)
+    
     return render_template(
         'dashboard/growth.html',
         title='Dashboard de Crecimiento',
@@ -141,6 +144,7 @@ def dashboard_growth():
         mapa_html=mapa_html,
         datos_grafico=datos_grafico,
         distribucion_industria=distribucion_industria,
+        crecimiento_yoy=crecimiento_yoy,
         crecimiento_anual=DatosDashboard.CRECIMIENTO_ANUAL,
         config=app.config,
         role=current_user.role,

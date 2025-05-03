@@ -295,6 +295,81 @@ def generar_grafico_distribucion_industria_html(distribucion):
     except Exception as e:
         print(f"Error generando gráfico de distribución: {e}")
         return None
+def generar_grafico_crecimiento_yoy(data):
+    """
+    Genera un gráfico de líneas para mostrar el crecimiento año tras año.
+    
+    Args:
+        data (list): Lista de diccionarios con datos de crecimiento YoY.
+        
+    Returns:
+        str: HTML del gráfico generado.
+    """
+    try:
+        import plotly.graph_objects as go
+        import plotly.io as pio
+
+        # Extraer datos
+        meses = [item['mes'] for item in data]
+        actual = [item['actual'] for item in data]
+        anterior = [item['anterior'] for item in data]
+
+        # Crear figura
+        fig = go.Figure()
+
+        # Agregar líneas para año actual y anterior
+        fig.add_trace(
+            go.Scatter(
+                x=meses,
+                y=actual,
+                name='Año Actual',
+                line=dict(color='#560591', width=3),
+                hovertemplate='%{y:$,.0f}<extra>Año Actual</extra>'
+            )
+        )
+        
+        fig.add_trace(
+            go.Scatter(
+                x=meses,
+                y=anterior,
+                name='Año Anterior',
+                line=dict(color='#00A0FF', width=3, dash='dash'),
+                hovertemplate='%{y:$,.0f}<extra>Año Anterior</extra>'
+            )
+        )
+
+        # Actualizar layout
+        fig.update_layout(
+            title='Crecimiento Año a Año',
+            title_font=dict(size=14, color='#560591'),
+            font=dict(color='#560591', size=10),
+            paper_bgcolor='#F0F0F3',
+            plot_bgcolor='#FFFFFF',
+            margin=dict(l=30, r=30, t=50, b=30),
+            height=300,
+            width=400,
+            showlegend=True,
+            legend=dict(
+                orientation="h",
+                yanchor="bottom",
+                y=1.02,
+                xanchor="right",
+                x=1
+            ),
+            yaxis=dict(
+                gridcolor='#E1E1E1',
+                tickformat='$,.0f'
+            ),
+            xaxis=dict(
+                gridcolor='#E1E1E1'
+            )
+        )
+
+        return pio.to_html(fig, full_html=False, include_plotlyjs='cdn', config={'displayModeBar': True, 'showLink': False})
+    except Exception as e:
+        print(f"Error generando gráfico de crecimiento YoY: {e}")
+        return None
+
 def generar_mapa_sesiones_por_pais(sesiones):
     """
     Genera un mapa de sesiones por país usando Folium.

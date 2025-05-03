@@ -187,10 +187,7 @@
                     </div>
                 </div>
                 <div class="chart-body">
-                    <canvas
-                        id="crecimientoYoYChart"
-                        data-chart="{{ crecimiento_anual|tojson|safe }}"
-                    ></canvas>
+                    {{ crecimiento_yoy|safe }}
                 </div>
                 <div class="chart-footer">Tendencia anual por mes</div>
             </div>
