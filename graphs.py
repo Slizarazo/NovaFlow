@@ -324,7 +324,8 @@ def generar_grafico_funnel_proyectos(funnel_data):
         paper_bgcolor='#F0F0F3',
         plot_bgcolor='#F0F0F3',
         margin=dict(l=50, r=50, t=30, b=30),
-        height=400
+        height=500,
+        showlegend=False
     )
 
     return pio.to_html(fig, full_html=False, include_plotlyjs='cdn')

@@ -138,15 +138,22 @@
                     </div>
                 </div>
             </div>
-            <div class="chart-col-half">
-                <div class="chart-card mb-4">
-                    <div class="chart-header">
-                        <h5 class="chart-title">Funnel de Proyectos</h5>
+        </div>
+        <div class="chart-col-half">
+            <div class="chart-card mb-4">
+                <div class="chart-header">
+                    <h5 class="chart-title">Funnel de Proyectos</h5>
+                </div>
+                <div class="chart-body">{{ funnel_chart | safe }}</div>
+                <div class="chart-footer">
+                    <div class="d-flex justify-content-between">
+                        <div>Proyectos en proceso</div>
+                        <div>Actualizado: <strong>Hoy 10:30 AM</strong></div>
                     </div>
-                    <div class="chart-body">{{ funnel_chart | safe }}</div>
                 </div>
             </div>
         </div>
+    </div>
 
         <!-- Project Progress -->
         <div class="chart-row">
