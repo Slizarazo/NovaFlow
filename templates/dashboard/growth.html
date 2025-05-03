@@ -1,6 +1,7 @@
 {% extends "layout.html" %}
 
 {% block head %}
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 <script src="{{ url_for('static', filename='js/charts.js') }}"></script>
 <script src="{{ url_for('static', filename='js/maps.js') }}"></script>
 {% endblock %}
@@ -135,7 +136,7 @@
                     </div>
                 </div>
                 <div class="chart-body">
-                    <div id="ventasChart" style="width: 100%; height: 400px;"></div>
+                    <div id="ventasChart" data-chart='{{ datos_ventas|tojson|safe }}' style="width: 100%; height: 400px;"></div>
                 </div>
             </div>
 
@@ -150,7 +151,7 @@
                     </div>
                 </div>
                 <div class="chart-body">
-                    <div id="distribucionChart" style="width: 100%; height: 400px;"></div>
+                    <div id="distribucionChart" data-chart='{{ datos_distribucion|tojson|safe }}' style="width: 100%; height: 400px;"></div>
                 </div>
             </div>
 

@@ -18,11 +18,16 @@ function initCharts() {
     // Inicializar gráfico de ventas
     const ventasContainer = document.getElementById('ventasChart');
     if (ventasContainer) {
-        const data = JSON.parse(ventasContainer.getAttribute('data-chart'));
+        const data = JSON.parse(ventasContainer.dataset.chart);
         Plotly.newPlot('ventasChart', data.data, data.layout, {responsive: true});
-            type: 'bar',
-            data: data,
-            options: {
+    }
+
+    // Inicializar gráfico de distribución
+    const distribucionContainer = document.getElementById('distribucionChart');
+    if (distribucionContainer) {
+        const data = JSON.parse(distribucionContainer.dataset.chart);
+        Plotly.newPlot('distribucionChart', data.data, data.layout, {responsive: true});
+    }
                 responsive: true,
                 maintainAspectRatio: false,
                 animation: {
