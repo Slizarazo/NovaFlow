@@ -345,9 +345,9 @@ def generar_grafico_crecimiento_yoy(data):
             font=dict(color='#560591', size=10),
             paper_bgcolor='#F0F0F3',
             plot_bgcolor='#FFFFFF',
-            margin=dict(l=30, r=30, t=50, b=30),
+            margin=dict(l=50, r=50, t=50, b=30),
             height=300,
-            width=800,
+            width=1000,
             showlegend=True,
             legend=dict(
                 orientation="h",
