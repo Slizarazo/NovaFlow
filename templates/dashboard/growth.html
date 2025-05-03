@@ -136,7 +136,7 @@
                     </div>
                 </div>
                 <div class="chart-body">
-                    <div id="ventasChart" data-chart='{{ datos_ventas|tojson|safe }}' style="width: 100%; height: 400px;"></div>
+                    <canvas id="ventasPortafolioChart" data-chart='{{ datos_ventas|tojson|safe }}'></canvas>
                 </div>
             </div>
 
@@ -151,7 +151,7 @@
                     </div>
                 </div>
                 <div class="chart-body">
-                    <div id="distribucionChart" data-chart='{{ datos_distribucion|tojson|safe }}' style="width: 100%; height: 400px;"></div>
+                    <canvas id="distribucionIndustriaChart" data-chart='{{ datos_distribucion|tojson|safe }}'></canvas>
                 </div>
             </div>
 

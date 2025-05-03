@@ -1,54 +1,57 @@
-
 // Inicializar los gráficos cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', function() {
-    loadPlotly(() => {
-        initCharts();
-    });
+    // Initialize charts if their containers exist
+    if (document.getElementById('ventasPortafolioChart')) {
+        initVentasPortafolioChart();
+    }
+
+    if (document.getElementById('distribucionIndustriaChart')) {
+        initDistribucionIndustriaChart();
+    }
+
+    if (document.getElementById('crecimientoYoYChart')) {
+        initCrecimientoYoYChart();
+    }
+
+    if (document.getElementById('funnelProyectosChart')) {
+        initFunnelProyectosChart();
+    }
 });
 
-// Cargar Plotly de forma dinámica
-function loadPlotly(callback) {
+// Load Chart.js from CDN
+function loadChartJS(callback) {
+    if (window.Chart) {
+        callback();
+        return;
+    }
+
     const script = document.createElement('script');
-    script.src = 'https://cdn.plot.ly/plotly-latest.min.js';
+    script.src = 'https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js';
     script.onload = callback;
     document.head.appendChild(script);
 }
 
-function initCharts() {
-    // Inicializar gráfico de ventas
-    const ventasContainer = document.getElementById('ventasChart');
-    if (ventasContainer) {
-        const data = JSON.parse(ventasContainer.dataset.chart);
-        Plotly.newPlot('ventasChart', data.data, data.layout, {responsive: true});
-    }
+// Initialize Ventas por Portafolio chart
+function initVentasPortafolioChart() {
+    loadChartJS(function() {
+        const ctx = document.getElementById('ventasPortafolioChart').getContext('2d');
+        const chartContainer = document.getElementById('ventasPortafolioChart');
+        const chartData = JSON.parse(chartContainer.getAttribute('data-chart'));
 
-    // Inicializar gráfico de distribución
-    const distribucionContainer = document.getElementById('distribucionChart');
-    if (distribucionContainer) {
-        const data = JSON.parse(distribucionContainer.dataset.chart);
-        Plotly.newPlot('distribucionChart', data.data, data.layout, {responsive: true});
-    }
+        new Chart(ctx, {
+            type: 'bar',
+            data: chartData,
+            options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                animation: {
-                    duration: 1000,
-                    easing: 'easeInOutQuart'
-                },
                 plugins: {
                     legend: {
                         display: false
                     },
                     tooltip: {
-                        backgroundColor: 'rgba(86,5,145,0.8)',
-                        titleFont: {
-                            size: 14
-                        },
-                        bodyFont: {
-                            size: 13
-                        },
                         callbacks: {
                             label: function(context) {
-                                return `Ventas: $${context.raw.toLocaleString()}`;
+                                return `$${context.raw.toLocaleString()}`;
                             }
                         }
                     }
@@ -65,209 +68,19 @@ function initCharts() {
                 }
             }
         });
-    }
-
-    // Inicializar gráfico de distribución
-    const distribucionCtx = document.getElementById('distribucionChart');
-    if (distribucionCtx) {
-        const data = JSON.parse(distribucionCtx.getAttribute('data-chart'));
-        charts.distribucion = new Chart(distribucionCtx, {
-            type: 'doughnut',
-            data: data,
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                animation: {
-                    duration: 1000,
-                    easing: 'easeInOutQuart'
-                },
-                plugins: {
-                    legend: {
-                        position: 'right'
-                    },
-                    tooltip: {
-                        backgroundColor: 'rgba(86,5,145,0.8)',
-                        titleFont: {
-                            size: 14
-                        },
-                        bodyFont: {
-                            size: 13
-                        },
-                        callbacks: {
-                            label: function(context) {
-                                return `${context.label}: ${context.raw}%`;
-                            }
-                        }
-                    }
-                }
-            }
-        });
-    }
-}
-
-// Alternar entre tipos de gráfico
-function toggleChartType(chartId) {
-    const chart = charts[chartId.replace('Chart', '')];
-    if (!chart) return;
-
-    const types = {
-        'bar': 'line',
-        'line': 'bar',
-        'doughnut': 'pie',
-        'pie': 'doughnut'
-    };
-
-    const currentType = chart.config.type;
-    const newType = types[currentType] || currentType;
-
-    chart.config.type = newType;
-    chart.update('none');
-}
-
-// Alternar pantalla completa
-function toggleChartFullscreen(chartId) {
-    const chartContainer = document.getElementById(chartId).parentElement;
-    
-    if (!document.fullscreenElement) {
-        chartContainer.requestFullscreen().catch(err => {
-            console.log(`Error al intentar modo pantalla completa: ${err.message}`);
-        });
-    } else {
-        document.exitFullscreen();
-    }
-}
-
-// charts.js - Handles all chart visualizations using Chart.js
-
-// Wait for DOM to be fully loaded
-document.addEventListener('DOMContentLoaded', function() {
-    // Initialize charts if their containers exist
-    if (document.getElementById('ventasPortafolioChart')) {
-        initVentasPortafolioChart();
-    }
-    
-    if (document.getElementById('distribucionIndustriaChart')) {
-        initDistribucionIndustriaChart();
-    }
-    
-    if (document.getElementById('crecimientoYoYChart')) {
-        initCrecimientoYoYChart();
-    }
-    
-    if (document.getElementById('funnelProyectosChart')) {
-        initFunnelProyectosChart();
-    }
-});
-
-// Load Chart.js from CDN
-function loadChartJS(callback) {
-    if (window.Chart) {
-        callback();
-        return;
-    }
-    
-    const script = document.createElement('script');
-    script.src = 'https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js';
-    script.onload = callback;
-    document.head.appendChild(script);
-}
-
-// Initialize Ventas por Portafolio chart (Bar chart)
-function initVentasPortafolioChart() {
-    loadChartJS(function() {
-        const ctx = document.getElementById('ventasPortafolioChart').getContext('2d');
-        
-        // Get data from data attribute
-        const chartContainer = document.getElementById('ventasPortafolioChart');
-        const chartData = JSON.parse(chartContainer.getAttribute('data-chart'));
-        
-        const labels = chartData.map(item => item.nombre);
-        const data = chartData.map(item => item.ventas);
-        
-        const chart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'Ventas por Portafolio',
-                    data: data,
-                    backgroundColor: 'rgba(52, 152, 219, 0.7)',
-                    borderColor: 'rgba(52, 152, 219, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                let label = context.dataset.label || '';
-                                if (label) {
-                                    label += ': ';
-                                }
-                                if (context.parsed.y !== null) {
-                                    label += new Intl.NumberFormat('es-MX', {
-                                        style: 'currency',
-                                        currency: 'MXN'
-                                    }).format(context.parsed.y);
-                                }
-                                return label;
-                            }
-                        }
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            callback: function(value) {
-                                return '$' + value.toLocaleString('es-MX');
-                            }
-                        }
-                    }
-                }
-            }
-        });
     });
 }
 
-// Initialize Distribución por Industria chart (Pie chart)
+// Initialize Distribución por Industria chart
 function initDistribucionIndustriaChart() {
     loadChartJS(function() {
         const ctx = document.getElementById('distribucionIndustriaChart').getContext('2d');
-        
-        // Get data from data attribute
         const chartContainer = document.getElementById('distribucionIndustriaChart');
         const chartData = JSON.parse(chartContainer.getAttribute('data-chart'));
-        
-        const labels = chartData.map(item => item.industria);
-        const data = chartData.map(item => item.porcentaje);
-        
-        // Custom colors for industries
-        const backgroundColors = [
-            'rgba(52, 152, 219, 0.7)',  // Blue
-            'rgba(155, 89, 182, 0.7)',  // Purple
-            'rgba(46, 204, 113, 0.7)',  // Green
-            'rgba(230, 126, 34, 0.7)',  // Orange
-            'rgba(149, 165, 166, 0.7)'  // Gray
-        ];
-        
-        const chart = new Chart(ctx, {
-            type: 'pie',
-            data: {
-                labels: labels,
-                datasets: [{
-                    data: data,
-                    backgroundColor: backgroundColors,
-                    borderColor: backgroundColors.map(color => color.replace('0.7', '1')),
-                    borderWidth: 1
-                }]
-            },
+
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: chartData,
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
@@ -278,14 +91,7 @@ function initDistribucionIndustriaChart() {
                     tooltip: {
                         callbacks: {
                             label: function(context) {
-                                let label = context.label || '';
-                                if (label) {
-                                    label += ': ';
-                                }
-                                if (context.parsed !== null) {
-                                    label += context.parsed + '%';
-                                }
-                                return label;
+                                return `${context.label}: ${context.raw}%`;
                             }
                         }
                     }
