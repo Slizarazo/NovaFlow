@@ -295,3 +295,52 @@ def generar_grafico_distribucion_industria_html(distribucion):
     except Exception as e:
         print(f"Error generando gráfico de distribución: {e}")
         return None
+def generar_mapa_sesiones_por_pais(sesiones):
+    """
+    Genera un mapa de sesiones por país usando Folium.
+    
+    Args:
+        sesiones (list): Lista de diccionarios con 'pais' y 'sesiones'.
+        
+    Returns:
+        str: HTML del mapa generado.
+    """
+    import folium
+    from branca.colormap import LinearColormap
+
+    # Crear mapa base
+    m = folium.Map(location=[20, 0], zoom_start=2)
+
+    # Obtener valores para la escala de color
+    valores = [s['sesiones'] for s in sesiones]
+    min_valor = min(valores)
+    max_valor = max(valores)
+
+    # Crear escala de color personalizada
+    colormap = LinearColormap(
+        colors=['#F0F0F3', '#560591'],
+        vmin=min_valor,
+        vmax=max_valor
+    )
+    
+    # Agregar el mapa de coropletas
+    folium.GeoJson(
+        'https://raw.githubusercontent.com/python-visualization/folium/master/examples/data/world-countries.json',
+        style_function=lambda feature: {
+            'fillColor': colormap(next((s['sesiones'] for s in sesiones if s['pais'] == feature['id']), 0)),
+            'color': 'white',
+            'weight': 1,
+            'fillOpacity': 0.7,
+        },
+        tooltip=folium.GeoJsonTooltip(
+            fields=['name'],
+            aliases=['País'],
+            style=('background-color: white; color: #333333; font-family: arial; font-size: 12px; padding: 10px;')
+        )
+    ).add_to(m)
+
+    # Agregar la leyenda del mapa
+    colormap.add_to(m)
+    colormap.caption = 'Número de Sesiones'
+
+    return m.get_root().render()
