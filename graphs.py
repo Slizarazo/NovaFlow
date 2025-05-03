@@ -94,7 +94,7 @@ def generar_grafico_ventas(ventas):
                           title_font=dict(size=14, color='#560591'),
                           margin=dict(l=80, r=30, t=50, b=30),
                           height=300,
-                          width=400)
+                          width=500)
 
         # Retornar como HTML embebido sin configuración visible
         return pio.to_html(fig,
@@ -282,7 +282,7 @@ def generar_grafico_distribucion_industria_html(distribucion):
                           plot_bgcolor='#FFFFFF',
                           margin=dict(l=30, r=30, t=50, b=30),
                           height=300,
-                          width=400)
+                          width=500)
 
         # Retornar como HTML embebido sin configuración visible
         return pio.to_html(fig,
