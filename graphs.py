@@ -84,8 +84,8 @@ def generar_grafico_ventas(ventas):
             margin=dict(l=100, r=40, t=60, b=40)
         )
 
-        # Retornar como HTML embebido
-        return pio.to_html(fig, full_html=False, include_plotlyjs='cdn')
+        # Retornar como HTML embebido sin configuración visible
+        return pio.to_html(fig, full_html=False, include_plotlyjs='cdn', config={'displayModeBar': True, 'showLink': False})
     except Exception as e:
         print(f"Error generando gráfico de ventas: {e}")
         # Fallback a un gráfico básico usando matplotlib
