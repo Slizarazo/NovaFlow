@@ -331,11 +331,16 @@ def generar_grafico_funnel_proyectos(funnel_data):
         margin=dict(l=20, r=20, t=20, b=20),
         height=400,
         showlegend=False,
-        autosize=True,
-        config={'responsive': True}
+        autosize=True
     )
 
-    return pio.to_html(fig, full_html=False, include_plotlyjs='cdn')
+    config = {
+        'displayModeBar': True,
+        'responsive': True,
+        'showLink': False
+    }
+
+    return pio.to_html(fig, full_html=False, include_plotlyjs='cdn', config=config)
 
 def generar_grafico_desempeno_estrategico(aliados=None, cuentas=None, supervisores=None, consultores=None):
     """
@@ -489,10 +494,10 @@ def generar_grafico_desempeno_estrategico(aliados=None, cuentas=None, supervisor
 def generar_grafico_crecimiento_yoy(data):
     """
     Genera un gráfico de líneas para mostrar el crecimiento año tras año.
-    
+
     Args:
         data (list): Lista de diccionarios con datos de crecimiento YoY.
-        
+
     Returns:
         str: HTML del gráfico generado.
     """
@@ -518,7 +523,7 @@ def generar_grafico_crecimiento_yoy(data):
                 hovertemplate='%{y:$,.0f}<extra>Año Actual</extra>'
             )
         )
-        
+
         fig.add_trace(
             go.Scatter(
                 x=meses,
@@ -564,10 +569,10 @@ def generar_grafico_crecimiento_yoy(data):
 def generar_mapa_sesiones_por_pais(sesiones):
     """
     Genera un mapa de sesiones por país usando Folium.
-    
+
     Args:
         sesiones (list): Lista de diccionarios con 'pais' y 'sesiones'.
-        
+
     Returns:
         str: HTML del mapa generado.
     """
@@ -588,7 +593,7 @@ def generar_mapa_sesiones_por_pais(sesiones):
         vmin=min_valor,
         vmax=max_valor
     )
-    
+
     # Agregar el mapa de coropletas
     folium.GeoJson(
         'https://raw.githubusercontent.com/python-visualization/folium/master/examples/data/world-countries.json',
