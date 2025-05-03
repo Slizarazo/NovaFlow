@@ -1,5 +1,19 @@
 // Inicializar los gráficos cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', function() {
+    // Inicializar gráfico de ventas
+    const ventasContainer = document.getElementById('ventasChart');
+    if (ventasContainer) {
+        const data = JSON.parse(ventasContainer.getAttribute('data-chart'));
+        Plotly.newPlot('ventasChart', data.data, data.layout, {responsive: true});
+    }
+
+    // Inicializar gráfico de distribución
+    const distribucionContainer = document.getElementById('distribucionChart');
+    if (distribucionContainer) {
+        const data = JSON.parse(distribucionContainer.getAttribute('data-chart'));
+        Plotly.newPlot('distribucionChart', data.data, data.layout, {responsive: true});
+    }
+
     // Initialize charts if their containers exist
     if (document.getElementById('ventasPortafolioChart')) {
         initVentasPortafolioChart();
@@ -105,15 +119,15 @@ function initDistribucionIndustriaChart() {
 function initCrecimientoYoYChart() {
     loadChartJS(function() {
         const ctx = document.getElementById('crecimientoYoYChart').getContext('2d');
-        
+
         // Get data from data attribute
         const chartContainer = document.getElementById('crecimientoYoYChart');
         const chartData = JSON.parse(chartContainer.getAttribute('data-chart'));
-        
+
         const labels = chartData.map(item => item.mes);
         const currentYearData = chartData.map(item => item.actual);
         const previousYearData = chartData.map(item => item.anterior);
-        
+
         const chart = new Chart(ctx, {
             type: 'line',
             data: {
@@ -181,14 +195,14 @@ function initCrecimientoYoYChart() {
 function initFunnelProyectosChart() {
     loadChartJS(function() {
         const ctx = document.getElementById('funnelProyectosChart').getContext('2d');
-        
+
         // Get data from data attribute
         const chartContainer = document.getElementById('funnelProyectosChart');
         const chartData = JSON.parse(chartContainer.getAttribute('data-chart'));
-        
+
         const labels = chartData.map(item => item.etapa);
         const data = chartData.map(item => item.cantidad);
-        
+
         // Colors from darker to lighter
         const backgroundColors = [
             'rgba(52, 152, 219, 0.9)',  // Propuesta
@@ -197,7 +211,7 @@ function initFunnelProyectosChart() {
             'rgba(52, 152, 219, 0.6)',  // Cierre
             'rgba(52, 152, 219, 0.5)'   // Post-evaluación
         ];
-        
+
         const chart = new Chart(ctx, {
             type: 'bar',
             data: {
@@ -240,9 +254,9 @@ function initFunnelProyectosChart() {
 function createProgressChart(elementId, value, maxValue, color) {
     const element = document.getElementById(elementId);
     if (!element) return;
-    
+
     const percentage = (value / maxValue) * 100;
-    
+
     element.innerHTML = `
         <div class="progress-bar">
             <div class="progress-bar-fill" style="width: ${percentage}%; background-color: ${color};"></div>
