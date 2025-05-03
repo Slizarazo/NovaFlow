@@ -46,47 +46,101 @@ def generar_html_mapa_operaciones(ubicaciones, centro_mapa=[23.6345, -102.5528],
     # Renderizar el mapa en memoria (sin archivo)
     return m.get_root().render()
 
-def generar_datos_graficos(ventas, distribucion):
+def generar_grafico_ventas(ventas):
     """
-    Genera los datos para los gráficos usando Plotly.
+    Genera el gráfico en memoria con paleta de colores personalizada.
     """
-    import plotly.express as px
-    import plotly.graph_objects as go
-    import json
+    # Extraer datos
+    nombres = [v['nombre'] for v in ventas]
+    valores = [v['ventas'] for v in ventas]
 
-    # Gráfico de ventas
-    fig_ventas = go.Figure(data=[
-        go.Bar(
-            x=[str(v['nombre']) for v in ventas],
-            y=[float(v['ventas']) for v in ventas],
-            marker_color=['rgba(86,5,145,0.7)', 'rgba(212,0,172,0.7)', 'rgba(0,160,255,0.7)', 
-                         'rgba(0,0,0,0.7)', 'rgba(128,128,128,0.7)']
-        )
-    ])
-    fig_ventas.update_layout(
-        title='Ventas por Portafolio',
-        paper_bgcolor='rgba(0,0,0,0)',
-        plot_bgcolor='rgba(0,0,0,0)',
-        font=dict(color='#560591')
+    # Paleta de colores Deepnova
+    colores = ['#560591', '#D400AC', '#00A0FF', '#000000', '#808080', '#F0F0F3', '#FFFFFF']
+
+    # Crear la figura
+    fig, ax = plt.subplots(figsize=(8, 5))
+
+    # Asignar colores cíclicamente si hay más barras que colores
+    colores_asignados = [colores[i % len(colores)] for i in range(len(nombres))]
+
+    # Crear el gráfico de barras horizontales
+    ax.barh(nombres, valores, color=colores_asignados)
+
+    # Estilizar
+    ax.set_xlabel('Ventas ($)', fontsize=12, color='#560591')
+    ax.set_title('Ventas por Portafolio', fontsize=14, color='#560591', pad=20)
+    ax.tick_params(axis='x', colors='#560591')
+    ax.tick_params(axis='y', colors='#560591')
+    fig.patch.set_facecolor('#F0F0F3')  # Fondo del gráfico
+    ax.set_facecolor('#FFFFFF')          # Fondo de la zona de dibujo
+    plt.tight_layout()
+
+    # Guardarlo en un buffer en memoria
+    buffer = io.BytesIO()
+    plt.savefig(buffer, format='png', bbox_inches="tight")
+    buffer.seek(0)
+    img_base64 = base64.b64encode(buffer.read()).decode('utf-8')
+    buffer.close()
+    plt.close(fig)
+
+    return img_base64
+
+def generar_grafico_distribucion_industria(distribucion):
+    """
+    Genera un gráfico de distribución de industrias en formato base64.
+
+    Args:
+        distribucion (list): Lista de dicts con 'industria' y 'porcentaje'.
+
+    Returns:
+        str: Imagen en base64 lista para inyectar en HTML.
+    """
+    # Extraer datos
+    etiquetas = [item['industria'] for item in distribucion]
+    valores = [item['porcentaje'] for item in distribucion]
+
+    # Paleta de colores Deepnova
+    colores = ['#560591', '#D400AC', '#00A0FF', '#000000', '#808080']
+
+    # Asignar colores cíclicamente si hay más industrias que colores
+    colores_asignados = [colores[i % len(colores)] for i in range(len(etiquetas))]
+
+    # Crear la figura
+    fig, ax = plt.subplots(figsize=(6, 6))
+    wedges, texts, autotexts = ax.pie(
+        valores, 
+        labels=etiquetas, 
+        autopct='%1.1f%%', 
+        startangle=140, 
+        colors=colores_asignados,
+        pctdistance=0.85
     )
 
-    # Gráfico de distribución
-    fig_distribucion = go.Figure(data=[
-        go.Pie(
-            labels=[str(d['industria']) for d in distribucion],
-            values=[float(d['porcentaje']) for d in distribucion],
-            marker=dict(colors=['rgba(86,5,145,0.7)', 'rgba(212,0,172,0.7)', 
-                              'rgba(0,160,255,0.7)', 'rgba(0,0,0,0.7)', 'rgba(128,128,128,0.7)'])
-        )
-    ])
-    fig_distribucion.update_layout(
-        title='Distribución por Industria',
-        paper_bgcolor='rgba(0,0,0,0)',
-        plot_bgcolor='rgba(0,0,0,0)',
-        font=dict(color='#560591')
-    )
+    # Dibujar un círculo blanco en el centro para crear el efecto de "dona"
+    centro_circulo = plt.Circle((0, 0), 0.70, fc='#F0F0F3')
+    fig.gca().add_artist(centro_circulo)
 
-    return json.dumps(fig_ventas.to_dict()), json.dumps(fig_distribucion.to_dict())
+    # Estilos de texto
+    for text in texts:
+        text.set_color('#560591')
+        text.set_fontsize(12)
+    for autotext in autotexts:
+        autotext.set_color('white')
+        autotext.set_fontsize(10)
+
+    ax.set_title('Distribución por Industria', color='#560591', fontsize=16)
+    fig.patch.set_facecolor('#FFFFFF')  # Fondo blanco para todo el gráfico
+    plt.tight_layout()
+
+    # Guardar la figura en memoria
+    buffer = io.BytesIO()
+    plt.savefig(buffer, format='png', bbox_inches="tight")
+    buffer.seek(0)
+    imagen_base64 = base64.b64encode(buffer.read()).decode('utf-8')
+    buffer.close()
+    plt.close(fig)
+
+    return imagen_base64
 
 def generar_mapa_sesiones_por_pais(sesiones):
     """
