@@ -48,41 +48,49 @@ def generar_html_mapa_operaciones(ubicaciones, centro_mapa=[23.6345, -102.5528],
 
 def generar_grafico_ventas(ventas):
     """
-    Genera el gráfico en memoria con paleta de colores personalizada.
+    Genera un gráfico de barras horizontal interactivo con Plotly y paleta Deepnova.
+    Retorna la imagen en formato base64 (ideal para uso web).
     """
+    import plotly.graph_objects as go
+    import plotly.io as pio
+    
     # Extraer datos
     nombres = [v['nombre'] for v in ventas]
     valores = [v['ventas'] for v in ventas]
 
-    # Paleta de colores Deepnova
+    # Paleta Deepnova
     colores = ['#560591', '#D400AC', '#00A0FF', '#000000', '#808080', '#F0F0F3', '#FFFFFF']
-
-    # Crear la figura
-    fig, ax = plt.subplots(figsize=(8, 5))
-
-    # Asignar colores cíclicamente si hay más barras que colores
     colores_asignados = [colores[i % len(colores)] for i in range(len(nombres))]
 
-    # Crear el gráfico de barras horizontales
-    ax.barh(nombres, valores, color=colores_asignados)
+    # Crear figura
+    fig = go.Figure()
 
-    # Estilizar
-    ax.set_xlabel('Ventas ($)', fontsize=12, color='#560591')
-    ax.set_title('Ventas por Portafolio', fontsize=14, color='#560591', pad=20)
-    ax.tick_params(axis='x', colors='#560591')
-    ax.tick_params(axis='y', colors='#560591')
-    fig.patch.set_facecolor('#F0F0F3')  # Fondo del gráfico
-    ax.set_facecolor('#FFFFFF')          # Fondo de la zona de dibujo
-    plt.tight_layout()
+    fig.add_trace(go.Bar(
+        y=nombres,
+        x=valores,
+        orientation='h',
+        marker=dict(color=colores_asignados),
+        hoverinfo='x+y',
+        text=valores,
+        textposition='auto'
+    ))
 
-    # Guardarlo en un buffer en memoria
-    buffer = io.BytesIO()
-    plt.savefig(buffer, format='png', bbox_inches="tight")
-    buffer.seek(0)
-    img_base64 = base64.b64encode(buffer.read()).decode('utf-8')
-    buffer.close()
-    plt.close(fig)
+    # Estética
+    fig.update_layout(
+        title='Ventas por Portafolio',
+        xaxis_title='Ventas ($)',
+        yaxis_title='',
+        plot_bgcolor='#FFFFFF',
+        paper_bgcolor='#F0F0F3',
+        font=dict(color='#560591', size=12),
+        title_font=dict(size=16, color='#560591'),
+        margin=dict(l=100, r=40, t=60, b=40)
+    )
 
+    # Exportar como imagen en base64
+    img_bytes = pio.to_image(fig, format='png')
+    img_base64 = base64.b64encode(img_bytes).decode('utf-8')
+    
     return img_base64
 
 def generar_grafico_distribucion_industria(distribucion):
