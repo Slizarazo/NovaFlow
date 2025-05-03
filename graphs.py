@@ -48,14 +48,12 @@ def generar_html_mapa_operaciones(ubicaciones, centro_mapa=[23.6345, -102.5528],
 
 def generar_grafico_ventas(ventas):
     """
-    Genera un gráfico de barras horizontal con Plotly y paleta Deepnova.
-    Retorna la imagen en formato base64 (ideal para uso web).
+    Genera un gráfico interactivo de barras horizontal con Plotly y lo retorna como HTML embebido.
     """
     try:
         import plotly.graph_objects as go
         import plotly.io as pio
         
-        # Extraer datos
         nombres = [v['nombre'] for v in ventas]
         valores = [v['ventas'] for v in ventas]
 
@@ -63,7 +61,6 @@ def generar_grafico_ventas(ventas):
         colores = ['#560591', '#D400AC', '#00A0FF', '#000000', '#808080', '#F0F0F3', '#FFFFFF']
         colores_asignados = [colores[i % len(colores)] for i in range(len(nombres))]
 
-        # Crear figura
         fig = go.Figure()
 
         fig.add_trace(go.Bar(
@@ -76,7 +73,6 @@ def generar_grafico_ventas(ventas):
             textposition='auto'
         ))
 
-        # Estética
         fig.update_layout(
             title='Ventas por Portafolio',
             xaxis_title='Ventas ($)',
@@ -88,11 +84,8 @@ def generar_grafico_ventas(ventas):
             margin=dict(l=100, r=40, t=60, b=40)
         )
 
-        # Exportar como imagen en base64
-        img_bytes = pio.to_image(fig, format='png')
-        img_base64 = base64.b64encode(img_bytes).decode('utf-8')
-        
-        return img_base64
+        # Retornar como HTML embebido
+        return pio.to_html(fig, full_html=False, include_plotlyjs='cdn')
     except Exception as e:
         print(f"Error generando gráfico de ventas: {e}")
         # Fallback a un gráfico básico usando matplotlib
