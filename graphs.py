@@ -347,7 +347,7 @@ def generar_grafico_crecimiento_yoy(data):
             plot_bgcolor='#FFFFFF',
             margin=dict(l=30, r=30, t=50, b=30),
             height=300,
-            width=400,
+            width=800,
             showlegend=True,
             legend=dict(
                 orientation="h",
