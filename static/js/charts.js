@@ -15,7 +15,14 @@ function initCharts() {
     // Inicializar gráfico de ventas
     const ventasCtx = document.getElementById('ventasChart');
     if (ventasCtx) {
-        const data = JSON.parse(ventasCtx.getAttribute('data-chart'));
+        let data;
+        try {
+            data = JSON.parse(ventasCtx.getAttribute('data-chart'));
+            console.log('Datos de ventas:', data);
+        } catch (e) {
+            console.error('Error al parsear datos de ventas:', e);
+            return;
+        }
         charts.ventas = new Chart(ventasCtx, {
             type: 'bar',
             data: data,

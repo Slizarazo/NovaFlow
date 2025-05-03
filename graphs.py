@@ -51,25 +51,24 @@ def generar_datos_graficos(ventas, distribucion):
     Genera los datos para los gráficos en formato JSON.
     """
     datos_ventas = {
-        'labels': [v['nombre'] for v in ventas],
+        'labels': [str(v['nombre']) for v in ventas],
         'datasets': [{
             'label': 'Ventas',
-            'data': [v['ventas'] for v in ventas],
-            'backgroundColor': ['#560591', '#D400AC', '#00A0FF', '#000000', '#808080'],
-            'borderColor': '#FFFFFF',
-            'borderWidth': 2,
-            'hoverOffset': 4
+            'data': [float(v['ventas']) for v in ventas],
+            'backgroundColor': ['rgba(86,5,145,0.7)', 'rgba(212,0,172,0.7)', 'rgba(0,160,255,0.7)', 'rgba(0,0,0,0.7)', 'rgba(128,128,128,0.7)'],
+            'borderColor': 'rgba(255,255,255,1)',
+            'borderWidth': 1
         }]
     }
 
     datos_distribucion = {
-        'labels': [d['industria'] for d in distribucion],
+        'labels': [str(d['industria']) for d in distribucion],
         'datasets': [{
-            'data': [d['porcentaje'] for d in distribucion],
-            'backgroundColor': ['#560591', '#D400AC', '#00A0FF', '#000000', '#808080'],
-            'borderColor': '#FFFFFF',
-            'borderWidth': 2,
-            'hoverOffset': 4
+            'label': 'Distribución',
+            'data': [float(d['porcentaje']) for d in distribucion],
+            'backgroundColor': ['rgba(86,5,145,0.7)', 'rgba(212,0,172,0.7)', 'rgba(0,160,255,0.7)', 'rgba(0,0,0,0.7)', 'rgba(128,128,128,0.7)'],
+            'borderColor': 'rgba(255,255,255,1)',
+            'borderWidth': 1
         }]
     }
 

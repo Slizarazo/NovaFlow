@@ -135,7 +135,7 @@
                     </div>
                 </div>
                 <div class="chart-body">
-                    <canvas id="ventasChart" data-chart='{{ datos_ventas|tojson }}'></canvas>
+                    <canvas id="ventasChart" data-chart='{{ datos_ventas|tojson|safe }}'></canvas>
                 </div>
             </div>
 
