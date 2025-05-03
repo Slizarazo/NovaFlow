@@ -295,14 +295,15 @@ def generar_grafico_distribucion_industria_html(distribucion):
     except Exception as e:
         print(f"Error generando gráfico de distribución: {e}")
         return None
-def generar_grafico_desempeno_estrategico():
+def generar_grafico_desempeno_estrategico(aliados=None, cuentas=None, supervisores=None, consultores=None):
     """
-    Genera un gráfico de radar para mostrar el desempeño estratégico
+    Genera un gráfico de radar para mostrar el desempeño estratégico con filtros
     """
     import plotly.graph_objects as go
     import plotly.io as pio
+    from models import Aliado, Consultor
 
-    # Datos del desempeño
+    # Datos base del desempeño
     metrics = [
         'Cumplimiento de Objetivos',
         'Satisfacción del Cliente', 
@@ -311,17 +312,106 @@ def generar_grafico_desempeno_estrategico():
     ]
     values = [92, 88, 85, 94]
 
-    # Crear figura
+    # Crear figura con dropdown menus
     fig = go.Figure()
 
+    # Agregar trace principal
     fig.add_trace(go.Scatterpolar(
-        r=[*values, values[0]],  # Repetir primer valor para cerrar el polígono
-        theta=[*metrics, metrics[0]],  # Repetir primera etiqueta para cerrar
+        r=[*values, values[0]],
+        theta=[*metrics, metrics[0]],
         fill='toself',
         fillcolor='rgba(86, 5, 145, 0.2)',
         line=dict(color='#560591', width=2),
         name='Desempeño Actual'
     ))
+
+    # Agregar dropdowns para filtros
+    updatemenus = [
+        dict(
+            buttons=[
+                dict(
+                    args=[{"visible": [True]}],
+                    label="Todos",
+                    method="update"
+                ),
+            ],
+            direction="down",
+            showactive=True,
+            x=0.1,
+            xanchor="left",
+            y=1.1,
+            yanchor="top",
+            name="Aliado"
+        ),
+        dict(
+            buttons=[
+                dict(
+                    args=[{"visible": [True]}],
+                    label="Todas",
+                    method="update"
+                ),
+            ],
+            direction="down",
+            showactive=True,
+            x=0.3,
+            xanchor="left",
+            y=1.1,
+            yanchor="top",
+            name="Cuenta"
+        ),
+        dict(
+            buttons=[
+                dict(
+                    args=[{"visible": [True]}],
+                    label="Todos",
+                    method="update"
+                ),
+            ],
+            direction="down",
+            showactive=True,
+            x=0.5,
+            xanchor="left",
+            y=1.1,
+            yanchor="top",
+            name="Supervisor"
+        ),
+        dict(
+            buttons=[
+                dict(
+                    args=[{"visible": [True]}],
+                    label="Todos",
+                    method="update"
+                ),
+            ],
+            direction="down",
+            showactive=True,
+            x=0.7,
+            xanchor="left", 
+            y=1.1,
+            yanchor="top",
+            name="Consultor"
+        )
+    ]
+
+    # Agregar botones para cada aliado
+    for aliado in Aliado.ALIADOS:
+        updatemenus[0]["buttons"].append(
+            dict(
+                args=[{"visible": [True]}],
+                label=aliado.nombre,
+                method="update"
+            )
+        )
+
+    # Agregar botones para cada consultor  
+    for consultor in Consultor.CONSULTORES:
+        updatemenus[3]["buttons"].append(
+            dict(
+                args=[{"visible": [True]}],
+                label=consultor.nombre,
+                method="update"
+            )
+        )
 
     # Actualizar layout
     fig.update_layout(
@@ -337,12 +427,20 @@ def generar_grafico_desempeno_estrategico():
                 tickfont=dict(color='#560591')
             )
         ),
+        updatemenus=updatemenus,
         showlegend=False,
         paper_bgcolor='#F0F0F3',
         plot_bgcolor='#F0F0F3',
-        margin=dict(l=50, r=50, t=30, b=30),
-        height=400
+        margin=dict(l=50, r=50, t=80, b=30),  # Increased top margin for filters
+        height=500  # Increased height to accommodate filters
     )
+
+    # Agregar títulos para los filtros
+    annotations = [
+        dict(text="Filtrar por:", x=0, y=1.1, xref="paper", yref="paper",
+             showarrow=False, font=dict(size=12, color="#560591"))
+    ]
+    fig.update_layout(annotations=annotations)
 
     return pio.to_html(fig, full_html=False, include_plotlyjs='cdn')
 
