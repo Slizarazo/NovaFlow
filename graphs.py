@@ -295,6 +295,57 @@ def generar_grafico_distribucion_industria_html(distribucion):
     except Exception as e:
         print(f"Error generando gráfico de distribución: {e}")
         return None
+def generar_grafico_desempeno_estrategico():
+    """
+    Genera un gráfico de radar para mostrar el desempeño estratégico
+    """
+    import plotly.graph_objects as go
+    import plotly.io as pio
+
+    # Datos del desempeño
+    metrics = [
+        'Cumplimiento de Objetivos',
+        'Satisfacción del Cliente', 
+        'Retención de Consultores',
+        'Eficiencia Operativa'
+    ]
+    values = [92, 88, 85, 94]
+
+    # Crear figura
+    fig = go.Figure()
+
+    fig.add_trace(go.Scatterpolar(
+        r=[*values, values[0]],  # Repetir primer valor para cerrar el polígono
+        theta=[*metrics, metrics[0]],  # Repetir primera etiqueta para cerrar
+        fill='toself',
+        fillcolor='rgba(86, 5, 145, 0.2)',
+        line=dict(color='#560591', width=2),
+        name='Desempeño Actual'
+    ))
+
+    # Actualizar layout
+    fig.update_layout(
+        polar=dict(
+            radialaxis=dict(
+                visible=True,
+                range=[0, 100],
+                ticksuffix='%',
+                showline=False,
+                tickfont=dict(color='#560591')
+            ),
+            angularaxis=dict(
+                tickfont=dict(color='#560591')
+            )
+        ),
+        showlegend=False,
+        paper_bgcolor='#F0F0F3',
+        plot_bgcolor='#F0F0F3',
+        margin=dict(l=50, r=50, t=30, b=30),
+        height=400
+    )
+
+    return pio.to_html(fig, full_html=False, include_plotlyjs='cdn')
+
 def generar_grafico_crecimiento_yoy(data):
     """
     Genera un gráfico de líneas para mostrar el crecimiento año tras año.

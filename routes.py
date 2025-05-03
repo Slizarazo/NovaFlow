@@ -200,12 +200,16 @@ def dashboard_performance():
         proyectos_por_etapa = None
         app.logger.info("Usando datos estándar para dashboard de desempeño")
 
+    # Generar gráfico de desempeño estratégico
+    radar_chart = generar_grafico_desempeno_estrategico()
+    
     return render_template(
         'dashboard/performance.html',
         title='Dashboard de Desempeño',
         kpis=kpis,
         funnel_proyectos=DatosDashboard.FUNNEL_PROYECTOS,
         actividades_planificadas=DatosDashboard.ACTIVIDADES_PLANIFICADAS,
+        radar_chart=radar_chart,
         config=app.config,
         role=current_user.role,
         # Nuevos datos extendidos
