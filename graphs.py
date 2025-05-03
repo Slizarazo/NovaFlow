@@ -324,15 +324,15 @@ def generar_grafico_funnel_proyectos(funnel_data):
     ))
 
     fig.update_layout(
-        title=None,  # Removemos el título ya que está en el card
+        title=None,
         font=dict(color='#560591', size=12),
         paper_bgcolor='#F0F0F3',
         plot_bgcolor='#F0F0F3',
         margin=dict(l=20, r=20, t=20, b=20),
         height=400,
-        width=None,  # Auto-ajuste al contenedor
         showlegend=False,
-        autosize=True
+        autosize=True,
+        config={'responsive': True}
     )
 
     return pio.to_html(fig, full_html=False, include_plotlyjs='cdn')
