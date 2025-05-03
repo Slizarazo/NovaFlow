@@ -1,4 +1,6 @@
 from flask import render_template, redirect, url_for, request, flash, jsonify, session
+from flask_login import current_user
+from functools import reduce
 from flask_login import login_user, logout_user, login_required, current_user
 from app import app
 from models import User, Aliado, Proyecto, Consultor, DatosDashboard
@@ -315,6 +317,60 @@ def aliados_portfolio():
 
 @app.route('/aliados/asignaciones')
 @login_required
+
+@app.route('/api/filter_dashboard', methods=['POST'])
+@login_required
+def filter_dashboard():
+    filters = request.json
+    
+    # Obtener datos según los filtros
+    filtered_data = filter_dashboard_data(filters)
+    
+    return jsonify(filtered_data)
+
+def filter_dashboard_data(filters):
+    # Aplicar filtros a los datos
+    aliados = Aliado.ALIADOS
+    if filters.get('aliado'):
+        aliados = [a for a in aliados if str(a.id) == filters['aliado']]
+    
+    # Filtrar por periodo si está especificado
+    periodo = filters.get('periodo', 'q3_2023')
+    
+    # Calcular KPIs con los datos filtrados
+    ventas_trimestre_total = sum(aliado.ventas_trimestre for aliado in aliados)
+    ventas_promedio_cuenta = ventas_trimestre_total / len(aliados) if aliados else 0
+    
+    proyectos = Proyecto.PROYECTOS
+    if filters.get('cuenta'):
+        proyectos = [p for p in proyectos if str(p.cuenta_id) == filters['cuenta']]
+    if filters.get('supervisor'):
+        proyectos = [p for p in proyectos if str(p.supervisor_id) == filters['supervisor']]
+    
+    ventas_promedio_proyecto = ventas_trimestre_total / len(proyectos) if proyectos else 0
+    rentabilidad = ventas_trimestre_total * 0.3
+    
+    # Generar gráficos actualizados
+    mapa_html = generar_html_mapa_operaciones(DatosDashboard.UBICACIONES)
+    datos_grafico = generar_grafico_ventas(DatosDashboard.VENTAS_POR_PORTAFOLIO)
+    distribucion_industria = generar_grafico_distribucion_industria_html(DatosDashboard.DISTRIBUCION_INDUSTRIA)
+    crecimiento_yoy = generar_grafico_crecimiento_yoy(DatosDashboard.CRECIMIENTO_ANUAL)
+    
+    return {
+        'kpis': {
+            'ventas_trimestre': ventas_trimestre_total,
+            'ventas_promedio_cuenta': ventas_promedio_cuenta,
+            'ventas_promedio_proyecto': ventas_promedio_proyecto,
+            'rentabilidad': rentabilidad
+        },
+        'charts': {
+            'mapa_sesiones': mapa_html,
+            'ventas_portafolio': datos_grafico,
+            'distribucion_industria': distribucion_industria,
+            'crecimiento_yoy': crecimiento_yoy
+        }
+    }
+
 def aliados_asignaciones():
     consultores = Consultor.CONSULTORES
     proyectos = {proyecto.id: proyecto for proyecto in Proyecto.PROYECTOS}

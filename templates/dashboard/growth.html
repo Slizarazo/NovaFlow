@@ -2,6 +2,7 @@
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 <script src="{{ url_for('static', filename='js/charts.js') }}"></script>
 <script src="{{ url_for('static', filename='js/maps.js') }}"></script>
+<script src="{{ url_for('static', filename='js/filters.js') }}"></script>
 {% endblock %} {% block content %}
 <div class="dashboard-container">
     <!-- Filter Section -->
@@ -79,7 +80,7 @@
                 <i data-feather="dollar-sign" class="kpi-icon"></i>
                 <div class="kpi-title">Ventas Trimestre</div>
                 <div class="kpi-value">
-                    $<span>{{ '{:,.0f}'.format(kpis.ventas_trimestre) }}</span>
+                    $<span data-kpi="ventas_trimestre">{{ '{:,.0f}'.format(kpis.ventas_trimestre) }}</span>
                 </div>
                 <div class="kpi-change kpi-change-up">
                     <i data-feather="arrow-up" class="kpi-change-icon"></i>
