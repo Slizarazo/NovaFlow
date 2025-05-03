@@ -125,9 +125,17 @@
             <div class="chart-card mb-4">
                 <div class="chart-header">
                     <h5 class="chart-title">Ventas por Portafolio</h5>
+                    <div class="chart-actions">
+                        <button type="button" class="chart-action" onclick="toggleChartType('ventasChart')">
+                            <i data-feather="refresh-cw"></i>
+                        </button>
+                        <button type="button" class="chart-action" onclick="toggleChartFullscreen('ventasChart')">
+                            <i data-feather="maximize-2"></i>
+                        </button>
+                    </div>
                 </div>
                 <div class="chart-body">
-                    <img src="data:image/png;base64,{{ datos_grafico }}" alt="Gráfico de Ventas" style="width: 100%; max-width: 800px; height: auto;"/>
+                    <canvas id="ventasChart" data-chart='{{ datos_ventas|tojson }}'></canvas>
                 </div>
             </div>
 
@@ -135,9 +143,17 @@
             <div class="chart-card mb-4">
                 <div class="chart-header">
                     <h5 class="chart-title">Distribución por Industria</h5>
+                    <div class="chart-actions">
+                        <button type="button" class="chart-action" onclick="toggleChartType('distribucionChart')">
+                            <i data-feather="refresh-cw"></i>
+                        </button>
+                        <button type="button" class="chart-action" onclick="toggleChartFullscreen('distribucionChart')">
+                            <i data-feather="maximize-2"></i>
+                        </button>
+                    </div>
                 </div>
                 <div class="chart-body">
-                    <img src="data:image/png;base64,{{ distribucion_industria }}" alt="Gráfico de Distribución por Industria" style="width: 100%; max-width: 400px; height: auto;"/>
+                    <canvas id="distribucionChart" data-chart='{{ datos_distribucion|tojson }}'></canvas>
                 </div>
             </div>
 

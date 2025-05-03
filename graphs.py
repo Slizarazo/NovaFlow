@@ -46,101 +46,34 @@ def generar_html_mapa_operaciones(ubicaciones, centro_mapa=[23.6345, -102.5528],
     # Renderizar el mapa en memoria (sin archivo)
     return m.get_root().render()
 
-def generar_grafico_ventas(ventas):
+def generar_datos_graficos(ventas, distribucion):
     """
-    Genera el gráfico en memoria con paleta de colores personalizada.
+    Genera los datos para los gráficos en formato JSON.
     """
-    # Extraer datos
-    nombres = [v['nombre'] for v in ventas]
-    valores = [v['ventas'] for v in ventas]
+    datos_ventas = {
+        'labels': [v['nombre'] for v in ventas],
+        'datasets': [{
+            'label': 'Ventas',
+            'data': [v['ventas'] for v in ventas],
+            'backgroundColor': ['#560591', '#D400AC', '#00A0FF', '#000000', '#808080'],
+            'borderColor': '#FFFFFF',
+            'borderWidth': 2,
+            'hoverOffset': 4
+        }]
+    }
 
-    # Paleta de colores Deepnova
-    colores = ['#560591', '#D400AC', '#00A0FF', '#000000', '#808080', '#F0F0F3', '#FFFFFF']
+    datos_distribucion = {
+        'labels': [d['industria'] for d in distribucion],
+        'datasets': [{
+            'data': [d['porcentaje'] for d in distribucion],
+            'backgroundColor': ['#560591', '#D400AC', '#00A0FF', '#000000', '#808080'],
+            'borderColor': '#FFFFFF',
+            'borderWidth': 2,
+            'hoverOffset': 4
+        }]
+    }
 
-    # Crear la figura
-    fig, ax = plt.subplots(figsize=(8, 5))
-    
-    # Asignar colores cíclicamente si hay más barras que colores
-    colores_asignados = [colores[i % len(colores)] for i in range(len(nombres))]
-
-    # Crear el gráfico de barras horizontales
-    ax.barh(nombres, valores, color=colores_asignados)
-
-    # Estilizar
-    ax.set_xlabel('Ventas ($)', fontsize=12, color='#560591')
-    ax.set_title('Ventas por Portafolio', fontsize=14, color='#560591', pad=20)
-    ax.tick_params(axis='x', colors='#560591')
-    ax.tick_params(axis='y', colors='#560591')
-    fig.patch.set_facecolor('#F0F0F3')  # Fondo del gráfico
-    ax.set_facecolor('#FFFFFF')          # Fondo de la zona de dibujo
-    plt.tight_layout()
-
-    # Guardarlo en un buffer en memoria
-    buffer = io.BytesIO()
-    plt.savefig(buffer, format='png', bbox_inches="tight")
-    buffer.seek(0)
-    img_base64 = base64.b64encode(buffer.read()).decode('utf-8')
-    buffer.close()
-    plt.close(fig)
-
-    return img_base64
-
-def generar_grafico_distribucion_industria(distribucion):
-    """
-    Genera un gráfico de distribución de industrias en formato base64.
-
-    Args:
-        distribucion (list): Lista de dicts con 'industria' y 'porcentaje'.
-
-    Returns:
-        str: Imagen en base64 lista para inyectar en HTML.
-    """
-    # Extraer datos
-    etiquetas = [item['industria'] for item in distribucion]
-    valores = [item['porcentaje'] for item in distribucion]
-
-    # Paleta de colores Deepnova
-    colores = ['#560591', '#D400AC', '#00A0FF', '#000000', '#808080']
-
-    # Asignar colores cíclicamente si hay más industrias que colores
-    colores_asignados = [colores[i % len(colores)] for i in range(len(etiquetas))]
-
-    # Crear la figura
-    fig, ax = plt.subplots(figsize=(6, 6))
-    wedges, texts, autotexts = ax.pie(
-        valores, 
-        labels=etiquetas, 
-        autopct='%1.1f%%', 
-        startangle=140, 
-        colors=colores_asignados,
-        pctdistance=0.85
-    )
-
-    # Dibujar un círculo blanco en el centro para crear el efecto de "dona"
-    centro_circulo = plt.Circle((0, 0), 0.70, fc='#F0F0F3')
-    fig.gca().add_artist(centro_circulo)
-
-    # Estilos de texto
-    for text in texts:
-        text.set_color('#560591')
-        text.set_fontsize(12)
-    for autotext in autotexts:
-        autotext.set_color('white')
-        autotext.set_fontsize(10)
-
-    ax.set_title('Distribución por Industria', color='#560591', fontsize=16)
-    fig.patch.set_facecolor('#FFFFFF')  # Fondo blanco para todo el gráfico
-    plt.tight_layout()
-
-    # Guardar la figura en memoria
-    buffer = io.BytesIO()
-    plt.savefig(buffer, format='png', bbox_inches="tight")
-    buffer.seek(0)
-    imagen_base64 = base64.b64encode(buffer.read()).decode('utf-8')
-    buffer.close()
-    plt.close(fig)
-
-    return imagen_base64
+    return datos_ventas, datos_distribucion
 
 def generar_mapa_sesiones_por_pais(sesiones):
     """

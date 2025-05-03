@@ -1,3 +1,134 @@
+
+// Configuración global de Chart.js
+Chart.defaults.font.family = 'Poppins, sans-serif';
+Chart.defaults.color = '#560591';
+
+// Almacenar las instancias de los gráficos
+let charts = {};
+
+// Inicializar los gráficos cuando el DOM esté listo
+document.addEventListener('DOMContentLoaded', function() {
+    initCharts();
+});
+
+function initCharts() {
+    // Inicializar gráfico de ventas
+    const ventasCtx = document.getElementById('ventasChart');
+    if (ventasCtx) {
+        const data = JSON.parse(ventasCtx.getAttribute('data-chart'));
+        charts.ventas = new Chart(ventasCtx, {
+            type: 'bar',
+            data: data,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                animation: {
+                    duration: 1000,
+                    easing: 'easeInOutQuart'
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(86,5,145,0.8)',
+                        titleFont: {
+                            size: 14
+                        },
+                        bodyFont: {
+                            size: 13
+                        },
+                        callbacks: {
+                            label: function(context) {
+                                return `Ventas: $${context.raw.toLocaleString()}`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return '$' + value.toLocaleString();
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // Inicializar gráfico de distribución
+    const distribucionCtx = document.getElementById('distribucionChart');
+    if (distribucionCtx) {
+        const data = JSON.parse(distribucionCtx.getAttribute('data-chart'));
+        charts.distribucion = new Chart(distribucionCtx, {
+            type: 'doughnut',
+            data: data,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                animation: {
+                    duration: 1000,
+                    easing: 'easeInOutQuart'
+                },
+                plugins: {
+                    legend: {
+                        position: 'right'
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(86,5,145,0.8)',
+                        titleFont: {
+                            size: 14
+                        },
+                        bodyFont: {
+                            size: 13
+                        },
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.label}: ${context.raw}%`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+}
+
+// Alternar entre tipos de gráfico
+function toggleChartType(chartId) {
+    const chart = charts[chartId.replace('Chart', '')];
+    if (!chart) return;
+
+    const types = {
+        'bar': 'line',
+        'line': 'bar',
+        'doughnut': 'pie',
+        'pie': 'doughnut'
+    };
+
+    const currentType = chart.config.type;
+    const newType = types[currentType] || currentType;
+
+    chart.config.type = newType;
+    chart.update('none');
+}
+
+// Alternar pantalla completa
+function toggleChartFullscreen(chartId) {
+    const chartContainer = document.getElementById(chartId).parentElement;
+    
+    if (!document.fullscreenElement) {
+        chartContainer.requestFullscreen().catch(err => {
+            console.log(`Error al intentar modo pantalla completa: ${err.message}`);
+        });
+    } else {
+        document.exitFullscreen();
+    }
+}
+
 // charts.js - Handles all chart visualizations using Chart.js
 
 // Wait for DOM to be fully loaded
