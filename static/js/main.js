@@ -3,25 +3,28 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize mobile navigation toggle
     initMobileNav();
-    
+
     // Initialize sidebar dropdowns
     initSidebarDropdowns();
-    
+
     // Initialize topbar dropdowns
     initTopbarDropdowns();
-    
+
     // Initialize flash message auto-dismiss
     initFlashMessages();
-    
+
     // Initialize filter form functionality
     initFilterForms();
+
+    // Initialize submenu toggle
+    initSubmenuToggle();
 });
 
 // Initialize mobile navigation
 function initMobileNav() {
     const mobileToggle = document.querySelector('.topbar-mobile-toggle');
     const sidebar = document.querySelector('.sidebar');
-    
+
     if (mobileToggle && sidebar) {
         mobileToggle.addEventListener('click', function() {
             sidebar.classList.toggle('active');
@@ -32,12 +35,12 @@ function initMobileNav() {
 // Initialize sidebar dropdowns
 function initSidebarDropdowns() {
     const dropdownItems = document.querySelectorAll('.sidebar-item-dropdown');
-    
+
     dropdownItems.forEach(item => {
         const link = item.querySelector('.sidebar-link');
         const dropdown = item.querySelector('.sidebar-dropdown');
         const toggle = item.querySelector('.sidebar-toggle');
-        
+
         if (link && dropdown) {
             link.addEventListener('click', function(e) {
                 e.preventDefault();
@@ -53,22 +56,22 @@ function initSidebarDropdowns() {
 // Initialize topbar dropdown menus
 function initTopbarDropdowns() {
     const dropdownItems = document.querySelectorAll('.topbar-nav-item.dropdown');
-    
+
     dropdownItems.forEach(item => {
         const toggle = item.querySelector('.topbar-nav-icon');
         const dropdown = item.querySelector('.topbar-dropdown');
-        
+
         if (toggle && dropdown) {
             toggle.addEventListener('click', function(e) {
                 e.stopPropagation();
                 dropdown.classList.toggle('active');
             });
-            
+
             // Close when clicking outside
             document.addEventListener('click', function() {
                 dropdown.classList.remove('active');
             });
-            
+
             // Prevent closing when clicking inside the dropdown
             dropdown.addEventListener('click', function(e) {
                 e.stopPropagation();
@@ -80,7 +83,7 @@ function initTopbarDropdowns() {
 // Initialize flash messages auto-dismiss
 function initFlashMessages() {
     const flashMessages = document.querySelectorAll('.flash-message');
-    
+
     flashMessages.forEach(message => {
         setTimeout(() => {
             message.style.opacity = '0';
@@ -94,14 +97,14 @@ function initFlashMessages() {
 // Initialize filter form functionality
 function initFilterForms() {
     const filterForms = document.querySelectorAll('.filter-form');
-    
+
     filterForms.forEach(form => {
         const resetBtn = form.querySelector('.filter-reset');
-        
+
         if (resetBtn) {
             resetBtn.addEventListener('click', function(e) {
                 e.preventDefault();
-                
+
                 // Reset all form inputs
                 const inputs = form.querySelectorAll('input, select');
                 inputs.forEach(input => {
@@ -143,7 +146,7 @@ function formatDate(dateString) {
 function toggleSidebar() {
     const sidebar = document.querySelector('.sidebar');
     const contentArea = document.querySelector('.content-area');
-    
+
     if (sidebar && contentArea) {
         sidebar.classList.toggle('sidebar-collapsed');
         contentArea.style.marginLeft = sidebar.classList.contains('sidebar-collapsed') ? '70px' : '250px';
@@ -154,13 +157,13 @@ function toggleSidebar() {
 function markNotificationAsRead(notificationId) {
     // In a real application, this would make an API call
     console.log('Marked notification as read:', notificationId);
-    
+
     // Update UI
     const notification = document.querySelector(`[data-notification-id="${notificationId}"]`);
     if (notification) {
         notification.classList.add('notification-read');
     }
-    
+
     // Update badge count
     const badge = document.querySelector('.topbar-badge');
     if (badge) {
@@ -246,4 +249,43 @@ function toggleChartFullscreen(chartId) {
             }
         }
     }
+}
+
+// Initialize submenu toggle
+function initSubmenuToggle() {
+    const submenuLinks = document.querySelectorAll(
+        ".sidebar-item-dropdown > .sidebar-link"
+    );
+    submenuLinks.forEach((link) => {
+        link.addEventListener("click", function (e) {
+            e.preventDefault();
+            const dropdown = this.nextElementSibling;
+            if (dropdown) {
+                dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+                const arrow = this.querySelector(".sidebar-toggle");
+                if (arrow) {
+                    arrow.style.transform = dropdown.style.display === "block" ? "rotate(180deg)" : "rotate(0deg)";
+                }
+            }
+        });
+    });
+
+    // Auto open submenu if child is active
+    const activeSubItems = document.querySelectorAll(
+        ".sidebar-dropdown-item.active"
+    );
+    activeSubItems.forEach((item) => {
+        const parent = item.closest(".sidebar-item-dropdown");
+        if (parent) {
+            const parentLink = parent.querySelector(".sidebar-link");
+            const dropdown = parent.querySelector(".sidebar-dropdown");
+            if (parentLink && dropdown) {
+                dropdown.style.display = "block";
+                const arrow = parentLink.querySelector(".sidebar-toggle");
+                if (arrow) {
+                    arrow.style.transform = "rotate(180deg)";
+                }
+            }
+        }
+    });
 }
