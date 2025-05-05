@@ -1,19 +1,6 @@
 // Inicializar los gráficos cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', function() {
-    // Inicializar gráfico de ventas
-    const ventasContainer = document.getElementById('ventasChart');
-    if (ventasContainer) {
-        const data = JSON.parse(ventasContainer.getAttribute('data-chart'));
-        Plotly.newPlot('ventasChart', data.data, data.layout, {responsive: true});
-    }
-
-    // Inicializar gráfico de distribución
-    const distribucionContainer = document.getElementById('distribucionChart');
-    if (distribucionContainer) {
-        const data = JSON.parse(distribucionContainer.getAttribute('data-chart'));
-        Plotly.newPlot('distribucionChart', data.data, data.layout, {responsive: true});
-    }
-
+    // Inicializar gráfico de desempeño estratégico si existe
     if (document.getElementById('strategicPerformanceChart')) {
         initStrategicPerformanceChart();
     }
@@ -51,8 +38,8 @@ function initStrategicPerformanceChart() {
 
     const data = [{
         type: 'scatterpolar',
-        r: [...values, values[0]], // Repeat first value to close the shape
-        theta: [...metrics, metrics[0]], // Repeat first label to close the shape
+        r: [...values, values[0]],
+        theta: [...metrics, metrics[0]],
         fill: 'toself',
         fillcolor: 'rgba(86, 5, 145, 0.2)',
         line: {
@@ -87,11 +74,16 @@ function initStrategicPerformanceChart() {
             r: 50,
             t: 30,
             b: 30
-        }
+        },
+        height: 400,
+        autosize: true
     };
 
-    Plotly.newPlot('strategicPerformanceChart', data, layout, {
-        displayModeBar: false,
-        responsive: true
-    });
+    const config = {
+        displayModeBar: true,
+        responsive: true,
+        showLink: false
+    };
+
+    Plotly.newPlot('strategicPerformanceChart', data, layout, config);
 }

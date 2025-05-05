@@ -319,6 +319,14 @@
         </div>
         {% endif %}
 
+        <!-- Plotly -->
+        <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+        
+        <!-- Custom JavaScript -->
+        <script src="{{ url_for('static', filename='js/charts.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/filters.js') }}"></script>
+        
         <!-- JavaScript -->
         <script>
             // Initialize Feather icons
