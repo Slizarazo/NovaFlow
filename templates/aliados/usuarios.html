@@ -3,16 +3,16 @@
 {% block content %}
 <div class="container-fluid">
     <!-- Header with action buttons -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Gestión de Usuarios</h2>
-        <div class="btn-group">
-            <button type="button" class="btn btn-light rounded-circle p-2 me-2" data-bs-toggle="modal" data-bs-target="#addUserModal">
+    <div class="dashboard-section-title">
+        <h4>Gestión de Usuarios</h4>
+        <div class="dashboard-section-actions">
+            <button type="button" class="dashboard-section-action" data-bs-toggle="modal" data-bs-target="#addUserModal" title="Añadir Usuario">
                 <i data-feather="plus"></i>
             </button>
-            <button type="button" class="btn btn-light rounded-circle p-2 me-2" data-bs-toggle="modal" data-bs-target="#importUsersModal">
+            <button type="button" class="dashboard-section-action" data-bs-toggle="modal" data-bs-target="#importUsersModal" title="Importar">
                 <i data-feather="upload"></i>
             </button>
-            <button type="button" class="btn btn-light rounded-circle p-2" data-bs-toggle="modal" data-bs-target="#exportUsersModal">
+            <button type="button" class="dashboard-section-action" data-bs-toggle="modal" data-bs-target="#exportUsersModal" title="Exportar">
                 <i data-feather="download"></i>
             </button>
         </div>
