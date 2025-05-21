@@ -1,0 +1,215 @@
+
+{% extends "layout.html" %}
+{% block content %}
+<div class="projects-container p-4">
+    <!-- Header with Add Project Button -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Gestión de Proyectos</h2>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProjectModal">
+            <i data-feather="plus"></i> Nueva Oportunidad
+        </button>
+    </div>
+
+    <!-- Projects Summary Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <h5>Total Proyectos</h5>
+                    <h2>{{ total_proyectos }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-white">
+                <div class="card-body">
+                    <h5>En Progreso</h5>
+                    <h2>{{ proyectos_progreso }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <h5>Completados</h5>
+                    <h2>{{ proyectos_completados }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <h5>Oportunidades</h5>
+                    <h2>{{ oportunidades }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Projects Table -->
+    <div class="card">
+        <div class="card-body">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Cliente</th>
+                        <th>Estado</th>
+                        <th>Fecha Inicio</th>
+                        <th>Fecha Fin</th>
+                        <th>Monto</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for proyecto in proyectos %}
+                    <tr>
+                        <td>{{ proyecto.nombre }}</td>
+                        <td>{{ aliados[proyecto.aliado_id].nombre }}</td>
+                        <td>
+                            <span class="badge 
+                                {% if proyecto.etapa == 'propuesta' %}bg-info
+                                {% elif proyecto.etapa == 'planificacion' %}bg-primary
+                                {% elif proyecto.etapa == 'ejecucion' %}bg-warning
+                                {% elif proyecto.etapa == 'cierre' %}bg-success
+                                {% else %}bg-secondary{% endif %}">
+                                {{ proyecto.etapa|capitalize }}
+                            </span>
+                        </td>
+                        <td>{{ proyecto.fecha_inicio }}</td>
+                        <td>{{ proyecto.fecha_fin }}</td>
+                        <td>${{ '{:,.2f}'.format(proyecto.monto) }}</td>
+                        <td>
+                            <button class="btn btn-sm btn-info" onclick="viewProject({{ proyecto.id }})">
+                                <i data-feather="eye"></i>
+                            </button>
+                            <button class="btn btn-sm btn-primary" onclick="editProject({{ proyecto.id }})">
+                                <i data-feather="edit"></i>
+                            </button>
+                            <button class="btn btn-sm btn-success" onclick="manageProject({{ proyecto.id }})">
+                                <i data-feather="settings"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Add Project Modal -->
+    <div class="modal fade" id="addProjectModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Nueva Oportunidad</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addProjectForm">
+                        <div class="mb-3">
+                            <label class="form-label">Nombre del Proyecto</label>
+                            <input type="text" class="form-control" name="nombre" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Cliente</label>
+                            <select class="form-control" name="aliado_id" required>
+                                {% for aliado in aliados.values() %}
+                                <option value="{{ aliado.id }}">{{ aliado.nombre }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Fecha Inicio</label>
+                            <input type="date" class="form-control" name="fecha_inicio" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Fecha Fin Estimada</label>
+                            <input type="date" class="form-control" name="fecha_fin" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Monto Estimado</label>
+                            <input type="number" class="form-control" name="monto" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="saveProject()">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block head %}
+<style>
+.projects-container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.card {
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+}
+
+.table td {
+    vertical-align: middle;
+}
+
+.btn-sm {
+    padding: 0.25rem 0.5rem;
+}
+
+.btn-sm i {
+    width: 16px;
+    height: 16px;
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function viewProject(id) {
+    // Implementar vista detallada del proyecto
+    window.location.href = `/proyectos/${id}/detalle`;
+}
+
+function editProject(id) {
+    // Implementar edición del proyecto
+    window.location.href = `/proyectos/${id}/editar`;
+}
+
+function manageProject(id) {
+    // Implementar gestión del proyecto
+    window.location.href = `/proyectos/${id}/gestionar`;
+}
+
+function saveProject() {
+    // Implementar guardado del proyecto
+    const form = document.getElementById('addProjectForm');
+    const formData = new FormData(form);
+    
+    fetch('/proyectos/crear', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        }
+    });
+}
+
+// Initialize feather icons after dynamic content loads
+document.addEventListener('DOMContentLoaded', function() {
+    feather.replace();
+});
+</script>
+{% endblock %}
