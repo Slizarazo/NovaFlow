@@ -963,6 +963,130 @@ def generar_grafico_retencion(data):
 
     return pio.to_html(fig, full_html=False, include_plotlyjs='cdn')
 
+def generar_grafico_consultores_proyecto(data):
+    """
+    Genera un gráfico de barras para mostrar consultores por proyecto
+    """
+    import plotly.graph_objects as go
+    import plotly.io as pio
+
+    fig = go.Figure(data=[
+        go.Bar(
+            x=data['proyectos'],
+            y=data['consultores'],
+            marker_color='#560591'
+        )
+    ])
+
+    fig.update_layout(
+        title=None,
+        font=dict(color='#560591', size=10),
+        paper_bgcolor='#F0F0F3',
+        plot_bgcolor='#FFFFFF',
+        margin=dict(l=50, r=50, t=30, b=30),
+        height=300,
+        yaxis=dict(title='Número de Consultores', gridcolor='#E1E1E1'),
+        xaxis=dict(gridcolor='#E1E1E1')
+    )
+
+    return pio.to_html(fig, full_html=False, include_plotlyjs='cdn')
+
+def generar_grafico_horas_vs_progreso(data):
+    """
+    Genera un gráfico de dispersión para horas vs progreso
+    """
+    import plotly.graph_objects as go
+    import plotly.io as pio
+
+    fig = go.Figure()
+
+    fig.add_trace(go.Scatter(
+        x=data['horas'],
+        y=data['progreso'],
+        mode='markers+text',
+        text=data['proyectos'],
+        textposition="top center",
+        marker=dict(
+            size=15,
+            color='#560591',
+            symbol='circle'
+        )
+    ))
+
+    fig.update_layout(
+        title=None,
+        font=dict(color='#560591', size=10),
+        paper_bgcolor='#F0F0F3',
+        plot_bgcolor='#FFFFFF',
+        margin=dict(l=50, r=50, t=30, b=30),
+        height=300,
+        yaxis=dict(title='Progreso (%)', gridcolor='#E1E1E1'),
+        xaxis=dict(title='Horas Trabajadas', gridcolor='#E1E1E1')
+    )
+
+    return pio.to_html(fig, full_html=False, include_plotlyjs='cdn')
+
+def generar_grafico_consultores_eficientes(data):
+    """
+    Genera un gráfico de radar para eficiencia de consultores
+    """
+    import plotly.graph_objects as go
+    import plotly.io as pio
+
+    fig = go.Figure()
+
+    for i, consultor in enumerate(data['consultores']):
+        fig.add_trace(go.Scatterpolar(
+            r=[data['eficiencia'][i], data['tareas_completadas'][i], 100-data['horas_promedio'][i]*10],
+            theta=['Eficiencia', 'Tareas Completadas', 'Optimización de Tiempo'],
+            fill='toself',
+            name=consultor
+        ))
+
+    fig.update_layout(
+        polar=dict(
+            radialaxis=dict(
+                visible=True,
+                range=[0, 100]
+            )),
+        showlegend=True,
+        font=dict(color='#560591', size=10),
+        paper_bgcolor='#F0F0F3',
+        plot_bgcolor='#FFFFFF',
+        margin=dict(l=50, r=50, t=30, b=30),
+        height=300
+    )
+
+    return pio.to_html(fig, full_html=False, include_plotlyjs='cdn')
+
+def generar_grafico_tareas_completadas(data):
+    """
+    Genera un gráfico de barras apiladas para tareas por consultor
+    """
+    import plotly.graph_objects as go
+    import plotly.io as pio
+
+    fig = go.Figure(data=[
+        go.Bar(name='Completadas', x=data['consultores'], y=data['completadas'], marker_color='#560591'),
+        go.Bar(name='En Progreso', x=data['consultores'], y=data['en_progreso'], marker_color='#D400AC'),
+        go.Bar(name='Pendientes', x=data['consultores'], y=data['pendientes'], marker_color='#00A0FF')
+    ])
+
+    fig.update_layout(
+        barmode='stack',
+        title=None,
+        font=dict(color='#560591', size=10),
+        paper_bgcolor='#F0F0F3',
+        plot_bgcolor='#FFFFFF',
+        margin=dict(l=50, r=50, t=30, b=30),
+        height=300,
+        yaxis=dict(title='Número de Tareas', gridcolor='#E1E1E1'),
+        xaxis=dict(gridcolor='#E1E1E1'),
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
+    )
+
+    return pio.to_html(fig, full_html=False, include_plotlyjs='cdn')
+
 def generar_grafico_satisfaccion(data):
     """
     Genera un gráfico combinado de NPS y calificación

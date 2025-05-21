@@ -301,6 +301,46 @@ def dashboard_proyectos():
         tiempos_comparacion=generar_grafico_tiempos(datos_tiempos)
     )
 
+@app.route('/dashboard/productividad')
+@login_required
+def dashboard_productividad():
+    # Datos de ejemplo para las gráficas
+    datos_consultores_proyecto = {
+        'proyectos': ['Proyecto A', 'Proyecto B', 'Proyecto C', 'Proyecto D'],
+        'consultores': [4, 3, 5, 2]
+    }
+    
+    datos_horas_progreso = {
+        'proyectos': ['Proyecto A', 'Proyecto B', 'Proyecto C', 'Proyecto D'],
+        'horas': [120, 80, 160, 40],
+        'progreso': [85, 60, 95, 30]
+    }
+    
+    datos_eficiencia = {
+        'consultores': ['Ana S.', 'Carlos M.', 'Laura P.', 'Juan D.', 'María R.'],
+        'eficiencia': [95, 92, 88, 85, 82],
+        'tareas_completadas': [45, 42, 38, 36, 34],
+        'horas_promedio': [6.5, 7.0, 7.8, 8.2, 8.5]
+    }
+    
+    datos_tareas = {
+        'consultores': ['Ana S.', 'Carlos M.', 'Laura P.', 'Juan D.', 'María R.'],
+        'completadas': [45, 42, 38, 36, 34],
+        'en_progreso': [5, 8, 7, 4, 6],
+        'pendientes': [2, 3, 4, 5, 3]
+    }
+
+    return render_template(
+        'dashboard/productividad.html',
+        title='Dashboard de Productividad',
+        config=app.config,
+        role=current_user.role,
+        consultores_proyecto=generar_grafico_consultores_proyecto(datos_consultores_proyecto),
+        horas_vs_progreso=generar_grafico_horas_vs_progreso(datos_horas_progreso),
+        consultores_eficientes=generar_grafico_consultores_eficientes(datos_eficiencia),
+        tareas_completadas=generar_grafico_tareas_completadas(datos_tareas)
+    )
+
 @app.route('/dashboard/cuentas')
 @login_required
 def dashboard_cuentas():

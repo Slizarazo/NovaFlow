@@ -1,0 +1,56 @@
+
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="dashboard-container p-4">
+    <div class="row">
+        <!-- Consultores por Proyecto -->
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="mb-0">Consultores por Proyecto</h5>
+                </div>
+                <div class="card-body">
+                    {{ consultores_proyecto | safe }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Horas vs Progreso -->
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="mb-0">Horas Trabajadas vs Progreso</h5>
+                </div>
+                <div class="card-body">
+                    {{ horas_vs_progreso | safe }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Consultores más Eficientes -->
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="mb-0">Consultores más Eficientes</h5>
+                </div>
+                <div class="card-body">
+                    {{ consultores_eficientes | safe }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Tareas Completadas -->
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="mb-0">Tareas Completadas por Consultor</h5>
+                </div>
+                <div class="card-body">
+                    {{ tareas_completadas | safe }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
