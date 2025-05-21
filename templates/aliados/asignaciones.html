@@ -5,11 +5,14 @@
     <div class="dashboard-section-title">
         <h4>Asignaciones de Consultores</h4>
         <div class="dashboard-section-actions">
-            <button type="button" class="dashboard-section-action" title="Exportar">
-                <i data-feather="download"></i>
-            </button>
-            <button type="button" class="dashboard-section-action" title="Nueva Asignación">
+            <button type="button" class="dashboard-section-action" data-bs-toggle="modal" data-bs-target="#addAssignmentModal" title="Nueva Asignación">
                 <i data-feather="plus"></i>
+            </button>
+            <button type="button" class="dashboard-section-action" data-bs-toggle="modal" data-bs-target="#importAssignmentModal" title="Importar">
+                <i data-feather="upload"></i>
+            </button>
+            <button type="button" class="dashboard-section-action" data-bs-toggle="modal" data-bs-target="#exportAssignmentModal" title="Exportar">
+                <i data-feather="download"></i>
             </button>
         </div>
     </div>
