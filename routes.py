@@ -267,9 +267,9 @@ def aliados_usuarios():
                          config=app.config,
                          role=current_user.role)
 
-@app.route('/aliados/cuentas')
+@app.route('/aliados/aliados')
 @login_required
-def aliados_cuentas():
+def aliados_aliados():
     aliados = Aliado.ALIADOS
 
     # Datos estándar o extendidos según disponibilidad
@@ -286,7 +286,7 @@ def aliados_cuentas():
         app.logger.info("Usando datos estándar para cuentas de aliados")
 
     return render_template(
-        'aliados/cuentas.html',
+        'aliados/aliados.html',
         title='Cuentas de Aliados',
         aliados=aliados,
         config=app.config,

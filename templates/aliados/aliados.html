@@ -1,0 +1,22 @@
+
+{% extends "layout.html" %}
+
+{% block head %}
+<!-- Add page specific CSS if needed -->
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="dashboard-section-title">
+        <h4>Gestión de Aliados</h4>
+        <div class="dashboard-section-actions">
+            <button type="button" class="dashboard-section-action" data-bs-toggle="modal" data-bs-target="#addAccountModal" title="Añadir Aliado">
+                <i data-feather="plus"></i>
+            </button>
+            <button type="button" class="dashboard-section-action" data-bs-toggle="modal" data-bs-target="#importAccountsModal" title="Importar">
+                <i data-feather="upload"></i>
+            </button>
+            <button type="button" class="dashboard-section-action" data-bs-toggle="modal" data-bs-target="#exportAccountsModal" title="Exportar">
+                <i data-feather="download"></i>
+            </button>
+        </div>
