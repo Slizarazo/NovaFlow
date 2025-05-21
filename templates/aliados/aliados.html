@@ -6,19 +6,132 @@
 {% endblock %}
 
 {% block content %}
-<div class="dashboard-container">
+<div class="container-fluid">
+    <!-- Header with action buttons -->
     <div class="dashboard-section-title">
         <h4>Gestión de Aliados</h4>
         <div class="dashboard-section-actions">
-            <button type="button" class="dashboard-section-action" data-bs-toggle="modal" data-bs-target="#addAccountModal" title="Añadir Aliado">
+            <button type="button" class="dashboard-section-action" data-bs-toggle="modal" data-bs-target="#addAliadoModal" title="Añadir Aliado">
                 <i data-feather="plus"></i>
             </button>
-            <button type="button" class="dashboard-section-action" data-bs-toggle="modal" data-bs-target="#importAccountsModal" title="Importar">
+            <button type="button" class="dashboard-section-action" data-bs-toggle="modal" data-bs-target="#importAliadosModal" title="Importar">
                 <i data-feather="upload"></i>
             </button>
-            <button type="button" class="dashboard-section-action" data-bs-toggle="modal" data-bs-target="#exportAccountsModal" title="Exportar">
+            <button type="button" class="dashboard-section-action" data-bs-toggle="modal" data-bs-target="#exportAliadosModal" title="Exportar">
                 <i data-feather="download"></i>
             </button>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form id="filterForm" class="row g-3">
+                <div class="col-md-2">
+                    <label class="form-label">Aliado</label>
+                    <input type="text" class="form-control" name="aliado" placeholder="Buscar aliado...">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Cuenta</label>
+                    <select class="form-select" name="cuenta">
+                        <option value="">Todas</option>
+                        {% for aliado in aliados %}
+                        <option value="{{ aliado.id }}">{{ aliado.nombre }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Industria</label>
+                    <select class="form-select" name="industria">
+                        <option value="">Todas</option>
+                        <option value="Tecnología">Tecnología</option>
+                        <option value="Finanzas">Finanzas</option>
+                        <option value="Manufactura">Manufactura</option>
+                        <option value="Servicios">Servicios</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">País</label>
+                    <select class="form-select" name="pais">
+                        <option value="">Todos</option>
+                        <option value="México">México</option>
+                        <option value="Colombia">Colombia</option>
+                        <option value="Perú">Perú</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Estado</label>
+                    <select class="form-select" name="estado">
+                        <option value="">Todos</option>
+                        <option value="activo">Activo</option>
+                        <option value="inactivo">Inactivo</option>
+                        <option value="pendiente">Pendiente</option>
+                    </select>
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="button" class="btn btn-primary me-2">Filtrar</button>
+                    <button type="reset" class="btn btn-outline-secondary">Limpiar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Aliados Table -->
+    <div class="card">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Aliado</th>
+                            <th>Región</th>
+                            <th>Industria</th>
+                            <th>Ventas Trimestre</th>
+                            <th>Ventas Acumuladas</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for aliado in aliados %}
+                        <tr>
+                            <td>{{ aliado.id }}</td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="avatar-circle me-2">{{ aliado.nombre[0] }}</div>
+                                    <div>{{ aliado.nombre }}</div>
+                                </div>
+                            </td>
+                            <td>{{ aliado.region }}</td>
+                            <td>{{ aliado.industria }}</td>
+                            <td>${{ '{:,.0f}'.format(aliado.ventas_trimestre) }}</td>
+                            <td>${{ '{:,.0f}'.format(aliado.ventas_acumuladas) }}</td>
+                            <td>
+                                <span class="badge {% if aliado.id % 3 == 0 %}bg-warning{% elif aliado.id % 2 == 0 %}bg-success{% else %}bg-primary{% endif %}">
+                                    {% if aliado.id % 3 == 0 %}Pendiente
+                                    {% elif aliado.id % 2 == 0 %}Activo
+                                    {% else %}Nuevo{% endif %}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-sm btn-icon" title="Editar">
+                                        <i data-feather="edit-2"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-icon" title="Ver detalles">
+                                        <i data-feather="eye"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-icon text-danger" title="Eliminar">
+                                        <i data-feather="trash-2"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
