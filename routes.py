@@ -262,6 +262,45 @@ def dashboard_performance():
         usar_datos_extendidos=USAR_DATOS_EXTENDIDOS)
 
 
+@app.route('/dashboard/proyectos')
+@login_required
+def dashboard_proyectos():
+    # Datos de ejemplo para las gráficas
+    datos_proyectos_activos = {
+        'etapas': ['Planificación', 'Desarrollo', 'Pruebas', 'Implementación'],
+        'cantidad': [5, 8, 3, 4]
+    }
+    
+    datos_pipeline = {
+        'etapas': ['Contacto', 'Propuesta', 'Negociación', 'Cierre'],
+        'cantidad': [20, 12, 8, 5],
+        'valor': [200000, 150000, 100000, 80000]
+    }
+    
+    datos_desempeno = {
+        'proyectos': ['Proyecto A', 'Proyecto B', 'Proyecto C', 'Proyecto D'],
+        'avance': [85, 60, 92, 45],
+        'calidad': [90, 85, 95, 80],
+        'satisfaccion': [88, 75, 90, 85]
+    }
+    
+    datos_tiempos = {
+        'proyectos': ['Proyecto A', 'Proyecto B', 'Proyecto C', 'Proyecto D'],
+        'estimado': [45, 30, 60, 90],
+        'real': [50, 35, 58, 95]
+    }
+
+    return render_template(
+        'dashboard/proyectos.html',
+        title='Dashboard de Proyectos',
+        config=app.config,
+        role=current_user.role,
+        proyectos_activos=generar_grafico_proyectos_activos(datos_proyectos_activos),
+        pipeline_oportunidades=generar_grafico_pipeline(datos_pipeline),
+        desempeno_proyecto=generar_grafico_desempeno_proyectos(datos_desempeno),
+        tiempos_comparacion=generar_grafico_tiempos(datos_tiempos)
+    )
+
 @app.route('/dashboard/community')
 @login_required
 def dashboard_community():

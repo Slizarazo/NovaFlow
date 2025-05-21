@@ -724,6 +724,132 @@ def generar_grafico_clientes_nuevos_vs_recurrentes(data):
 
     return pio.to_html(fig, full_html=False, include_plotlyjs='cdn')
 
+def generar_grafico_proyectos_activos(data):
+    """
+    Genera un gráfico de barras para proyectos activos por etapa
+    """
+    import plotly.graph_objects as go
+    import plotly.io as pio
+
+    fig = go.Figure(data=[
+        go.Bar(
+            x=data['etapas'],
+            y=data['cantidad'],
+            marker_color='#560591'
+        )
+    ])
+
+    fig.update_layout(
+        title=None,
+        font=dict(color='#560591', size=10),
+        paper_bgcolor='#F0F0F3',
+        plot_bgcolor='#FFFFFF',
+        margin=dict(l=50, r=50, t=30, b=30),
+        height=300,
+        yaxis=dict(gridcolor='#E1E1E1', title='Cantidad de Proyectos'),
+        xaxis=dict(gridcolor='#E1E1E1')
+    )
+
+    return pio.to_html(fig, full_html=False, include_plotlyjs='cdn')
+
+def generar_grafico_pipeline(data):
+    """
+    Genera un gráfico de embudo para el pipeline de oportunidades
+    """
+    import plotly.graph_objects as go
+    import plotly.io as pio
+
+    fig = go.Figure(data=[
+        go.Funnel(
+            y=data['etapas'],
+            x=data['cantidad'],
+            textinfo="value+percent initial",
+            marker=dict(color=['#560591', '#D400AC', '#00A0FF', '#000000'])
+        )
+    ])
+
+    fig.update_layout(
+        title=None,
+        font=dict(color='#560591', size=10),
+        paper_bgcolor='#F0F0F3',
+        plot_bgcolor='#FFFFFF',
+        margin=dict(l=50, r=50, t=30, b=30),
+        height=300
+    )
+
+    return pio.to_html(fig, full_html=False, include_plotlyjs='cdn')
+
+def generar_grafico_desempeno_proyectos(data):
+    """
+    Genera un gráfico de radar para el desempeño de proyectos
+    """
+    import plotly.graph_objects as go
+    import plotly.io as pio
+
+    fig = go.Figure()
+
+    for i, proyecto in enumerate(data['proyectos']):
+        fig.add_trace(go.Scatterpolar(
+            r=[data['avance'][i], data['calidad'][i], data['satisfaccion'][i]],
+            theta=['Avance', 'Calidad', 'Satisfacción'],
+            fill='toself',
+            name=proyecto
+        ))
+
+    fig.update_layout(
+        polar=dict(
+            radialaxis=dict(
+                visible=True,
+                range=[0, 100],
+                ticksuffix='%'
+            )),
+        showlegend=True,
+        font=dict(color='#560591', size=10),
+        paper_bgcolor='#F0F0F3',
+        plot_bgcolor='#FFFFFF',
+        margin=dict(l=50, r=50, t=30, b=30),
+        height=300
+    )
+
+    return pio.to_html(fig, full_html=False, include_plotlyjs='cdn')
+
+def generar_grafico_tiempos(data):
+    """
+    Genera un gráfico de barras comparando tiempos estimados vs reales
+    """
+    import plotly.graph_objects as go
+    import plotly.io as pio
+
+    fig = go.Figure(data=[
+        go.Bar(
+            name='Tiempo Estimado',
+            x=data['proyectos'],
+            y=data['estimado'],
+            marker_color='#560591'
+        ),
+        go.Bar(
+            name='Tiempo Real',
+            x=data['proyectos'],
+            y=data['real'],
+            marker_color='#D400AC'
+        )
+    ])
+
+    fig.update_layout(
+        barmode='group',
+        title=None,
+        font=dict(color='#560591', size=10),
+        paper_bgcolor='#F0F0F3',
+        plot_bgcolor='#FFFFFF',
+        margin=dict(l=50, r=50, t=30, b=30),
+        height=300,
+        yaxis=dict(gridcolor='#E1E1E1', title='Días'),
+        xaxis=dict(gridcolor='#E1E1E1'),
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
+    )
+
+    return pio.to_html(fig, full_html=False, include_plotlyjs='cdn')
+
 def generar_grafico_rentabilidad(data):
     """
     Genera un gráfico de burbujas para el análisis de rentabilidad

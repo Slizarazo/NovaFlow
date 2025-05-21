@@ -1,0 +1,83 @@
+
+{% extends "layout.html" %}
+{% block content %}
+<div class="dashboard-container p-4">
+    <div class="dashboard-grid">
+        <!-- Proyectos Activos -->
+        <div class="dashboard-card">
+            <div class="card-header">
+                <h3>Proyectos Activos</h3>
+                <p class="text-muted">Estado actual por etapa</p>
+            </div>
+            <div class="card-body">
+                {{ proyectos_activos | safe }}
+            </div>
+        </div>
+
+        <!-- Pipeline de Oportunidades -->
+        <div class="dashboard-card">
+            <div class="card-header">
+                <h3>Pipeline de Oportunidades</h3>
+                <p class="text-muted">Flujo de conversión</p>
+            </div>
+            <div class="card-body">
+                {{ pipeline_oportunidades | safe }}
+            </div>
+        </div>
+
+        <!-- Desempeño por Proyecto -->
+        <div class="dashboard-card">
+            <div class="card-header">
+                <h3>Desempeño por Proyecto</h3>
+                <p class="text-muted">Métricas clave de rendimiento</p>
+            </div>
+            <div class="card-body">
+                {{ desempeno_proyecto | safe }}
+            </div>
+        </div>
+
+        <!-- Tiempos Estimados vs Real -->
+        <div class="dashboard-card">
+            <div class="card-header">
+                <h3>Tiempos Estimados vs Real</h3>
+                <p class="text-muted">Análisis de planificación</p>
+            </div>
+            <div class="card-body">
+                {{ tiempos_comparacion | safe }}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block head %}
+<style>
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+.dashboard-card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 1.5rem;
+}
+
+.card-header {
+    margin-bottom: 1rem;
+}
+
+.card-header h3 {
+    margin: 0;
+    color: var(--primary);
+    font-size: 1.2rem;
+}
+
+.card-body {
+    min-height: 300px;
+}
+</style>
+{% endblock %}
