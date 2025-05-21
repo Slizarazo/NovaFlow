@@ -774,18 +774,21 @@ def proyectos_general():
     proyectos = Proyecto.PROYECTOS
     aliados = {aliado.id: aliado for aliado in Aliado.ALIADOS}
     
-    total_proyectos = len(proyectos)
-    proyectos_progreso = len([p for p in proyectos if p.etapa in ['planificacion', 'ejecucion']])
-    proyectos_completados = len([p for p in proyectos if p.etapa == 'cierre'])
-    oportunidades = len([p for p in proyectos if p.etapa == 'propuesta'])
+    # Agrupar proyectos por estado
+    estados = {
+        'oportunidad': [p for p in proyectos if p.etapa == 'oportunidad'],
+        'propuesta': [p for p in proyectos if p.etapa == 'propuesta'],
+        'aprobado': [p for p in proyectos if p.etapa == 'aprobado'],
+        'desarrollo': [p for p in proyectos if p.etapa == 'desarrollo'],
+        'testing': [p for p in proyectos if p.etapa == 'testing'],
+        'cierre': [p for p in proyectos if p.etapa == 'cierre'],
+        'evaluacion': [p for p in proyectos if p.etapa == 'evaluacion']
+    }
 
     return render_template('proyectos/general.html',
                          title='Gestión de Proyectos',
                          proyectos=proyectos,
                          aliados=aliados,
-                         total_proyectos=total_proyectos,
-                         proyectos_progreso=proyectos_progreso,
-                         proyectos_completados=proyectos_completados,
-                         oportunidades=oportunidades,
+                         estados=estados,
                          config=app.config,
                          role=current_user.role)
