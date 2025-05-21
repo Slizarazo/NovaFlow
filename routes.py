@@ -64,20 +64,20 @@ def dashboard():
 def dashboard_crecimiento():
     if current_user.role != 'aliado':
         return redirect(url_for('dashboard_growth'))
-    
+
     # Datos para las gráficas
     datos_ingresos_costos = {
         'meses': ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'],
         'ingresos': [50000, 55000, 58000, 54000, 62000, 65000],
         'costos': [30000, 32000, 35000, 33000, 36000, 38000]
     }
-    
+
     datos_clientes = {
         'meses': ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'],
         'clientes_nuevos': [10, 12, 8, 15, 11, 14],
         'clientes_recurrentes': [45, 47, 46, 48, 50, 52]
     }
-    
+
     datos_rentabilidad = {
         'servicios': ['Consultoría', 'Desarrollo', 'Análisis', 'Soporte'],
         'ingresos': [100000, 80000, 60000, 40000],
@@ -270,20 +270,20 @@ def dashboard_proyectos():
         'etapas': ['Planificación', 'Desarrollo', 'Pruebas', 'Implementación'],
         'cantidad': [5, 8, 3, 4]
     }
-    
+
     datos_pipeline = {
         'etapas': ['Contacto', 'Propuesta', 'Negociación', 'Cierre'],
         'cantidad': [20, 12, 8, 5],
         'valor': [200000, 150000, 100000, 80000]
     }
-    
+
     datos_desempeno = {
         'proyectos': ['Proyecto A', 'Proyecto B', 'Proyecto C', 'Proyecto D'],
         'avance': [85, 60, 92, 45],
         'calidad': [90, 85, 95, 80],
         'satisfaccion': [88, 75, 90, 85]
     }
-    
+
     datos_tiempos = {
         'proyectos': ['Proyecto A', 'Proyecto B', 'Proyecto C', 'Proyecto D'],
         'estimado': [45, 30, 60, 90],
@@ -309,20 +309,20 @@ def dashboard_productividad():
         'proyectos': ['Proyecto A', 'Proyecto B', 'Proyecto C', 'Proyecto D'],
         'consultores': [4, 3, 5, 2]
     }
-    
+
     datos_horas_progreso = {
         'proyectos': ['Proyecto A', 'Proyecto B', 'Proyecto C', 'Proyecto D'],
         'horas': [120, 80, 160, 40],
         'progreso': [85, 60, 95, 30]
     }
-    
+
     datos_eficiencia = {
         'consultores': ['Ana S.', 'Carlos M.', 'Laura P.', 'Juan D.', 'María R.'],
         'eficiencia': [95, 92, 88, 85, 82],
         'tareas_completadas': [45, 42, 38, 36, 34],
         'horas_promedio': [6.5, 7.0, 7.8, 8.2, 8.5]
     }
-    
+
     datos_tareas = {
         'consultores': ['Ana S.', 'Carlos M.', 'Laura P.', 'Juan D.', 'María R.'],
         'completadas': [45, 42, 38, 36, 34],
@@ -350,21 +350,21 @@ def dashboard_facturacion():
         'facturacion': [120000, 135000, 115000, 140000, 125000, 145000],
         'anual': [1450000, 1600000, 1750000, 1900000]
     }
-    
+
     datos_deudas = {
         'clientes': ['Cliente A', 'Cliente B', 'Cliente C', 'Cliente D', 'Cliente E'],
         'por_cobrar': [45000, 32000, 28000, 15000, 22000],
         'vencido': [15000, 8000, 12000, 5000, 7000],
         'dias_vencimiento': [45, 30, 60, 15, 25]
     }
-    
+
     datos_rentabilidad = {
         'proyectos': ['Proyecto A', 'Proyecto B', 'Proyecto C', 'Proyecto D'],
         'ingresos': [180000, 150000, 120000, 90000],
         'costos': [126000, 112500, 84000, 72000],
         'margen': [30, 25, 30, 20]
     }
-    
+
     datos_flujo = {
         'meses': ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'],
         'ingresos': [150000, 165000, 145000, 170000, 155000, 175000],
@@ -395,20 +395,20 @@ def dashboard_riesgos():
                    ['Alto-Medio', 'Medio', 'Bajo-Medio'],
                    ['Medio', 'Bajo-Medio', 'Bajo']]
     }
-    
+
     datos_proyectos = {
         'proyectos': ['Proyecto A', 'Proyecto B', 'Proyecto C', 'Proyecto D'],
         'nivel_riesgo': [85, 65, 45, 25],
         'estado': ['Bloqueado', 'En Riesgo', 'Atención', 'Normal'],
         'colores': ['#FF0000', '#FFA500', '#FFFF00', '#00FF00']
     }
-    
+
     datos_historial = {
         'fechas': ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'],
         'problemas_reportados': [12, 15, 10, 8, 13, 9],
         'problemas_resueltos': [10, 13, 9, 7, 11, 8]
     }
-    
+
     datos_alertas = {
         'tiempo': ['9:00', '10:30', '11:45', '13:15', '14:30'],
         'severidad': [5, 3, 4, 2, 1],
@@ -435,21 +435,21 @@ def dashboard_facturacion():
         'facturacion': [120000, 135000, 115000, 140000, 125000, 145000],
         'anual': [1450000, 1600000, 1750000, 1900000]
     }
-    
+
     datos_deudas = {
         'clientes': ['Cliente A', 'Cliente B', 'Cliente C', 'Cliente D', 'Cliente E'],
         'por_cobrar': [45000, 32000, 28000, 15000, 22000],
         'vencido': [15000, 8000, 12000, 5000, 7000],
         'dias_vencimiento': [45, 30, 60, 15, 25]
     }
-    
+
     datos_rentabilidad = {
         'proyectos': ['Proyecto A', 'Proyecto B', 'Proyecto C', 'Proyecto D'],
         'ingresos': [180000, 150000, 120000, 90000],
         'costos': [126000, 112500, 84000, 72000],
         'margen': [30, 25, 30, 20]
     }
-    
+
     datos_flujo = {
         'meses': ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'],
         'ingresos': [150000, 165000, 145000, 170000, 155000, 175000],
@@ -477,19 +477,19 @@ def dashboard_cuentas():
         'cantidad': [15, 30, 40, 25],
         'colores': ['#560591', '#D400AC', '#00A0FF', '#000000']
     }
-    
+
     datos_clv = {
         'meses': ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'],
         'premium': [5000, 5200, 5400, 5600, 5800, 6000],
         'business': [3000, 3100, 3300, 3400, 3600, 3800],
         'standard': [1500, 1600, 1700, 1800, 1900, 2000]
     }
-    
+
     datos_retencion = {
         'meses': ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'],
         'tasa_retencion': [95, 93, 94, 92, 95, 96]
     }
-    
+
     datos_satisfaccion = {
         'nps_categorias': ['Promotores', 'Pasivos', 'Detractores'],
         'nps_valores': [70, 20, 10],
@@ -638,6 +638,7 @@ def aliados_asignaciones():
         app.logger.info(
             "Usando datos estándar para asignaciones de consultores")
 
+    ```python
     return render_template(
         'aliados/asignaciones.html',
         title='Asignaciones de Consultores',
@@ -771,9 +772,9 @@ def internal_server_error(e):
 @app.route('/proyectos/general')
 @login_required
 def proyectos_general():
-    proyectos = Proyecto.PROYECTOS
+    proyectos = Proyecto.PROYECTOS 
     aliados = {aliado.id: aliado for aliado in Aliado.ALIADOS}
-    
+
     # Agrupar proyectos por estado
     estados = {
         'oportunidad': [p for p in proyectos if p.etapa == 'oportunidad'],
