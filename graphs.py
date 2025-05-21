@@ -1172,6 +1172,7 @@ def generar_grafico_rentabilidad_proyecto(data):
     Genera un gráfico de cascada para rentabilidad por proyecto
     """
     import plotly.graph_objects as go
+    import plotly.io as pio
 
     fig = go.Figure(data=[
         go.Bar(
