@@ -22,9 +22,28 @@ class Config:
              ]}
         ],
         'aliado': [
-            {'name': 'Dashboard', 'icon': 'home', 'url': '/dashboard'},
-            {'name': 'Proyectos', 'icon': 'briefcase', 'url': '/proyectos'},
-            {'name': 'Consultores', 'icon': 'user-check', 'url': '/consultores'}
+            {'name': 'Dashboards', 'icon': 'activity', 'url': '/dashboard',
+             'submenu': [
+                 {'name': 'Crecimiento', 'url': '/dashboard/crecimiento'},
+                 {'name': 'Proyectos', 'url': '/dashboard/proyectos'},
+                 {'name': 'Cuentas', 'url': '/dashboard/cuentas'},
+                 {'name': 'Productividad', 'url': '/dashboard/productividad'},
+                 {'name': 'Facturación', 'url': '/dashboard/facturacion'},
+                 {'name': 'Riesgos', 'url': '/dashboard/riesgos'}
+             ]},
+            {'name': 'Proyectos', 'icon': 'briefcase', 'url': '/proyectos',
+             'submenu': [
+                 {'name': 'General', 'url': '/proyectos/general'},
+                 {'name': 'Oportunidades', 'url': '/proyectos/oportunidades'},
+                 {'name': 'Propuestas', 'url': '/proyectos/propuestas'},
+                 {'name': 'En Desarrollo', 'url': '/proyectos/desarrollo'},
+                 {'name': 'Cerrados', 'url': '/proyectos/cerrados'}
+             ]},
+            {'name': 'Cuentas', 'icon': 'users', 'url': '/cuentas',
+             'submenu': [
+                 {'name': 'Info Clientes', 'url': '/cuentas/clientes'},
+                 {'name': 'Usuarios', 'url': '/cuentas/usuarios'}
+             ]}
         ],
         'supervisor': [
             {'name': 'Dashboard', 'icon': 'home', 'url': '/dashboard'},
