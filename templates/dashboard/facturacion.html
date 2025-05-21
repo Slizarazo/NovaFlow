@@ -1,0 +1,56 @@
+
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="dashboard-container p-4">
+    <div class="row">
+        <!-- Facturación Mensual/Anual -->
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="mb-0">Facturación Mensual/Anual</h5>
+                </div>
+                <div class="card-body">
+                    {{ facturacion_mensual | safe }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Deudas y Cobros -->
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="mb-0">Estado de Deudas y Cobros</h5>
+                </div>
+                <div class="card-body">
+                    {{ deudas_cobros | safe }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Rentabilidad por Proyecto/Cliente -->
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="mb-0">Rentabilidad por Proyecto/Cliente</h5>
+                </div>
+                <div class="card-body">
+                    {{ rentabilidad_proyecto | safe }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Flujo de Caja -->
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="mb-0">Flujo de Caja</h5>
+                </div>
+                <div class="card-body">
+                    {{ flujo_caja | safe }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

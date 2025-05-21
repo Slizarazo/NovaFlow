@@ -1087,6 +1087,156 @@ def generar_grafico_tareas_completadas(data):
 
     return pio.to_html(fig, full_html=False, include_plotlyjs='cdn')
 
+def generar_grafico_facturacion(data):
+    """
+    Genera un gráfico combinado de facturación mensual y anual
+    """
+    import plotly.graph_objects as go
+    from plotly.subplots import make_subplots
+
+    fig = make_subplots(rows=2, cols=1, subplot_titles=('Facturación Mensual', 'Facturación Anual'))
+
+    # Facturación Mensual
+    fig.add_trace(
+        go.Bar(
+            x=data['meses'],
+            y=data['facturacion'],
+            marker_color='#560591',
+            name='Mensual'
+        ),
+        row=1, col=1
+    )
+
+    # Facturación Anual
+    fig.add_trace(
+        go.Scatter(
+            x=['2022', '2023', '2024', '2025'],
+            y=data['anual'],
+            mode='lines+markers',
+            line=dict(color='#D400AC', width=3),
+            name='Anual'
+        ),
+        row=2, col=1
+    )
+
+    fig.update_layout(
+        height=500,
+        showlegend=True,
+        font=dict(color='#560591', size=10),
+        paper_bgcolor='#F0F0F3',
+        plot_bgcolor='#FFFFFF',
+        margin=dict(l=50, r=50, t=50, b=30)
+    )
+
+    return pio.to_html(fig, full_html=False, include_plotlyjs='cdn')
+
+def generar_grafico_deudas(data):
+    """
+    Genera un gráfico de barras apiladas para deudas y cobros
+    """
+    import plotly.graph_objects as go
+
+    fig = go.Figure(data=[
+        go.Bar(
+            name='Por Cobrar',
+            x=data['clientes'],
+            y=data['por_cobrar'],
+            marker_color='#560591'
+        ),
+        go.Bar(
+            name='Vencido',
+            x=data['clientes'],
+            y=data['vencido'],
+            marker_color='#D400AC'
+        )
+    ])
+
+    fig.update_layout(
+        barmode='stack',
+        font=dict(color='#560591', size=10),
+        paper_bgcolor='#F0F0F3',
+        plot_bgcolor='#FFFFFF',
+        margin=dict(l=50, r=50, t=30, b=30),
+        height=300,
+        yaxis=dict(title='Monto ($)', gridcolor='#E1E1E1'),
+        xaxis=dict(gridcolor='#E1E1E1'),
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
+    )
+
+    return pio.to_html(fig, full_html=False, include_plotlyjs='cdn')
+
+def generar_grafico_rentabilidad_proyecto(data):
+    """
+    Genera un gráfico de cascada para rentabilidad por proyecto
+    """
+    import plotly.graph_objects as go
+
+    fig = go.Figure(data=[
+        go.Bar(
+            name='Ingresos',
+            x=data['proyectos'],
+            y=data['ingresos'],
+            marker_color='#560591'
+        ),
+        go.Bar(
+            name='Costos',
+            x=data['proyectos'],
+            y=[-x for x in data['costos']],
+            marker_color='#D400AC'
+        )
+    ])
+
+    fig.update_layout(
+        barmode='relative',
+        font=dict(color='#560591', size=10),
+        paper_bgcolor='#F0F0F3',
+        plot_bgcolor='#FFFFFF',
+        margin=dict(l=50, r=50, t=30, b=30),
+        height=300,
+        yaxis=dict(title='Monto ($)', gridcolor='#E1E1E1'),
+        xaxis=dict(gridcolor='#E1E1E1'),
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
+    )
+
+    return pio.to_html(fig, full_html=False, include_plotlyjs='cdn')
+
+def generar_grafico_flujo_caja(data):
+    """
+    Genera un gráfico de área para el flujo de caja
+    """
+    import plotly.graph_objects as go
+
+    fig = go.Figure()
+
+    fig.add_trace(go.Scatter(
+        x=data['meses'],
+        y=data['ingresos'],
+        name='Ingresos',
+        line=dict(color='#560591', width=3),
+        fill=None
+    ))
+
+    fig.add_trace(go.Scatter(
+        x=data['meses'],
+        y=data['egresos'],
+        name='Egresos',
+        line=dict(color='#D400AC', width=3),
+        fill='tonexty'
+    ))
+
+    fig.update_layout(
+        font=dict(color='#560591', size=10),
+        paper_bgcolor='#F0F0F3',
+        plot_bgcolor='#FFFFFF',
+        margin=dict(l=50, r=50, t=30, b=30),
+        height=300,
+        yaxis=dict(title='Monto ($)', gridcolor='#E1E1E1'),
+        xaxis=dict(gridcolor='#E1E1E1'),
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
+    )
+
+    return pio.to_html(fig, full_html=False, include_plotlyjs='cdn')
+
 def generar_grafico_satisfaccion(data):
     """
     Genera un gráfico combinado de NPS y calificación
