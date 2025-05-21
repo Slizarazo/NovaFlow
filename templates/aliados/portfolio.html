@@ -5,11 +5,14 @@
     <div class="dashboard-section-title">
         <h4>Portafolio de Proyectos</h4>
         <div class="dashboard-section-actions">
-            <button type="button" class="dashboard-section-action" title="Exportar">
-                <i data-feather="download"></i>
-            </button>
-            <button type="button" class="dashboard-section-action" title="Añadir Proyecto">
+            <button type="button" class="dashboard-section-action" data-bs-toggle="modal" data-bs-target="#addProductModal" title="Añadir Producto">
                 <i data-feather="plus"></i>
+            </button>
+            <button type="button" class="dashboard-section-action" data-bs-toggle="modal" data-bs-target="#importProductModal" title="Importar Producto">
+                <i data-feather="upload"></i>
+            </button>
+            <button type="button" class="dashboard-section-action" data-bs-toggle="modal" data-bs-target="#exportProductModal" title="Exportar Producto">
+                <i data-feather="download"></i>
             </button>
         </div>
     </div>
@@ -279,3 +282,90 @@
     });
 </script>
 {% endblock %}
+
+
+        <!-- Modal Añadir Producto -->
+        <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel" aria-hidden="true" style="display: none;">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addProductModalLabel">Añadir Producto</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="addProductForm">
+                            <div class="mb-3">
+                                <label for="productName" class="form-label">Nombre del Producto</label>
+                                <input type="text" class="form-control" id="productName" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="productDescription" class="form-label">Descripción</label>
+                                <textarea class="form-control" id="productDescription" rows="3"></textarea>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" form="addProductForm" class="btn btn-primary">Guardar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Importar Producto -->
+        <div class="modal fade" id="importProductModal" tabindex="-1" aria-labelledby="importProductModalLabel" aria-hidden="true" style="display: none;">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="importProductModalLabel">Importar Producto</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="importProductForm">
+                            <div class="mb-3">
+                                <label for="productFile" class="form-label">Archivo CSV/Excel</label>
+                                <input type="file" class="form-control" id="productFile" accept=".csv,.xlsx" required>
+                            </div>
+                            <div class="alert alert-info">
+                                <small>El archivo debe contener las columnas: Nombre, Descripción, Categoría</small>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" form="importProductForm" class="btn btn-primary">Importar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Exportar Producto -->
+        <div class="modal fade" id="exportProductModal" tabindex="-1" aria-labelledby="exportProductModalLabel" aria-hidden="true" style="display: none;">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exportProductModalLabel">Exportar Producto</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="exportProductForm">
+                            <div class="mb-3">
+                                <label class="form-label">Formato de Exportación</label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="exportFormat" id="formatCSV" value="csv" checked>
+                                    <label class="form-check-label" for="formatCSV">CSV</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="exportFormat" id="formatExcel" value="excel">
+                                    <label class="form-check-label" for="formatExcel">Excel</label>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" form="exportProductForm" class="btn btn-primary">Exportar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
