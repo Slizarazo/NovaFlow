@@ -257,6 +257,16 @@ def dashboard_community():
         usar_datos_extendidos=USAR_DATOS_EXTENDIDOS)
 
 
+@app.route('/aliados/usuarios')
+@login_required
+def aliados_usuarios():
+    users = User.get_all_users() if hasattr(User, 'get_all_users') else []
+    return render_template('aliados/usuarios.html',
+                         title='Gestión de Usuarios',
+                         users=users,
+                         config=app.config,
+                         role=current_user.role)
+
 @app.route('/aliados/cuentas')
 @login_required
 def aliados_cuentas():

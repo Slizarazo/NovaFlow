@@ -15,6 +15,7 @@ class Config:
              ]},
             {'name': 'Aliados', 'icon': 'users', 'url': '/aliados',
              'submenu': [
+                 {'name': 'Usuarios', 'url': '/aliados/usuarios'},
                  {'name': 'Cuentas', 'url': '/aliados/cuentas'},
                  {'name': 'Portafolio', 'url': '/aliados/portfolio'},
                  {'name': 'Asignaciones', 'url': '/aliados/asignaciones'}

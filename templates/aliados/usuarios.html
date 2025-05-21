@@ -1,0 +1,138 @@
+
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="dashboard-section-title">
+        <h4>Gestión de Usuarios</h4>
+        <div class="dashboard-section-actions">
+            <button type="button" class="dashboard-section-action" data-bs-toggle="modal" data-bs-target="#addUserModal" title="Añadir Usuario">
+                <i data-feather="plus"></i>
+            </button>
+            <button type="button" class="dashboard-section-action" data-bs-toggle="modal" data-bs-target="#exportUsersModal" title="Exportar Usuarios">
+                <i data-feather="download"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Users Table -->
+    <div class="card mb-4">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped mb-0">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Email</th>
+                            <th>Rol</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                        <tr>
+                            <td>{{ user.id }}</td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div style="width: 32px; height: 32px; background-color: var(--secondary); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 10px; color: white; font-weight: bold;">
+                                        {{ user.username[0] }}
+                                    </div>
+                                    <div>{{ user.username }}</div>
+                                </div>
+                            </td>
+                            <td>{{ user.email }}</td>
+                            <td>{{ user.role }}</td>
+                            <td>
+                                <span class="badge {% if user.is_active %}bg-success{% else %}bg-danger{% endif %}">
+                                    {{ 'Activo' if user.is_active else 'Inactivo' }}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="d-flex">
+                                    <button class="btn btn-sm btn-outline-primary me-1">
+                                        <i data-feather="edit" style="width: 14px; height: 14px;"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger">
+                                        <i data-feather="trash-2" style="width: 14px; height: 14px;"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add User Modal -->
+    <div class="modal fade" id="addUserModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Añadir Usuario</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addUserForm">
+                        <div class="mb-3">
+                            <label class="form-label">Nombre</label>
+                            <input type="text" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Rol</label>
+                            <select class="form-control" required>
+                                <option value="gestor">Gestor</option>
+                                <option value="aliado">Aliado</option>
+                                <option value="supervisor">Supervisor</option>
+                                <option value="consultor">Consultor</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" form="addUserForm" class="btn btn-primary">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Export Users Modal -->
+    <div class="modal fade" id="exportUsersModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Exportar Usuarios</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="exportUsersForm">
+                        <div class="mb-3">
+                            <label class="form-label">Formato de Exportación</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="exportFormat" value="csv" checked>
+                                <label class="form-check-label">CSV</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="exportFormat" value="excel">
+                                <label class="form-check-label">Excel</label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" form="exportUsersForm" class="btn btn-primary">Exportar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
