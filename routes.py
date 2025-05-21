@@ -638,7 +638,6 @@ def aliados_asignaciones():
         app.logger.info(
             "Usando datos estándar para asignaciones de consultores")
 
-    ```python
     return render_template(
         'aliados/asignaciones.html',
         title='Asignaciones de Consultores',
