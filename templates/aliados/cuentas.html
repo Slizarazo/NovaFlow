@@ -9,12 +9,118 @@
     <div class="dashboard-section-title">
         <h4>Cuentas de Aliados</h4>
         <div class="dashboard-section-actions">
-            <button type="button" class="dashboard-section-action" title="Exportar">
-                <i data-feather="download"></i>
+            <button type="button" class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#addAccountModal">
+                <i data-feather="plus" class="me-1"></i> Añadir Cuenta
             </button>
-            <button type="button" class="dashboard-section-action" title="Añadir Cuenta">
-                <i data-feather="plus"></i>
+            <button type="button" class="btn btn-secondary me-2" data-bs-toggle="modal" data-bs-target="#importAccountsModal">
+                <i data-feather="upload" class="me-1"></i> Importar
             </button>
+            <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#exportAccountsModal">
+                <i data-feather="download" class="me-1"></i> Exportar
+            </button>
+        </div>
+
+        <!-- Modal Añadir Cuenta -->
+        <div class="modal fade" id="addAccountModal" tabindex="-1" aria-labelledby="addAccountModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addAccountModalLabel">Añadir Nueva Cuenta</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="addAccountForm">
+                            <div class="mb-3">
+                                <label for="accountName" class="form-label">Nombre de la Cuenta</label>
+                                <input type="text" class="form-control" id="accountName" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="accountIndustry" class="form-label">Industria</label>
+                                <select class="form-control" id="accountIndustry" required>
+                                    <option value="">Seleccionar...</option>
+                                    <option value="Tecnología">Tecnología</option>
+                                    <option value="Finanzas">Finanzas</option>
+                                    <option value="Manufactura">Manufactura</option>
+                                    <option value="Servicios">Servicios</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="accountRegion" class="form-label">Región</label>
+                                <select class="form-control" id="accountRegion" required>
+                                    <option value="">Seleccionar...</option>
+                                    <option value="Norte">Norte</option>
+                                    <option value="Sur">Sur</option>
+                                    <option value="Este">Este</option>
+                                    <option value="Oeste">Oeste</option>
+                                    <option value="Centro">Centro</option>
+                                </select>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" form="addAccountForm" class="btn btn-primary">Guardar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Importar Cuentas -->
+        <div class="modal fade" id="importAccountsModal" tabindex="-1" aria-labelledby="importAccountsModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="importAccountsModalLabel">Importar Cuentas</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="importAccountsForm">
+                            <div class="mb-3">
+                                <label for="accountsFile" class="form-label">Archivo CSV/Excel</label>
+                                <input type="file" class="form-control" id="accountsFile" accept=".csv,.xlsx" required>
+                            </div>
+                            <div class="alert alert-info">
+                                <small>El archivo debe contener las columnas: Nombre, Industria, Región</small>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" form="importAccountsForm" class="btn btn-primary">Importar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Exportar Cuentas -->
+        <div class="modal fade" id="exportAccountsModal" tabindex="-1" aria-labelledby="exportAccountsModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exportAccountsModalLabel">Exportar Cuentas</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="exportAccountsForm">
+                            <div class="mb-3">
+                                <label class="form-label">Formato de Exportación</label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="exportFormat" id="formatCSV" value="csv" checked>
+                                    <label class="form-check-label" for="formatCSV">CSV</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="exportFormat" id="formatExcel" value="excel">
+                                    <label class="form-check-label" for="formatExcel">Excel</label>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" form="exportAccountsForm" class="btn btn-primary">Exportar</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     

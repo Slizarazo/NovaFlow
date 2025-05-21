@@ -289,3 +289,55 @@ function initSubmenuToggle() {
         }
     });
 }
+
+// Manejo de formularios de cuentas
+document.addEventListener('DOMContentLoaded', function() {
+    // Formulario Añadir Cuenta
+    const addAccountForm = document.getElementById('addAccountForm');
+    if (addAccountForm) {
+        addAccountForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            // Aquí iría la lógica para enviar los datos al servidor
+            const formData = {
+                name: document.getElementById('accountName').value,
+                industry: document.getElementById('accountIndustry').value,
+                region: document.getElementById('accountRegion').value
+            };
+            console.log('Datos de nueva cuenta:', formData);
+            // Cerrar modal después de enviar
+            const modal = bootstrap.Modal.getInstance(document.getElementById('addAccountModal'));
+            modal.hide();
+        });
+    }
+
+    // Formulario Importar Cuentas
+    const importAccountsForm = document.getElementById('importAccountsForm');
+    if (importAccountsForm) {
+        importAccountsForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const fileInput = document.getElementById('accountsFile');
+            const file = fileInput.files[0];
+            if (file) {
+                // Aquí iría la lógica para procesar el archivo
+                console.log('Archivo a importar:', file);
+                // Cerrar modal después de enviar
+                const modal = bootstrap.Modal.getInstance(document.getElementById('importAccountsModal'));
+                modal.hide();
+            }
+        });
+    }
+
+    // Formulario Exportar Cuentas
+    const exportAccountsForm = document.getElementById('exportAccountsForm');
+    if (exportAccountsForm) {
+        exportAccountsForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const format = document.querySelector('input[name="exportFormat"]:checked').value;
+            // Aquí iría la lógica para exportar
+            console.log('Exportar en formato:', format);
+            // Cerrar modal después de enviar
+            const modal = bootstrap.Modal.getInstance(document.getElementById('exportAccountsModal'));
+            modal.hide();
+        });
+    }
+});
