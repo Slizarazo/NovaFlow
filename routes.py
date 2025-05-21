@@ -64,11 +64,29 @@ def dashboard():
 def dashboard_crecimiento():
     if current_user.role != 'aliado':
         return redirect(url_for('dashboard_growth'))
+    
+    # Data for growth dashboard
+    aliados = Aliado.ALIADOS
+    ventas_trimestre_total = sum(aliado.ventas_trimestre for aliado in aliados)
+    ventas_promedio_cuenta = ventas_trimestre_total / len(aliados)
+
+    proyectos = Proyecto.PROYECTOS
+    ventas_promedio_proyecto = ventas_trimestre_total / len(proyectos) if proyectos else 0
+    rentabilidad = ventas_trimestre_total * 0.3
+
+    kpis = {
+        'ventas_trimestre': ventas_trimestre_total,
+        'ventas_promedio_cuenta': ventas_promedio_cuenta,
+        'ventas_promedio_proyecto': ventas_promedio_proyecto,
+        'rentabilidad': rentabilidad
+    }
+
     return render_template('dashboard/growth.html', 
                          title='Dashboard de Crecimiento',
                          config=app.config,
                          role=current_user.role,
-                         **get_growth_dashboard_data())
+                         kpis=kpis,
+                         aliados=aliados)
 
 
 @app.route('/dashboard/growth')
