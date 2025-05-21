@@ -346,6 +346,42 @@ def dashboard_productividad():
 def dashboard_facturacion():
     # Datos de ejemplo para las gráficas
     datos_facturacion = {
+        'meses': ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'],
+        'facturacion': [120000, 135000, 115000, 140000, 125000, 145000],
+        'anual': [1450000, 1600000, 1750000, 1900000]
+    }
+    
+    datos_deudas = {
+        'clientes': ['Cliente A', 'Cliente B', 'Cliente C', 'Cliente D', 'Cliente E'],
+        'por_cobrar': [45000, 32000, 28000, 15000, 22000],
+        'vencido': [15000, 8000, 12000, 5000, 7000],
+        'dias_vencimiento': [45, 30, 60, 15, 25]
+    }
+    
+    datos_rentabilidad = {
+        'proyectos': ['Proyecto A', 'Proyecto B', 'Proyecto C', 'Proyecto D'],
+        'ingresos': [180000, 150000, 120000, 90000],
+        'costos': [126000, 112500, 84000, 72000],
+        'margen': [30, 25, 30, 20]
+    }
+    
+    datos_flujo = {
+        'meses': ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'],
+        'ingresos': [150000, 165000, 145000, 170000, 155000, 175000],
+        'egresos': [120000, 135000, 115000, 140000, 125000, 145000],
+        'neto': [30000, 30000, 30000, 30000, 30000, 30000]
+    }
+
+    return render_template(
+        'dashboard/facturacion.html',
+        title='Dashboard de Facturación',
+        config=app.config,
+        role=current_user.role,
+        facturacion_mensual=generar_grafico_facturacion(datos_facturacion),
+        deudas_cobros=generar_grafico_deudas(datos_deudas),
+        rentabilidad_proyecto=generar_grafico_rentabilidad_proyecto(datos_rentabilidad),
+        flujo_caja=generar_grafico_flujo_caja(datos_flujo)
+    )
 
 @app.route('/dashboard/riesgos')
 @login_required
