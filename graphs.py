@@ -1339,3 +1339,135 @@ def generar_grafico_rentabilidad(data):
     )
 
     return pio.to_html(fig, full_html=False, include_plotlyjs='cdn')
+def generar_matriz_riesgos(data):
+    """
+    Genera un gráfico de calor para la matriz de riesgos
+    """
+    import plotly.graph_objects as go
+    import plotly.io as pio
+
+    fig = go.Figure(data=go.Heatmap(
+        z=data['severidad'],
+        x=data['impacto'],
+        y=data['probabilidad'],
+        colorscale='RdYlGn_r',
+        text=data['valores'],
+        texttemplate="%{text}",
+        textfont={"size": 12},
+        hoverongaps=False
+    ))
+
+    fig.update_layout(
+        title=None,
+        font=dict(color='#560591', size=10),
+        paper_bgcolor='#F0F0F3',
+        plot_bgcolor='#FFFFFF',
+        margin=dict(l=50, r=50, t=30, b=30),
+        height=300,
+        xaxis=dict(title='Impacto'),
+        yaxis=dict(title='Probabilidad')
+    )
+
+    return pio.to_html(fig, full_html=False, include_plotlyjs='cdn')
+
+def generar_grafico_proyectos_riesgo(data):
+    """
+    Genera un gráfico de barras para proyectos en riesgo
+    """
+    import plotly.graph_objects as go
+    import plotly.io as pio
+
+    fig = go.Figure(data=[
+        go.Bar(
+            x=data['proyectos'],
+            y=data['nivel_riesgo'],
+            marker_color=data['colores'],
+            text=data['estado'],
+            textposition='auto',
+        )
+    ])
+
+    fig.update_layout(
+        title=None,
+        font=dict(color='#560591', size=10),
+        paper_bgcolor='#F0F0F3',
+        plot_bgcolor='#FFFFFF',
+        margin=dict(l=50, r=50, t=30, b=30),
+        height=300,
+        yaxis=dict(title='Nivel de Riesgo', range=[0, 100]),
+        xaxis=dict(title='Proyectos')
+    )
+
+    return pio.to_html(fig, full_html=False, include_plotlyjs='cdn')
+
+def generar_historial_problemas(data):
+    """
+    Genera un gráfico de líneas para el historial de problemas
+    """
+    import plotly.graph_objects as go
+    import plotly.io as pio
+
+    fig = go.Figure()
+
+    fig.add_trace(go.Scatter(
+        x=data['fechas'],
+        y=data['problemas_reportados'],
+        name='Reportados',
+        line=dict(color='#D400AC', width=3)
+    ))
+
+    fig.add_trace(go.Scatter(
+        x=data['fechas'],
+        y=data['problemas_resueltos'],
+        name='Resueltos',
+        line=dict(color='#560591', width=3)
+    ))
+
+    fig.update_layout(
+        title=None,
+        font=dict(color='#560591', size=10),
+        paper_bgcolor='#F0F0F3',
+        plot_bgcolor='#FFFFFF',
+        margin=dict(l=50, r=50, t=30, b=30),
+        height=300,
+        yaxis=dict(title='Número de Problemas'),
+        xaxis=dict(title='Fecha'),
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
+    )
+
+    return pio.to_html(fig, full_html=False, include_plotlyjs='cdn')
+
+def generar_alertas_tiempo_real(data):
+    """
+    Genera un gráfico de dispersión para alertas en tiempo real
+    """
+    import plotly.graph_objects as go
+    import plotly.io as pio
+
+    fig = go.Figure()
+
+    fig.add_trace(go.Scatter(
+        x=data['tiempo'],
+        y=data['severidad'],
+        mode='markers+text',
+        text=data['mensaje'],
+        textposition="top center",
+        marker=dict(
+            size=data['impacto'],
+            color=data['colores'],
+            symbol='circle'
+        )
+    ))
+
+    fig.update_layout(
+        title=None,
+        font=dict(color='#560591', size=10),
+        paper_bgcolor='#F0F0F3',
+        plot_bgcolor='#FFFFFF',
+        margin=dict(l=50, r=50, t=30, b=30),
+        height=300,
+        yaxis=dict(title='Severidad'),
+        xaxis=dict(title='Tiempo')
+    )
+
+    return pio.to_html(fig, full_html=False, include_plotlyjs='cdn')

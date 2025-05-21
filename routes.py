@@ -346,6 +346,55 @@ def dashboard_productividad():
 def dashboard_facturacion():
     # Datos de ejemplo para las gráficas
     datos_facturacion = {
+
+@app.route('/dashboard/riesgos')
+@login_required
+def dashboard_riesgos():
+    # Datos de ejemplo para las gráficas
+    datos_matriz = {
+        'severidad': [[9, 6, 3], [6, 4, 2], [3, 2, 1]],
+        'impacto': ['Alto', 'Medio', 'Bajo'],
+        'probabilidad': ['Alta', 'Media', 'Baja'],
+        'valores': [['Alto', 'Alto-Medio', 'Medio'], 
+                   ['Alto-Medio', 'Medio', 'Bajo-Medio'],
+                   ['Medio', 'Bajo-Medio', 'Bajo']]
+    }
+    
+    datos_proyectos = {
+        'proyectos': ['Proyecto A', 'Proyecto B', 'Proyecto C', 'Proyecto D'],
+        'nivel_riesgo': [85, 65, 45, 25],
+        'estado': ['Bloqueado', 'En Riesgo', 'Atención', 'Normal'],
+        'colores': ['#FF0000', '#FFA500', '#FFFF00', '#00FF00']
+    }
+    
+    datos_historial = {
+        'fechas': ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'],
+        'problemas_reportados': [12, 15, 10, 8, 13, 9],
+        'problemas_resueltos': [10, 13, 9, 7, 11, 8]
+    }
+    
+    datos_alertas = {
+        'tiempo': ['9:00', '10:30', '11:45', '13:15', '14:30'],
+        'severidad': [5, 3, 4, 2, 1],
+        'mensaje': ['Error Crítico', 'Advertencia', 'Error Mayor', 'Info', 'Debug'],
+        'impacto': [25, 15, 20, 10, 5],
+        'colores': ['#FF0000', '#FFA500', '#FF4444', '#00A0FF', '#00FF00']
+    }
+
+    return render_template(
+        'dashboard/riesgos.html',
+        title='Dashboard de Riesgos',
+        config=app.config,
+        role=current_user.role,
+        matriz_riesgos=generar_matriz_riesgos(datos_matriz),
+        proyectos_riesgo=generar_grafico_proyectos_riesgo(datos_proyectos),
+        historial_problemas=generar_historial_problemas(datos_historial),
+        alertas_tiempo_real=generar_alertas_tiempo_real(datos_alertas)
+    )
+
+def dashboard_facturacion():
+    # Datos de ejemplo para las gráficas
+    datos_facturacion = {
         'meses': ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'],
         'facturacion': [120000, 135000, 115000, 140000, 125000, 145000],
         'anual': [1450000, 1600000, 1750000, 1900000]
