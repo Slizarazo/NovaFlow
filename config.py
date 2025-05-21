@@ -22,6 +22,7 @@ class Config:
              ]}
         ],
         'aliado': [
+            {'name': 'Inicio', 'icon': 'home', 'url': '/dashboard'},
             {'name': 'Dashboards', 'icon': 'activity', 'url': '/dashboard',
              'submenu': [
                  {'name': 'Crecimiento', 'url': '/dashboard/crecimiento'},
