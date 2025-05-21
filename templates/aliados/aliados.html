@@ -26,10 +26,10 @@
     <!-- Filters -->
     <div class="card mb-4">
         <div class="card-body">
-            <form id="filterForm">
-                <div class="d-flex align-items-end gap-3">
-                    <!-- Búsqueda principal -->
-                    <div class="flex-grow-1">
+            <form id="filterForm" class="d-flex flex-column gap-4">
+                <!-- Fila 1: Buscador -->
+                <div class="row">
+                    <div class="col-12">
                         <label class="form-label text-primary fw-semibold">Buscar Aliado</label>
                         <div class="input-group">
                             <span class="input-group-text border-primary bg-white">
@@ -38,9 +38,11 @@
                             <input type="text" class="form-control border-primary" name="aliado" placeholder="Nombre del aliado...">
                         </div>
                     </div>
+                </div>
 
-                    <!-- Filtros de clasificación -->
-                    <div class="flex-grow-1">
+                <!-- Fila 2: Filtros -->
+                <div class="row g-3">
+                    <div class="col">
                         <label class="form-label text-primary fw-semibold">Cuenta</label>
                         <select class="form-select border-primary" name="cuenta">
                             <option value="">Todas</option>
@@ -49,8 +51,7 @@
                             {% endfor %}
                         </select>
                     </div>
-
-                    <div class="flex-grow-1">
+                    <div class="col">
                         <label class="form-label text-primary fw-semibold">Industria</label>
                         <select class="form-select border-primary" name="industria">
                             <option value="">Todas</option>
@@ -60,8 +61,7 @@
                             <option value="Servicios">Servicios</option>
                         </select>
                     </div>
-
-                    <div class="flex-grow-1">
+                    <div class="col">
                         <label class="form-label text-primary fw-semibold">País</label>
                         <select class="form-select border-primary" name="pais">
                             <option value="">Todos</option>
@@ -70,8 +70,7 @@
                             <option value="Perú">Perú</option>
                         </select>
                     </div>
-
-                    <div class="flex-grow-1">
+                    <div class="col">
                         <label class="form-label text-primary fw-semibold">Estado</label>
                         <select class="form-select border-primary" name="estado">
                             <option value="">Todos</option>
@@ -80,9 +79,11 @@
                             <option value="pendiente">Pendiente</option>
                         </select>
                     </div>
+                </div>
 
-                    <!-- Botones de acción -->
-                    <div class="col-12 d-flex justify-content-end mt-4">
+                <!-- Fila 3: Botones -->
+                <div class="row">
+                    <div class="col-12 d-flex justify-content-end">
                         <button type="reset" class="btn btn-outline-secondary me-2">
                             <i data-feather="refresh-ccw" class="me-2"></i>Limpiar
                         </button>
