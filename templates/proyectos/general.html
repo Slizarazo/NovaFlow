@@ -1,6 +1,17 @@
+
 {% extends "layout.html" %}
 {% block content %}
+<div class="d-flex justify-content-end p-4">
+    <button class="btn btn-primary" onclick="window.location.href='/proyectos/nuevo'">
+        <i data-feather="plus"></i> Nueva Oportunidad
+    </button>
+</div>
 {% endblock %}
 
 {% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    feather.replace();
+});
+</script>
 {% endblock %}
