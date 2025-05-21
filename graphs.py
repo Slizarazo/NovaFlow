@@ -1208,6 +1208,7 @@ def generar_grafico_flujo_caja(data):
     Genera un gráfico de área para el flujo de caja
     """
     import plotly.graph_objects as go
+    import plotly.io as pio
 
     fig = go.Figure()
 
