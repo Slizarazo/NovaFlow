@@ -615,3 +615,159 @@ def generar_mapa_sesiones_por_pais(sesiones):
     colormap.caption = 'Número de Sesiones'
 
     return m.get_root().render()
+def generar_grafico_ingresos_vs_costos(data):
+    """
+    Genera un gráfico de líneas comparando ingresos vs costos
+    """
+    import plotly.graph_objects as go
+    import plotly.io as pio
+
+    fig = go.Figure()
+
+    fig.add_trace(go.Scatter(
+        x=data['meses'],
+        y=data['ingresos'],
+        name='Ingresos',
+        line=dict(color='#560591', width=3)
+    ))
+
+    fig.add_trace(go.Scatter(
+        x=data['meses'],
+        y=data['costos'],
+        name='Costos',
+        line=dict(color='#D400AC', width=3)
+    ))
+
+    fig.update_layout(
+        title=None,
+        font=dict(color='#560591', size=10),
+        paper_bgcolor='#F0F0F3',
+        plot_bgcolor='#FFFFFF',
+        margin=dict(l=50, r=50, t=30, b=30),
+        height=300,
+        showlegend=True,
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+        yaxis=dict(gridcolor='#E1E1E1', tickformat='$,.0f'),
+        xaxis=dict(gridcolor='#E1E1E1')
+    )
+
+    return pio.to_html(fig, full_html=False, include_plotlyjs='cdn')
+
+def generar_grafico_tasa_crecimiento(data):
+    """
+    Genera un gráfico de barras con la tasa de crecimiento
+    """
+    import plotly.graph_objects as go
+    import plotly.io as pio
+
+    fig = go.Figure()
+
+    fig.add_trace(go.Bar(
+        x=data['trimestres'],
+        y=data['tasa_crecimiento'],
+        marker_color='#560591'
+    ))
+
+    fig.update_layout(
+        title=None,
+        font=dict(color='#560591', size=10),
+        paper_bgcolor='#F0F0F3',
+        plot_bgcolor='#FFFFFF',
+        margin=dict(l=50, r=50, t=30, b=30),
+        height=300,
+        yaxis=dict(
+            gridcolor='#E1E1E1',
+            tickformat='.1%',
+            title='Tasa de Crecimiento'
+        ),
+        xaxis=dict(gridcolor='#E1E1E1')
+    )
+
+    return pio.to_html(fig, full_html=False, include_plotlyjs='cdn')
+
+def generar_grafico_clientes_nuevos_vs_recurrentes(data):
+    """
+    Genera un gráfico de barras apiladas para clientes nuevos vs recurrentes
+    """
+    import plotly.graph_objects as go
+    import plotly.io as pio
+
+    fig = go.Figure()
+
+    fig.add_trace(go.Bar(
+        x=data['meses'],
+        y=data['clientes_nuevos'],
+        name='Nuevos',
+        marker_color='#560591'
+    ))
+
+    fig.add_trace(go.Bar(
+        x=data['meses'],
+        y=data['clientes_recurrentes'],
+        name='Recurrentes',
+        marker_color='#00A0FF'
+    ))
+
+    fig.update_layout(
+        barmode='stack',
+        title=None,
+        font=dict(color='#560591', size=10),
+        paper_bgcolor='#F0F0F3',
+        plot_bgcolor='#FFFFFF',
+        margin=dict(l=50, r=50, t=30, b=30),
+        height=300,
+        showlegend=True,
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+        yaxis=dict(gridcolor='#E1E1E1'),
+        xaxis=dict(gridcolor='#E1E1E1')
+    )
+
+    return pio.to_html(fig, full_html=False, include_plotlyjs='cdn')
+
+def generar_grafico_rentabilidad(data):
+    """
+    Genera un gráfico de burbujas para el análisis de rentabilidad
+    """
+    import plotly.graph_objects as go
+    import plotly.io as pio
+
+    fig = go.Figure()
+
+    fig.add_trace(go.Scatter(
+        x=data['ingresos'],
+        y=data['margenes'],
+        mode='markers',
+        marker=dict(
+            size=data['volumen'],
+            color=data['rentabilidad'],
+            colorscale='Viridis',
+            showscale=True,
+            colorbar=dict(title='Rentabilidad')
+        ),
+        text=data['servicios'],
+        hovertemplate="<b>%{text}</b><br>" +
+                      "Ingresos: $%{x:,.0f}<br>" +
+                      "Margen: %{y:.1%}<br>" +
+                      "<extra></extra>"
+    ))
+
+    fig.update_layout(
+        title=None,
+        font=dict(color='#560591', size=10),
+        paper_bgcolor='#F0F0F3',
+        plot_bgcolor='#FFFFFF',
+        margin=dict(l=50, r=50, t=30, b=30),
+        height=300,
+        xaxis=dict(
+            title='Ingresos',
+            gridcolor='#E1E1E1',
+            tickformat='$,.0f'
+        ),
+        yaxis=dict(
+            title='Margen',
+            gridcolor='#E1E1E1',
+            tickformat='.1%'
+        )
+    )
+
+    return pio.to_html(fig, full_html=False, include_plotlyjs='cdn')

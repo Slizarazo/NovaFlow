@@ -135,6 +135,63 @@
         </div>
     </div>
 
+    <!-- Financial Analysis -->
+    <div class="chart-row">
+        <!-- Income vs Costs -->
+        <div class="chart-col-half">
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h5 class="chart-title">Ingresos vs Costos</h5>
+                </div>
+                <div class="chart-body">
+                    {{ ingresos_vs_costos|safe }}
+                </div>
+                <div class="chart-footer">Comparativa mensual</div>
+            </div>
+        </div>
+
+        <!-- Growth Rate -->
+        <div class="chart-col-half">
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h5 class="chart-title">Tasa de Crecimiento</h5>
+                </div>
+                <div class="chart-body">
+                    {{ tasa_crecimiento|safe }}
+                </div>
+                <div class="chart-footer">Evolución trimestral</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="chart-row">
+        <!-- New vs Recurring Clients -->
+        <div class="chart-col-half">
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h5 class="chart-title">Clientes Nuevos vs Recurrentes</h5>
+                </div>
+                <div class="chart-body">
+                    {{ clientes_nuevos_vs_recurrentes|safe }}
+                </div>
+                <div class="chart-footer">Distribución mensual</div>
+            </div>
+        </div>
+
+        <!-- Profitability Analysis -->
+        <div class="chart-col-half">
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h5 class="chart-title">Análisis de Rentabilidad</h5>
+                </div>
+                <div class="chart-body">
+                    {{ analisis_rentabilidad|safe }}
+                </div>
+                <div class="chart-footer">Por línea de servicio</div>
+            </div>
+        </div>
+    </div>
+
     <!-- Visualizations -->
     <div class="chart-row">
         <!-- Map (Left Half) -->
