@@ -11,46 +11,34 @@
     </div>
 
     <!-- Projects Summary Cards -->
-    <div class="row mb-4">
-        <div class="col-md-3">
-            <div class="card bg-primary text-white">
-                <div class="card-body">
-                    <h5>Total Proyectos</h5>
-                    <h2>{{ total_proyectos }}</h2>
-                </div>
-            </div>
+    <div class="project-stats mb-4">
+        <div class="stat-card bg-primary">
+            <div class="stat-title">Oportunidad</div>
+            <div class="stat-value">{{ estados.oportunidad|length }}</div>
         </div>
-        <div class="col-md-3">
-            <div class="card bg-info text-white">
-                <div class="card-body">
-                    <h5>Oportunidades</h5>
-                    <h2>{{ oportunidades }}</h2>
-                </div>
-            </div>
+        <div class="stat-card bg-info">
+            <div class="stat-title">Propuesta</div>
+            <div class="stat-value">{{ estados.propuesta|length }}</div>
         </div>
-        <div class="col-md-3">
-            <div class="card bg-warning text-white">
-                <div class="card-body">
-                    <h5>En Progreso</h5>
-                    <h2>{{ proyectos_progreso }}</h2>
-                </div>
-            </div>
+        <div class="stat-card bg-warning">
+            <div class="stat-title">Aprobados</div>
+            <div class="stat-value">{{ estados.aprobado|length }}</div>
         </div>
-        <div class="col-md-3">
-            <div class="card bg-success text-white">
-                <div class="card-body">
-                    <h5>Completados</h5>
-                    <h2>{{ proyectos_completados }}</h2>
-                </div>
-            </div>
+        <div class="stat-card bg-success">
+            <div class="stat-title">Desarrollo</div>
+            <div class="stat-value">{{ estados.desarrollo|length }}</div>
         </div>
-        <div class="col-md-3">
-            <div class="card bg-info text-white">
-                <div class="card-body">
-                    <h5>Oportunidades</h5>
-                    <h2>{{ oportunidades }}</h2>
-                </div>
-            </div>
+        <div class="stat-card bg-secondary">
+            <div class="stat-title">Testing</div>
+            <div class="stat-value">{{ estados.testing|length }}</div>
+        </div>
+        <div class="stat-card bg-dark">
+            <div class="stat-title">Cierre</div>
+            <div class="stat-value">{{ estados.cierre|length }}</div>
+        </div>
+        <div class="stat-card bg-info">
+            <div class="stat-title">Evaluación</div>
+            <div class="stat-value">{{ estados.evaluacion|length }}</div>
         </div>
     </div>
 
@@ -318,3 +306,32 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 {% endblock %}
+
+
+.project-stats {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding: 0.5rem;
+}
+
+.stat-card {
+    flex: 1;
+    min-width: 120px;
+    padding: 1rem;
+    border-radius: 8px;
+    color: white;
+    text-align: center;
+}
+
+.stat-title {
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+    white-space: nowrap;
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
