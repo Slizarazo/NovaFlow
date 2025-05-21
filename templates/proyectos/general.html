@@ -54,56 +54,153 @@
         </div>
     </div>
 
-    <!-- Projects Table -->
+    <!-- Projects by Status -->
     <div class="card">
         <div class="card-body">
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th>Nombre</th>
-                        <th>Cliente</th>
-                        <th>Estado</th>
-                        <th>Fecha Inicio</th>
-                        <th>Fecha Fin</th>
-                        <th>Monto</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for proyecto in proyectos %}
-                    <tr>
-                        <td>{{ proyecto.nombre }}</td>
-                        <td>{{ aliados[proyecto.aliado_id].nombre }}</td>
-                        <td>
-                            <span class="badge 
-                                {% if proyecto.etapa == 'propuesta' %}bg-info
-                                {% elif proyecto.etapa == 'planificacion' %}bg-primary
-                                {% elif proyecto.etapa == 'ejecucion' %}bg-warning
-                                {% elif proyecto.etapa == 'cierre' %}bg-success
-                                {% else %}bg-secondary{% endif %}">
-                                {{ proyecto.etapa|capitalize }}
-                            </span>
-                        </td>
-                        <td>{{ proyecto.fecha_inicio }}</td>
-                        <td>{{ proyecto.fecha_fin }}</td>
-                        <td>${{ '{:,.2f}'.format(proyecto.monto) }}</td>
-                        <td>
-                            <button class="btn btn-sm btn-info" onclick="viewProject({{ proyecto.id }})">
-                                <i data-feather="eye"></i>
-                            </button>
-                            <button class="btn btn-sm btn-primary" onclick="editProject({{ proyecto.id }})">
-                                <i data-feather="edit"></i>
-                            </button>
-                            <button class="btn btn-sm btn-success" onclick="manageProject({{ proyecto.id }})">
-                                <i data-feather="settings"></i>
-                            </button>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Oportunidad</th>
+                            <th>Propuesta</th>
+                            <th>Aprobados</th>
+                            <th>En Desarrollo</th>
+                            <th>Testing</th>
+                            <th>Cierre</th>
+                            <th>Evaluación</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                {% for proyecto in proyectos if proyecto.etapa == 'oportunidad' %}
+                                <div class="project-card mb-2">
+                                    <div class="project-title">{{ proyecto.nombre }}</div>
+                                    <div class="project-client">{{ aliados[proyecto.aliado_id].nombre }}</div>
+                                    <div class="project-amount">${{ '{:,.0f}'.format(proyecto.monto) }}</div>
+                                    <div class="project-actions">
+                                        <button class="btn btn-sm btn-info" onclick="viewProject({{ proyecto.id }})">
+                                            <i data-feather="eye"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </td>
+                            <td>
+                                {% for proyecto in proyectos if proyecto.etapa == 'propuesta' %}
+                                <div class="project-card mb-2">
+                                    <div class="project-title">{{ proyecto.nombre }}</div>
+                                    <div class="project-client">{{ aliados[proyecto.aliado_id].nombre }}</div>
+                                    <div class="project-amount">${{ '{:,.0f}'.format(proyecto.monto) }}</div>
+                                    <div class="project-actions">
+                                        <button class="btn btn-sm btn-info" onclick="viewProject({{ proyecto.id }})">
+                                            <i data-feather="eye"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </td>
+                            <td>
+                                {% for proyecto in proyectos if proyecto.etapa == 'aprobado' %}
+                                <div class="project-card mb-2">
+                                    <div class="project-title">{{ proyecto.nombre }}</div>
+                                    <div class="project-client">{{ aliados[proyecto.aliado_id].nombre }}</div>
+                                    <div class="project-amount">${{ '{:,.0f}'.format(proyecto.monto) }}</div>
+                                    <div class="project-actions">
+                                        <button class="btn btn-sm btn-info" onclick="viewProject({{ proyecto.id }})">
+                                            <i data-feather="eye"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </td>
+                            <td>
+                                {% for proyecto in proyectos if proyecto.etapa == 'desarrollo' %}
+                                <div class="project-card mb-2">
+                                    <div class="project-title">{{ proyecto.nombre }}</div>
+                                    <div class="project-client">{{ aliados[proyecto.aliado_id].nombre }}</div>
+                                    <div class="project-amount">${{ '{:,.0f}'.format(proyecto.monto) }}</div>
+                                    <div class="project-actions">
+                                        <button class="btn btn-sm btn-info" onclick="viewProject({{ proyecto.id }})">
+                                            <i data-feather="eye"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </td>
+                            <td>
+                                {% for proyecto in proyectos if proyecto.etapa == 'testing' %}
+                                <div class="project-card mb-2">
+                                    <div class="project-title">{{ proyecto.nombre }}</div>
+                                    <div class="project-client">{{ aliados[proyecto.aliado_id].nombre }}</div>
+                                    <div class="project-amount">${{ '{:,.0f}'.format(proyecto.monto) }}</div>
+                                    <div class="project-actions">
+                                        <button class="btn btn-sm btn-info" onclick="viewProject({{ proyecto.id }})">
+                                            <i data-feather="eye"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </td>
+                            <td>
+                                {% for proyecto in proyectos if proyecto.etapa == 'cierre' %}
+                                <div class="project-card mb-2">
+                                    <div class="project-title">{{ proyecto.nombre }}</div>
+                                    <div class="project-client">{{ aliados[proyecto.aliado_id].nombre }}</div>
+                                    <div class="project-amount">${{ '{:,.0f}'.format(proyecto.monto) }}</div>
+                                    <div class="project-actions">
+                                        <button class="btn btn-sm btn-info" onclick="viewProject({{ proyecto.id }})">
+                                            <i data-feather="eye"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </td>
+                            <td>
+                                {% for proyecto in proyectos if proyecto.etapa == 'evaluacion' %}
+                                <div class="project-card mb-2">
+                                    <div class="project-title">{{ proyecto.nombre }}</div>
+                                    <div class="project-client">{{ aliados[proyecto.aliado_id].nombre }}</div>
+                                    <div class="project-amount">${{ '{:,.0f}'.format(proyecto.monto) }}</div>
+                                    <div class="project-actions">
+                                        <button class="btn btn-sm btn-info" onclick="viewProject({{ proyecto.id }})">
+                                            <i data-feather="eye"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
+
+    <style>
+    .project-card {
+        border: 1px solid #e0e0e0;
+        border-radius: 4px;
+        padding: 8px;
+        background: white;
+    }
+    .project-title {
+        font-weight: bold;
+        font-size: 0.9rem;
+    }
+    .project-client {
+        color: #666;
+        font-size: 0.8rem;
+    }
+    .project-amount {
+        color: #2c3e50;
+        font-size: 0.9rem;
+        margin: 4px 0;
+    }
+    .project-actions {
+        margin-top: 4px;
+    }
+    </style>
 
     <!-- Add Project Modal -->
     <div class="modal fade" id="addProjectModal" tabindex="-1">
