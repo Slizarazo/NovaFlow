@@ -4,6 +4,36 @@
 {% block head %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
 <style>
+.action-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.action-button {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1px solid #e0e0e0;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+    transition: all 0.2s ease;
+}
+
+.action-button:hover {
+    background: #f5f5f5;
+    border-color: #d0d0d0;
+}
+
+.action-button i {
+    width: 16px;
+    height: 16px;
+    color: #666;
+}
+
 .filter-form {
     display: flex;
     flex-direction: column;
@@ -43,14 +73,14 @@
     <!-- Header with action buttons -->
     <div class="dashboard-section-title">
         <h4>Gestión de Aliados</h4>
-        <div class="dashboard-section-actions">
-            <button type="button" class="dashboard-section-action" data-bs-toggle="modal" data-bs-target="#addAliadoModal" title="Añadir Aliado">
+        <div class="action-buttons">
+            <button type="button" class="action-button" data-bs-toggle="modal" data-bs-target="#addAliadoModal">
                 <i data-feather="plus"></i>
             </button>
-            <button type="button" class="dashboard-section-action" data-bs-toggle="modal" data-bs-target="#importAliadosModal" title="Importar">
+            <button type="button" class="action-button" data-bs-toggle="modal" data-bs-target="#importAliadosModal">
                 <i data-feather="upload"></i>
             </button>
-            <button type="button" class="dashboard-section-action" data-bs-toggle="modal" data-bs-target="#exportAliadosModal" title="Exportar">
+            <button type="button" class="action-button" data-bs-toggle="modal" data-bs-target="#exportAliadosModal">
                 <i data-feather="download"></i>
             </button>
         </div>
