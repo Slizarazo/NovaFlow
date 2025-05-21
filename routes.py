@@ -391,6 +391,16 @@ def cuentas_clientes():
                          config=app.config,
                          role=current_user.role)
 
+@app.route('/cuentas/usuarios')
+@login_required
+def cuentas_usuarios():
+    users = User.USERS
+    return render_template('cuentas/usuarios.html',
+                         title='Gestión de Usuarios',
+                         users=users,
+                         config=app.config,
+                         role=current_user.role)
+
 @app.route('/dashboard/riesgos')
 @login_required
 def dashboard_riesgos():

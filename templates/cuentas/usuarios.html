@@ -1,0 +1,58 @@
+
+{% extends "layout.html" %}
+{% block content %}
+<div class="container-fluid p-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Gestión de Usuarios</h2>
+        <button class="btn btn-primary" onclick="window.location.href='/cuentas/usuarios/nuevo'">
+            <i data-feather="plus"></i> Nuevo Usuario
+        </button>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Usuario</th>
+                            <th>Email</th>
+                            <th>Rol</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                        <tr>
+                            <td>{{ user.username }}</td>
+                            <td>{{ user.email }}</td>
+                            <td>{{ user.role|title }}</td>
+                            <td>
+                                <span class="badge bg-success">Activo</span>
+                            </td>
+                            <td>
+                                <button class="btn btn-sm btn-info me-2" onclick="window.location.href='/cuentas/usuarios/{{ user.id }}'">
+                                    <i data-feather="eye"></i>
+                                </button>
+                                <button class="btn btn-sm btn-warning" onclick="window.location.href='/cuentas/usuarios/{{ user.id }}/editar'">
+                                    <i data-feather="edit"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        feather.replace();
+    });
+</script>
+{% endblock %}
