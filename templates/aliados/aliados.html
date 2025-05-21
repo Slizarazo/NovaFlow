@@ -41,47 +41,51 @@
                 </div>
 
                 <!-- Fila 2: Filtros -->
-                <div class="row">
-                    <div class="col-12">
-                        <div class="d-flex gap-3">
-                            <div class="flex-fill">
-                                <label class="form-label fw-semibold" style="color: var(--primary-purple)">Cuenta</label>
-                                <select class="form-select custom-select" name="cuenta" style="border-color: var(--primary-blue); background-color: var(--white);">
-                                    <option value="">Todas</option>
-                                    {% for aliado in aliados %}
-                                    <option value="{{ aliado.id }}">{{ aliado.nombre }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div class="flex-fill">
-                                <label class="form-label fw-semibold" style="color: var(--primary-purple)">Industria</label>
-                                <select class="form-select custom-select" name="industria" style="border-color: var(--primary-blue); background-color: var(--white);">
-                                    <option value="">Todas</option>
-                                    <option value="Tecnología">Tecnología</option>
-                                    <option value="Finanzas">Finanzas</option>
-                                    <option value="Manufactura">Manufactura</option>
-                                    <option value="Servicios">Servicios</option>
-                                </select>
-                            </div>
-                            <div class="flex-fill">
-                                <label class="form-label fw-semibold" style="color: var(--primary-purple)">País</label>
-                                <select class="form-select custom-select" name="pais" style="border-color: var(--primary-blue); background-color: var(--white);">
-                                    <option value="">Todos</option>
-                                    <option value="México">México</option>
-                                    <option value="Colombia">Colombia</option>
-                                    <option value="Perú">Perú</option>
-                                </select>
-                            </div>
-                            <div class="flex-fill">
-                                <label class="form-label fw-semibold" style="color: var(--primary-purple)">Estado</label>
-                                <select class="form-select custom-select" name="estado" style="border-color: var(--primary-blue); background-color: var(--white);">
-                                    <option value="">Todos</option>
-                                    <option value="activo">Activo</option>
-                                    <option value="inactivo">Inactivo</option>
-                                    <option value="pendiente">Pendiente</option>
-                                </select>
-                            </div>
-                        </div>
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <label class="form-label">Aliado</label>
+                        <select class="form-select" name="aliado">
+                            <option value="">Todos</option>
+                            {% for aliado in aliados %}
+                            <option value="{{ aliado.id }}">{{ aliado.nombre }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Industria</label>
+                        <select class="form-select" name="industria">
+                            <option value="">Todas</option>
+                            <option value="Tecnología">Tecnología</option>
+                            <option value="Finanzas">Finanzas</option>
+                            <option value="Manufactura">Manufactura</option>
+                            <option value="Servicios">Servicios</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">País</label>
+                        <select class="form-select" name="pais">
+                            <option value="">Todos</option>
+                            <option value="México">México</option>
+                            <option value="Colombia">Colombia</option>
+                            <option value="Perú">Perú</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Estado</label>
+                        <select class="form-select" name="estado">
+                            <option value="">Todos</option>
+                            <option value="activo">Activo</option>
+                            <option value="inactivo">Inactivo</option>
+                            <option value="pendiente">Pendiente</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Botones de acción -->
+                <div class="row mt-3">
+                    <div class="col-12 text-end">
+                        <button type="reset" class="btn btn-secondary me-2">Limpiar</button>
+                        <button type="submit" class="btn btn-info text-white">Aplicar</button>
                     </div>
                 </div>
 
