@@ -1136,6 +1136,7 @@ def generar_grafico_deudas(data):
     Genera un gráfico de barras apiladas para deudas y cobros
     """
     import plotly.graph_objects as go
+    import plotly.io as pio
 
     fig = go.Figure(data=[
         go.Bar(
