@@ -2,7 +2,40 @@
 {% extends "layout.html" %}
 
 {% block head %}
-<!-- Add page specific CSS if needed -->
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+<style>
+.filter-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+.filter-row {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-end;
+}
+.filter-group {
+    flex: 1;
+}
+.form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--dark-purple);
+    font-weight: 500;
+}
+.form-select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--medium-gray);
+    border-radius: var(--border-radius-md);
+    background-color: white;
+}
+.filter-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+}
+</style>
 {% endblock %}
 
 {% block content %}
@@ -26,23 +59,9 @@
     <!-- Filters -->
     <div class="card mb-4">
         <div class="card-body">
-            <form id="filterForm" class="d-flex flex-column gap-4">
-                <!-- Fila 1: Buscador -->
-                <div class="row">
-                    <div class="col-12">
-                        <label class="form-label text-primary fw-semibold">Buscar Aliado</label>
-                        <div class="input-group">
-                            <span class="input-group-text border-primary bg-white">
-                                <i data-feather="search" class="text-primary"></i>
-                            </span>
-                            <input type="text" class="form-control border-primary" name="aliado" placeholder="Nombre del aliado...">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Fila 2: Filtros -->
-                <div class="row g-3">
-                    <div class="col-md-3">
+            <form id="filterForm" class="filter-form">
+                <div class="filter-row">
+                    <div class="filter-group">
                         <label class="form-label">Aliado</label>
                         <select class="form-select" name="aliado">
                             <option value="">Todos</option>
@@ -51,7 +70,7 @@
                             {% endfor %}
                         </select>
                     </div>
-                    <div class="col-md-3">
+                    <div class="filter-group">
                         <label class="form-label">Industria</label>
                         <select class="form-select" name="industria">
                             <option value="">Todas</option>
@@ -61,7 +80,7 @@
                             <option value="Servicios">Servicios</option>
                         </select>
                     </div>
-                    <div class="col-md-3">
+                    <div class="filter-group">
                         <label class="form-label">País</label>
                         <select class="form-select" name="pais">
                             <option value="">Todos</option>
@@ -70,7 +89,7 @@
                             <option value="Perú">Perú</option>
                         </select>
                     </div>
-                    <div class="col-md-3">
+                    <div class="filter-group">
                         <label class="form-label">Estado</label>
                         <select class="form-select" name="estado">
                             <option value="">Todos</option>
@@ -80,25 +99,10 @@
                         </select>
                     </div>
                 </div>
-
-                <!-- Botones de acción -->
-                <div class="row mt-3">
-                    <div class="col-12 text-end">
-                        <button type="reset" class="btn btn-secondary me-2">Limpiar</button>
-                        <button type="submit" class="btn btn-info text-white">Aplicar</button>
-                    </div>
-                </div>
-
-                <!-- Fila 3: Botones -->
-                <div class="row">
-                    <div class="col-12 d-flex justify-content-end">
-                        <button type="reset" class="btn btn-outline-secondary me-2">
-                            <i data-feather="refresh-ccw" class="me-2"></i>Limpiar
-                        </button>
-                        <button type="button" class="btn btn-primary">
-                            <i data-feather="filter" class="me-2"></i>Aplicar Filtros
-                        </button>
-                    </div>
+                
+                <div class="filter-actions">
+                    <button type="reset" class="btn btn-secondary">Limpiar</button>
+                    <button type="submit" class="btn btn-primary">Aplicar Filtros</button>
                 </div>
             </form>
         </div>
