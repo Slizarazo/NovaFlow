@@ -1,0 +1,83 @@
+
+{% extends "layout.html" %}
+{% block content %}
+<div class="dashboard-container p-4">
+    <div class="dashboard-grid">
+        <!-- Segmentación de Clientes -->
+        <div class="dashboard-card">
+            <div class="card-header">
+                <h3>Segmentación de Clientes</h3>
+                <p class="text-muted">Distribución por segmento</p>
+            </div>
+            <div class="card-body">
+                {{ segmentacion_clientes | safe }}
+            </div>
+        </div>
+
+        <!-- Valor de Vida del Cliente (CLV) -->
+        <div class="dashboard-card">
+            <div class="card-header">
+                <h3>Valor de Vida del Cliente</h3>
+                <p class="text-muted">Evolución del CLV por segmento</p>
+            </div>
+            <div class="card-body">
+                {{ clv_trend | safe }}
+            </div>
+        </div>
+
+        <!-- Análisis de Retención -->
+        <div class="dashboard-card">
+            <div class="card-header">
+                <h3>Análisis de Retención</h3>
+                <p class="text-muted">Tasa de retención mensual</p>
+            </div>
+            <div class="card-body">
+                {{ retencion_clientes | safe }}
+            </div>
+        </div>
+
+        <!-- Satisfacción del Cliente -->
+        <div class="dashboard-card">
+            <div class="card-header">
+                <h3>Satisfacción del Cliente</h3>
+                <p class="text-muted">NPS y Calificación General</p>
+            </div>
+            <div class="card-body">
+                {{ satisfaccion_clientes | safe }}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block head %}
+<style>
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+.dashboard-card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 1.5rem;
+}
+
+.card-header {
+    margin-bottom: 1rem;
+}
+
+.card-header h3 {
+    margin: 0;
+    color: var(--primary);
+    font-size: 1.2rem;
+}
+
+.card-body {
+    min-height: 300px;
+}
+</style>
+{% endblock %}

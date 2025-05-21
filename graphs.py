@@ -850,6 +850,170 @@ def generar_grafico_tiempos(data):
 
     return pio.to_html(fig, full_html=False, include_plotlyjs='cdn')
 
+def generar_grafico_segmentacion_clientes(data):
+    """
+    Genera un gráfico de dona para la segmentación de clientes
+    """
+    import plotly.graph_objects as go
+    import plotly.io as pio
+
+    fig = go.Figure(data=[
+        go.Pie(
+            labels=data['segmentos'],
+            values=data['cantidad'],
+            hole=0.6,
+            marker=dict(colors=data['colores']),
+            textinfo='label+percent',
+            textposition='outside'
+        )
+    ])
+
+    fig.update_layout(
+        title=None,
+        font=dict(color='#560591', size=10),
+        paper_bgcolor='#F0F0F3',
+        plot_bgcolor='#FFFFFF',
+        margin=dict(l=50, r=50, t=30, b=30),
+        height=300,
+        showlegend=False
+    )
+
+    return pio.to_html(fig, full_html=False, include_plotlyjs='cdn')
+
+def generar_grafico_clv(data):
+    """
+    Genera un gráfico de líneas para el CLV por segmento
+    """
+    import plotly.graph_objects as go
+    import plotly.io as pio
+
+    fig = go.Figure()
+
+    fig.add_trace(go.Scatter(
+        x=data['meses'],
+        y=data['premium'],
+        name='Premium',
+        line=dict(color='#560591', width=3)
+    ))
+
+    fig.add_trace(go.Scatter(
+        x=data['meses'],
+        y=data['business'],
+        name='Business',
+        line=dict(color='#D400AC', width=3)
+    ))
+
+    fig.add_trace(go.Scatter(
+        x=data['meses'],
+        y=data['standard'],
+        name='Standard',
+        line=dict(color='#00A0FF', width=3)
+    ))
+
+    fig.update_layout(
+        title=None,
+        font=dict(color='#560591', size=10),
+        paper_bgcolor='#F0F0F3',
+        plot_bgcolor='#FFFFFF',
+        margin=dict(l=50, r=50, t=30, b=30),
+        height=300,
+        yaxis=dict(
+            gridcolor='#E1E1E1',
+            title='CLV ($)',
+            tickformat='$,.0f'
+        ),
+        xaxis=dict(gridcolor='#E1E1E1'),
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
+    )
+
+    return pio.to_html(fig, full_html=False, include_plotlyjs='cdn')
+
+def generar_grafico_retencion(data):
+    """
+    Genera un gráfico de área para la tasa de retención
+    """
+    import plotly.graph_objects as go
+    import plotly.io as pio
+
+    fig = go.Figure()
+
+    fig.add_trace(go.Scatter(
+        x=data['meses'],
+        y=data['tasa_retencion'],
+        fill='tozeroy',
+        fillcolor='rgba(86, 5, 145, 0.2)',
+        line=dict(color='#560591', width=3)
+    ))
+
+    fig.update_layout(
+        title=None,
+        font=dict(color='#560591', size=10),
+        paper_bgcolor='#F0F0F3',
+        plot_bgcolor='#FFFFFF',
+        margin=dict(l=50, r=50, t=30, b=30),
+        height=300,
+        yaxis=dict(
+            gridcolor='#E1E1E1',
+            title='Tasa de Retención',
+            tickformat='.0%',
+            range=[0, 100]
+        ),
+        xaxis=dict(gridcolor='#E1E1E1')
+    )
+
+    return pio.to_html(fig, full_html=False, include_plotlyjs='cdn')
+
+def generar_grafico_satisfaccion(data):
+    """
+    Genera un gráfico combinado de NPS y calificación
+    """
+    import plotly.graph_objects as go
+    import plotly.io as pio
+    from plotly.subplots import make_subplots
+
+    fig = make_subplots(rows=1, cols=2, specs=[[{"type": "pie"}, {"type": "scatter"}]])
+
+    # NPS Donut
+    fig.add_trace(
+        go.Pie(
+            labels=data['nps_categorias'],
+            values=data['nps_valores'],
+            hole=0.7,
+            marker=dict(colors=['#560591', '#D400AC', '#00A0FF']),
+            textinfo='label+percent',
+            textposition='inside',
+            showlegend=False
+        ),
+        row=1, col=1
+    )
+
+    # Tendencia de calificación
+    fig.add_trace(
+        go.Scatter(
+            y=data['tendencia'],
+            mode='lines+markers',
+            line=dict(color='#560591', width=3),
+            showlegend=False
+        ),
+        row=1, col=2
+    )
+
+    fig.update_layout(
+        title=None,
+        font=dict(color='#560591', size=10),
+        paper_bgcolor='#F0F0F3',
+        plot_bgcolor='#FFFFFF',
+        margin=dict(l=50, r=50, t=30, b=30),
+        height=300,
+        yaxis=dict(
+            gridcolor='#E1E1E1',
+            title='Calificación',
+            range=[0, 5]
+        )
+    )
+
+    return pio.to_html(fig, full_html=False, include_plotlyjs='cdn')
+
 def generar_grafico_rentabilidad(data):
     """
     Genera un gráfico de burbujas para el análisis de rentabilidad

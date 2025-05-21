@@ -301,6 +301,46 @@ def dashboard_proyectos():
         tiempos_comparacion=generar_grafico_tiempos(datos_tiempos)
     )
 
+@app.route('/dashboard/cuentas')
+@login_required
+def dashboard_cuentas():
+    # Datos de ejemplo para las gráficas
+    datos_segmentacion = {
+        'segmentos': ['Premium', 'Business', 'Standard', 'Basic'],
+        'cantidad': [15, 30, 40, 25],
+        'colores': ['#560591', '#D400AC', '#00A0FF', '#000000']
+    }
+    
+    datos_clv = {
+        'meses': ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'],
+        'premium': [5000, 5200, 5400, 5600, 5800, 6000],
+        'business': [3000, 3100, 3300, 3400, 3600, 3800],
+        'standard': [1500, 1600, 1700, 1800, 1900, 2000]
+    }
+    
+    datos_retencion = {
+        'meses': ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'],
+        'tasa_retencion': [95, 93, 94, 92, 95, 96]
+    }
+    
+    datos_satisfaccion = {
+        'nps_categorias': ['Promotores', 'Pasivos', 'Detractores'],
+        'nps_valores': [70, 20, 10],
+        'calificacion': 4.5,
+        'tendencia': [4.2, 4.3, 4.4, 4.5, 4.5, 4.5]
+    }
+
+    return render_template(
+        'dashboard/cuentas.html',
+        title='Dashboard de Cuentas',
+        config=app.config,
+        role=current_user.role,
+        segmentacion_clientes=generar_grafico_segmentacion_clientes(datos_segmentacion),
+        clv_trend=generar_grafico_clv(datos_clv),
+        retencion_clientes=generar_grafico_retencion(datos_retencion),
+        satisfaccion_clientes=generar_grafico_satisfaccion(datos_satisfaccion)
+    )
+
 @app.route('/dashboard/community')
 @login_required
 def dashboard_community():
