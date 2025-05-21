@@ -1,0 +1,48 @@
+
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="overview-grid">
+        <!-- Growth Section -->
+        <div class="overview-card">
+            <div class="overview-header">
+                <i data-feather="trending-up"></i>
+                <h3>Crecimiento</h3>
+            </div>
+            <p>Análisis detallado de ventas, ingresos vs costos, tasa de crecimiento y rentabilidad.</p>
+            <a href="/dashboard/crecimiento" class="btn btn-primary">Ver Dashboard</a>
+        </div>
+
+        <!-- Projects Section -->
+        <div class="overview-card">
+            <div class="overview-header">
+                <i data-feather="briefcase"></i>
+                <h3>Proyectos</h3>
+            </div>
+            <p>Gestión y seguimiento de proyectos activos, oportunidades y propuestas.</p>
+            <a href="/dashboard/proyectos" class="btn btn-primary">Ver Proyectos</a>
+        </div>
+
+        <!-- Accounts Section -->
+        <div class="overview-card">
+            <div class="overview-header">
+                <i data-feather="users"></i>
+                <h3>Cuentas</h3>
+            </div>
+            <p>Administración de clientes y usuarios asociados a su cuenta.</p>
+            <a href="/dashboard/cuentas" class="btn btn-primary">Ver Cuentas</a>
+        </div>
+
+        <!-- Productivity Section -->
+        <div class="overview-card">
+            <div class="overview-header">
+                <i data-feather="activity"></i>
+                <h3>Productividad</h3>
+            </div>
+            <p>Métricas de desempeño y eficiencia en la gestión de proyectos.</p>
+            <a href="/dashboard/productividad" class="btn btn-primary">Ver Productividad</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

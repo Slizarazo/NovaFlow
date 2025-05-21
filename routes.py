@@ -55,7 +55,20 @@ def logout():
 @app.route('/dashboard')
 @login_required
 def dashboard():
+    if current_user.role == 'aliado':
+        return render_template('dashboard/overview.html', title='Dashboard', config=app.config, role=current_user.role)
     return redirect(url_for('dashboard_growth'))
+
+@app.route('/dashboard/crecimiento')
+@login_required
+def dashboard_crecimiento():
+    if current_user.role != 'aliado':
+        return redirect(url_for('dashboard_growth'))
+    return render_template('dashboard/growth.html', 
+                         title='Dashboard de Crecimiento',
+                         config=app.config,
+                         role=current_user.role,
+                         **get_growth_dashboard_data())
 
 
 @app.route('/dashboard/growth')
