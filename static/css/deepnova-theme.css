@@ -633,10 +633,48 @@ a:hover {
     cursor: pointer;
 }
 
-.btn-sm {
-    padding: 0.5rem var(--spacing-sm);
-    font-size: var(--font-size-sm);
+/* Botones dentro de tablas */
+.table .btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    line-height: 1;
     border-radius: var(--border-radius-sm);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 2px;
+}
+
+.table .btn-sm i {
+    width: 14px;
+    height: 14px;
+}
+
+.table .btn-group {
+    display: flex;
+    gap: 4px;
+}
+
+.table .btn-outline-primary {
+    color: var(--primary-blue);
+    border-color: var(--primary-blue);
+    background: transparent;
+}
+
+.table .btn-outline-primary:hover {
+    color: var(--white);
+    background: var(--primary-blue);
+}
+
+.table .btn-outline-danger {
+    color: var(--danger);
+    border-color: var(--danger);
+    background: transparent;
+}
+
+.table .btn-outline-danger:hover {
+    color: var(--white);
+    background: var(--danger);
 }
 
 .btn-lg {
