@@ -1092,6 +1092,7 @@ def generar_grafico_facturacion(data):
     Genera un gráfico combinado de facturación mensual y anual
     """
     import plotly.graph_objects as go
+    import plotly.io as pio
     from plotly.subplots import make_subplots
 
     fig = make_subplots(rows=2, cols=1, subplot_titles=('Facturación Mensual', 'Facturación Anual'))
