@@ -1,95 +1,26 @@
-{% extends "layout.html" %}
-{% block content %}
+{% extends "layout.html" %} {% block content %}
 <div class="d-flex justify-content-between p-4">
     <h2>Gestión de Proyectos</h2>
-    <button class="btn btn-primary" onclick="window.location.href='/proyectos/nuevo'">
+    <button
+        class="btn btn-primary"
+        onclick="window.location.href='/proyectos/nuevo'"
+    >
         <i data-feather="plus"></i> Nueva Oportunidad
     </button>
 </div>
 
 <div class="container-fluid px-4">
-                        {% for proyecto in estados.oportunidad %}
-                        <div class="card mb-2">
-                            <div class="card-body p-2">
-                                <h6 class="card-title">{{ proyecto.nombre }}</h6>
-                                <small class="text-muted">ID: {{ proyecto.id }}</small>
-                            </div>
-                        </div>
-                        {% endfor %}
-                    </td>
-                    <td>
-                        {% for proyecto in estados.propuesta %}
-                        <div class="card mb-2">
-                            <div class="card-body p-2">
-                                <h6 class="card-title">{{ proyecto.nombre }}</h6>
-                                <small class="text-muted">ID: {{ proyecto.id }}</small>
-                            </div>
-                        </div>
-                        {% endfor %}
-                    </td>
-                    <td>
-                        {% for proyecto in estados.aprobado %}
-                        <div class="card mb-2">
-                            <div class="card-body p-2">
-                                <h6 class="card-title">{{ proyecto.nombre }}</h6>
-                                <small class="text-muted">ID: {{ proyecto.id }}</small>
-                            </div>
-                        </div>
-                        {% endfor %}
-                    </td>
-                    <td>
-                        {% for proyecto in estados.desarrollo %}
-                        <div class="card mb-2">
-                            <div class="card-body p-2">
-                                <h6 class="card-title">{{ proyecto.nombre }}</h6>
-                                <small class="text-muted">ID: {{ proyecto.id }}</small>
-                            </div>
-                        </div>
-                        {% endfor %}
-                    </td>
-                    <td>
-                        {% for proyecto in estados.testing %}
-                        <div class="card mb-2">
-                            <div class="card-body p-2">
-                                <h6 class="card-title">{{ proyecto.nombre }}</h6>
-                                <small class="text-muted">ID: {{ proyecto.id }}</small>
-                            </div>
-                        </div>
-                        {% endfor %}
-                    </td>
-                    <td>
-                        {% for proyecto in estados.cierre %}
-                        <div class="card mb-2">
-                            <div class="card-body p-2">
-                                <h6 class="card-title">{{ proyecto.nombre }}</h6>
-                                <small class="text-muted">ID: {{ proyecto.id }}</small>
-                            </div>
-                        </div>
-                        {% endfor %}
-                    </td>
-                    <td>
-                        {% for proyecto in estados.evaluacion %}
-                        <div class="card mb-2">
-                            <div class="card-body p-2">
-                                <h6 class="card-title">{{ proyecto.nombre }}</h6>
-                                <small class="text-muted">ID: {{ proyecto.id }}</small>
-                            </div>
-                        </div>
-                        {% endfor %}
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-</div>
-
-<div class="container-fluid px-4">
-    <div class="row mb-4" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem;">
+    <div
+        class="row mb-4"
+        style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem"
+    >
         <div>
             <div class="card bg-light h-100">
                 <div class="card-body">
                     <h5 class="card-title text-primary">Oportunidad</h5>
-                    <h2 class="card-text mb-0">{{ estados.oportunidad|length }}</h2>
+                    <h2 class="card-text mb-0">
+                        {{ estados.oportunidad|length }}
+                    </h2>
                     <small class="text-muted">Proyectos</small>
                 </div>
             </div>
@@ -98,7 +29,9 @@
             <div class="card bg-light h-100">
                 <div class="card-body">
                     <h5 class="card-title text-info">Propuesta</h5>
-                    <h2 class="card-text mb-0">{{ estados.propuesta|length }}</h2>
+                    <h2 class="card-text mb-0">
+                        {{ estados.propuesta|length }}
+                    </h2>
                     <small class="text-muted">Proyectos</small>
                 </div>
             </div>
@@ -107,7 +40,9 @@
             <div class="card bg-light h-100">
                 <div class="card-body">
                     <h5 class="card-title text-warning">Aprobación</h5>
-                    <h2 class="card-text mb-0">{{ estados.aprobado|length }}</h2>
+                    <h2 class="card-text mb-0">
+                        {{ estados.aprobado|length }}
+                    </h2>
                     <small class="text-muted">Proyectos</small>
                 </div>
             </div>
@@ -116,13 +51,18 @@
             <div class="card bg-light h-100">
                 <div class="card-body">
                     <h5 class="card-title text-success">En Desarrollo</h5>
-                    <h2 class="card-text mb-0">{{ estados.desarrollo|length }}</h2>
+                    <h2 class="card-text mb-0">
+                        {{ estados.desarrollo|length }}
+                    </h2>
                     <small class="text-muted">Proyectos</small>
                 </div>
             </div>
         </div>
     </div>
-    <div class="row" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem;">
+    <div
+        class="row"
+        style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem"
+    >
         <div>
             <div class="card bg-light h-100">
                 <div class="card-body">
@@ -145,7 +85,9 @@
             <div class="card bg-light h-100">
                 <div class="card-body">
                     <h5 class="card-title text-warning">Evaluación</h5>
-                    <h2 class="card-text mb-0">{{ estados.evaluacion|length }}</h2>
+                    <h2 class="card-text mb-0">
+                        {{ estados.evaluacion|length }}
+                    </h2>
                     <small class="text-muted">Proyectos</small>
                 </div>
             </div>
@@ -154,7 +96,9 @@
             <div class="card bg-light h-100">
                 <div class="card-body">
                     <h5 class="card-title text-success">Finalizados</h5>
-                    <h2 class="card-text mb-0">{{ estados.finalizados|length }}</h2>
+                    <h2 class="card-text mb-0">
+                        {{ estados.finalizados|length }}
+                    </h2>
                     <small class="text-muted">Proyectos</small>
                 </div>
             </div>
@@ -177,25 +121,32 @@
                 </tr>
             </thead>
             <tbody>
-                <tr style="vertical-align: top;">
+                <tr style="vertical-align: top">
                     <td>
-                        {% for proyecto in estados.oportunidad %}
-                        {% if proyecto.id != 3 and proyecto.id != 4 %}
+                        {% for proyecto in estados.oportunidad %} {% if
+                        proyecto.id != 3 and proyecto.id != 4 %}
                         <div class="card mb-2">
                             <div class="card-body p-2">
-                                <h6 class="card-title">{{ proyecto.nombre }}</h6>
-                                <small class="text-muted">ID: {{ proyecto.id }}</small>
+                                <h6 class="card-title">
+                                    {{ proyecto.nombre }}
+                                </h6>
+                                <small class="text-muted"
+                                    >ID: {{ proyecto.id }}</small
+                                >
                             </div>
                         </div>
-                        {% endif %}
-                        {% endfor %}
+                        {% endif %} {% endfor %}
                     </td>
                     <td>
                         {% for proyecto in estados.propuesta %}
                         <div class="card mb-2">
                             <div class="card-body p-2">
-                                <h6 class="card-title">{{ proyecto.nombre }}</h6>
-                                <small class="text-muted">ID: {{ proyecto.id }}</small>
+                                <h6 class="card-title">
+                                    {{ proyecto.nombre }}
+                                </h6>
+                                <small class="text-muted"
+                                    >ID: {{ proyecto.id }}</small
+                                >
                             </div>
                         </div>
                         {% endfor %}
@@ -204,8 +155,12 @@
                         {% for proyecto in estados.aprobado %}
                         <div class="card mb-2">
                             <div class="card-body p-2">
-                                <h6 class="card-title">{{ proyecto.nombre }}</h6>
-                                <small class="text-muted">ID: {{ proyecto.id }}</small>
+                                <h6 class="card-title">
+                                    {{ proyecto.nombre }}
+                                </h6>
+                                <small class="text-muted"
+                                    >ID: {{ proyecto.id }}</small
+                                >
                             </div>
                         </div>
                         {% endfor %}
@@ -214,8 +169,12 @@
                         {% for proyecto in estados.desarrollo %}
                         <div class="card mb-2">
                             <div class="card-body p-2">
-                                <h6 class="card-title">{{ proyecto.nombre }}</h6>
-                                <small class="text-muted">ID: {{ proyecto.id }}</small>
+                                <h6 class="card-title">
+                                    {{ proyecto.nombre }}
+                                </h6>
+                                <small class="text-muted"
+                                    >ID: {{ proyecto.id }}</small
+                                >
                             </div>
                         </div>
                         {% endfor %}
@@ -224,8 +183,12 @@
                         {% for proyecto in estados.testing %}
                         <div class="card mb-2">
                             <div class="card-body p-2">
-                                <h6 class="card-title">{{ proyecto.nombre }}</h6>
-                                <small class="text-muted">ID: {{ proyecto.id }}</small>
+                                <h6 class="card-title">
+                                    {{ proyecto.nombre }}
+                                </h6>
+                                <small class="text-muted"
+                                    >ID: {{ proyecto.id }}</small
+                                >
                             </div>
                         </div>
                         {% endfor %}
@@ -234,8 +197,12 @@
                         {% for proyecto in estados.cierre %}
                         <div class="card mb-2">
                             <div class="card-body p-2">
-                                <h6 class="card-title">{{ proyecto.nombre }}</h6>
-                                <small class="text-muted">ID: {{ proyecto.id }}</small>
+                                <h6 class="card-title">
+                                    {{ proyecto.nombre }}
+                                </h6>
+                                <small class="text-muted"
+                                    >ID: {{ proyecto.id }}</small
+                                >
                             </div>
                         </div>
                         {% endfor %}
@@ -244,8 +211,12 @@
                         {% for proyecto in estados.evaluacion %}
                         <div class="card mb-2">
                             <div class="card-body p-2">
-                                <h6 class="card-title">{{ proyecto.nombre }}</h6>
-                                <small class="text-muted">ID: {{ proyecto.id }}</small>
+                                <h6 class="card-title">
+                                    {{ proyecto.nombre }}
+                                </h6>
+                                <small class="text-muted"
+                                    >ID: {{ proyecto.id }}</small
+                                >
                             </div>
                         </div>
                         {% endfor %}
@@ -255,12 +226,10 @@
         </table>
     </div>
 </div>
-{% endblock %}
-
-{% block scripts %}
+{% endblock %} {% block scripts %}
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    feather.replace();
-});
+    document.addEventListener("DOMContentLoaded", function () {
+        feather.replace();
+    });
 </script>
 {% endblock %}
