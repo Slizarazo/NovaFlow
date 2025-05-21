@@ -383,6 +383,14 @@ def dashboard_facturacion():
         flujo_caja=generar_grafico_flujo_caja(datos_flujo)
     )
 
+@app.route('/cuentas/clientes')
+@login_required
+def cuentas_clientes():
+    return render_template('cuentas/clientes.html',
+                         title='Gestión de Clientes',
+                         config=app.config,
+                         role=current_user.role)
+
 @app.route('/dashboard/riesgos')
 @login_required
 def dashboard_riesgos():
