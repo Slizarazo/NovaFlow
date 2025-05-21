@@ -1,0 +1,88 @@
+
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="dashboard-container p-4">
+    <div class="overview-grid">
+        <!-- Analytics & Growth -->
+        <div class="overview-card">
+            <div class="overview-header">
+                <i data-feather="trending-up"></i>
+                <h3>Análisis y Crecimiento</h3>
+            </div>
+            <p>Monitoree el rendimiento financiero, métricas de crecimiento y análisis de rentabilidad de su negocio.</p>
+            <ul class="feature-list">
+                <li>Seguimiento de ingresos vs costos</li>
+                <li>Análisis de rentabilidad por servicio</li>
+                <li>Métricas de crecimiento interanual</li>
+            </ul>
+        </div>
+
+        <!-- Project Management -->
+        <div class="overview-card">
+            <div class="overview-header">
+                <i data-feather="briefcase"></i>
+                <h3>Gestión de Proyectos</h3>
+            </div>
+            <p>Administre eficientemente sus proyectos, desde oportunidades hasta implementación y cierre.</p>
+            <ul class="feature-list">
+                <li>Pipeline de oportunidades</li>
+                <li>Seguimiento de propuestas</li>
+                <li>Control de proyectos activos</li>
+            </ul>
+        </div>
+
+        <!-- Client Management -->
+        <div class="overview-card">
+            <div class="overview-header">
+                <i data-feather="users"></i>
+                <h3>Gestión de Clientes</h3>
+            </div>
+            <p>Gestione sus relaciones con clientes y mantenga un registro detallado de interacciones y necesidades.</p>
+            <ul class="feature-list">
+                <li>Perfiles de clientes</li>
+                <li>Historial de servicios</li>
+                <li>Gestión de usuarios</li>
+            </ul>
+        </div>
+
+        <!-- Resource Management -->
+        <div class="overview-card">
+            <div class="overview-header">
+                <i data-feather="grid"></i>
+                <h3>Gestión de Recursos</h3>
+            </div>
+            <p>Optimice la asignación de recursos y monitoree la productividad del equipo.</p>
+            <ul class="feature-list">
+                <li>Asignación de consultores</li>
+                <li>Control de capacidad</li>
+                <li>Métricas de productividad</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block head %}
+<style>
+.feature-list {
+    list-style: none;
+    padding-left: 0;
+    margin-top: 1rem;
+}
+
+.feature-list li {
+    padding: 0.5rem 0;
+    color: var(--gray);
+    display: flex;
+    align-items: center;
+}
+
+.feature-list li:before {
+    content: "•";
+    color: var(--primary);
+    font-weight: bold;
+    margin-right: 0.5rem;
+}
+</style>
+{% endblock %}
