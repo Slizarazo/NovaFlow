@@ -26,51 +26,71 @@
     <!-- Filters -->
     <div class="card mb-4">
         <div class="card-body">
-            <form id="filterForm" class="row g-3">
-                <div class="col-md-2">
-                    <label class="form-label">Aliado</label>
-                    <input type="text" class="form-control" name="aliado" placeholder="Buscar aliado...">
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label">Cuenta</label>
-                    <select class="form-select" name="cuenta">
-                        <option value="">Todas</option>
-                        {% for aliado in aliados %}
-                        <option value="{{ aliado.id }}">{{ aliado.nombre }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label">Industria</label>
-                    <select class="form-select" name="industria">
-                        <option value="">Todas</option>
-                        <option value="Tecnología">Tecnología</option>
-                        <option value="Finanzas">Finanzas</option>
-                        <option value="Manufactura">Manufactura</option>
-                        <option value="Servicios">Servicios</option>
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label">País</label>
-                    <select class="form-select" name="pais">
-                        <option value="">Todos</option>
-                        <option value="México">México</option>
-                        <option value="Colombia">Colombia</option>
-                        <option value="Perú">Perú</option>
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label">Estado</label>
-                    <select class="form-select" name="estado">
-                        <option value="">Todos</option>
-                        <option value="activo">Activo</option>
-                        <option value="inactivo">Inactivo</option>
-                        <option value="pendiente">Pendiente</option>
-                    </select>
-                </div>
-                <div class="col-md-2 d-flex align-items-end">
-                    <button type="button" class="btn btn-primary me-2">Filtrar</button>
-                    <button type="reset" class="btn btn-outline-secondary">Limpiar</button>
+            <form id="filterForm">
+                <div class="row g-3">
+                    <!-- Búsqueda principal -->
+                    <div class="col-md-4">
+                        <label class="form-label">Buscar Aliado</label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i data-feather="search"></i>
+                            </span>
+                            <input type="text" class="form-control" name="aliado" placeholder="Nombre del aliado...">
+                        </div>
+                    </div>
+
+                    <!-- Filtros de clasificación -->
+                    <div class="col-md-8">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label class="form-label">Cuenta</label>
+                                <select class="form-select" name="cuenta">
+                                    <option value="">Todas</option>
+                                    {% for aliado in aliados %}
+                                    <option value="{{ aliado.id }}">{{ aliado.nombre }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Industria</label>
+                                <select class="form-select" name="industria">
+                                    <option value="">Todas</option>
+                                    <option value="Tecnología">Tecnología</option>
+                                    <option value="Finanzas">Finanzas</option>
+                                    <option value="Manufactura">Manufactura</option>
+                                    <option value="Servicios">Servicios</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">País</label>
+                                <select class="form-select" name="pais">
+                                    <option value="">Todos</option>
+                                    <option value="México">México</option>
+                                    <option value="Colombia">Colombia</option>
+                                    <option value="Perú">Perú</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Estado</label>
+                                <select class="form-select" name="estado">
+                                    <option value="">Todos</option>
+                                    <option value="activo">Activo</option>
+                                    <option value="inactivo">Inactivo</option>
+                                    <option value="pendiente">Pendiente</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Botones de acción -->
+                    <div class="col-12 d-flex justify-content-end mt-4">
+                        <button type="reset" class="btn btn-outline-secondary me-2">
+                            <i data-feather="refresh-ccw" class="me-2"></i>Limpiar
+                        </button>
+                        <button type="button" class="btn btn-primary">
+                            <i data-feather="filter" class="me-2"></i>Aplicar Filtros
+                        </button>
+                    </div>
                 </div>
             </form>
         </div>
