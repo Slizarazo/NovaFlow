@@ -1,40 +1,6 @@
 {% extends "layout.html" %}
 {% block content %}
-<div class="projects-container p-4">
-    <!-- Header with Add Project Button -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Gestión de Proyectos</h2>
-        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProjectModal">
-            <i data-feather="plus"></i> Nueva Oportunidad
-        </button>
-    </div>
-
-    <!-- Add Project Modal -->
-    <div class="modal fade" id="addProjectModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Nueva Oportunidad</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                </div>
-                <div class="modal-footer">
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 {% endblock %}
 
 {% block scripts %}
-<script>
-function saveProject() {
-    location.reload();
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-    feather.replace();
-});
-</script>
 {% endblock %}
