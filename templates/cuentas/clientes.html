@@ -1,0 +1,62 @@
+
+{% extends "layout.html" %}
+{% block content %}
+<div class="container-fluid p-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Gestión de Clientes</h2>
+        <button class="btn btn-primary" onclick="window.location.href='/cuentas/clientes/nuevo'">
+            <i data-feather="plus"></i> Nuevo Cliente
+        </button>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Industria</th>
+                            <th>Estado</th>
+                            <th>Proyectos Activos</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for cliente in clientes %}
+                        <tr>
+                            <td>{{ cliente.id }}</td>
+                            <td>{{ cliente.nombre }}</td>
+                            <td>{{ cliente.industria }}</td>
+                            <td>
+                                <span class="badge {% if cliente.estado == 'Activo' %}bg-success{% elif cliente.estado == 'Inactivo' %}bg-danger{% else %}bg-warning{% endif %}">
+                                    {{ cliente.estado }}
+                                </span>
+                            </td>
+                            <td>{{ cliente.proyectos_activos }}</td>
+                            <td>
+                                <button class="btn btn-sm btn-info me-2" onclick="window.location.href='/cuentas/clientes/{{ cliente.id }}'">
+                                    <i data-feather="eye"></i>
+                                </button>
+                                <button class="btn btn-sm btn-warning" onclick="window.location.href='/cuentas/clientes/{{ cliente.id }}/editar'">
+                                    <i data-feather="edit"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        feather.replace();
+    });
+</script>
+{% endblock %}
