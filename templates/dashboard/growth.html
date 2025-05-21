@@ -1,269 +1,86 @@
-{% extends "layout.html" %} {% block head %}
-<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-<script src="{{ url_for('static', filename='js/charts.js') }}"></script>
-<script src="{{ url_for('static', filename='js/maps.js') }}"></script>
-<script src="{{ url_for('static', filename='js/filters.js') }}"></script>
-{% endblock %} {% block content %}
-<div class="dashboard-container">
-    <!-- Filter Section -->
-    <div class="filter-section mb-4" stye="margin:10px">
-        <h4 class="mb-3">Filtros</h4>
-        <form class="filter-form">
-            <div class="filter-row">
-                <div class="filter-col">
-                    <label class="filter-label" for="aliado">Aliado</label>
-                    <select class="filter-control" id="aliado" name="aliado">
-                        <option value="">Todos</option>
-                        {% for aliado in aliados %}
-                        <option value="{{ aliado.id }}">
-                            {{ aliado.nombre }}
-                        </option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="filter-col">
-                    <label class="filter-label" for="periodo">Periodo</label>
-                    <select class="filter-control" id="periodo" name="periodo">
-                        <option value="q1_2023">Q1 2023</option>
-                        <option value="q2_2023">Q2 2023</option>
-                        <option value="q3_2023" selected>Q3 2023</option>
-                        <option value="q4_2023">Q4 2023</option>
-                    </select>
-                </div>
-                <div class="filter-col">
-                    <label class="filter-label" for="cuenta">Cuenta</label>
-                    <select class="filter-control" id="cuenta" name="cuenta">
-                        <option value="">Todas</option>
-                        <option value="1">Cuenta A</option>
-                        <option value="2">Cuenta B</option>
-                        <option value="3">Cuenta C</option>
-                    </select>
-                </div>
-                <div class="filter-col">
-                    <label class="filter-label" for="supervisor"
-                        >Supervisor</label
-                    >
-                    <select
-                        class="filter-control"
-                        id="supervisor"
-                        name="supervisor"
-                    >
-                        <option value="">Todos</option>
-                        <option value="1">Supervisor 1</option>
-                        <option value="2">Supervisor 2</option>
-                        <option value="3">Supervisor 3</option>
-                    </select>
-                </div>
+{% extends "layout.html" %}
+{% block content %}
+<div class="dashboard-container p-4">
+    <div class="overview-grid">
+        <!-- Analytics & Growth -->
+        <div class="overview-card">
+            <div class="overview-header">
+                <i data-feather="trending-up"></i>
+                <h3>Análisis y Crecimiento</h3>
             </div>
-            <div class="filter-actions">
-                <button type="button" class="btn btn-secondary filter-reset">
-                    Restablecer
-                </button>
-                <button type="button" class="btn btn-primary filter-apply">
-                    Aplicar Filtros
-                </button>
-            </div>
-        </form>
-    </div>
-
-    <!-- KPI Cards -->
-    <div
-        class="kpi-row"
-        style="
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            margin: 10px;
-        "
-    >
-        <div class="kpi-col">
-            <div class="kpi-card kpi-card-primary">
-                <i data-feather="dollar-sign" class="kpi-icon"></i>
-                <div class="kpi-title">Ventas Trimestre</div>
-                <div class="kpi-value">
-                    $<span data-kpi="ventas_trimestre">{{ '{:,.0f}'.format(kpis.ventas_trimestre) }}</span>
-                </div>
-                <div class="kpi-change kpi-change-up">
-                    <i data-feather="arrow-up" class="kpi-change-icon"></i>
-                    <span>12% vs trimestre anterior</span>
-                </div>
-            </div>
-        </div>
-        <div class="kpi-col">
-            <div class="kpi-card kpi-card-secondary">
-                <i data-feather="briefcase" class="kpi-icon"></i>
-                <div class="kpi-title">Ventas Promedio por Cuenta</div>
-                <div class="kpi-value">
-                    $<span
-                        >{{ '{:,.0f}'.format(kpis.ventas_promedio_cuenta)
-                        }}</span
-                    >
-                </div>
-                <div class="kpi-change kpi-change-up">
-                    <i data-feather="arrow-up" class="kpi-change-icon"></i>
-                    <span>8% vs trimestre anterior</span>
-                </div>
-            </div>
-        </div>
-        <div class="kpi-col">
-            <div class="kpi-card kpi-card-success">
-                <i data-feather="layers" class="kpi-icon"></i>
-                <div class="kpi-title">Ventas Promedio por Proyecto</div>
-                <div class="kpi-value">
-                    $<span
-                        >{{ '{:,.0f}'.format(kpis.ventas_promedio_proyecto)
-                        }}</span
-                    >
-                </div>
-                <div class="kpi-change kpi-change-down">
-                    <i data-feather="arrow-down" class="kpi-change-icon"></i>
-                    <span>3% vs trimestre anterior</span>
-                </div>
-            </div>
-        </div>
-        <div class="kpi-col">
-            <div class="kpi-card kpi-card-warning">
-                <i data-feather="trending-up" class="kpi-icon"></i>
-                <div class="kpi-title">Rentabilidad</div>
-                <div class="kpi-value">
-                    $<span>{{ '{:,.0f}'.format(kpis.rentabilidad) }}</span>
-                </div>
-                <div class="kpi-change kpi-change-up">
-                    <i data-feather="arrow-up" class="kpi-change-icon"></i>
-                    <span>15% vs trimestre anterior</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Financial Analysis -->
-    <div class="chart-row">
-        <!-- Income vs Costs -->
-        <div class="chart-col-half">
-            <div class="chart-card">
-                <div class="chart-header">
-                    <h5 class="chart-title">Ingresos vs Costos</h5>
-                </div>
-                <div class="chart-body">
-                    {{ ingresos_vs_costos|safe }}
-                </div>
-                <div class="chart-footer">Comparativa mensual</div>
-            </div>
+            <p>Monitoree el rendimiento financiero, métricas de crecimiento y análisis de rentabilidad de su negocio.</p>
+            <ul class="feature-list">
+                <li>Seguimiento de ingresos vs costos</li>
+                <li>Análisis de rentabilidad por servicio</li>
+                <li>Métricas de crecimiento interanual</li>
+            </ul>
         </div>
 
-        <!-- Growth Rate -->
-        <div class="chart-col-half">
-            <div class="chart-card">
-                <div class="chart-header">
-                    <h5 class="chart-title">Tasa de Crecimiento</h5>
-                </div>
-                <div class="chart-body">
-                    {{ tasa_crecimiento|safe }}
-                </div>
-                <div class="chart-footer">Evolución trimestral</div>
+        <!-- Project Management -->
+        <div class="overview-card">
+            <div class="overview-header">
+                <i data-feather="briefcase"></i>
+                <h3>Gestión de Proyectos</h3>
             </div>
-        </div>
-    </div>
-
-    <div class="chart-row">
-        <!-- New vs Recurring Clients -->
-        <div class="chart-col-half">
-            <div class="chart-card">
-                <div class="chart-header">
-                    <h5 class="chart-title">Clientes Nuevos vs Recurrentes</h5>
-                </div>
-                <div class="chart-body">
-                    {{ clientes_nuevos_vs_recurrentes|safe }}
-                </div>
-                <div class="chart-footer">Distribución mensual</div>
-            </div>
+            <p>Administre eficientemente sus proyectos, desde oportunidades hasta implementación y cierre.</p>
+            <ul class="feature-list">
+                <li>Pipeline de oportunidades</li>
+                <li>Seguimiento de propuestas</li>
+                <li>Control de proyectos activos</li>
+            </ul>
         </div>
 
-        <!-- Profitability Analysis -->
-        <div class="chart-col-half">
-            <div class="chart-card">
-                <div class="chart-header">
-                    <h5 class="chart-title">Análisis de Rentabilidad</h5>
-                </div>
-                <div class="chart-body">
-                    {{ analisis_rentabilidad|safe }}
-                </div>
-                <div class="chart-footer">Por línea de servicio</div>
+        <!-- Client Management -->
+        <div class="overview-card">
+            <div class="overview-header">
+                <i data-feather="users"></i>
+                <h3>Gestión de Clientes</h3>
             </div>
-        </div>
-    </div>
-
-    <!-- Visualizations -->
-    <div class="chart-row">
-        <!-- Map (Left Half) -->
-        <div class="chart-col-half">
-            <div class="chart-card">
-                <div class="chart-header">
-                    <h5 class="chart-title">Mapa de Operaciones</h5>
-                </div>
-                <div class="chart-body" style="height: 400px; padding: 0">
-                    <!-- {{ mapa_html|safe }} -->
-                    {{ mapa_sesiones|safe }}
-                </div>
-            </div>
+            <p>Gestione sus relaciones con clientes y mantenga un registro detallado de interacciones y necesidades.</p>
+            <ul class="feature-list">
+                <li>Perfiles de clientes</li>
+                <li>Historial de servicios</li>
+                <li>Gestión de usuarios</li>
+            </ul>
         </div>
 
-        <!-- Right Side Charts -->
-        <div
-            class="chart-col-half"
-            style="display: grid; grid-template-columns: repeat(2, 1fr)"
-        >
-            <!-- Ventas por Portafolio (Upper Right) -->
-            <div class="chart-card mb-4">
-                <div class="chart-header">
-                    <h5 class="chart-title">Ventas por Portafolio</h5>
-                </div>
-                <div class="chart-body">{{ datos_grafico|safe }}</div>
+        <!-- Resource Management -->
+        <div class="overview-card">
+            <div class="overview-header">
+                <i data-feather="grid"></i>
+                <h3>Gestión de Recursos</h3>
             </div>
-
-            <!-- Distribución por Industria (Upper Right) -->
-            <div class="chart-card mb-4">
-                <div class="chart-header">
-                    <h5 class="chart-title">Distribución por Industria</h5>
-                </div>
-                <div class="chart-body">
-                    {{ distribucion_industria | safe }}
-                </div>
-            </div>
-
-            <!-- Crecimiento YoY (Lower Right) -->
-            <div class="chart-card" style="grid-column: span 2">
-                <div class="chart-header">
-                    <h5 class="chart-title">Crecimiento Año a Año (YoY)</h5>
-                </div>
-                <div
-                    class="chart-body"
-                    style="display: flex; justify-content: center"
-                >
-                    {{ crecimiento_yoy|safe }}
-                </div>
-                <div class="chart-footer">Tendencia anual por mes</div>
-            </div>
+            <p>Optimice la asignación de recursos y monitoree la productividad del equipo.</p>
+            <ul class="feature-list">
+                <li>Asignación de consultores</li>
+                <li>Control de capacidad</li>
+                <li>Métricas de productividad</li>
+            </ul>
         </div>
     </div>
 </div>
-{% endblock %} {% block scripts %}
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        // Update KPI data periodically (simulation)
-        setInterval(function () {
-            const kpiValues = document.querySelectorAll(".kpi-value span");
-            kpiValues.forEach(function (el) {
-                // Randomly adjust the values slightly for simulation
-                const value = parseFloat(el.textContent.replace(/,/g, ""));
-                const newValue = value + (Math.random() - 0.5) * value * 0.02; // ±1% change
-                el.textContent = newValue.toLocaleString("en-US", {
-                    maximumFractionDigits: 0,
-                });
-            });
-        }, 30000); // Every 30 seconds
-    });
-</script>
-<!-- <script src="{{ url_for('static', filename='js/maps.js') }}"></script> -->
-<script src="{{ url_for('static', filename='js/ventas_portafolio.js') }}"></script>
+{% endblock %}
 
+{% block head %}
+<style>
+.feature-list {
+    list-style: none;
+    padding-left: 0;
+    margin-top: 1rem;
+}
+
+.feature-list li {
+    padding: 0.5rem 0;
+    color: var(--gray);
+    display: flex;
+    align-items: center;
+}
+
+.feature-list li:before {
+    content: "•";
+    color: var(--primary);
+    font-weight: bold;
+    margin-right: 0.5rem;
+}
+</style>
 {% endblock %}
