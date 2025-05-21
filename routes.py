@@ -65,28 +65,35 @@ def dashboard_crecimiento():
     if current_user.role != 'aliado':
         return redirect(url_for('dashboard_growth'))
     
-    # Data for growth dashboard
-    aliados = Aliado.ALIADOS
-    ventas_trimestre_total = sum(aliado.ventas_trimestre for aliado in aliados)
-    ventas_promedio_cuenta = ventas_trimestre_total / len(aliados)
-
-    proyectos = Proyecto.PROYECTOS
-    ventas_promedio_proyecto = ventas_trimestre_total / len(proyectos) if proyectos else 0
-    rentabilidad = ventas_trimestre_total * 0.3
-
-    kpis = {
-        'ventas_trimestre': ventas_trimestre_total,
-        'ventas_promedio_cuenta': ventas_promedio_cuenta,
-        'ventas_promedio_proyecto': ventas_promedio_proyecto,
-        'rentabilidad': rentabilidad
+    # Datos para las gráficas
+    datos_ingresos_costos = {
+        'meses': ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'],
+        'ingresos': [50000, 55000, 58000, 54000, 62000, 65000],
+        'costos': [30000, 32000, 35000, 33000, 36000, 38000]
+    }
+    
+    datos_clientes = {
+        'meses': ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'],
+        'clientes_nuevos': [10, 12, 8, 15, 11, 14],
+        'clientes_recurrentes': [45, 47, 46, 48, 50, 52]
+    }
+    
+    datos_rentabilidad = {
+        'servicios': ['Consultoría', 'Desarrollo', 'Análisis', 'Soporte'],
+        'ingresos': [100000, 80000, 60000, 40000],
+        'margenes': [0.35, 0.28, 0.42, 0.25],
+        'volumen': [30, 25, 20, 15],
+        'rentabilidad': [35000, 22400, 25200, 10000]
     }
 
     return render_template('dashboard/growth.html', 
                          title='Dashboard de Crecimiento',
                          config=app.config,
                          role=current_user.role,
-                         kpis=kpis,
-                         aliados=aliados)
+                         ingresos_vs_costos=generar_grafico_ingresos_vs_costos(datos_ingresos_costos),
+                         crecimiento_yoy=generar_grafico_crecimiento_yoy(DatosDashboard.CRECIMIENTO_ANUAL),
+                         clientes_nuevos_recurrentes=generar_grafico_clientes_nuevos_vs_recurrentes(datos_clientes),
+                         rentabilidad=generar_grafico_rentabilidad(datos_rentabilidad))
 
 
 @app.route('/dashboard/growth')
