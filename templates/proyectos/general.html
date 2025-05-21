@@ -25,32 +25,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="addProjectForm">
-                        <div class="mb-3">
-                            <label class="form-label">Nombre del Proyecto</label>
-                            <input type="text" class="form-control" name="nombre" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Cliente</label>
-                            <select class="form-control" name="aliado_id" required>
-                                {% for aliado in aliados.values() %}
-                                <option value="{{ aliado.id }}">{{ aliado.nombre }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Fecha Inicio</label>
-                            <input type="date" class="form-control" name="fecha_inicio" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Fecha Fin Estimada</label>
-                            <input type="date" class="form-control" name="fecha_fin" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Monto Estimado</label>
-                            <input type="number" class="form-control" name="monto" required>
-                        </div>
-                    </form>
+
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
@@ -75,10 +50,6 @@
 
 .card:hover {
     transform: translateY(-2px);
-}
-
-.table td {
-    vertical-align: middle;
 }
 
 .btn-sm {
@@ -110,20 +81,7 @@ function manageProject(id) {
 }
 
 function saveProject() {
-    // Implementar guardado del proyecto
-    const form = document.getElementById('addProjectForm');
-    const formData = new FormData(form);
-
-    fetch('/proyectos/crear', {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            location.reload();
-        }
-    });
+    location.reload();
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -131,30 +89,3 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 {% endblock %}
-.project-stats {
-    display: flex;
-    gap: 1rem;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    padding: 0.5rem;
-}
-
-.stat-card {
-    flex: 1;
-    min-width: 120px;
-    padding: 1rem;
-    border-radius: 8px;
-    color: white;
-    text-align: center;
-}
-
-.stat-title {
-    font-size: 0.9rem;
-    margin-bottom: 0.5rem;
-    white-space: nowrap;
-}
-
-.stat-value {
-    font-size: 1.5rem;
-    font-weight: bold;
-}
