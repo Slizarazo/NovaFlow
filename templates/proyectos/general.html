@@ -1,4 +1,3 @@
-
 {% extends "layout.html" %}
 {% block content %}
 <div class="d-flex justify-content-between p-4">
@@ -9,9 +8,9 @@
 </div>
 
 <div class="container-fluid px-4">
-    <div class="row mb-4">
-        <div class="col">
-            <div class="card bg-light">
+    <div class="row mb-4" style="display: grid; grid-template-columns: repeat(4, 1fr);">
+        <div>
+            <div class="card bg-light h-100">
                 <div class="card-body">
                     <h5 class="card-title text-primary">Oportunidad</h5>
                     <h2 class="card-text mb-0">{{ estados.oportunidad|length }}</h2>
@@ -19,8 +18,8 @@
                 </div>
             </div>
         </div>
-        <div class="col">
-            <div class="card bg-light">
+        <div>
+            <div class="card bg-light h-100">
                 <div class="card-body">
                     <h5 class="card-title text-info">Propuesta</h5>
                     <h2 class="card-text mb-0">{{ estados.propuesta|length }}</h2>
@@ -28,8 +27,8 @@
                 </div>
             </div>
         </div>
-        <div class="col">
-            <div class="card bg-light">
+        <div>
+            <div class="card bg-light h-100">
                 <div class="card-body">
                     <h5 class="card-title text-warning">Aprobación</h5>
                     <h2 class="card-text mb-0">{{ estados.aprobado|length }}</h2>
@@ -37,8 +36,8 @@
                 </div>
             </div>
         </div>
-        <div class="col">
-            <div class="card bg-light">
+        <div>
+            <div class="card bg-light h-100">
                 <div class="card-body">
                     <h5 class="card-title text-success">En Desarrollo</h5>
                     <h2 class="card-text mb-0">{{ estados.desarrollo|length }}</h2>
@@ -47,9 +46,9 @@
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col">
-            <div class="card bg-light">
+    <div class="row" style="display: grid; grid-template-columns: repeat(4, 1fr);">
+        <div>
+            <div class="card bg-light h-100">
                 <div class="card-body">
                     <h5 class="card-title text-primary">Testing</h5>
                     <h2 class="card-text mb-0">{{ estados.testing|length }}</h2>
@@ -57,8 +56,8 @@
                 </div>
             </div>
         </div>
-        <div class="col">
-            <div class="card bg-light">
+        <div>
+            <div class="card bg-light h-100">
                 <div class="card-body">
                     <h5 class="card-title text-info">Cierre</h5>
                     <h2 class="card-text mb-0">{{ estados.cierre|length }}</h2>
@@ -66,8 +65,8 @@
                 </div>
             </div>
         </div>
-        <div class="col">
-            <div class="card bg-light">
+        <div>
+            <div class="card bg-light h-100">
                 <div class="card-body">
                     <h5 class="card-title text-warning">Evaluación</h5>
                     <h2 class="card-text mb-0">{{ estados.evaluacion|length }}</h2>
@@ -75,7 +74,7 @@
                 </div>
             </div>
         </div>
-        <div class="col">
+        <div>
         </div>
     </div>
 </div>
