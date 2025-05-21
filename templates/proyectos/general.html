@@ -7,6 +7,98 @@
     </button>
 </div>
 
+<div class="container-fluid">
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Oportunidad</th>
+                    <th>Propuesta</th>
+                    <th>Aprobación</th>
+                    <th>En Desarrollo</th>
+                    <th>Testing</th>
+                    <th>Cierre</th>
+                    <th>Evaluación</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr style="vertical-align: top;">
+                    <td>
+                        {% for proyecto in estados.oportunidad %}
+                        <div class="card mb-2">
+                            <div class="card-body p-2">
+                                <h6 class="card-title">{{ proyecto.nombre }}</h6>
+                                <small class="text-muted">ID: {{ proyecto.id }}</small>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% for proyecto in estados.propuesta %}
+                        <div class="card mb-2">
+                            <div class="card-body p-2">
+                                <h6 class="card-title">{{ proyecto.nombre }}</h6>
+                                <small class="text-muted">ID: {{ proyecto.id }}</small>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% for proyecto in estados.aprobado %}
+                        <div class="card mb-2">
+                            <div class="card-body p-2">
+                                <h6 class="card-title">{{ proyecto.nombre }}</h6>
+                                <small class="text-muted">ID: {{ proyecto.id }}</small>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% for proyecto in estados.desarrollo %}
+                        <div class="card mb-2">
+                            <div class="card-body p-2">
+                                <h6 class="card-title">{{ proyecto.nombre }}</h6>
+                                <small class="text-muted">ID: {{ proyecto.id }}</small>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% for proyecto in estados.testing %}
+                        <div class="card mb-2">
+                            <div class="card-body p-2">
+                                <h6 class="card-title">{{ proyecto.nombre }}</h6>
+                                <small class="text-muted">ID: {{ proyecto.id }}</small>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% for proyecto in estados.cierre %}
+                        <div class="card mb-2">
+                            <div class="card-body p-2">
+                                <h6 class="card-title">{{ proyecto.nombre }}</h6>
+                                <small class="text-muted">ID: {{ proyecto.id }}</small>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% for proyecto in estados.evaluacion %}
+                        <div class="card mb-2">
+                            <div class="card-body p-2">
+                                <h6 class="card-title">{{ proyecto.nombre }}</h6>
+                                <small class="text-muted">ID: {{ proyecto.id }}</small>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
 <div class="container-fluid px-4">
     <div class="row mb-4" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem;">
         <div>
