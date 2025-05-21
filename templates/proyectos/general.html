@@ -180,12 +180,14 @@
                 <tr style="vertical-align: top;">
                     <td>
                         {% for proyecto in estados.oportunidad %}
+                        {% if proyecto.id != 3 and proyecto.id != 4 %}
                         <div class="card mb-2">
                             <div class="card-body p-2">
                                 <h6 class="card-title">{{ proyecto.nombre }}</h6>
                                 <small class="text-muted">ID: {{ proyecto.id }}</small>
                             </div>
                         </div>
+                        {% endif %}
                         {% endfor %}
                     </td>
                     <td>
