@@ -3,8 +3,20 @@
 
 {% block content %}
 <div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="mb-4">
         <h2>Calculadora de Tiempos</h2>
+        <div class="form-group mb-3">
+            <label for="projectSelector" class="form-label">Seleccionar Proyecto</label>
+            <select class="form-control" id="projectSelector" onchange="updateProjectData()">
+                <option value="">Seleccione un proyecto...</option>
+                {% for proyecto in proyectos %}
+                <option value="{{ proyecto.id }}">{{ proyecto.nombre }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div id="selectedProjectName" class="h4"></div>
         <button class="btn btn-primary" onclick="openEntregableForm()">
             <i data-feather="plus"></i> Nuevo Entregable
         </button>
@@ -196,8 +208,26 @@
 
 <script>
 let projectData = {
+    projectId: null,
+    projectName: '',
     entregables: []
 };
+
+function updateProjectData() {
+    const selector = document.getElementById('projectSelector');
+    const projectNameElem = document.getElementById('selectedProjectName');
+    
+    projectData.projectId = selector.value;
+    projectData.projectName = selector.options[selector.selectedIndex].text;
+    
+    if (projectData.projectId) {
+        projectNameElem.textContent = projectData.projectName;
+        document.getElementById('projectStructure').style.display = 'block';
+    } else {
+        projectNameElem.textContent = '';
+        document.getElementById('projectStructure').style.display = 'none';
+    }
+}
 
 // Entregable Functions
 function openEntregableForm() {

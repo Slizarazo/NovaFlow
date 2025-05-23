@@ -794,10 +794,12 @@ def internal_server_error(e):
 @app.route('/proyectos/calculadora')
 @login_required
 def proyectos_calculadora():
+    proyectos = Proyecto.PROYECTOS
     return render_template('proyectos/calculadora.html', 
                          title='Calculadora de Tiempos',
                          config=app.config,
-                         role=current_user.role)
+                         role=current_user.role,
+                         proyectos=proyectos)
 
 @app.route('/proyectos/general')
 @login_required
