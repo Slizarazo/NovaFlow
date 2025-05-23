@@ -154,6 +154,7 @@
                     <thead>
                         <tr>
                             <th>Tipo de Recurso</th>
+                            <th>Concepto</th>
                             <th>Periodicidad</th>
                             <th>Moneda</th>
                             <th>Cantidad</th>
@@ -198,6 +199,10 @@
                                 <option value="Capacitación externa">Capacitación externa</option>
                                 <option value="Gastos operativos">Gastos operativos</option>
                             </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="resourceConcept" class="form-label">Concepto</label>
+                            <input type="text" class="form-control" id="resourceConcept" required placeholder="Ej: Licencia Jira, Laptop Dell, etc.">
                         </div>
                         <div class="mb-3">
                             <label for="periodicity" class="form-label">Periodicidad</label>
@@ -631,6 +636,7 @@ function addResource(event) {
     const resource = {
         id: Date.now(),
         type: document.getElementById('resourceType').value,
+        concept: document.getElementById('resourceConcept').value,
         periodicity: document.getElementById('periodicity').value,
         currency: document.getElementById('currency').value,
         quantity: parseInt(document.getElementById('quantity').value),
@@ -691,6 +697,7 @@ function renderResources() {
         const row = `
             <tr>
                 <td>${resource.type}</td>
+                <td>${resource.concept}</td>
                 <td>${resource.periodicity}</td>
                 <td>${resource.currency}</td>
                 <td>${resource.quantity}</td>
