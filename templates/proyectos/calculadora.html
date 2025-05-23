@@ -981,9 +981,17 @@ function renderProject() {
             <div class="entregable-card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5>${entregable.name}</h5>
-                    <button class="btn btn-sm btn-primary add-button" onclick="openActividadForm(${entregable.id})">
-                        <i data-feather="plus"></i> Actividad
-                    </button>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-sm btn-outline-primary" onclick="editEntregable(${entregable.id})">
+                            <i data-feather="edit-2" style="width: 14px; height: 14px;"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteEntregable(${entregable.id})">
+                            <i data-feather="trash-2" style="width: 14px; height: 14px;"></i>
+                        </button>
+                        <button class="btn btn-sm btn-primary add-button" onclick="openActividadForm(${entregable.id})">
+                            <i data-feather="plus"></i> Actividad
+                        </button>
+                    </div>
                 </div>
                 <div class="card-body">
                     <div class="actividades-container">
@@ -1026,9 +1034,17 @@ function renderActividades(actividades) {
             <div class="actividad-card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h6>${actividad.name}</h6>
-                    <button class="btn btn-sm btn-secondary add-button" onclick="openTareaForm(${actividad.id})">
-                        <i data-feather="plus"></i> Tarea
-                    </button>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-sm btn-outline-primary" onclick="editActividad(${actividad.id})">
+                            <i data-feather="edit-2" style="width: 14px; height: 14px;"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteActividad(${actividad.id})">
+                            <i data-feather="trash-2" style="width: 14px; height: 14px;"></i>
+                        </button>
+                        <button class="btn btn-sm btn-secondary add-button" onclick="openTareaForm(${actividad.id})">
+                            <i data-feather="plus"></i> Tarea
+                        </button>
+                    </div>
                 </div>
                 <div class="card-body">
                     <div class="tareas-container">
@@ -1149,6 +1165,98 @@ function deleteTarea(tareaId) {
                     renderProject();
                     break;
                 }
+            }
+        }
+    }
+}
+
+function editEntregable(entregableId) {
+    const entregable = projectData.entregables.find(e => e.id === entregableId);
+    if (entregable) {
+        document.getElementById('entregableName').value = entregable.name;
+        
+        const form = document.getElementById('entregableForm');
+        form.onsubmit = (e) => {
+            e.preventDefault();
+            updateEntregable(entregableId);
+        };
+        
+        document.getElementById('entregableFormPopup').classList.add('show');
+    }
+}
+
+function updateEntregable(entregableId) {
+    const entregableIndex = projectData.entregables.findIndex(e => e.id === entregableId);
+    if (entregableIndex !== -1) {
+        projectData.entregables[entregableIndex].name = document.getElementById('entregableName').value;
+    }
+    
+    closeEntregableForm();
+    renderProject();
+    
+    const form = document.getElementById('entregableForm');
+    form.onsubmit = (e) => {
+        e.preventDefault();
+        addEntregable(e);
+    };
+}
+
+function deleteEntregable(entregableId) {
+    if (confirm('¿Está seguro de que desea eliminar este entregable y todas sus actividades y tareas?')) {
+        const entregableIndex = projectData.entregables.findIndex(e => e.id === entregableId);
+        if (entregableIndex !== -1) {
+            projectData.entregables.splice(entregableIndex, 1);
+            renderProject();
+        }
+    }
+}
+
+function editActividad(actividadId) {
+    for (let entregable of projectData.entregables) {
+        const actividad = entregable.actividades.find(a => a.id === actividadId);
+        if (actividad) {
+            document.getElementById('actividadName').value = actividad.name;
+            document.getElementById('actividadEntregableId').value = entregable.id;
+            
+            const form = document.getElementById('actividadForm');
+            form.onsubmit = (e) => {
+                e.preventDefault();
+                updateActividad(actividadId);
+            };
+            
+            document.getElementById('actividadFormPopup').classList.add('show');
+            break;
+        }
+    }
+}
+
+function updateActividad(actividadId) {
+    for (let entregable of projectData.entregables) {
+        const actividadIndex = entregable.actividades.findIndex(a => a.id === actividadId);
+        if (actividadIndex !== -1) {
+            entregable.actividades[actividadIndex].name = document.getElementById('actividadName').value;
+            break;
+        }
+    }
+    
+    closeActividadForm();
+    renderProject();
+    
+    const form = document.getElementById('actividadForm');
+    form.onsubmit = (e) => {
+        e.preventDefault();
+        addActividad(e);
+    };
+}
+
+function deleteActividad(actividadId) {
+    if (confirm('¿Está seguro de que desea eliminar esta actividad y todas sus tareas?')) {
+        for (let entregable of projectData.entregables) {
+            const actividadIndex = entregable.actividades.findIndex(a => a.id === actividadId);
+            if (actividadIndex !== -1) {
+                entregable.actividades.splice(actividadIndex, 1);
+                renderProject();
+                break;
             }
         }
     }
