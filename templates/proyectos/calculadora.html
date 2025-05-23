@@ -156,7 +156,9 @@
                             <th>Tipo de Recurso</th>
                             <th>Periodicidad</th>
                             <th>Moneda</th>
-                            <th>Costo</th>
+                            <th>Cantidad</th>
+                            <th>Costo Unitario</th>
+                            <th>Total</th>
                             <th>Total Anualizado</th>
                         </tr>
                     </thead>
@@ -215,7 +217,11 @@
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label for="cost" class="form-label">Costo</label>
+                            <label for="quantity" class="form-label">Cantidad</label>
+                            <input type="number" class="form-control" id="quantity" min="1" value="1" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="cost" class="form-label">Costo Unitario</label>
                             <input type="number" class="form-control" id="cost" min="0" step="0.01" required>
                         </div>
                         <div class="d-flex gap-2">
@@ -515,6 +521,7 @@ function addResource(event) {
         type: document.getElementById('resourceType').value,
         periodicity: document.getElementById('periodicity').value,
         currency: document.getElementById('currency').value,
+        quantity: parseInt(document.getElementById('quantity').value),
         cost: parseFloat(document.getElementById('cost').value)
     };
     
@@ -524,7 +531,7 @@ function addResource(event) {
 }
 
 function calculateAnnualizedCost(resource) {
-    let annualCost = resource.cost;
+    let annualCost = resource.cost * resource.quantity;
     if (resource.periodicity === 'mensual') {
         annualCost *= 12;
     }
@@ -541,12 +548,15 @@ function renderResources() {
         const annualizedCost = calculateAnnualizedCost(resource);
         totalAnnualCost += annualizedCost;
         
+        const total = resource.cost * resource.quantity;
         const row = `
             <tr>
                 <td>${resource.type}</td>
                 <td>${resource.periodicity}</td>
                 <td>${resource.currency}</td>
+                <td>${resource.quantity}</td>
                 <td>${resource.cost.toFixed(2)}</td>
+                <td>${total.toFixed(2)} ${resource.currency}</td>
                 <td>${annualizedCost.toFixed(2)} ${resource.currency}</td>
             </tr>
         `;
