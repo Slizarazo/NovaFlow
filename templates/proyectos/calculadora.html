@@ -322,6 +322,13 @@
         </div>
     </div>
 
+    <!-- Export Button -->
+    <div class="text-center mb-4">
+        <button class="btn btn-primary" onclick="exportToPDF()">
+            <i data-feather="file-text"></i> Exportar Informe PDF
+        </button>
+    </div>
+
     <!-- Summary Report -->
     <div class="card mt-4 mb-4">
         <div class="card-body">
@@ -928,6 +935,60 @@ function renderTareas(tareas) {
             </div>
         </div>
     `).join('');
+}
+
+function exportToPDF() {
+    // Recopilar datos del proyecto
+    const projectData = {
+        name: document.getElementById('selectedProjectName').textContent,
+        times: {
+            optimistic: document.getElementById('projectOptimistic').textContent,
+            mostLikely: document.getElementById('projectMostLikely').textContent,
+            pessimistic: document.getElementById('projectPessimistic').textContent,
+            estimated: document.getElementById('projectEstimated').textContent
+        },
+        summary: {
+            entregables: document.getElementById('summaryEntregables').textContent,
+            actividades: document.getElementById('summaryActividades').textContent,
+            tareas: document.getElementById('summaryTareas').textContent,
+            totalTime: document.getElementById('summaryTotalTime').textContent
+        },
+        resources: Array.from(document.getElementById('resourcesTable').rows).map(row => ({
+            type: row.cells[0].textContent,
+            periodicity: row.cells[1].textContent,
+            currency: row.cells[2].textContent,
+            quantity: row.cells[3].textContent,
+            cost: row.cells[5].textContent
+        })),
+        freelance: Array.from(document.getElementById('freelanceTable').rows).map(row => ({
+            specialty: row.cells[0].textContent,
+            level: row.cells[1].textContent,
+            rate: row.cells[2].textContent,
+            activity: row.cells[3].textContent,
+            hours: row.cells[4].textContent,
+            cost: row.cells[5].textContent
+        }))
+    };
+
+    // Enviar datos al servidor para generar PDF
+    fetch('/generate_pdf', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(projectData)
+    })
+    .then(response => response.blob())
+    .then(blob => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `Proyecto_${projectData.name}_Informe.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+    });
 }
 </script>
 {% endblock %}
