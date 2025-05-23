@@ -27,6 +27,10 @@
                             <input type="text" class="form-control" id="deliverable" required>
                         </div>
                         <div class="mb-3">
+                            <label for="activity" class="form-label">Actividad</label>
+                            <input type="text" class="form-control" id="activity" required>
+                        </div>
+                        <div class="mb-3">
                             <label for="taskName" class="form-label">Tarea</label>
                             <input type="text" class="form-control" id="taskName" required>
                         </div>
@@ -62,6 +66,7 @@
             <thead>
                 <tr>
                     <th>Entregable</th>
+                    <th>Actividad</th>
                     <th>Tarea</th>
                     <th>T. Optimista</th>
                     <th>T. Más Probable</th>
@@ -149,6 +154,7 @@ function addTask(event) {
     
     const task = {
         deliverable: document.getElementById('deliverable').value,
+        activity: document.getElementById('activity').value,
         name: document.getElementById('taskName').value,
         optimistic: parseFloat(document.getElementById('optimisticTime').value),
         mostLikely: parseFloat(document.getElementById('mostLikelyTime').value),
@@ -160,6 +166,7 @@ function addTask(event) {
     const row = tbody.insertRow();
     
     row.insertCell().textContent = task.deliverable;
+    row.insertCell().textContent = task.activity;
     row.insertCell().textContent = task.name;
     row.insertCell().textContent = task.optimistic;
     row.insertCell().textContent = task.mostLikely;
