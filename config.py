@@ -1,4 +1,3 @@
-
 import os
 
 class Config:
@@ -8,96 +7,65 @@ class Config:
     # Navigation menus for each role
     NAVIGATION = {
         'gestor': [
-            {
-                'name': 'Dashboard',
-                'icon': 'home',
-                'url': '/dashboard',
-                'submenu': [
-                    {'name': 'Crecimiento', 'url': '/dashboard/growth'},
-                    {'name': 'Desempeño', 'url': '/dashboard/performance'},
-                    {'name': 'Comunidad', 'url': '/dashboard/community'}
-                ]
-            },
-            {
-                'name': 'Aliados',
-                'icon': 'users',
-                'url': '/aliados',
-                'submenu': [
-                    {'name': 'Usuarios', 'url': '/aliados/usuarios'},
-                    {'name': 'Cuentas', 'url': '/aliados/cuentas'},
-                    {'name': 'Portafolio', 'url': '/aliados/portfolio'},
-                    {'name': 'Asignaciones', 'url': '/aliados/asignaciones'}
-                ]
-            }
+            {'name': 'Dashboard', 'icon': 'home', 'url': '/dashboard', 
+             'submenu': [
+                 {'name': 'Crecimiento', 'url': '/dashboard/growth'},
+                 {'name': 'Desempeño', 'url': '/dashboard/performance'},
+                 {'name': 'Comunidad', 'url': '/dashboard/community'}
+             ]},
+            {'name': 'Aliados', 'icon': 'users', 'url': '/aliados',
+             'submenu': [
+                 {'name': 'Usuarios', 'url': '/aliados/usuarios'},
+                 {'name': 'Cuentas', 'url': '/aliados/cuentas'},
+                 {'name': 'Portafolio', 'url': '/aliados/portfolio'},
+                 {'name': 'Asignaciones', 'url': '/aliados/asignaciones'}
+             ]}
         ],
         'aliado': [
-            {
-                'name': 'Dashboard',
-                'icon': 'home',
-                'url': '/dashboard',
-                'submenu': []
-            },
-            {
-                'name': 'Proyectos',
-                'icon': 'briefcase',
-                'url': '/proyectos',
-                'submenu': [
-                    {'name': 'General', 'url': '/proyectos/general'}
-                ]
-            },
-            {
-                'name': 'Cuentas',
-                'icon': 'users',
-                'url': '/cuentas',
-                'submenu': [
-                    {'name': 'Clientes', 'url': '/cuentas/clientes'},
-                    {'name': 'Usuarios', 'url': '/cuentas/usuarios'}
-                ]
-            }
+            {'name': 'Dashboard', 'icon': 'home', 'url': '/dashboard', 'submenu': []},
+            {'name': 'Proyectos', 'icon': 'briefcase', 'url': '/proyectos', 'submenu': [
+                {'name': 'General', 'url': '/proyectos/general'}
+            ]},
+            {'name': 'Cuentas', 'icon': 'users', 'url': '/cuentas', 'submenu': [
+                {'name': 'Clientes', 'url': '/cuentas/clientes'},
+                {'name': 'Usuarios', 'url': '/cuentas/usuarios'}
+            ]}},
+                 {'name': 'Facturación', 'url': '/dashboard/facturacion'},
+                 {'name': 'Riesgos', 'url': '/dashboard/riesgos'}
+             ]},
+            {'name': 'Proyectos', 'icon': 'briefcase', 'url': '/proyectos',
+             'submenu': [
+                 {'name': 'General', 'url': '/proyectos/general'},
+                 {'name': 'Oportunidades', 'url': '/proyectos/oportunidades'},
+                 {'name': 'Propuestas', 'url': '/proyectos/propuestas'},
+                 {'name': 'En Desarrollo', 'url': '/proyectos/desarrollo'},
+                 {'name': 'Cerrados', 'url': '/proyectos/cerrados'}
+             ]},
+            {'name': 'Cuentas', 'icon': 'users', 'url': '/cuentas',
+             'submenu': [
+                 {'name': 'Info Clientes', 'url': '/cuentas/clientes'},
+                 {'name': 'Usuarios', 'url': '/cuentas/usuarios'}
+             ]}
         ],
         'supervisor': [
-            {
-                'name': 'Dashboard',
-                'icon': 'home',
-                'url': '/dashboard'
-            },
-            {
-                'name': 'Proyectos',
-                'icon': 'briefcase',
-                'url': '/proyectos',
-                'submenu': [
-                    {'name': 'Calculadora', 'url': '/proyectos/calculadora'},
-                    {'name': 'Proyectos', 'url': '/proyectos/lista'},
-                    {'name': 'Planificación', 'url': '/proyectos/planificacion'},
-                    {'name': 'Estimaciones', 'url': '/proyectos/estimaciones'}
-                ]
-            },
-            {
-                'name': 'Consultores',
-                'icon': 'user-check',
-                'url': '/consultores',
-                'submenu': [
-                    {'name': 'Propuestas', 'url': '/consultores/propuestas'},
-                    {'name': 'Activos', 'url': '/consultores/activos'}
-                ]
-            }
+            {'name': 'Dashboard', 'icon': 'home', 'url': '/dashboard'},
+            {'name': 'Proyectos', 'icon': 'briefcase', 'url': '/proyectos',
+             'submenu': [
+                 {'name': 'Calculadora', 'url': '/proyectos/calculadora'},
+                 {'name': 'Proyectos', 'url': '/proyectos/lista'},
+                 {'name': 'Planificación', 'url': '/proyectos/planificacion'},
+                 {'name': 'Estimaciones', 'url': '/proyectos/estimaciones'}
+             ]},
+            {'name': 'Consultores', 'icon': 'user-check', 'url': '/consultores',
+             'submenu': [
+                 {'name': 'Propuestas', 'url': '/consultores/propuestas'},
+                 {'name': 'Activos', 'url': '/consultores/activos'}
+             ]}
         ],
         'consultor': [
-            {
-                'name': 'Dashboard',
-                'icon': 'home',
-                'url': '/dashboard'
-            },
-            {
-                'name': 'Mis Proyectos',
-                'icon': 'briefcase',
-                'url': '/mis-proyectos'
-            },
-            {
-                'name': 'Tareas',
-                'icon': 'check-square',
-                'url': '/tareas'
-            }
+            {'name': 'Dashboard', 'icon': 'home', 'url': '/dashboard'},
+            {'name': 'Mis Proyectos', 'icon': 'briefcase', 'url': '/mis-proyectos'},
+            {'name': 'Tareas', 'icon': 'check-square', 'url': '/tareas'}
         ]
     }
     
