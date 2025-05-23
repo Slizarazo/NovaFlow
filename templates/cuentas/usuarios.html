@@ -3,10 +3,7 @@
 {% block content %}
 <div class="container-fluid p-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Gestión de Usuarios</h2>
-        <button class="btn btn-primary" onclick="window.location.href='/cuentas/usuarios/nuevo'">
-            <i data-feather="plus"></i> Nuevo Usuario
-        </button>
+        <h2>Gestión de Usuarios Supervisores</h2>
     </div>
 
     <div class="card">
@@ -29,15 +26,19 @@
                             <td>{{ user.email }}</td>
                             <td>{{ user.role|title }}</td>
                             <td>
-                                <span class="badge bg-success">Activo</span>
+                                <span class="badge {% if user.is_active %}bg-success{% else %}bg-danger{% endif %}">
+                                    {{ 'Activo' if user.is_active else 'Inactivo' }}
+                                </span>
                             </td>
                             <td>
-                                <button class="btn btn-sm btn-info me-2" onclick="window.location.href='/cuentas/usuarios/{{ user.id }}'">
-                                    <i data-feather="eye"></i>
-                                </button>
-                                <button class="btn btn-sm btn-warning" onclick="window.location.href='/cuentas/usuarios/{{ user.id }}/editar'">
-                                    <i data-feather="edit"></i>
-                                </button>
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-sm btn-icon" title="Editar">
+                                        <i data-feather="edit-2"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-icon" title="Ver detalles">
+                                        <i data-feather="eye"></i>
+                                    </button>
+                                </div>
                             </td>
                         </tr>
                         {% endfor %}
@@ -51,7 +52,7 @@
 
 {% block scripts %}
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener('DOMContentLoaded', function() {
         feather.replace();
     });
 </script>
