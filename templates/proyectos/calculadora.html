@@ -169,8 +169,10 @@
                     <tfoot>
                         <tr class="table-info">
                             <td colspan="5"><strong>Total Recursos</strong></td>
+                            <td id="totalUnitCost"><strong>0</strong></td>
                             <td id="totalCost"><strong>0</strong></td>
                             <td id="totalAnnualCost"><strong>0</strong></td>
+                            <td></td>
                         </tr>
                     </tfoot>
                 </table>
@@ -705,7 +707,6 @@ function addResource(event) {
     projectData.resources.push(resource);
     renderResources();
     closeResourceForm();
-    document.getElementById('resourceFormPopup').classList.remove('show');
 }
 
 function calculateAnnualizedCost(resource) {
