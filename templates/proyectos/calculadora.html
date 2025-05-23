@@ -1,0 +1,155 @@
+
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Calculadora de Tiempos</h2>
+        <button class="btn btn-primary" onclick="openTaskForm()">
+            <i data-feather="plus"></i> Nueva Tarea
+        </button>
+    </div>
+
+    <!-- Popup Form -->
+    <div id="taskFormPopup" class="modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Nueva Tarea</h5>
+                    <button type="button" class="btn-close" onclick="closeTaskForm()"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="taskForm" onsubmit="addTask(event)">
+                        <div class="mb-3">
+                            <label for="taskName" class="form-label">Tarea</label>
+                            <input type="text" class="form-control" id="taskName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="optimisticTime" class="form-label">Tiempo Optimista (horas)</label>
+                            <input type="number" class="form-control" id="optimisticTime" min="0" step="0.5" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="mostLikelyTime" class="form-label">Tiempo Más Probable (horas)</label>
+                            <input type="number" class="form-control" id="mostLikelyTime" min="0" step="0.5" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="pessimisticTime" class="form-label">Tiempo Pesimista (horas)</label>
+                            <input type="number" class="form-control" id="pessimisticTime" min="0" step="0.5" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="estimatedTime" class="form-label">Tiempo Estimado (horas)</label>
+                            <input type="number" class="form-control" id="estimatedTime" min="0" step="0.5" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Task Table -->
+    <div class="table-responsive">
+        <table class="table" id="taskTable">
+            <thead>
+                <tr>
+                    <th>Tarea</th>
+                    <th>T. Optimista</th>
+                    <th>T. Más Probable</th>
+                    <th>T. Pesimista</th>
+                    <th>T. Estimado</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+            <tfoot>
+                <tr>
+                    <td><strong>Totales</strong></td>
+                    <td id="totalOptimistic">0</td>
+                    <td id="totalMostLikely">0</td>
+                    <td id="totalPessimistic">0</td>
+                    <td id="totalEstimated">0</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+
+<style>
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 1000;
+}
+
+.modal.show {
+    display: block;
+}
+
+.modal-dialog {
+    margin: 10% auto;
+    max-width: 500px;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+}
+</style>
+
+<script>
+function openTaskForm() {
+    document.getElementById('taskFormPopup').classList.add('show');
+}
+
+function closeTaskForm() {
+    document.getElementById('taskFormPopup').classList.remove('show');
+    document.getElementById('taskForm').reset();
+}
+
+function addTask(event) {
+    event.preventDefault();
+    
+    const task = {
+        name: document.getElementById('taskName').value,
+        optimistic: parseFloat(document.getElementById('optimisticTime').value),
+        mostLikely: parseFloat(document.getElementById('mostLikelyTime').value),
+        pessimistic: parseFloat(document.getElementById('pessimisticTime').value),
+        estimated: parseFloat(document.getElementById('estimatedTime').value)
+    };
+
+    const tbody = document.querySelector('#taskTable tbody');
+    const row = tbody.insertRow();
+    
+    row.insertCell().textContent = task.name;
+    row.insertCell().textContent = task.optimistic;
+    row.insertCell().textContent = task.mostLikely;
+    row.insertCell().textContent = task.pessimistic;
+    row.insertCell().textContent = task.estimated;
+
+    updateTotals();
+    closeTaskForm();
+}
+
+function updateTotals() {
+    const rows = document.querySelectorAll('#taskTable tbody tr');
+    let totals = {optimistic: 0, mostLikely: 0, pessimistic: 0, estimated: 0};
+    
+    rows.forEach(row => {
+        totals.optimistic += parseFloat(row.cells[1].textContent);
+        totals.mostLikely += parseFloat(row.cells[2].textContent);
+        totals.pessimistic += parseFloat(row.cells[3].textContent);
+        totals.estimated += parseFloat(row.cells[4].textContent);
+    });
+
+    document.getElementById('totalOptimistic').textContent = totals.optimistic.toFixed(1);
+    document.getElementById('totalMostLikely').textContent = totals.mostLikely.toFixed(1);
+    document.getElementById('totalPessimistic').textContent = totals.pessimistic.toFixed(1);
+    document.getElementById('totalEstimated').textContent = totals.estimated.toFixed(1);
+}
+</script>
+{% endblock %}

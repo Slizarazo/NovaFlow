@@ -791,6 +791,14 @@ def internal_server_error(e):
                            title='Error interno del servidor',
                            config=app.config,
                            role=None), 500
+@app.route('/proyectos/calculadora')
+@login_required
+def proyectos_calculadora():
+    return render_template('proyectos/calculadora.html', 
+                         title='Calculadora de Tiempos',
+                         config=app.config,
+                         role=current_user.role)
+
 @app.route('/proyectos/general')
 @login_required
 def proyectos_general():
