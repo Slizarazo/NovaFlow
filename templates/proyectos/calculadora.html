@@ -824,8 +824,8 @@ function updateTotalFreelanceCost() {
             const costCell = row.cells[5];
             // Extraer el valor numérico del texto con formato de moneda
             const costText = costCell.textContent;
-            // Remover el símbolo de moneda y los puntos de mil, luego reemplazar la coma por punto
-            const cleanText = costText.replace(/[^\d,-]/g, '').replace(/\./g, '').replace(',', '.');
+            // Remover todo excepto números y puntos
+            const cleanText = costText.replace(/[^0-9.]/g, '');
             const numericValue = parseFloat(cleanText);
             if (!isNaN(numericValue)) {
                 total += numericValue;
