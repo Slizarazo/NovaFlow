@@ -22,14 +22,13 @@ class Config:
              ]}
         ],
         'aliado': [
-            {'name': 'Dashboard', 'icon': 'home', 'url': '/dashboard', 'submenu': []},
-            {'name': 'Proyectos', 'icon': 'briefcase', 'url': '/proyectos', 'submenu': [
-                {'name': 'General', 'url': '/proyectos/general'}
-            ]},
-            {'name': 'Cuentas', 'icon': 'users', 'url': '/cuentas', 'submenu': [
-                {'name': 'Clientes', 'url': '/cuentas/clientes'},
-                {'name': 'Usuarios', 'url': '/cuentas/usuarios'}
-            ]}},
+            {'name': 'Dashboard de Crecimiento', 'icon': 'activity', 'url': '/dashboard/crecimiento', 'submenu': []},
+            {'name': 'Dashboards', 'icon': 'activity', 'url': '/dashboard',
+             'submenu': [
+                 {'name': 'Crecimiento', 'url': '/dashboard/crecimiento'},
+                 {'name': 'Proyectos', 'url': '/dashboard/proyectos'},
+                 {'name': 'Cuentas', 'url': '/dashboard/cuentas'},
+                 {'name': 'Productividad', 'url': '/dashboard/productividad'},
                  {'name': 'Facturación', 'url': '/dashboard/facturacion'},
                  {'name': 'Riesgos', 'url': '/dashboard/riesgos'}
              ]},
@@ -49,18 +48,9 @@ class Config:
         ],
         'supervisor': [
             {'name': 'Dashboard', 'icon': 'home', 'url': '/dashboard'},
-            {'name': 'Proyectos', 'icon': 'briefcase', 'url': '/proyectos',
-             'submenu': [
-                 {'name': 'Calculadora', 'url': '/proyectos/calculadora'},
-                 {'name': 'Proyectos', 'url': '/proyectos/lista'},
-                 {'name': 'Planificación', 'url': '/proyectos/planificacion'},
-                 {'name': 'Estimaciones', 'url': '/proyectos/estimaciones'}
-             ]},
-            {'name': 'Consultores', 'icon': 'user-check', 'url': '/consultores',
-             'submenu': [
-                 {'name': 'Propuestas', 'url': '/consultores/propuestas'},
-                 {'name': 'Activos', 'url': '/consultores/activos'}
-             ]}
+            {'name': 'Proyectos', 'icon': 'briefcase', 'url': '/proyectos'},
+            {'name': 'Aliados', 'icon': 'users', 'url': '/aliados'},
+            {'name': 'Consultores', 'icon': 'user-check', 'url': '/consultores'}
         ],
         'consultor': [
             {'name': 'Dashboard', 'icon': 'home', 'url': '/dashboard'},
