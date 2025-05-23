@@ -821,7 +821,12 @@ function updateTotalFreelanceCost() {
     
     for (let row of rows) {
         const costCell = row.cells[5];
-        total += parseFloat(costCell.textContent);
+        // Extraer el valor numérico del texto con formato de moneda
+        const costText = costCell.textContent;
+        const numericValue = parseFloat(costText.replace(/[^0-9,-]/g, '').replace(',', '.'));
+        if (!isNaN(numericValue)) {
+            total += numericValue;
+        }
     }
     
     document.getElementById('totalFreelanceCost').textContent = formatCurrency(total);
