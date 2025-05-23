@@ -261,6 +261,7 @@
                             <th>Actividad</th>
                             <th>Horas Estimadas</th>
                             <th>Costo Total</th>
+                            <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody id="freelanceTable">
@@ -1037,6 +1038,16 @@ function addFreelance(event) {
             <td>${activityName}</td>
             <td>${estimatedHours.toFixed(1)}</td>
             <td>${formatCurrency(totalCostInCOP)}</td>
+            <td>
+                <div class="btn-group">
+                    <button class="btn btn-sm btn-outline-primary" onclick="editFreelance(${freelance.id})">
+                        <i data-feather="edit-2" style="width: 14px; height: 14px;"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger" onclick="deleteFreelance(${freelance.id})">
+                        <i data-feather="trash-2" style="width: 14px; height: 14px;"></i>
+                    </button>
+                </div>
+            </td>
         </tr>
     `;
     tbody.insertAdjacentHTML('beforeend', row);
