@@ -175,6 +175,19 @@
     border-radius: 0.25rem;
 }
 
+.tarea-times {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+.time-item {
+    padding: 0.25rem 0.5rem;
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+    background-color: white;
+}
+
 .add-button {
     padding: 0.25rem 0.5rem;
     font-size: 0.875rem;
@@ -384,11 +397,11 @@ function renderTareas(tareas) {
         <div class="tarea-row">
             <div class="d-flex justify-content-between align-items-center">
                 <span>${tarea.name}</span>
-                <div>
-                    <span>Optimista: ${tarea.optimistic}h</span>
-                    <span>Más Probable: ${tarea.mostLikely}h</span>
-                    <span>Pesimista: ${tarea.pessimistic}h</span>
-                    <span>Estimado: ${calculateTareaEstimated(tarea).toFixed(1)}h</span>
+                <div class="tarea-times">
+                    <span class="time-item">Optimista: ${tarea.optimistic}h</span>
+                    <span class="time-item">Más Probable: ${tarea.mostLikely}h</span>
+                    <span class="time-item">Pesimista: ${tarea.pessimistic}h</span>
+                    <span class="time-item">Estimado: ${calculateTareaEstimated(tarea).toFixed(1)}h</span>
                 </div>
             </div>
         </div>
