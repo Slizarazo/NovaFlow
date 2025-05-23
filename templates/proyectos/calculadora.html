@@ -23,6 +23,10 @@
                 <div class="modal-body">
                     <form id="taskForm" onsubmit="addTask(event)">
                         <div class="mb-3">
+                            <label for="deliverable" class="form-label">Entregable</label>
+                            <input type="text" class="form-control" id="deliverable" required>
+                        </div>
+                        <div class="mb-3">
                             <label for="taskName" class="form-label">Tarea</label>
                             <input type="text" class="form-control" id="taskName" required>
                         </div>
@@ -57,6 +61,7 @@
         <table class="table" id="taskTable">
             <thead>
                 <tr>
+                    <th>Entregable</th>
                     <th>Tarea</th>
                     <th>T. Optimista</th>
                     <th>T. Más Probable</th>
@@ -143,6 +148,7 @@ function addTask(event) {
     event.preventDefault();
     
     const task = {
+        deliverable: document.getElementById('deliverable').value,
         name: document.getElementById('taskName').value,
         optimistic: parseFloat(document.getElementById('optimisticTime').value),
         mostLikely: parseFloat(document.getElementById('mostLikelyTime').value),
@@ -153,6 +159,7 @@ function addTask(event) {
     const tbody = document.querySelector('#taskTable tbody');
     const row = tbody.insertRow();
     
+    row.insertCell().textContent = task.deliverable;
     row.insertCell().textContent = task.name;
     row.insertCell().textContent = task.optimistic;
     row.insertCell().textContent = task.mostLikely;
