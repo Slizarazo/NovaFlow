@@ -1,4 +1,3 @@
-
 {% extends "layout.html" %}
 
 {% block content %}
@@ -482,6 +481,25 @@
     padding: 0.25rem 0.5rem;
     font-size: 0.875rem;
 }
+
+.table .btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    line-height: 1;
+    border-radius: var(--border-radius-sm);
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    margin: 0 2px;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+.table .btn-group {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
 </style>
 
 <script>
@@ -495,10 +513,10 @@ let projectData = {
 function updateProjectData() {
     const selector = document.getElementById('projectSelector');
     const projectNameElem = document.getElementById('selectedProjectName');
-    
+
     projectData.projectId = selector.value;
     projectData.projectName = selector.options[selector.selectedIndex].text;
-    
+
     if (projectData.projectId) {
         projectNameElem.textContent = projectData.projectName;
         document.getElementById('projectStructure').style.display = 'block';
@@ -549,7 +567,7 @@ function addActividad(event) {
         name: document.getElementById('actividadName').value,
         tareas: []
     };
-    
+
     const entregable = projectData.entregables.find(e => e.id === entregableId);
     if (entregable) {
         entregable.actividades.push(actividad);
@@ -579,7 +597,7 @@ function addTarea(event) {
         mostLikely: parseFloat(document.getElementById('mostLikelyTime').value),
         pessimistic: parseFloat(document.getElementById('pessimisticTime').value)
     };
-    
+
     for (let entregable of projectData.entregables) {
         const actividad = entregable.actividades.find(a => a.id === actividadId);
         if (actividad) {
@@ -654,13 +672,13 @@ function editResource(resourceId) {
         document.getElementById('currency').value = resource.currency;
         document.getElementById('quantity').value = resource.quantity;
         document.getElementById('cost').value = resource.cost;
-        
+
         const form = document.getElementById('resourceForm');
         form.onsubmit = (e) => {
             e.preventDefault();
             updateResource(resourceId);
         };
-        
+
         document.getElementById('resourceFormPopup').classList.add('show');
     }
 }
@@ -703,7 +721,7 @@ function addResource(event) {
         quantity: parseInt(document.getElementById('quantity').value),
         cost: parseFloat(document.getElementById('cost').value)
     };
-    
+
     projectData.resources.push(resource);
     renderResources();
     closeResourceForm();
@@ -741,20 +759,20 @@ function formatCurrency(amount, currency = 'COP') {
 function renderResources() {
     const tbody = document.getElementById('resourcesTable');
     tbody.innerHTML = '';
-    
+
     let totalUnitCostCOP = 0;
     let totalDirectCostCOP = 0;
     let totalAnnualCostCOP = 0;
-    
+
     projectData.resources.forEach(resource => {
         const costInCOP = convertToCOP(resource.cost, resource.currency);
         const totalInCOP = costInCOP * resource.quantity;
         const annualizedCostInCOP = calculateAnnualizedCost({...resource, cost: costInCOP});
-        
+
         totalUnitCostCOP += costInCOP;
         totalDirectCostCOP += totalInCOP;
         totalAnnualCostCOP += annualizedCostInCOP;
-        
+
         const row = `
             <tr data-resource-id="${resource.id}">
                 <td>${resource.type}</td>
@@ -779,7 +797,7 @@ function renderResources() {
         `;
         tbody.insertAdjacentHTML('beforeend', row);
     });
-    
+
     // Format total with the last used currency, or USD if no resources
     const defaultFormatter = new Intl.NumberFormat('es-CO', {
         style: 'currency',
@@ -787,7 +805,7 @@ function renderResources() {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
     });
-    
+
     document.getElementById('totalUnitCost').textContent = formatCurrency(totalUnitCostCOP);
     document.getElementById('totalCost').textContent = formatCurrency(totalDirectCostCOP);
     document.getElementById('totalAnnualCost').textContent = formatCurrency(totalAnnualCostCOP);
@@ -795,7 +813,7 @@ function renderResources() {
 
 function saveProjectData() {
     const projectTotals = calculateProjectTotals();
-    
+
     // Calculate resource costs
     let totalResourcesCOP = 0;
     let totalAnnualResourcesCOP = 0;
@@ -818,7 +836,7 @@ function saveProjectData() {
             const activity = row.cells[3].textContent;
             const hours = parseFloat(row.cells[4].textContent);
             const cost = parseFloat(row.cells[5].textContent.replace(/[^0-9.]/g, ''));
-            
+
             totalFreelanceCost += cost;
             freelanceData.push({
                 specialty,
@@ -865,8 +883,7 @@ function saveProjectData() {
         body: JSON.stringify(data)
     })
     .then(response => response.json())
-    .then(data => {
-        alert('Proyecto guardado exitosamente');
+    .then(data => {        alert('Proyecto guardado exitosamente');
     })
     .catch(error => {
         console.error('Error:', error);
@@ -879,7 +896,7 @@ function updateSummary() {
     let totalActividades = 0;
     let totalTareas = 0;
     let totalTime = 0;
-    
+
     projectData.entregables.forEach(entregable => {
         totalActividades += entregable.actividades.length;
         entregable.actividades.forEach(actividad => {
@@ -920,7 +937,7 @@ function updateSummary() {
     document.getElementById('summaryActividadesTime').textContent = projectTotals.estimated.toFixed(1) + ' horas';
     document.getElementById('summaryTareasTime').textContent = projectTotals.estimated.toFixed(1) + ' horas';
     document.getElementById('summaryTotalTime').textContent = totalTime.toFixed(1) + ' horas';
-    
+
     // Actualizar recursos y freelance
     document.getElementById('summaryResources').textContent = projectData.resources.length;
     document.getElementById('summaryResourcesCost').textContent = formatCurrency(totalResourcesCOP);
@@ -943,7 +960,7 @@ function closeFreelanceForm() {
 function updateActivitySelect() {
     const activitySelect = document.getElementById('freelanceActivity');
     activitySelect.innerHTML = '<option value="">Seleccione...</option>';
-    
+
     projectData.entregables.forEach(entregable => {
         entregable.actividades.forEach(actividad => {
             const option = document.createElement('option');
@@ -958,10 +975,10 @@ function updateRate() {
     const level = document.getElementById('level').value;
     const rateInput = document.getElementById('rate');
     const rateRange = document.getElementById('rateRange');
-    
+
     let rate = 0;
     let range = '';
-    
+
     switch(level) {
         case 'junior':
             rate = 9; // Default to middle of range
@@ -979,14 +996,14 @@ function updateRate() {
             rate = 0;
             range = '';
     }
-    
+
     rateInput.value = rate;
     rateRange.textContent = range;
 }
 
 function addFreelance(event) {
     event.preventDefault();
-    
+
     const freelance = {
         id: Date.now(),
         specialty: document.getElementById('specialty').value,
@@ -994,11 +1011,11 @@ function addFreelance(event) {
         rate: parseFloat(document.getElementById('rate').value),
         activityId: document.getElementById('freelanceActivity').value
     };
-    
+
     // Find activity and its estimated hours
     let activityName = '';
     let estimatedHours = 0;
-    
+
     projectData.entregables.forEach(entregable => {
         const activity = entregable.actividades.find(a => a.id == freelance.activityId);
         if (activity) {
@@ -1007,10 +1024,10 @@ function addFreelance(event) {
             estimatedHours = totals.estimated;
         }
     });
-    
+
     const rateInCOP = convertToCOP(freelance.rate, 'USD'); // Freelance rates are in USD
     const totalCostInCOP = rateInCOP * estimatedHours;
-    
+
     const tbody = document.getElementById('freelanceTable');
     const row = `
         <tr>
@@ -1023,7 +1040,7 @@ function addFreelance(event) {
         </tr>
     `;
     tbody.insertAdjacentHTML('beforeend', row);
-    
+
     updateTotalFreelanceCost();
     closeFreelanceForm();
 }
@@ -1031,7 +1048,7 @@ function addFreelance(event) {
 function updateTotalFreelanceCost() {
     const rows = document.getElementById('freelanceTable').getElementsByTagName('tr');
     let total = 0;
-    
+
     for (let row of rows) {
         if (row.cells.length >= 6) {
             const costCell = row.cells[5];
@@ -1045,14 +1062,14 @@ function updateTotalFreelanceCost() {
             }
         }
     }
-    
+
     document.getElementById('totalFreelanceCost').textContent = formatCurrency(total);
 }
 
 function renderProject() {
     const container = document.getElementById('projectStructure');
     container.innerHTML = '';
-    
+
     projectData.entregables.forEach(entregable => {
         const entregableTotals = calculateEntregableTotals(entregable);
         const entregableHtml = `
@@ -1101,7 +1118,7 @@ function renderProject() {
     if (window.feather) {
         feather.replace();
     }
-    
+
     updateSummary();
 }
 
@@ -1182,21 +1199,21 @@ function editTarea(tareaId) {
             }
         }
     }
-    
+
     if (tarea) {
         // Llenar el formulario con los datos existentes
         document.getElementById('tareaName').value = tarea.name;
         document.getElementById('optimisticTime').value = tarea.optimistic;
         document.getElementById('mostLikelyTime').value = tarea.mostLikely;
         document.getElementById('pessimisticTime').value = tarea.pessimistic;
-        
+
         // Modificar el formulario para modo edición
         const form = document.getElementById('tareaForm');
         form.onsubmit = (e) => {
             e.preventDefault();
             updateTarea(tareaId);
         };
-        
+
         // Mostrar el popup
         document.getElementById('tareaFormPopup').classList.add('show');
     }
@@ -1219,11 +1236,11 @@ function updateTarea(tareaId) {
             }
         }
     }
-    
+
     // Cerrar el popup y actualizar la vista
     closeTareaForm();
     renderProject();
-    
+
     // Restablecer el formulario para modo creación
     const form = document.getElementById('tareaForm');
     form.onsubmit = (e) => {
@@ -1252,13 +1269,13 @@ function editEntregable(entregableId) {
     const entregable = projectData.entregables.find(e => e.id === entregableId);
     if (entregable) {
         document.getElementById('entregableName').value = entregable.name;
-        
+
         const form = document.getElementById('entregableForm');
         form.onsubmit = (e) => {
             e.preventDefault();
             updateEntregable(entregableId);
         };
-        
+
         document.getElementById('entregableFormPopup').classList.add('show');
     }
 }
@@ -1268,10 +1285,10 @@ function updateEntregable(entregableId) {
     if (entregableIndex !== -1) {
         projectData.entregables[entregableIndex].name = document.getElementById('entregableName').value;
     }
-    
+
     closeEntregableForm();
     renderProject();
-    
+
     const form = document.getElementById('entregableForm');
     form.onsubmit = (e) => {
         e.preventDefault();
@@ -1295,13 +1312,13 @@ function editActividad(actividadId) {
         if (actividad) {
             document.getElementById('actividadName').value = actividad.name;
             document.getElementById('actividadEntregableId').value = entregable.id;
-            
+
             const form = document.getElementById('actividadForm');
             form.onsubmit = (e) => {
                 e.preventDefault();
                 updateActividad(actividadId);
             };
-            
+
             document.getElementById('actividadFormPopup').classList.add('show');
             break;
         }
@@ -1316,10 +1333,10 @@ function updateActividad(actividadId) {
             break;
         }
     }
-    
+
     closeActividadForm();
     renderProject();
-    
+
     const form = document.getElementById('actividadForm');
     form.onsubmit = (e) => {
         e.preventDefault();
