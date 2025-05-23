@@ -795,17 +795,18 @@ function addFreelance(event) {
         }
     });
     
-    const totalCost = freelance.rate * estimatedHours;
+    const rateInCOP = convertToCOP(freelance.rate, 'USD'); // Freelance rates are in USD
+    const totalCostInCOP = rateInCOP * estimatedHours;
     
     const tbody = document.getElementById('freelanceTable');
     const row = `
         <tr>
             <td>${freelance.specialty}</td>
             <td>${freelance.level}</td>
-            <td>${freelance.rate.toFixed(2)}</td>
+            <td>${formatCurrency(rateInCOP)} <small class="text-muted">(${formatCurrency(freelance.rate, 'USD')})</small></td>
             <td>${activityName}</td>
             <td>${estimatedHours.toFixed(1)}</td>
-            <td>${totalCost.toFixed(2)}</td>
+            <td>${formatCurrency(totalCostInCOP)}</td>
         </tr>
     `;
     tbody.insertAdjacentHTML('beforeend', row);
@@ -823,7 +824,7 @@ function updateTotalFreelanceCost() {
         total += parseFloat(costCell.textContent);
     }
     
-    document.getElementById('totalFreelanceCost').textContent = total.toFixed(2);
+    document.getElementById('totalFreelanceCost').textContent = formatCurrency(total);
 }
 
 function renderProject() {
