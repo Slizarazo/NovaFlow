@@ -820,12 +820,16 @@ function updateTotalFreelanceCost() {
     let total = 0;
     
     for (let row of rows) {
-        const costCell = row.cells[5];
-        // Extraer el valor numérico del texto con formato de moneda
-        const costText = costCell.textContent;
-        const numericValue = parseFloat(costText.replace(/[^0-9,-]/g, '').replace(',', '.'));
-        if (!isNaN(numericValue)) {
-            total += numericValue;
+        if (row.cells.length >= 6) {
+            const costCell = row.cells[5];
+            // Extraer el valor numérico del texto con formato de moneda
+            const costText = costCell.textContent;
+            // Remover el símbolo de moneda y los puntos de mil, luego reemplazar la coma por punto
+            const cleanText = costText.replace(/[^\d,-]/g, '').replace(/\./g, '').replace(',', '.');
+            const numericValue = parseFloat(cleanText);
+            if (!isNaN(numericValue)) {
+                total += numericValue;
+            }
         }
     }
     
