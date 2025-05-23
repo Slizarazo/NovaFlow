@@ -140,6 +140,94 @@
         </div>
     </div>
 
+    <!-- Resource Costs -->
+    <div class="card mt-4">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5>Costos de Recursos Adicionales</h5>
+                <button class="btn btn-primary" onclick="openResourceForm()">
+                    <i data-feather="plus"></i> Nuevo Recurso
+                </button>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Tipo de Recurso</th>
+                            <th>Periodicidad</th>
+                            <th>Moneda</th>
+                            <th>Costo</th>
+                            <th>Total Anualizado</th>
+                        </tr>
+                    </thead>
+                    <tbody id="resourcesTable">
+                    </tbody>
+                    <tfoot>
+                        <tr class="table-info">
+                            <td colspan="4"><strong>Total Recursos</strong></td>
+                            <td id="totalResources"><strong>0</strong></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Resource Form Popup -->
+    <div id="resourceFormPopup" class="modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Nuevo Recurso</h5>
+                    <button type="button" class="btn-close" onclick="closeResourceForm()" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="resourceForm" onsubmit="addResource(event)">
+                        <div class="mb-3">
+                            <label for="resourceType" class="form-label">Tipo de Recurso</label>
+                            <select class="form-control" id="resourceType" required>
+                                <option value="">Seleccione...</option>
+                                <option value="Software/licencias">Software/licencias</option>
+                                <option value="Equipos">Equipos</option>
+                                <option value="Capacitación externa">Capacitación externa</option>
+                                <option value="Gastos operativos">Gastos operativos</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="periodicity" class="form-label">Periodicidad</label>
+                            <select class="form-control" id="periodicity" required>
+                                <option value="">Seleccione...</option>
+                                <option value="anual">Anual</option>
+                                <option value="mensual">Mensual</option>
+                                <option value="por uso">Por uso/consumo</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="currency" class="form-label">Moneda</label>
+                            <select class="form-control" id="currency" required>
+                                <option value="">Seleccione...</option>
+                                <option value="USD">Dólar (USD)</option>
+                                <option value="EUR">Euro (EUR)</option>
+                                <option value="COP">Peso Colombiano (COP)</option>
+                                <option value="MXN">Peso Mexicano (MXN)</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="cost" class="form-label">Costo</label>
+                            <input type="number" class="form-control" id="cost" min="0" step="0.01" required>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">Guardar</button>
+                            <button type="button" class="btn btn-secondary" onclick="closeResourceForm()">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Summary Report -->
     <div class="card mt-4 mb-4">
         <div class="card-body">
@@ -269,7 +357,8 @@
 let projectData = {
     projectId: null,
     projectName: '',
-    entregables: []
+    entregables: [],
+    resources: []
 };
 
 function updateProjectData() {
@@ -409,6 +498,64 @@ function calculateProjectTotals() {
 }
 
 // Render Functions
+// Resource Functions
+function openResourceForm() {
+    document.getElementById('resourceFormPopup').classList.add('show');
+}
+
+function closeResourceForm() {
+    document.getElementById('resourceFormPopup').classList.remove('show');
+    document.getElementById('resourceForm').reset();
+}
+
+function addResource(event) {
+    event.preventDefault();
+    const resource = {
+        id: Date.now(),
+        type: document.getElementById('resourceType').value,
+        periodicity: document.getElementById('periodicity').value,
+        currency: document.getElementById('currency').value,
+        cost: parseFloat(document.getElementById('cost').value)
+    };
+    
+    projectData.resources.push(resource);
+    renderResources();
+    closeResourceForm();
+}
+
+function calculateAnnualizedCost(resource) {
+    let annualCost = resource.cost;
+    if (resource.periodicity === 'mensual') {
+        annualCost *= 12;
+    }
+    return annualCost;
+}
+
+function renderResources() {
+    const tbody = document.getElementById('resourcesTable');
+    tbody.innerHTML = '';
+    
+    let totalAnnualCost = 0;
+    
+    projectData.resources.forEach(resource => {
+        const annualizedCost = calculateAnnualizedCost(resource);
+        totalAnnualCost += annualizedCost;
+        
+        const row = `
+            <tr>
+                <td>${resource.type}</td>
+                <td>${resource.periodicity}</td>
+                <td>${resource.currency}</td>
+                <td>${resource.cost.toFixed(2)}</td>
+                <td>${annualizedCost.toFixed(2)} ${resource.currency}</td>
+            </tr>
+        `;
+        tbody.insertAdjacentHTML('beforeend', row);
+    });
+    
+    document.getElementById('totalResources').textContent = totalAnnualCost.toFixed(2);
+}
+
 function updateSummary() {
     let totalEntregables = projectData.entregables.length;
     let totalActividades = 0;
