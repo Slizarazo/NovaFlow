@@ -827,15 +827,18 @@ def proyectos_general():
                          role=current_user.role)
 @app.route('/generate_pdf', methods=['POST'])
 def generate_pdf():
-    import pdfkit
-    from flask import make_response
-    import json
-    from datetime import datetime
-    
-    data = request.json
-    
-    # Create HTML content for PDF
-    html_content = f"""
+    try:
+        import pdfkit
+        from flask import make_response
+        import json
+        from datetime import datetime
+        
+        # Configure pdfkit to use wkhtmltopdf
+        config = pdfkit.configuration(wkhtmltopdf='/usr/bin/wkhtmltopdf')
+        data = request.json
+        
+        # Create HTML content for PDF
+        html_content = f"""
     <html>
         <head>
             <style>
@@ -918,8 +921,8 @@ def generate_pdf():
     </html>
     """
     
-    # Generate PDF
-    pdf = pdfkit.from_string(html_content, False)
+    # Generate PDF with configuration
+    pdf = pdfkit.from_string(html_content, False, configuration=config)
     
     # Create response
     response = make_response(pdf)
@@ -927,3 +930,7 @@ def generate_pdf():
     response.headers['Content-Disposition'] = f'attachment; filename=Proyecto_{data["name"]}_Informe.pdf'
     
     return response
+    
+    except Exception as e:
+        app.logger.error(f"Error generating PDF: {str(e)}")
+        return jsonify({"error": "No se pudo generar el PDF"}), 500
