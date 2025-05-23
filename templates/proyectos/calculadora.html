@@ -161,6 +161,7 @@
                             <th>Costo Unitario</th>
                             <th>Total</th>
                             <th>Total Anualizado</th>
+                            <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody id="resourcesTable">
@@ -634,6 +635,59 @@ function openResourceForm() {
 function closeResourceForm() {
     document.getElementById('resourceFormPopup').classList.remove('show');
     document.getElementById('resourceForm').reset();
+    // Reset form to add mode
+    const form = document.getElementById('resourceForm');
+    form.onsubmit = (e) => {
+        e.preventDefault();
+        addResource(e);
+    };
+}
+
+function editResource(resourceId) {
+    const resource = projectData.resources.find(r => r.id === resourceId);
+    if (resource) {
+        document.getElementById('resourceType').value = resource.type;
+        document.getElementById('resourceConcept').value = resource.concept;
+        document.getElementById('periodicity').value = resource.periodicity;
+        document.getElementById('currency').value = resource.currency;
+        document.getElementById('quantity').value = resource.quantity;
+        document.getElementById('cost').value = resource.cost;
+        
+        const form = document.getElementById('resourceForm');
+        form.onsubmit = (e) => {
+            e.preventDefault();
+            updateResource(resourceId);
+        };
+        
+        document.getElementById('resourceFormPopup').classList.add('show');
+    }
+}
+
+function updateResource(resourceId) {
+    const resourceIndex = projectData.resources.findIndex(r => r.id === resourceId);
+    if (resourceIndex !== -1) {
+        projectData.resources[resourceIndex] = {
+            id: resourceId,
+            type: document.getElementById('resourceType').value,
+            concept: document.getElementById('resourceConcept').value,
+            periodicity: document.getElementById('periodicity').value,
+            currency: document.getElementById('currency').value,
+            quantity: parseInt(document.getElementById('quantity').value),
+            cost: parseFloat(document.getElementById('cost').value)
+        };
+        renderResources();
+        closeResourceForm();
+    }
+}
+
+function deleteResource(resourceId) {
+    if (confirm('¿Está seguro de que desea eliminar este recurso?')) {
+        const resourceIndex = projectData.resources.findIndex(r => r.id === resourceId);
+        if (resourceIndex !== -1) {
+            projectData.resources.splice(resourceIndex, 1);
+            renderResources();
+        }
+    }
 }
 
 function addResource(event) {
@@ -651,6 +705,7 @@ function addResource(event) {
     projectData.resources.push(resource);
     renderResources();
     closeResourceForm();
+    document.getElementById('resourceFormPopup').classList.remove('show');
 }
 
 function calculateAnnualizedCost(resource) {
@@ -700,7 +755,7 @@ function renderResources() {
         totalAnnualCostCOP += annualizedCostInCOP;
         
         const row = `
-            <tr>
+            <tr data-resource-id="${resource.id}">
                 <td>${resource.type}</td>
                 <td>${resource.concept}</td>
                 <td>${resource.periodicity}</td>
@@ -709,6 +764,16 @@ function renderResources() {
                 <td>${formatCurrency(costInCOP)} <small class="text-muted">(${formatCurrency(resource.cost, resource.currency)})</small></td>
                 <td>${formatCurrency(totalInCOP)}</td>
                 <td>${formatCurrency(annualizedCostInCOP)}</td>
+                <td>
+                    <div class="btn-group">
+                        <button class="btn btn-sm btn-outline-primary" onclick="editResource(${resource.id})">
+                            <i data-feather="edit-2" style="width: 14px; height: 14px;"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteResource(${resource.id})">
+                            <i data-feather="trash-2" style="width: 14px; height: 14px;"></i>
+                        </button>
+                    </div>
+                </td>
             </tr>
         `;
         tbody.insertAdjacentHTML('beforeend', row);
