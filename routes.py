@@ -99,6 +99,9 @@ def dashboard_crecimiento():
 @app.route('/dashboard/growth')
 @login_required
 def dashboard_growth():
+    if current_user.role == 'supervisor':
+        return redirect(url_for('dashboard'))
+        
     # Data for growth dashboard
     aliados = Aliado.ALIADOS
     ventas_trimestre_total = sum(aliado.ventas_trimestre for aliado in aliados)
