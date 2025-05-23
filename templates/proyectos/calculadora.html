@@ -167,7 +167,9 @@
                     <tfoot>
                         <tr class="table-info">
                             <td colspan="4"><strong>Total Recursos</strong></td>
-                            <td id="totalResources"><strong>0</strong></td>
+                            <td id="totalUnitCost"><strong>0</strong></td>
+                            <td id="totalCost"><strong>0</strong></td>
+                            <td id="totalAnnualCost"><strong>0</strong></td>
                         </tr>
                     </tfoot>
                 </table>
@@ -542,10 +544,14 @@ function renderResources() {
     const tbody = document.getElementById('resourcesTable');
     tbody.innerHTML = '';
     
+    let totalUnitCost = 0;
+    let totalDirectCost = 0;
     let totalAnnualCost = 0;
     
     projectData.resources.forEach(resource => {
         const annualizedCost = calculateAnnualizedCost(resource);
+        totalUnitCost += resource.cost;
+        totalDirectCost += (resource.cost * resource.quantity);
         totalAnnualCost += annualizedCost;
         
         const total = resource.cost * resource.quantity;
@@ -578,7 +584,9 @@ function renderResources() {
         maximumFractionDigits: 2
     });
     
-    document.getElementById('totalResources').textContent = defaultFormatter.format(totalAnnualCost);
+    document.getElementById('totalUnitCost').textContent = defaultFormatter.format(totalUnitCost);
+    document.getElementById('totalCost').textContent = defaultFormatter.format(totalDirectCost);
+    document.getElementById('totalAnnualCost').textContent = defaultFormatter.format(totalAnnualCost);
 }
 
 function updateSummary() {
