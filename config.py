@@ -48,9 +48,18 @@ class Config:
         ],
         'supervisor': [
             {'name': 'Dashboard', 'icon': 'home', 'url': '/dashboard'},
-            {'name': 'Proyectos', 'icon': 'briefcase', 'url': '/proyectos'},
-            {'name': 'Aliados', 'icon': 'users', 'url': '/aliados'},
-            {'name': 'Consultores', 'icon': 'user-check', 'url': '/consultores'}
+            {'name': 'Proyectos', 'icon': 'briefcase', 'url': '/proyectos',
+             'submenu': [
+                 {'name': 'Calculadora', 'url': '/proyectos/calculadora'},
+                 {'name': 'Proyectos', 'url': '/proyectos/lista'},
+                 {'name': 'Planificación', 'url': '/proyectos/planificacion'},
+                 {'name': 'Estimaciones', 'url': '/proyectos/estimaciones'}
+             ]},
+            {'name': 'Consultores', 'icon': 'user-check', 'url': '/consultores',
+             'submenu': [
+                 {'name': 'Propuestas', 'url': '/consultores/propuestas'},
+                 {'name': 'Activos', 'url': '/consultores/activos'}
+             ]}
         ],
         'consultor': [
             {'name': 'Dashboard', 'icon': 'home', 'url': '/dashboard'},
