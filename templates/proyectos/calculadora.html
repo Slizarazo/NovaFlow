@@ -200,6 +200,25 @@
     background-color: white;
 }
 
+.totals-row {
+    margin-top: 1rem;
+    padding: 1rem;
+}
+
+.actividad-totals, .entregable-totals {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+    margin-top: 1rem;
+}
+
+.time-items {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    flex-wrap: wrap;
+}
+
 .add-button {
     padding: 0.25rem 0.5rem;
     font-size: 0.875rem;
@@ -368,12 +387,14 @@ function renderProject() {
                     <div class="actividades-container">
                         ${renderActividades(entregable.actividades)}
                     </div>
-                    <div class="totals-row">
+                    <div class="totals-row entregable-totals">
                         <strong>Totales del Entregable:</strong>
-                        <span>Optimista: ${entregableTotals.optimistic.toFixed(1)}h</span>
-                        <span>Más Probable: ${entregableTotals.mostLikely.toFixed(1)}h</span>
-                        <span>Pesimista: ${entregableTotals.pessimistic.toFixed(1)}h</span>
-                        <span>Estimado: ${entregableTotals.estimated.toFixed(1)}h</span>
+                        <div class="time-items">
+                            <span class="time-item">Optimista: ${entregableTotals.optimistic.toFixed(1)}h</span>
+                            <span class="time-item">Más Probable: ${entregableTotals.mostLikely.toFixed(1)}h</span>
+                            <span class="time-item">Pesimista: ${entregableTotals.pessimistic.toFixed(1)}h</span>
+                            <span class="time-item">Estimado: ${entregableTotals.estimated.toFixed(1)}h</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -409,12 +430,14 @@ function renderActividades(actividades) {
                     <div class="tareas-container">
                         ${renderTareas(actividad.tareas)}
                     </div>
-                    <div class="totals-row">
+                    <div class="totals-row actividad-totals">
                         <strong>Totales de la Actividad:</strong>
-                        <span>Optimista: ${actividadTotals.optimistic.toFixed(1)}h</span>
-                        <span>Más Probable: ${actividadTotals.mostLikely.toFixed(1)}h</span>
-                        <span>Pesimista: ${actividadTotals.pessimistic.toFixed(1)}h</span>
-                        <span>Estimado: ${actividadTotals.estimated.toFixed(1)}h</span>
+                        <div class="time-items">
+                            <span class="time-item">Optimista: ${actividadTotals.optimistic.toFixed(1)}h</span>
+                            <span class="time-item">Más Probable: ${actividadTotals.mostLikely.toFixed(1)}h</span>
+                            <span class="time-item">Pesimista: ${actividadTotals.pessimistic.toFixed(1)}h</span>
+                            <span class="time-item">Estimado: ${actividadTotals.estimated.toFixed(1)}h</span>
+                        </div>
                     </div>
                 </div>
             </div>
