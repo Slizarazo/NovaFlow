@@ -322,6 +322,13 @@
         </div>
     </div>
 
+    <!-- Save Button -->
+    <div class="text-center mb-4">
+        <button class="btn btn-primary btn-lg" onclick="saveProjectData()">
+            <i data-feather="save"></i> Guardar Proyecto
+        </button>
+    </div>
+
     <!-- Summary Report -->
     <div class="card mt-4 mb-4">
         <div class="card-body">
@@ -689,6 +696,33 @@ function renderResources() {
     document.getElementById('totalUnitCost').textContent = formatCurrency(totalUnitCostCOP);
     document.getElementById('totalCost').textContent = formatCurrency(totalDirectCostCOP);
     document.getElementById('totalAnnualCost').textContent = formatCurrency(totalAnnualCostCOP);
+}
+
+function saveProjectData() {
+    const projectTotals = calculateProjectTotals();
+    const data = {
+        projectId: projectData.projectId,
+        projectName: projectData.projectName,
+        entregables: projectData.entregables,
+        resources: projectData.resources,
+        totals: projectTotals
+    };
+
+    fetch('/proyectos/calculadora', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert('Proyecto guardado exitosamente');
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error al guardar el proyecto');
+    });
 }
 
 function updateSummary() {

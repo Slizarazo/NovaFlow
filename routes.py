@@ -791,9 +791,14 @@ def internal_server_error(e):
                            title='Error interno del servidor',
                            config=app.config,
                            role=None), 500
-@app.route('/proyectos/calculadora')
+@app.route('/proyectos/calculadora', methods=['GET', 'POST'])
 @login_required
 def proyectos_calculadora():
+    if request.method == 'POST':
+        data = request.json
+        print("Received calculator data:", data)
+        return jsonify({"status": "success"})
+        
     proyectos = Proyecto.PROYECTOS
     return render_template('proyectos/calculadora.html', 
                          title='Calculadora de Tiempos',
