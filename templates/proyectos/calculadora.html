@@ -90,14 +90,22 @@
 }
 
 .modal-dialog {
-    margin: 10% auto;
+    margin: 30px auto;
     max-width: 500px;
+    max-height: calc(100vh - 60px);
 }
 
 .modal-content {
     background-color: white;
     padding: 20px;
     border-radius: 5px;
+    max-height: calc(100vh - 60px);
+    overflow-y: auto;
+}
+
+.modal-body {
+    overflow-y: auto;
+    max-height: calc(100vh - 200px);
 }
 </style>
 
