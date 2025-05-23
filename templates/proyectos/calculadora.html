@@ -1054,15 +1054,104 @@ function renderTareas(tareas) {
         <div class="tarea-row">
             <div class="d-flex justify-content-between align-items-center">
                 <span>${tarea.name}</span>
-                <div class="tarea-times">
-                    <span class="time-item">Optimista: ${tarea.optimistic}h</span>
-                    <span class="time-item">Más Probable: ${tarea.mostLikely}h</span>
-                    <span class="time-item">Pesimista: ${tarea.pessimistic}h</span>
-                    <span class="time-item">Estimado: ${calculateTareaEstimated(tarea).toFixed(1)}h</span>
+                <div class="d-flex align-items-center">
+                    <div class="tarea-times me-2">
+                        <span class="time-item">Optimista: ${tarea.optimistic}h</span>
+                        <span class="time-item">Más Probable: ${tarea.mostLikely}h</span>
+                        <span class="time-item">Pesimista: ${tarea.pessimistic}h</span>
+                        <span class="time-item">Estimado: ${calculateTareaEstimated(tarea).toFixed(1)}h</span>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-sm btn-outline-primary" onclick="editTarea(${tarea.id})">
+                            <i data-feather="edit-2" style="width: 14px; height: 14px;"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteTarea(${tarea.id})">
+                            <i data-feather="trash-2" style="width: 14px; height: 14px;"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     `).join('');
+}
+
+function editTarea(tareaId) {
+    let tarea;
+    // Encontrar la tarea
+    for (let entregable of projectData.entregables) {
+        for (let actividad of entregable.actividades) {
+            const found = actividad.tareas.find(t => t.id === tareaId);
+            if (found) {
+                tarea = found;
+                document.getElementById('tareaActividadId').value = actividad.id;
+                break;
+            }
+        }
+    }
+    
+    if (tarea) {
+        // Llenar el formulario con los datos existentes
+        document.getElementById('tareaName').value = tarea.name;
+        document.getElementById('optimisticTime').value = tarea.optimistic;
+        document.getElementById('mostLikelyTime').value = tarea.mostLikely;
+        document.getElementById('pessimisticTime').value = tarea.pessimistic;
+        
+        // Modificar el formulario para modo edición
+        const form = document.getElementById('tareaForm');
+        form.onsubmit = (e) => {
+            e.preventDefault();
+            updateTarea(tareaId);
+        };
+        
+        // Mostrar el popup
+        document.getElementById('tareaFormPopup').classList.add('show');
+    }
+}
+
+function updateTarea(tareaId) {
+    // Encontrar y actualizar la tarea
+    for (let entregable of projectData.entregables) {
+        for (let actividad of entregable.actividades) {
+            const tareaIndex = actividad.tareas.findIndex(t => t.id === tareaId);
+            if (tareaIndex !== -1) {
+                actividad.tareas[tareaIndex] = {
+                    id: tareaId,
+                    name: document.getElementById('tareaName').value,
+                    optimistic: parseFloat(document.getElementById('optimisticTime').value),
+                    mostLikely: parseFloat(document.getElementById('mostLikelyTime').value),
+                    pessimistic: parseFloat(document.getElementById('pessimisticTime').value)
+                };
+                break;
+            }
+        }
+    }
+    
+    // Cerrar el popup y actualizar la vista
+    closeTareaForm();
+    renderProject();
+    
+    // Restablecer el formulario para modo creación
+    const form = document.getElementById('tareaForm');
+    form.onsubmit = (e) => {
+        e.preventDefault();
+        addTarea(e);
+    };
+}
+
+function deleteTarea(tareaId) {
+    if (confirm('¿Está seguro de que desea eliminar esta tarea?')) {
+        // Encontrar y eliminar la tarea
+        for (let entregable of projectData.entregables) {
+            for (let actividad of entregable.actividades) {
+                const tareaIndex = actividad.tareas.findIndex(t => t.id === tareaId);
+                if (tareaIndex !== -1) {
+                    actividad.tareas.splice(tareaIndex, 1);
+                    renderProject();
+                    break;
+                }
+            }
+        }
+    }
 }
 </script>
 {% endblock %}
