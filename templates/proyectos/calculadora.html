@@ -1059,17 +1059,17 @@ function renderProject() {
             <div class="entregable-card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5>${entregable.name}</h5>
-                    <div class="d-flex gap-2">
+                    <div class="btn-group">
                         <button class="btn btn-sm btn-outline-primary" onclick="editEntregable(${entregable.id})">
                             <i data-feather="edit-2" style="width: 14px; height: 14px;"></i>
                         </button>
                         <button class="btn btn-sm btn-outline-danger" onclick="deleteEntregable(${entregable.id})">
                             <i data-feather="trash-2" style="width: 14px; height: 14px;"></i>
                         </button>
-                        <button class="btn btn-sm btn-primary add-button" onclick="openActividadForm(${entregable.id})">
-                            <i data-feather="plus"></i> Actividad
-                        </button>
                     </div>
+                    <button class="btn btn-sm btn-primary add-button ms-2" onclick="openActividadForm(${entregable.id})">
+                        <i data-feather="plus"></i> Actividad
+                    </button>
                 </div>
                 <div class="card-body">
                     <div class="actividades-container">
@@ -1112,17 +1112,17 @@ function renderActividades(actividades) {
             <div class="actividad-card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h6>${actividad.name}</h6>
-                    <div class="d-flex gap-2">
+                    <div class="btn-group">
                         <button class="btn btn-sm btn-outline-primary" onclick="editActividad(${actividad.id})">
                             <i data-feather="edit-2" style="width: 14px; height: 14px;"></i>
                         </button>
                         <button class="btn btn-sm btn-outline-danger" onclick="deleteActividad(${actividad.id})">
                             <i data-feather="trash-2" style="width: 14px; height: 14px;"></i>
                         </button>
-                        <button class="btn btn-sm btn-secondary add-button" onclick="openTareaForm(${actividad.id})">
-                            <i data-feather="plus"></i> Tarea
-                        </button>
                     </div>
+                    <button class="btn btn-sm btn-secondary add-button ms-2" onclick="openTareaForm(${actividad.id})">
+                        <i data-feather="plus"></i> Tarea
+                    </button>
                 </div>
                 <div class="card-body">
                     <div class="tareas-container">
