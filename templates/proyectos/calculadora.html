@@ -5,34 +5,80 @@
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>Calculadora de Tiempos</h2>
-        <button class="btn btn-primary" onclick="openTaskForm()">
-            <i data-feather="plus"></i> Nueva Tarea
+        <button class="btn btn-primary" onclick="openEntregableForm()">
+            <i data-feather="plus"></i> Nuevo Entregable
         </button>
     </div>
 
-    <!-- Popup Form -->
-    <div id="taskFormPopup" class="modal">
+    <!-- Popup Form for Entregable -->
+    <div id="entregableFormPopup" class="modal">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="btn-close" onclick="closeTaskForm()" aria-label="Close">
+                    <h5 class="modal-title">Nuevo Entregable</h5>
+                    <button type="button" class="btn-close" onclick="closeEntregableForm()" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <h5 class="modal-title">Nueva Tarea</h5>
                 </div>
                 <div class="modal-body">
-                    <form id="taskForm" onsubmit="addTask(event)">
+                    <form id="entregableForm" onsubmit="addEntregable(event)">
                         <div class="mb-3">
-                            <label for="deliverable" class="form-label">Entregable</label>
-                            <input type="text" class="form-control" id="deliverable" required>
+                            <label for="entregableName" class="form-label">Nombre del Entregable</label>
+                            <input type="text" class="form-control" id="entregableName" required>
                         </div>
-                        <div class="mb-3">
-                            <label for="activity" class="form-label">Actividad</label>
-                            <input type="text" class="form-control" id="activity" required>
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">Guardar</button>
+                            <button type="button" class="btn btn-secondary" onclick="closeEntregableForm()">Cancelar</button>
                         </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Popup Form for Actividad -->
+    <div id="actividadFormPopup" class="modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Nueva Actividad</h5>
+                    <button type="button" class="btn-close" onclick="closeActividadForm()" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="actividadForm" onsubmit="addActividad(event)">
+                        <input type="hidden" id="actividadEntregableId">
                         <div class="mb-3">
-                            <label for="taskName" class="form-label">Tarea</label>
-                            <input type="text" class="form-control" id="taskName" required>
+                            <label for="actividadName" class="form-label">Nombre de la Actividad</label>
+                            <input type="text" class="form-control" id="actividadName" required>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">Guardar</button>
+                            <button type="button" class="btn btn-secondary" onclick="closeActividadForm()">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Popup Form for Tarea -->
+    <div id="tareaFormPopup" class="modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Nueva Tarea</h5>
+                    <button type="button" class="btn-close" onclick="closeTareaForm()" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="tareaForm" onsubmit="addTarea(event)">
+                        <input type="hidden" id="tareaActividadId">
+                        <div class="mb-3">
+                            <label for="tareaName" class="form-label">Nombre de la Tarea</label>
+                            <input type="text" class="form-control" id="tareaName" required>
                         </div>
                         <div class="mb-3">
                             <label for="optimisticTime" class="form-label">Tiempo Optimista (horas)</label>
@@ -46,13 +92,9 @@
                             <label for="pessimisticTime" class="form-label">Tiempo Pesimista (horas)</label>
                             <input type="number" class="form-control" id="pessimisticTime" min="0" step="0.5" required>
                         </div>
-                        <div class="mb-3">
-                            <label for="estimatedTime" class="form-label">Tiempo Estimado (horas)</label>
-                            <input type="number" class="form-control" id="estimatedTime" min="0" step="0.5" required>
-                        </div>
                         <div class="d-flex gap-2">
                             <button type="submit" class="btn btn-primary">Guardar</button>
-                            <button type="button" class="btn btn-secondary" onclick="closeTaskForm()">Cancelar</button>
+                            <button type="button" class="btn btn-secondary" onclick="closeTareaForm()">Cancelar</button>
                         </div>
                     </form>
                 </div>
@@ -60,31 +102,30 @@
         </div>
     </div>
 
-    <!-- Task Table -->
-    <div class="table-responsive">
-        <table class="table" id="taskTable">
-            <thead>
-                <tr>
-                    <th>Entregable</th>
-                    <th>Actividad</th>
-                    <th>Tarea</th>
-                    <th>T. Optimista</th>
-                    <th>T. Más Probable</th>
-                    <th>T. Pesimista</th>
-                    <th>T. Estimado</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-            <tfoot>
-                <tr>
-                    <td><strong>Totales</strong></td>
-                    <td id="totalOptimistic">0</td>
-                    <td id="totalMostLikely">0</td>
-                    <td id="totalPessimistic">0</td>
-                    <td id="totalEstimated">0</td>
-                </tr>
-            </tfoot>
-        </table>
+    <!-- Project Structure -->
+    <div id="projectStructure">
+        <!-- Entregables will be added here dynamically -->
+    </div>
+
+    <!-- Project Totals -->
+    <div class="card mt-4">
+        <div class="card-body">
+            <h5>Totales del Proyecto</h5>
+            <div class="row">
+                <div class="col-md-3">
+                    <p>Tiempo Optimista: <span id="projectOptimistic">0</span> horas</p>
+                </div>
+                <div class="col-md-3">
+                    <p>Tiempo Más Probable: <span id="projectMostLikely">0</span> horas</p>
+                </div>
+                <div class="col-md-3">
+                    <p>Tiempo Pesimista: <span id="projectPessimistic">0</span> horas</p>
+                </div>
+                <div class="col-md-3">
+                    <p>Tiempo Estimado: <span id="projectEstimated">0</span> horas</p>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -107,91 +148,251 @@
 .modal-dialog {
     margin: 30px auto;
     max-width: 500px;
-    max-height: calc(100vh - 60px);
 }
 
 .modal-content {
     background-color: white;
     padding: 20px;
     border-radius: 5px;
-    max-height: calc(100vh - 60px);
-    overflow-y: auto;
 }
 
-.btn-close {
-    background: transparent;
-    border: 0;
-    font-size: 1.5rem;
+.entregable-card {
+    margin-bottom: 1rem;
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+}
+
+.actividad-card {
+    margin: 0.5rem;
+    border: 1px solid #e9ecef;
+    border-radius: 0.25rem;
+}
+
+.tarea-row {
     padding: 0.5rem;
-    margin: -0.5rem -0.5rem -0.5rem auto;
-    cursor: pointer;
-    color: #000;
-    opacity: .5;
+    margin: 0.5rem;
+    background-color: #f8f9fa;
+    border-radius: 0.25rem;
 }
 
-.btn-close:hover {
-    opacity: .75;
-}
-
-.modal-body {
-    overflow-y: auto;
-    max-height: calc(100vh - 200px);
+.add-button {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
 }
 </style>
 
 <script>
-function openTaskForm() {
-    document.getElementById('taskFormPopup').classList.add('show');
+let projectData = {
+    entregables: []
+};
+
+// Entregable Functions
+function openEntregableForm() {
+    document.getElementById('entregableFormPopup').classList.add('show');
 }
 
-function closeTaskForm() {
-    document.getElementById('taskFormPopup').classList.remove('show');
-    document.getElementById('taskForm').reset();
+function closeEntregableForm() {
+    document.getElementById('entregableFormPopup').classList.remove('show');
+    document.getElementById('entregableForm').reset();
 }
 
-function addTask(event) {
+function addEntregable(event) {
     event.preventDefault();
+    const entregable = {
+        id: Date.now(),
+        name: document.getElementById('entregableName').value,
+        actividades: []
+    };
+    projectData.entregables.push(entregable);
+    renderProject();
+    closeEntregableForm();
+}
+
+// Actividad Functions
+function openActividadForm(entregableId) {
+    document.getElementById('actividadEntregableId').value = entregableId;
+    document.getElementById('actividadFormPopup').classList.add('show');
+}
+
+function closeActividadForm() {
+    document.getElementById('actividadFormPopup').classList.remove('show');
+    document.getElementById('actividadForm').reset();
+}
+
+function addActividad(event) {
+    event.preventDefault();
+    const entregableId = parseInt(document.getElementById('actividadEntregableId').value);
+    const actividad = {
+        id: Date.now(),
+        name: document.getElementById('actividadName').value,
+        tareas: []
+    };
     
-    const task = {
-        deliverable: document.getElementById('deliverable').value,
-        activity: document.getElementById('activity').value,
-        name: document.getElementById('taskName').value,
+    const entregable = projectData.entregables.find(e => e.id === entregableId);
+    if (entregable) {
+        entregable.actividades.push(actividad);
+        renderProject();
+    }
+    closeActividadForm();
+}
+
+// Tarea Functions
+function openTareaForm(actividadId) {
+    document.getElementById('tareaActividadId').value = actividadId;
+    document.getElementById('tareaFormPopup').classList.add('show');
+}
+
+function closeTareaForm() {
+    document.getElementById('tareaFormPopup').classList.remove('show');
+    document.getElementById('tareaForm').reset();
+}
+
+function addTarea(event) {
+    event.preventDefault();
+    const actividadId = parseInt(document.getElementById('tareaActividadId').value);
+    const tarea = {
+        id: Date.now(),
+        name: document.getElementById('tareaName').value,
         optimistic: parseFloat(document.getElementById('optimisticTime').value),
         mostLikely: parseFloat(document.getElementById('mostLikelyTime').value),
-        pessimistic: parseFloat(document.getElementById('pessimisticTime').value),
-        estimated: parseFloat(document.getElementById('estimatedTime').value)
+        pessimistic: parseFloat(document.getElementById('pessimisticTime').value)
     };
-
-    const tbody = document.querySelector('#taskTable tbody');
-    const row = tbody.insertRow();
     
-    row.insertCell().textContent = task.deliverable;
-    row.insertCell().textContent = task.activity;
-    row.insertCell().textContent = task.name;
-    row.insertCell().textContent = task.optimistic;
-    row.insertCell().textContent = task.mostLikely;
-    row.insertCell().textContent = task.pessimistic;
-    row.insertCell().textContent = task.estimated;
-
-    updateTotals();
-    closeTaskForm();
+    for (let entregable of projectData.entregables) {
+        const actividad = entregable.actividades.find(a => a.id === actividadId);
+        if (actividad) {
+            actividad.tareas.push(tarea);
+            renderProject();
+            break;
+        }
+    }
+    closeTareaForm();
 }
 
-function updateTotals() {
-    const rows = document.querySelectorAll('#taskTable tbody tr');
-    let totals = {optimistic: 0, mostLikely: 0, pessimistic: 0, estimated: 0};
+// Calculation Functions
+function calculateTareaEstimated(tarea) {
+    return (tarea.optimistic + (4 * tarea.mostLikely) + tarea.pessimistic) / 6;
+}
+
+function calculateActividadTotals(actividad) {
+    return actividad.tareas.reduce((totals, tarea) => {
+        totals.optimistic += tarea.optimistic;
+        totals.mostLikely += tarea.mostLikely;
+        totals.pessimistic += tarea.pessimistic;
+        totals.estimated += calculateTareaEstimated(tarea);
+        return totals;
+    }, { optimistic: 0, mostLikely: 0, pessimistic: 0, estimated: 0 });
+}
+
+function calculateEntregableTotals(entregable) {
+    return entregable.actividades.reduce((totals, actividad) => {
+        const actividadTotals = calculateActividadTotals(actividad);
+        totals.optimistic += actividadTotals.optimistic;
+        totals.mostLikely += actividadTotals.mostLikely;
+        totals.pessimistic += actividadTotals.pessimistic;
+        totals.estimated += actividadTotals.estimated;
+        return totals;
+    }, { optimistic: 0, mostLikely: 0, pessimistic: 0, estimated: 0 });
+}
+
+function calculateProjectTotals() {
+    return projectData.entregables.reduce((totals, entregable) => {
+        const entregableTotals = calculateEntregableTotals(entregable);
+        totals.optimistic += entregableTotals.optimistic;
+        totals.mostLikely += entregableTotals.mostLikely;
+        totals.pessimistic += entregableTotals.pessimistic;
+        totals.estimated += entregableTotals.estimated;
+        return totals;
+    }, { optimistic: 0, mostLikely: 0, pessimistic: 0, estimated: 0 });
+}
+
+// Render Functions
+function renderProject() {
+    const container = document.getElementById('projectStructure');
+    container.innerHTML = '';
     
-    rows.forEach(row => {
-        totals.optimistic += parseFloat(row.cells[1].textContent);
-        totals.mostLikely += parseFloat(row.cells[2].textContent);
-        totals.pessimistic += parseFloat(row.cells[3].textContent);
-        totals.estimated += parseFloat(row.cells[4].textContent);
+    projectData.entregables.forEach(entregable => {
+        const entregableTotals = calculateEntregableTotals(entregable);
+        const entregableHtml = `
+            <div class="entregable-card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5>${entregable.name}</h5>
+                    <button class="btn btn-sm btn-primary add-button" onclick="openActividadForm(${entregable.id})">
+                        <i data-feather="plus"></i> Actividad
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div class="actividades-container">
+                        ${renderActividades(entregable.actividades)}
+                    </div>
+                    <div class="totals-row">
+                        <strong>Totales del Entregable:</strong>
+                        <span>Optimista: ${entregableTotals.optimistic.toFixed(1)}h</span>
+                        <span>Más Probable: ${entregableTotals.mostLikely.toFixed(1)}h</span>
+                        <span>Pesimista: ${entregableTotals.pessimistic.toFixed(1)}h</span>
+                        <span>Estimado: ${entregableTotals.estimated.toFixed(1)}h</span>
+                    </div>
+                </div>
+            </div>
+        `;
+        container.insertAdjacentHTML('beforeend', entregableHtml);
     });
 
-    document.getElementById('totalOptimistic').textContent = totals.optimistic.toFixed(1);
-    document.getElementById('totalMostLikely').textContent = totals.mostLikely.toFixed(1);
-    document.getElementById('totalPessimistic').textContent = totals.pessimistic.toFixed(1);
-    document.getElementById('totalEstimated').textContent = totals.estimated.toFixed(1);
+    // Update project totals
+    const projectTotals = calculateProjectTotals();
+    document.getElementById('projectOptimistic').textContent = projectTotals.optimistic.toFixed(1);
+    document.getElementById('projectMostLikely').textContent = projectTotals.mostLikely.toFixed(1);
+    document.getElementById('projectPessimistic').textContent = projectTotals.pessimistic.toFixed(1);
+    document.getElementById('projectEstimated').textContent = projectTotals.estimated.toFixed(1);
+
+    // Re-initialize Feather icons
+    if (window.feather) {
+        feather.replace();
+    }
+}
+
+function renderActividades(actividades) {
+    return actividades.map(actividad => {
+        const actividadTotals = calculateActividadTotals(actividad);
+        return `
+            <div class="actividad-card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h6>${actividad.name}</h6>
+                    <button class="btn btn-sm btn-secondary add-button" onclick="openTareaForm(${actividad.id})">
+                        <i data-feather="plus"></i> Tarea
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div class="tareas-container">
+                        ${renderTareas(actividad.tareas)}
+                    </div>
+                    <div class="totals-row">
+                        <strong>Totales de la Actividad:</strong>
+                        <span>Optimista: ${actividadTotals.optimistic.toFixed(1)}h</span>
+                        <span>Más Probable: ${actividadTotals.mostLikely.toFixed(1)}h</span>
+                        <span>Pesimista: ${actividadTotals.pessimistic.toFixed(1)}h</span>
+                        <span>Estimado: ${actividadTotals.estimated.toFixed(1)}h</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+function renderTareas(tareas) {
+    return tareas.map(tarea => `
+        <div class="tarea-row">
+            <div class="d-flex justify-content-between align-items-center">
+                <span>${tarea.name}</span>
+                <div>
+                    <span>Optimista: ${tarea.optimistic}h</span>
+                    <span>Más Probable: ${tarea.mostLikely}h</span>
+                    <span>Pesimista: ${tarea.pessimistic}h</span>
+                    <span>Estimado: ${calculateTareaEstimated(tarea).toFixed(1)}h</span>
+                </div>
+            </div>
+        </div>
+    `).join('');
 }
 </script>
 {% endblock %}
