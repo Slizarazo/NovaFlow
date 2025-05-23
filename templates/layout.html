@@ -219,12 +219,22 @@
                 'General', 'url': '/proyectos/general'}]}, {'name': 'Cuentas',
                 'icon': 'users', 'url': '/cuentas', 'submenu': [ {'name':
                 'Clientes', 'url': '/cuentas/clientes'}, {'name': 'Usuarios',
-                'url': '/cuentas/usuarios'} ]} ] %} {% elif role == 'supervisor'
-                %} {% set navigation = [ {'name': 'Dashboard', 'icon': 'home',
-                'url': '/dashboard'}, {'name': 'Proyectos', 'icon': 'briefcase',
-                'url': '/proyectos'}, {'name': 'Aliados', 'icon': 'users',
-                'url': '/aliados'}, {'name': 'Consultores', 'icon':
-                'user-check', 'url': '/consultores'} ] %} {% elif role ==
+                'url': '/cuentas/usuarios'} ]} ] %} {% elif role == 'supervisor' %}
+                {% set navigation = [
+                    {'name': 'Dashboard', 'icon': 'home', 'url': '/dashboard'},
+                    {'name': 'Proyectos', 'icon': 'briefcase', 'url': '/proyectos',
+                     'submenu': [
+                         {'name': 'Calculadora', 'url': '/proyectos/calculadora'},
+                         {'name': 'Proyectos', 'url': '/proyectos/lista'},
+                         {'name': 'Planificación', 'url': '/proyectos/planificacion'},
+                         {'name': 'Estimaciones', 'url': '/proyectos/estimaciones'}
+                     ]},
+                    {'name': 'Consultores', 'icon': 'user-check', 'url': '/consultores',
+                     'submenu': [
+                         {'name': 'Propuestas', 'url': '/consultores/propuestas'},
+                         {'name': 'Activos', 'url': '/consultores/activos'}
+                     ]}
+                ] %} {% elif role ==
                 'consultor' %} {% set navigation = [ {'name': 'Dashboard',
                 'icon': 'home', 'url': '/dashboard'}, {'name': 'Mis Proyectos',
                 'icon': 'briefcase', 'url': '/mis-proyectos'}, {'name':
