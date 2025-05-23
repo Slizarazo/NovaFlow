@@ -340,6 +340,7 @@
                             <th>Nivel</th>
                             <th>Cantidad</th>
                             <th>Tiempo Total Estimado</th>
+                            <th>Costo Estimado</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -347,21 +348,37 @@
                             <td>Entregables</td>
                             <td id="summaryEntregables">0</td>
                             <td id="summaryEntregablesTime">0 horas</td>
+                            <td>-</td>
                         </tr>
                         <tr>
                             <td>Actividades</td>
                             <td id="summaryActividades">0</td>
                             <td id="summaryActividadesTime">0 horas</td>
+                            <td>-</td>
                         </tr>
                         <tr>
                             <td>Tareas</td>
                             <td id="summaryTareas">0</td>
                             <td id="summaryTareasTime">0 horas</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>Recursos Adicionales</td>
+                            <td id="summaryResources">0</td>
+                            <td>-</td>
+                            <td id="summaryResourcesCost">$0</td>
+                        </tr>
+                        <tr>
+                            <td>Freelance</td>
+                            <td id="summaryFreelance">0</td>
+                            <td>-</td>
+                            <td id="summaryFreelanceCost">$0</td>
                         </tr>
                         <tr class="table-info">
                             <td><strong>Total del Proyecto</strong></td>
                             <td>-</td>
                             <td id="summaryTotalTime"><strong>0 horas</strong></td>
+                            <td id="summaryTotalCost"><strong>$0</strong></td>
                         </tr>
                     </tbody>
                 </table>
@@ -795,6 +812,29 @@ function updateSummary() {
     const projectTotals = calculateProjectTotals();
     totalTime = projectTotals.estimated;
 
+    // Calcular costos de recursos
+    let totalResourcesCOP = 0;
+    projectData.resources.forEach(resource => {
+        const costInCOP = convertToCOP(resource.cost, resource.currency);
+        totalResourcesCOP += costInCOP * resource.quantity;
+    });
+
+    // Calcular costos de freelance
+    let totalFreelanceCost = 0;
+    const freelanceRows = document.querySelectorAll('#freelanceTable tr');
+    let freelanceCount = 0;
+    freelanceRows.forEach(row => {
+        if (row.cells.length >= 6) {
+            freelanceCount++;
+            const costText = row.cells[5].textContent;
+            const cleanText = costText.replace(/[^0-9.]/g, '');
+            const cost = parseFloat(cleanText);
+            if (!isNaN(cost)) {
+                totalFreelanceCost += cost;
+            }
+        }
+    });
+
     document.getElementById('summaryEntregables').textContent = totalEntregables;
     document.getElementById('summaryActividades').textContent = totalActividades;
     document.getElementById('summaryTareas').textContent = totalTareas;
@@ -802,6 +842,13 @@ function updateSummary() {
     document.getElementById('summaryActividadesTime').textContent = projectTotals.estimated.toFixed(1) + ' horas';
     document.getElementById('summaryTareasTime').textContent = projectTotals.estimated.toFixed(1) + ' horas';
     document.getElementById('summaryTotalTime').textContent = totalTime.toFixed(1) + ' horas';
+    
+    // Actualizar recursos y freelance
+    document.getElementById('summaryResources').textContent = projectData.resources.length;
+    document.getElementById('summaryResourcesCost').textContent = formatCurrency(totalResourcesCOP);
+    document.getElementById('summaryFreelance').textContent = freelanceCount;
+    document.getElementById('summaryFreelanceCost').textContent = formatCurrency(totalFreelanceCost);
+    document.getElementById('summaryTotalCost').textContent = formatCurrency(totalResourcesCOP + totalFreelanceCost);
 }
 
 // Freelance Functions
