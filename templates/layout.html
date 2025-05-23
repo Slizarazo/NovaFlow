@@ -206,20 +206,7 @@
                 'Aliados', 'url': '/aliados/aliados'}, {'name': 'Portafolio',
                 'url': '/aliados/portfolio'}, {'name': 'Asignaciones', 'url':
                 '/aliados/asignaciones'} ]} ] %} {% elif role == 'aliado' %} {%
-                set navigation = [ {'name': 'Inicio', 'icon': 'home', 'url':
-                '/dashboard/growth', 'submenu': []}, {'name': 'Dashboards',
-                'icon': 'activity', 'url': '/dashboard', 'submenu': [ {'name':
-                'Crecimiento', 'url': '/dashboard/crecimiento'}, {'name':
-                'Proyectos', 'url': '/dashboard/proyectos'}, {'name': 'Cuentas',
-                'url': '/dashboard/cuentas'}, {'name': 'Productividad', 'url':
-                '/dashboard/productividad'}, {'name': 'Facturación', 'url':
-                '/dashboard/facturacion'}, {'name': 'Riesgos', 'url':
-                '/dashboard/riesgos'} ]}, {'name': 'Proyectos', 'icon':
-                'briefcase', 'url': '/proyectos', 'submenu': [ {'name':
-                'General', 'url': '/proyectos/general'}]}, {'name': 'Cuentas',
-                'icon': 'users', 'url': '/cuentas', 'submenu': [ {'name':
-                'Clientes', 'url': '/cuentas/clientes'}, {'name': 'Usuarios',
-                'url': '/cuentas/usuarios'} ]} ] %} {% elif role == 'supervisor'
+                set navigation = [ {'name': 'Dashboard', 'icon': 'home', 'url': '/dashboard', 'submenu': []}, {'name': 'Proyectos', 'icon': 'briefcase', 'url': '/proyectos', 'submenu': [ {'name': 'General', 'url': '/proyectos/general'} ]}, {'name': 'Cuentas', 'icon': 'users', 'url': '/cuentas', 'submenu': [ {'name': 'Clientes', 'url': '/cuentas/clientes'}, {'name': 'Usuarios', 'url': '/cuentas/usuarios'} ]} ] %} {% elif role == 'supervisor'
                 %} {% set navigation = [ {'name': 'Dashboard', 'icon': 'home',
                 'url': '/dashboard'}, {'name': 'Proyectos', 'icon': 'briefcase',
                 'url': '/proyectos'}, {'name': 'Aliados', 'icon': 'users',
