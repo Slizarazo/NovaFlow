@@ -549,21 +549,36 @@ function renderResources() {
         totalAnnualCost += annualizedCost;
         
         const total = resource.cost * resource.quantity;
+        const formatter = new Intl.NumberFormat('es-CO', {
+            style: 'currency',
+            currency: resource.currency,
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+        
         const row = `
             <tr>
                 <td>${resource.type}</td>
                 <td>${resource.periodicity}</td>
                 <td>${resource.currency}</td>
                 <td>${resource.quantity}</td>
-                <td>${resource.cost.toFixed(2)}</td>
-                <td>${total.toFixed(2)} ${resource.currency}</td>
-                <td>${annualizedCost.toFixed(2)} ${resource.currency}</td>
+                <td>${formatter.format(resource.cost)}</td>
+                <td>${formatter.format(total)}</td>
+                <td>${formatter.format(annualizedCost)}</td>
             </tr>
         `;
         tbody.insertAdjacentHTML('beforeend', row);
     });
     
-    document.getElementById('totalResources').textContent = totalAnnualCost.toFixed(2);
+    // Format total with the last used currency, or USD if no resources
+    const defaultFormatter = new Intl.NumberFormat('es-CO', {
+        style: 'currency',
+        currency: projectData.resources.length > 0 ? projectData.resources[projectData.resources.length - 1].currency : 'USD',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    });
+    
+    document.getElementById('totalResources').textContent = defaultFormatter.format(totalAnnualCost);
 }
 
 function updateSummary() {
