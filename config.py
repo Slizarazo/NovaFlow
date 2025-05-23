@@ -22,13 +22,14 @@ class Config:
              ]}
         ],
         'aliado': [
-            {'name': 'Dashboard de Crecimiento', 'icon': 'activity', 'url': '/dashboard/crecimiento', 'submenu': []},
-            {'name': 'Dashboards', 'icon': 'activity', 'url': '/dashboard',
-             'submenu': [
-                 {'name': 'Crecimiento', 'url': '/dashboard/crecimiento'},
-                 {'name': 'Proyectos', 'url': '/dashboard/proyectos'},
-                 {'name': 'Cuentas', 'url': '/dashboard/cuentas'},
-                 {'name': 'Productividad', 'url': '/dashboard/productividad'},
+            {'name': 'Dashboard', 'icon': 'home', 'url': '/dashboard', 'submenu': []},
+            {'name': 'Proyectos', 'icon': 'briefcase', 'url': '/proyectos', 'submenu': [
+                {'name': 'General', 'url': '/proyectos/general'}
+            ]},
+            {'name': 'Cuentas', 'icon': 'users', 'url': '/cuentas', 'submenu': [
+                {'name': 'Clientes', 'url': '/cuentas/clientes'},
+                {'name': 'Usuarios', 'url': '/cuentas/usuarios'}
+            ]}},
                  {'name': 'Facturación', 'url': '/dashboard/facturacion'},
                  {'name': 'Riesgos', 'url': '/dashboard/riesgos'}
              ]},
