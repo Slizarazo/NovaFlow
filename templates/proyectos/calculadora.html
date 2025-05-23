@@ -236,6 +236,92 @@
         </div>
     </div>
 
+    <!-- Freelance Costs -->
+    <div class="card mt-4">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5>Costos de Freelance</h5>
+                <button class="btn btn-primary" onclick="openFreelanceForm()">
+                    <i data-feather="plus"></i> Nuevo Freelance
+                </button>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Área de Especialidad</th>
+                            <th>Nivel</th>
+                            <th>Tarifa por Hora (USD)</th>
+                            <th>Actividad</th>
+                            <th>Horas Estimadas</th>
+                            <th>Costo Total</th>
+                        </tr>
+                    </thead>
+                    <tbody id="freelanceTable">
+                    </tbody>
+                    <tfoot>
+                        <tr class="table-info">
+                            <td colspan="5"><strong>Total Freelance</strong></td>
+                            <td id="totalFreelanceCost"><strong>0</strong></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Freelance Form Popup -->
+    <div id="freelanceFormPopup" class="modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Nuevo Freelance</h5>
+                    <button type="button" class="btn-close" onclick="closeFreelanceForm()" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="freelanceForm" onsubmit="addFreelance(event)">
+                        <div class="mb-3">
+                            <label for="specialty" class="form-label">Área de Especialidad</label>
+                            <select class="form-control" id="specialty" required>
+                                <option value="">Seleccione...</option>
+                                <option value="Analista de datos">Analista de datos</option>
+                                <option value="Desarrollador">Desarrollador</option>
+                                <option value="DevOps">DevOps</option>
+                                <option value="Otros">Otros</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="level" class="form-label">Nivel</label>
+                            <select class="form-control" id="level" onchange="updateRate()" required>
+                                <option value="">Seleccione...</option>
+                                <option value="junior">Junior</option>
+                                <option value="mid">Mid</option>
+                                <option value="senior">Senior</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="rate" class="form-label">Tarifa por Hora (USD)</label>
+                            <input type="number" class="form-control" id="rate" required readonly>
+                            <small class="form-text text-muted" id="rateRange"></small>
+                        </div>
+                        <div class="mb-3">
+                            <label for="activity" class="form-label">Actividad</label>
+                            <select class="form-control" id="freelanceActivity" required>
+                                <option value="">Seleccione...</option>
+                            </select>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">Guardar</button>
+                            <button type="button" class="btn btn-secondary" onclick="closeFreelanceForm()">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Summary Report -->
     <div class="card mt-4 mb-4">
         <div class="card-body">
@@ -612,6 +698,116 @@ function updateSummary() {
     document.getElementById('summaryActividadesTime').textContent = projectTotals.estimated.toFixed(1) + ' horas';
     document.getElementById('summaryTareasTime').textContent = projectTotals.estimated.toFixed(1) + ' horas';
     document.getElementById('summaryTotalTime').textContent = totalTime.toFixed(1) + ' horas';
+}
+
+// Freelance Functions
+function openFreelanceForm() {
+    document.getElementById('freelanceFormPopup').classList.add('show');
+    updateActivitySelect();
+}
+
+function closeFreelanceForm() {
+    document.getElementById('freelanceFormPopup').classList.remove('show');
+    document.getElementById('freelanceForm').reset();
+}
+
+function updateActivitySelect() {
+    const activitySelect = document.getElementById('freelanceActivity');
+    activitySelect.innerHTML = '<option value="">Seleccione...</option>';
+    
+    projectData.entregables.forEach(entregable => {
+        entregable.actividades.forEach(actividad => {
+            const option = document.createElement('option');
+            option.value = actividad.id;
+            option.textContent = `${entregable.name} - ${actividad.name}`;
+            activitySelect.appendChild(option);
+        });
+    });
+}
+
+function updateRate() {
+    const level = document.getElementById('level').value;
+    const rateInput = document.getElementById('rate');
+    const rateRange = document.getElementById('rateRange');
+    
+    let rate = 0;
+    let range = '';
+    
+    switch(level) {
+        case 'junior':
+            rate = 9; // Default to middle of range
+            range = 'Rango: 8-10 USD/hora';
+            break;
+        case 'mid':
+            rate = 14.5; // Default to middle of range
+            range = 'Rango: 12-17 USD/hora';
+            break;
+        case 'senior':
+            rate = 24; // Default to middle of range
+            range = 'Rango: 20-28 USD/hora';
+            break;
+        default:
+            rate = 0;
+            range = '';
+    }
+    
+    rateInput.value = rate;
+    rateRange.textContent = range;
+}
+
+function addFreelance(event) {
+    event.preventDefault();
+    
+    const freelance = {
+        id: Date.now(),
+        specialty: document.getElementById('specialty').value,
+        level: document.getElementById('level').value,
+        rate: parseFloat(document.getElementById('rate').value),
+        activityId: document.getElementById('freelanceActivity').value
+    };
+    
+    // Find activity and its estimated hours
+    let activityName = '';
+    let estimatedHours = 0;
+    
+    projectData.entregables.forEach(entregable => {
+        const activity = entregable.actividades.find(a => a.id == freelance.activityId);
+        if (activity) {
+            activityName = `${entregable.name} - ${activity.name}`;
+            const totals = calculateActividadTotals(activity);
+            estimatedHours = totals.estimated;
+        }
+    });
+    
+    const totalCost = freelance.rate * estimatedHours;
+    
+    const tbody = document.getElementById('freelanceTable');
+    const row = `
+        <tr>
+            <td>${freelance.specialty}</td>
+            <td>${freelance.level}</td>
+            <td>${freelance.rate.toFixed(2)}</td>
+            <td>${activityName}</td>
+            <td>${estimatedHours.toFixed(1)}</td>
+            <td>${totalCost.toFixed(2)}</td>
+        </tr>
+    `;
+    tbody.insertAdjacentHTML('beforeend', row);
+    
+    updateTotalFreelanceCost();
+    closeFreelanceForm();
+}
+
+function updateTotalFreelanceCost() {
+    const rows = document.getElementById('freelanceTable').getElementsByTagName('tr');
+    let total = 0;
+    
+    for (let row of rows) {
+        const costCell = row.cells[5];
+        total += parseFloat(costCell.textContent);
+    }
+    
+    document.getElementById('totalFreelanceCost').textContent = total.toFixed(2);
 }
 
 function renderProject() {
