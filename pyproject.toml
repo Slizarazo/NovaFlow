@@ -16,7 +16,4 @@ dependencies = [
     "pandas>=2.2.3",
     "folium>=0.19.5",
     "plotly>=6.0.1",
-    "pdfkit>=1.0.0",
-    "wkhtmltopdf>=0.2",
-    "requests>=2.32.3",
 ]

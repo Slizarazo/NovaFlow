@@ -103,7 +103,7 @@ def dashboard_crecimiento():
 def dashboard_growth():
     if current_user.role == 'supervisor':
         return redirect(url_for('dashboard'))
-
+        
     # Data for growth dashboard
     aliados = Aliado.ALIADOS
     ventas_trimestre_total = sum(aliado.ventas_trimestre for aliado in aliados)
@@ -643,8 +643,7 @@ def aliados_portfolio():
 @login_required
 def aliados_asignaciones():
     consultores = Consultor.CONSULTORES
-    proyectos```python
- = {proyecto.id: proyecto for proyecto in Proyecto.PROYECTOS}
+    proyectos = {proyecto.id: proyecto for proyecto in Proyecto.PROYECTOS}
 
     # Datos estándar o extendidos según disponibilidad
     if USAR_DATOS_EXTENDIDOS:
@@ -826,111 +825,3 @@ def proyectos_general():
                          estados=estados,
                          config=app.config,
                          role=current_user.role)
-@app.route('/generate_pdf', methods=['POST'])
-def generate_pdf():
-    try:
-        import pdfkit
-        from flask import make_response
-        import json
-        from datetime import datetime
-
-        # Configure pdfkit to use wkhtmltopdf
-        config = pdfkit.configuration(wkhtmltopdf='/usr/bin/wkhtmltopdf')
-        data = request.json
-
-        # Create HTML content for PDF
-        html_content = f"""
-    <html>
-        <head>
-            <style>
-                body {{ font-family: Arial, sans-serif; }}
-                .section {{ margin: 20px 0; }}
-                table {{ width: 100%; border-collapse: collapse; }}
-                th, td {{ border: 1px solid #ddd; padding: 8px; text-align: left; }}
-                th {{ background-color: #f5f5f5; }}
-            </style>
-        </head>
-        <body>
-            <h1>Informe del Proyecto: {data['name']}</h1>
-            <p>Fecha: {datetime.now().strftime('%Y-%m-%d %H:%M')}</p>
-
-            <div class="section">
-                <h2>Estimación de Tiempos</h2>
-                <table>
-                    <tr>
-                        <th>Optimista</th>
-                        <th>Más Probable</th>
-                        <th>Pesimista</th>
-                        <th>Estimado</th>
-                    </tr>
-                    <tr>
-                        <td>{data['times']['optimistic']} horas</td>
-                        <td>{data['times']['mostLikely']} horas</td>
-                        <td>{data['times']['pessimistic']} horas</td>
-                        <td>{data['times']['estimated']} horas</td>
-                    </tr>
-                </table>
-            </div>
-
-            <div class="section">
-                <h2>Resumen de Elementos</h2>
-                <table>
-                    <tr>
-                        <th>Entregables</th>
-                        <th>Actividades</th>
-                        <th>Tareas</th>
-                        <th>Tiempo Total</th>
-                    </tr>
-                    <tr>
-                        <td>{data['summary']['entregables']}</td>
-                        <td>{data['summary']['actividades']}</td>
-                        <td>{data['summary']['tareas']}</td>
-                        <td>{data['summary']['totalTime']}</td>
-                    </tr>
-                </table>
-            </div>
-
-            <div class="section">
-                <h2>Recursos Adicionales</h2>
-                <table>
-                    <tr>
-                        <th>Tipo</th>
-                        <th>Periodicidad</th>
-                        <th>Moneda</th>
-                        <th>Cantidad</th>
-                        <th>Costo Total</th>
-                    </tr>
-                    {''.join(f"<tr><td>{r['type']}</td><td>{r['periodicity']}</td><td>{r['currency']}</td><td>{r['quantity']}</td><td>{r['cost']}</td></tr>" for r in data['resources'])}
-                </table>
-            </div>
-
-            <div class="section">
-                <h2>Costos de Freelance</h2>
-                <table>
-                    <tr>
-                        <th>Especialidad</th>
-                        <th>Nivel</th>
-                        <th>Tarifa</th>
-                        <th>Actividad</th>
-                        <th>Horas</th>
-                        <th>Costo Total</th>
-                    </tr>
-                    {''.join(f"<tr><td>{f['specialty']}</td><td>{f['level']}</td><td>{f['rate']}</td><td>{f['activity']}</td><td>{f['hours']}</td><td>{f['cost']}</td></tr>" for f in data['freelance'])}
-                </table>
-            </div>
-        </body>
-    </html>
-    """
-
-        # Generate PDF with configuration
-        pdf = pdfkit.from_string(html_content, False, configuration=config)
-
-        # Create response
-        response = make_response(pdf)
-        response.headers['Content-Type'] = 'application/pdf'
-        response.headers['Content-Disposition'] = f'attachment; filename=Proyecto_{data["name"]}_Informe.pdf'
-
-        return response
-    except Exception as e:
-        app.logger.error(f"Error generating PDF: {str(e)}")
-        return jsonify({"error": "No se pudo generar el PDF"}), 500
