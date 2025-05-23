@@ -16,7 +16,9 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Nueva Tarea</h5>
-                    <button type="button" class="btn-close" onclick="closeTaskForm()"></button>
+                    <button type="button" class="btn-close" onclick="closeTaskForm()" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
                 <div class="modal-body">
                     <form id="taskForm" onsubmit="addTask(event)">
@@ -101,6 +103,21 @@
     border-radius: 5px;
     max-height: calc(100vh - 60px);
     overflow-y: auto;
+}
+
+.btn-close {
+    background: transparent;
+    border: 0;
+    font-size: 1.5rem;
+    padding: 0.5rem;
+    margin: -0.5rem -0.5rem -0.5rem auto;
+    cursor: pointer;
+    color: #000;
+    opacity: .5;
+}
+
+.btn-close:hover {
+    opacity: .75;
 }
 
 .modal-body {
