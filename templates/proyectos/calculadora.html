@@ -139,6 +139,46 @@
             </div>
         </div>
     </div>
+
+    <!-- Summary Report -->
+    <div class="card mt-4 mb-4">
+        <div class="card-body">
+            <h5>Resumen de Estimación</h5>
+            <div class="table-responsive">
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Nivel</th>
+                            <th>Cantidad</th>
+                            <th>Tiempo Total Estimado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Entregables</td>
+                            <td id="summaryEntregables">0</td>
+                            <td id="summaryEntregablesTime">0 horas</td>
+                        </tr>
+                        <tr>
+                            <td>Actividades</td>
+                            <td id="summaryActividades">0</td>
+                            <td id="summaryActividadesTime">0 horas</td>
+                        </tr>
+                        <tr>
+                            <td>Tareas</td>
+                            <td id="summaryTareas">0</td>
+                            <td id="summaryTareasTime">0 horas</td>
+                        </tr>
+                        <tr class="table-info">
+                            <td><strong>Total del Proyecto</strong></td>
+                            <td>-</td>
+                            <td id="summaryTotalTime"><strong>0 horas</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
 
 <style>
@@ -369,6 +409,31 @@ function calculateProjectTotals() {
 }
 
 // Render Functions
+function updateSummary() {
+    let totalEntregables = projectData.entregables.length;
+    let totalActividades = 0;
+    let totalTareas = 0;
+    let totalTime = 0;
+    
+    projectData.entregables.forEach(entregable => {
+        totalActividades += entregable.actividades.length;
+        entregable.actividades.forEach(actividad => {
+            totalTareas += actividad.tareas.length;
+        });
+    });
+
+    const projectTotals = calculateProjectTotals();
+    totalTime = projectTotals.estimated;
+
+    document.getElementById('summaryEntregables').textContent = totalEntregables;
+    document.getElementById('summaryActividades').textContent = totalActividades;
+    document.getElementById('summaryTareas').textContent = totalTareas;
+    document.getElementById('summaryEntregablesTime').textContent = projectTotals.estimated.toFixed(1) + ' horas';
+    document.getElementById('summaryActividadesTime').textContent = projectTotals.estimated.toFixed(1) + ' horas';
+    document.getElementById('summaryTareasTime').textContent = projectTotals.estimated.toFixed(1) + ' horas';
+    document.getElementById('summaryTotalTime').textContent = totalTime.toFixed(1) + ' horas';
+}
+
 function renderProject() {
     const container = document.getElementById('projectStructure');
     container.innerHTML = '';
@@ -413,6 +478,8 @@ function renderProject() {
     if (window.feather) {
         feather.replace();
     }
+    
+    updateSummary();
 }
 
 function renderActividades(actividades) {
