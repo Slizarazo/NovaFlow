@@ -700,12 +700,66 @@ function renderResources() {
 
 function saveProjectData() {
     const projectTotals = calculateProjectTotals();
+    
+    // Calculate resource costs
+    let totalResourcesCOP = 0;
+    let totalAnnualResourcesCOP = 0;
+    projectData.resources.forEach(resource => {
+        const costInCOP = convertToCOP(resource.cost, resource.currency);
+        const totalInCOP = costInCOP * resource.quantity;
+        const annualizedCostInCOP = calculateAnnualizedCost({...resource, cost: costInCOP});
+        totalResourcesCOP += totalInCOP;
+        totalAnnualResourcesCOP += annualizedCostInCOP;
+    });
+
+    // Calculate freelance costs
+    let totalFreelanceCost = 0;
+    const freelanceData = [];
+    document.querySelectorAll('#freelanceTable tr').forEach(row => {
+        if (row.cells.length >= 6) {
+            const specialty = row.cells[0].textContent;
+            const level = row.cells[1].textContent;
+            const rate = parseFloat(row.cells[2].textContent.replace(/[^0-9.]/g, ''));
+            const activity = row.cells[3].textContent;
+            const hours = parseFloat(row.cells[4].textContent);
+            const cost = parseFloat(row.cells[5].textContent.replace(/[^0-9.]/g, ''));
+            
+            totalFreelanceCost += cost;
+            freelanceData.push({
+                specialty,
+                level,
+                rate,
+                activity,
+                hours,
+                cost
+            });
+        }
+    });
+
     const data = {
         projectId: projectData.projectId,
         projectName: projectData.projectName,
-        entregables: projectData.entregables,
-        resources: projectData.resources,
-        totals: projectTotals
+        timeEstimates: {
+            entregables: projectData.entregables,
+            totalHours: {
+                optimistic: projectTotals.optimistic,
+                mostLikely: projectTotals.mostLikely,
+                pessimistic: projectTotals.pessimistic,
+                estimated: projectTotals.estimated
+            }
+        },
+        costs: {
+            resources: {
+                items: projectData.resources,
+                totalDirectCost: totalResourcesCOP,
+                totalAnnualCost: totalAnnualResourcesCOP
+            },
+            freelance: {
+                items: freelanceData,
+                totalCost: totalFreelanceCost
+            },
+            totalProjectCost: totalResourcesCOP + totalFreelanceCost
+        }
     };
 
     fetch('/proyectos/calculadora', {
