@@ -626,27 +626,43 @@ function calculateAnnualizedCost(resource) {
     return annualCost;
 }
 
+// Definir tasas de conversión a COP
+const exchangeRates = {
+    'USD': 4000, // 1 USD = 4000 COP
+    'EUR': 4300, // 1 EUR = 4300 COP
+    'MXN': 235,  // 1 MXN = 235 COP
+    'COP': 1     // 1 COP = 1 COP
+};
+
+function convertToCOP(amount, fromCurrency) {
+    return amount * exchangeRates[fromCurrency];
+}
+
+function formatCurrency(amount, currency = 'COP') {
+    return new Intl.NumberFormat('es-CO', {
+        style: 'currency',
+        currency: currency,
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
+    }).format(amount);
+}
+
 function renderResources() {
     const tbody = document.getElementById('resourcesTable');
     tbody.innerHTML = '';
     
-    let totalUnitCost = 0;
-    let totalDirectCost = 0;
-    let totalAnnualCost = 0;
+    let totalUnitCostCOP = 0;
+    let totalDirectCostCOP = 0;
+    let totalAnnualCostCOP = 0;
     
     projectData.resources.forEach(resource => {
-        const annualizedCost = calculateAnnualizedCost(resource);
-        totalUnitCost += resource.cost;
-        totalDirectCost += (resource.cost * resource.quantity);
-        totalAnnualCost += annualizedCost;
+        const costInCOP = convertToCOP(resource.cost, resource.currency);
+        const totalInCOP = costInCOP * resource.quantity;
+        const annualizedCostInCOP = calculateAnnualizedCost({...resource, cost: costInCOP});
         
-        const total = resource.cost * resource.quantity;
-        const formatter = new Intl.NumberFormat('es-CO', {
-            style: 'currency',
-            currency: resource.currency,
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2
-        });
+        totalUnitCostCOP += costInCOP;
+        totalDirectCostCOP += totalInCOP;
+        totalAnnualCostCOP += annualizedCostInCOP;
         
         const row = `
             <tr>
@@ -654,9 +670,9 @@ function renderResources() {
                 <td>${resource.periodicity}</td>
                 <td>${resource.currency}</td>
                 <td>${resource.quantity}</td>
-                <td>${formatter.format(resource.cost)}</td>
-                <td>${formatter.format(total)}</td>
-                <td>${formatter.format(annualizedCost)}</td>
+                <td>${formatCurrency(costInCOP)} <small class="text-muted">(${formatCurrency(resource.cost, resource.currency)})</small></td>
+                <td>${formatCurrency(totalInCOP)}</td>
+                <td>${formatCurrency(annualizedCostInCOP)}</td>
             </tr>
         `;
         tbody.insertAdjacentHTML('beforeend', row);
@@ -670,9 +686,9 @@ function renderResources() {
         maximumFractionDigits: 2
     });
     
-    document.getElementById('totalUnitCost').textContent = defaultFormatter.format(totalUnitCost);
-    document.getElementById('totalCost').textContent = defaultFormatter.format(totalDirectCost);
-    document.getElementById('totalAnnualCost').textContent = defaultFormatter.format(totalAnnualCost);
+    document.getElementById('totalUnitCost').textContent = formatCurrency(totalUnitCostCOP);
+    document.getElementById('totalCost').textContent = formatCurrency(totalDirectCostCOP);
+    document.getElementById('totalAnnualCost').textContent = formatCurrency(totalAnnualCostCOP);
 }
 
 function updateSummary() {
