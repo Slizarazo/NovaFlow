@@ -374,38 +374,25 @@
                         
                         <form id="assignmentForm">
                             <div class="mb-4">
-                                <label for="proyectoSelect" class="form-label" style="color: #2d3748; font-weight: 500; margin-bottom: 8px; display: block; font-size: 14px;">Proyecto</label>
-                                <select class="form-select" id="proyectoSelect" required style="border: 1px solid #d1d5db; border-radius: 8px; padding: 12px 14px; font-size: 14px; width: 100%; background-color: #f9fafb; appearance: none; background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"%23666\" stroke-width=\"2\"><polyline points=\"6,9 12,15 18,9\"></polyline></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px;">
-                                    <option value="">Seleccionar proyecto...</option>
-                                    {% for proyecto_id, proyecto in proyectos.items() %}
-                                    <option value="{{ proyecto_id }}">{{ proyecto.nombre }}</option>
-                                    {% endfor %}
+                                <label for="aliadoSelect" class="form-label" style="color: #2d3748; font-weight: 500; margin-bottom: 8px; display: block; font-size: 14px;">Aliado</label>
+                                <select class="form-select" id="aliadoSelect" required style="border: 1px solid #d1d5db; border-radius: 8px; padding: 12px 14px; font-size: 14px; width: 100%; background-color: #f9fafb; appearance: none; background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"%23666\" stroke-width=\"2\"><polyline points=\"6,9 12,15 18,9\"></polyline></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px;">
+                                    <option value="">Seleccionar aliado...</option>
+                                    <option value="1">TechCorp Solutions</option>
+                                    <option value="2">Innovation Labs</option>
+                                    <option value="3">DataFlow Systems</option>
+                                    <option value="4">CloudTech Partners</option>
+                                    <option value="5">Digital Innovations</option>
                                 </select>
                             </div>
                             
                             <div class="mb-4">
-                                <label for="freelanceSelect" class="form-label" style="color: #2d3748; font-weight: 500; margin-bottom: 8px; display: block; font-size: 14px;">Consultor</label>
+                                <label for="freelanceSelect" class="form-label" style="color: #2d3748; font-weight: 500; margin-bottom: 8px; display: block; font-size: 14px;">Freelance</label>
                                 <select class="form-select" id="freelanceSelect" required style="border: 1px solid #d1d5db; border-radius: 8px; padding: 12px 14px; font-size: 14px; width: 100%; background-color: #f9fafb; appearance: none; background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"%23666\" stroke-width=\"2\"><polyline points=\"6,9 12,15 18,9\"></polyline></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px;">
-                                    <option value="">Seleccionar consultor...</option>
+                                    <option value="">Seleccionar freelance...</option>
                                     {% for consultor in consultores %}
                                     <option value="{{ consultor.id }}">{{ consultor.nombre }} - {{ consultor.especialidad }} ({{ consultor.disponibilidad }}% disponible)</option>
                                     {% endfor %}
                                 </select>
-                            </div>
-                            
-                            <div class="mb-4">
-                                <label for="fechaInicio" class="form-label" style="color: #2d3748; font-weight: 500; margin-bottom: 8px; display: block; font-size: 14px;">Fecha de Inicio</label>
-                                <input type="date" class="form-control" id="fechaInicio" required style="border: 1px solid #d1d5db; border-radius: 8px; padding: 12px 14px; font-size: 14px; width: 100%; background-color: #f9fafb;">
-                            </div>
-                            
-                            <div class="mb-4">
-                                <label for="fechaFin" class="form-label" style="color: #2d3748; font-weight: 500; margin-bottom: 8px; display: block; font-size: 14px;">Fecha de Finalización</label>
-                                <input type="date" class="form-control" id="fechaFin" required style="border: 1px solid #d1d5db; border-radius: 8px; padding: 12px 14px; font-size: 14px; width: 100%; background-color: #f9fafb;">
-                            </div>
-                            
-                            <div class="mb-4">
-                                <label for="horasSemanales" class="form-label" style="color: #2d3748; font-weight: 500; margin-bottom: 8px; display: block; font-size: 14px;">Horas Semanales</label>
-                                <input type="number" class="form-control" id="horasSemanales" placeholder="40" min="1" max="50" required style="border: 1px solid #d1d5db; border-radius: 8px; padding: 12px 14px; font-size: 14px; width: 100%; background-color: #f9fafb;">
                             </div>
                         </form>
                     </div>
@@ -620,23 +607,17 @@
             return;
         }
         
-        const proyectoSelect = document.getElementById('proyectoSelect');
+        const aliadoSelect = document.getElementById('aliadoSelect');
         const freelanceSelect = document.getElementById('freelanceSelect');
-        const fechaInicio = document.getElementById('fechaInicio');
-        const fechaFin = document.getElementById('fechaFin');
-        const horasSemanales = document.getElementById('horasSemanales');
         
-        if (!proyectoSelect || !freelanceSelect || !fechaInicio || !fechaFin || !horasSemanales) {
+        if (!aliadoSelect || !freelanceSelect) {
             alert('Error: No se pudieron encontrar todos los campos del formulario');
             return;
         }
         
         const formData = {
-            proyecto: proyectoSelect.value,
-            consultor: freelanceSelect.value,
-            fecha_inicio: fechaInicio.value,
-            fecha_fin: fechaFin.value,
-            horas_semanales: parseInt(horasSemanales.value)
+            aliado: aliadoSelect.value,
+            freelance: freelanceSelect.value
         };
         
         console.log('Enviando datos de asignación:', formData);

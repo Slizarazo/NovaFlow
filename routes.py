@@ -720,11 +720,8 @@ def create_asignacion():
             return jsonify({'status': 'error', 'message': 'No se recibieron datos'}), 400
 
         print("\n=== DATOS DE ASIGNACIÓN RECIBIDOS ===")
-        print(f"Proyecto: {data.get('proyecto')}")
-        print(f"Consultor: {data.get('consultor')}")
-        print(f"Fecha Inicio: {data.get('fecha_inicio')}")
-        print(f"Fecha Fin: {data.get('fecha_fin')}")
-        print(f"Horas Semanales: {data.get('horas_semanales')}")
+        print(f"Aliado ID: {data.get('aliado')}")
+        print(f"Freelance ID: {data.get('freelance')}")
         print("=" * 40)
 
         return jsonify({
