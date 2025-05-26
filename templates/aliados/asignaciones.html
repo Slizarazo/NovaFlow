@@ -323,14 +323,14 @@
     
     <!-- Modal Nueva Asignación -->
     <div class="modal fade" id="addAssignmentModal" tabindex="-1" aria-labelledby="addAssignmentModalLabel" aria-hidden="true" style="display: none;">
-        <div class="modal-dialog" style="max-width: 500px; margin: 2rem auto;">
-            <div class="modal-content" style="border-radius: 12px; border: none;">
-                <div class="modal-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 12px 12px 0 0; padding: 20px 30px;">
-                    <h5 class="modal-title" id="addAssignmentModalLabel" style="font-weight: 600; margin: 0;">Nueva Asignación</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background: rgba(255,255,255,0.2); border: none; color: white; font-size: 18px; opacity: 1; padding: 0; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-weight: bold;">×</button>
+        <div class="modal-dialog" style="max-width: 360px; margin: 1rem auto; max-height: calc(100vh - 2rem);">
+            <div class="modal-content" style="border-radius: 12px; border: none; max-height: 100%; display: flex; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+                <div class="modal-header" style="background: linear-gradient(135deg, #8b7bc8 0%, #7b68c7 100%); color: white; border-radius: 12px 12px 0 0; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; position: relative;">
+                    <h5 class="modal-title" id="addAssignmentModalLabel" style="font-weight: 600; margin: 0; font-size: 16px; color: white;">Nueva Asignación</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background: rgba(255,255,255,0.2); border: none; color: white; font-size: 18px; opacity: 1; padding: 0; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-weight: bold; line-height: 1;">×</button>
                 </div>
                 
-                <div class="modal-body" style="padding: 30px;">
+                <div class="modal-body" style="padding: 24px 20px; background: white; flex: 1; overflow-y: auto; min-height: 0;">
                     <div id="assignmentTypeSelection">
                         <h6 style="color: #4a5568; font-weight: 600; margin-bottom: 20px;">Tipo de Asignación</h6>
                         <div class="d-grid gap-3">
@@ -374,8 +374,8 @@
                         
                         <form id="assignmentForm">
                             <div class="mb-4">
-                                <label for="aliadoSelect" class="form-label" style="color: #2d3748; font-weight: 500; margin-bottom: 8px;">Aliado</label>
-                                <select class="form-select" id="aliadoSelect" required style="border: 1px solid #d1d5db; border-radius: 8px; padding: 12px 14px; font-size: 14px;">
+                                <label for="aliadoSelect" class="form-label" style="color: #2d3748; font-weight: 500; margin-bottom: 8px; display: block; font-size: 14px;">Aliado</label>
+                                <select class="form-select" id="aliadoSelect" required style="border: 1px solid #d1d5db; border-radius: 8px; padding: 12px 14px; font-size: 14px; width: 100%; background-color: #f9fafb; appearance: none; background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"%23666\" stroke-width=\"2\"><polyline points=\"6,9 12,15 18,9\"></polyline></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px;">
                                     <option value="">Seleccionar aliado...</option>
                                     <option value="1">TechCorp Solutions</option>
                                     <option value="2">InnovateLab</option>
@@ -386,8 +386,8 @@
                             </div>
                             
                             <div class="mb-4">
-                                <label for="freelanceSelect" class="form-label" style="color: #2d3748; font-weight: 500; margin-bottom: 8px;">Freelance</label>
-                                <select class="form-select" id="freelanceSelect" required style="border: 1px solid #d1d5db; border-radius: 8px; padding: 12px 14px; font-size: 14px;">
+                                <label for="freelanceSelect" class="form-label" style="color: #2d3748; font-weight: 500; margin-bottom: 8px; display: block; font-size: 14px;">Freelance</label>
+                                <select class="form-select" id="freelanceSelect" required style="border: 1px solid #d1d5db; border-radius: 8px; padding: 12px 14px; font-size: 14px; width: 100%; background-color: #f9fafb; appearance: none; background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"%23666\" stroke-width=\"2\"><polyline points=\"6,9 12,15 18,9\"></polyline></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px;">
                                     <option value="">Seleccionar freelance...</option>
                                     {% for consultor in consultores %}
                                     <option value="{{ consultor.id }}">{{ consultor.nombre }} - {{ consultor.especialidad }}</option>
@@ -398,9 +398,9 @@
                     </div>
                 </div>
                 
-                <div class="modal-footer" id="modalFooter" style="padding: 20px 30px; border-top: 1px solid #e5e7eb; background: white; border-radius: 0 0 12px 12px;">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" id="submitAssignmentBtn" onclick="submitAssignment()" style="display: none;">Crear Asignación</button>
+                <div class="modal-footer" id="modalFooter" style="padding: 16px 20px; border-top: 1px solid #e5e7eb; background: white; border-radius: 0 0 12px 12px; display: flex; gap: 12px; justify-content: flex-end; flex-shrink: 0;">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="background: #f3f4f6; color: #6b7280; border: 1px solid #d1d5db; padding: 10px 20px; border-radius: 8px; font-weight: 500; font-size: 14px; cursor: pointer; transition: all 0.2s;">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="submitAssignmentBtn" onclick="submitAssignment()" style="display: none; background: linear-gradient(135deg, #8b7bc8 0%, #7b68c7 100%); border: none; padding: 10px 20px; border-radius: 8px; color: white; font-weight: 500; font-size: 14px; cursor: pointer; transition: all 0.2s;">Crear Asignación</button>
                 </div>
             </div>
         </div>
