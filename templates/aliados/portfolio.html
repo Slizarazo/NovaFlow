@@ -388,6 +388,13 @@
 {% block scripts %}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        console.log('DOM cargado, inicializando eventos...');
+        
+        // Initialize Feather icons first
+        if (typeof feather !== 'undefined') {
+            feather.replace();
+        }
+        
         // Toggle between card and table view
         const viewCardsBtn = document.getElementById('viewCards');
         const viewTableBtn = document.getElementById('viewTable');
@@ -410,47 +417,62 @@
             });
         }
         
-        // Manejar click del botón de añadir producto
-        const addButton = document.querySelector('[data-bs-target="#addProductModal"]');
-        const modal = document.getElementById('addProductModal');
+        // Configurar todos los botones de modal
+        setupModalEvents();
+    });
+    
+    function setupModalEvents() {
+        console.log('Configurando eventos de modal...');
         
-        if (addButton && modal) {
-            addButton.addEventListener('click', function(e) {
-                e.preventDefault();
-                console.log('Botón de añadir producto clickeado');
-                showProductModal();
-            });
+        // Buscar todos los botones que abren modales
+        const modalButtons = document.querySelectorAll('[data-bs-toggle="modal"]');
+        console.log('Botones de modal encontrados:', modalButtons.length);
+        
+        modalButtons.forEach(function(button) {
+            const targetModalId = button.getAttribute('data-bs-target');
+            console.log('Configurando botón para modal:', targetModalId);
             
-            // Manejar cierre del modal
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Click en botón para abrir modal:', targetModalId);
+                
+                if (targetModalId === '#addProductModal') {
+                    showProductModal();
+                } else if (targetModalId === '#importProductModal') {
+                    showModal('importProductModal');
+                } else if (targetModalId === '#exportProductModal') {
+                    showModal('exportProductModal');
+                }
+            });
+        });
+        
+        // Configurar eventos de cierre para todos los modales
+        const allModals = document.querySelectorAll('.modal');
+        allModals.forEach(function(modal) {
+            // Botones de cerrar
             const closeButtons = modal.querySelectorAll('[data-bs-dismiss="modal"]');
-            closeButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    hideProductModal();
+            closeButtons.forEach(function(closeBtn) {
+                closeBtn.addEventListener('click', function() {
+                    hideModal(modal.id);
                 });
             });
             
-            // Cerrar modal al hacer click fuera de él
+            // Cerrar al hacer click fuera del modal
             modal.addEventListener('click', function(e) {
                 if (e.target === modal) {
-                    hideProductModal();
+                    hideModal(modal.id);
                 }
             });
-        } else {
-            console.error('No se encontró el botón o modal de producto');
-        }
-        
-        // Initialize Feather icons
-        if (typeof feather !== 'undefined') {
-            feather.replace();
-        }
-    });
+        });
+    }
     
-    function showProductModal() {
-        console.log('Mostrando modal de producto');
-        const modal = document.getElementById('addProductModal');
+    function showModal(modalId) {
+        console.log('Mostrando modal:', modalId);
+        const modal = document.getElementById(modalId);
         
         if (!modal) {
-            console.error('Modal no encontrado');
+            console.error('Modal no encontrado:', modalId);
             return;
         }
         
@@ -465,15 +487,15 @@
             document.body.appendChild(backdrop);
         }
         
-        console.log('Modal mostrado correctamente');
+        console.log('Modal mostrado correctamente:', modalId);
     }
-
-    function hideProductModal() {
-        console.log('Ocultando modal de producto');
-        const modal = document.getElementById('addProductModal');
+    
+    function hideModal(modalId) {
+        console.log('Ocultando modal:', modalId);
+        const modal = document.getElementById(modalId);
         
         if (!modal) {
-            console.error('Modal no encontrado');
+            console.error('Modal no encontrado:', modalId);
             return;
         }
         
@@ -487,13 +509,21 @@
             backdrop.remove();
         }
         
-        // Limpiar formulario
-        const form = document.getElementById('addProductForm');
+        // Limpiar formulario si existe
+        const form = modal.querySelector('form');
         if (form) {
             form.reset();
         }
         
-        console.log('Modal ocultado correctamente');
+        console.log('Modal ocultado correctamente:', modalId);
+    }
+    
+    function showProductModal() {
+        showModal('addProductModal');
+    }
+
+    function hideProductModal() {
+        hideModal('addProductModal');
     }
 
     function submitProductForm() {
@@ -529,7 +559,7 @@
             if (data.status === 'success') {
                 alert('Proyecto creado exitosamente');
                 hideProductModal();
-                location.reload(); // Recargar para mostrar el nuevo proyecto
+                location.reload();
             } else {
                 alert('Error al crear el proyecto: ' + data.message);
             }
