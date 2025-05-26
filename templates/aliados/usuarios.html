@@ -66,7 +66,7 @@
                         </select>
                     </div>
                 </div>
-                
+
                 <div class="filter-actions">
                     <button type="reset" class="btn btn-secondary">Limpiar</button>
                     <button type="submit" class="btn btn-primary">Aplicar Filtros</button>
@@ -204,6 +204,12 @@
         </div>
     </div>
 </div>
+
+<!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <!-- Modal Añadir Usuario -->
 <div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
@@ -467,16 +473,20 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function showUserForm() {
-    const userType = document.getElementById('userType').value;
-    
+    const userType = document.getElementById('userType');
+    if (!userType) return;
+
+    const userTypeValue = userType.value;
+
     // Ocultar todos los formularios
-    document.querySelectorAll('.user-form').forEach(form => {
+    const userForms = document.querySelectorAll('.user-form');
+    userForms.forEach(form => {
         form.style.display = 'none';
     });
-    
+
     // Mostrar el formulario correspondiente
-    if (userType) {
-        const targetForm = document.getElementById(userType + 'Form');
+    if (userTypeValue) {
+        const targetForm = document.getElementById(userTypeValue + 'Form');
         if (targetForm) {
             targetForm.style.display = 'block';
         }
@@ -484,48 +494,58 @@ function showUserForm() {
 }
 
 function submitUserForm() {
-    const userType = document.getElementById('userType').value;
-    
+    const userTypeElement = document.getElementById('userType');
+    if (!userTypeElement) {
+        alert('Error: No se pudo encontrar el tipo de usuario');
+        return;
+    }
+
+    const userType = userTypeElement.value;
+
     if (!userType) {
         alert('Por favor seleccione un tipo de usuario');
         return;
     }
-    
+
     let userData = {
         tipo: userType
     };
-    
+
     // Recopilar datos según el tipo de usuario
     if (userType === 'gestor') {
-        userData.nombre_completo = document.getElementById('gestorNombre').value;
-        userData.correo = document.getElementById('gestorCorreo').value;
-        userData.nombre_organizacion = document.getElementById('gestorOrganizacion').value;
+        const nombre = document.getElementById('gestorNombre');
+        const correo = document.getElementById('gestorCorreo');
+        const organizacion = document.getElementById('gestorOrganizacion');
+
+        userData.nombre_completo = nombre ? nombre.value : '';
+        userData.correo = correo ? correo.value : '';
+        userData.nombre_organizacion = organizacion ? organizacion.value : '';
     } else if (userType === 'aliado') {
-        userData.nombre_completo = document.getElementById('aliadoNombre').value;
-        userData.correo = document.getElementById('aliadoCorreo').value;
-        userData.region = document.getElementById('aliadoRegion').value;
-        userData.industria = document.getElementById('aliadoIndustria').value;
-        userData.contacto_principal = document.getElementById('aliadoContacto').value;
-        userData.tamano = document.getElementById('aliadoTamano').value;
-        userData.empleados = document.getElementById('aliadoEmpleados').value;
-        userData.direccion = document.getElementById('aliadoDireccion').value;
-        userData.ciudad = document.getElementById('aliadoCiudad').value;
-        userData.estado_dir = document.getElementById('aliadoEstado').value;
-        userData.codigo_postal = document.getElementById('aliadoCodigoPostal').value;
-        userData.pais = document.getElementById('aliadoPais').value;
+        userData.nombre_completo = document.getElementById('aliadoNombre')?.value || '';
+        userData.correo = document.getElementById('aliadoCorreo')?.value || '';
+        userData.region = document.getElementById('aliadoRegion')?.value || '';
+        userData.industria = document.getElementById('aliadoIndustria')?.value || '';
+        userData.contacto_principal = document.getElementById('aliadoContacto')?.value || '';
+        userData.tamano = document.getElementById('aliadoTamano')?.value || '';
+        userData.empleados = document.getElementById('aliadoEmpleados')?.value || '';
+        userData.direccion = document.getElementById('aliadoDireccion')?.value || '';
+        userData.ciudad = document.getElementById('aliadoCiudad')?.value || '';
+        userData.estado_dir = document.getElementById('aliadoEstado')?.value || '';
+        userData.codigo_postal = document.getElementById('aliadoCodigoPostal')?.value || '';
+        userData.pais = document.getElementById('aliadoPais')?.value || '';
     } else if (userType === 'empleado') {
-        userData.aliado = document.getElementById('empleadoAliado').value;
-        userData.cargo = document.getElementById('empleadoCargo').value;
-        userData.rol_laboral = document.getElementById('empleadoRol').value;
+        userData.aliado = document.getElementById('empleadoAliado')?.value || '';
+        userData.cargo = document.getElementById('empleadoCargo')?.value || '';
+        userData.rol_laboral = document.getElementById('empleadoRol')?.value || '';
     } else if (userType === 'freelance') {
-        userData.especialidad = document.getElementById('freelanceEspecialidad').value;
-        userData.disponibilidad = document.getElementById('freelanceDisponibilidad').value;
-        userData.nivel = document.getElementById('freelanceNivel').value;
-        userData.fecha_incorporacion = document.getElementById('freelanceFecha').value;
-        userData.ubicacion = document.getElementById('freelanceUbicacion').value;
-        userData.tarifa_hora = document.getElementById('freelanceTarifa').value;
+        userData.especialidad = document.getElementById('freelanceEspecialidad')?.value || '';
+        userData.disponibilidad = document.getElementById('freelanceDisponibilidad')?.value || '';
+        userData.nivel = document.getElementById('freelanceNivel')?.value || '';
+        userData.fecha_incorporacion = document.getElementById('freelanceFecha')?.value || '';
+        userData.ubicacion = document.getElementById('freelanceUbicacion')?.value || '';
+        userData.tarifa_hora = document.getElementById('freelanceTarifa')?.value || '';
     }
-    
+
     // Enviar datos al servidor
     fetch('/api/usuarios', {
         method: 'POST',
@@ -539,12 +559,17 @@ function submitUserForm() {
         if (data.status === 'success') {
             alert('Usuario creado exitosamente');
             // Cerrar modal
-            const modal = bootstrap.Modal.getInstance(document.getElementById('addUserModal'));
-            modal.hide();
+            const modalElement = document.getElementById('addUserModal');
+            if (modalElement && window.bootstrap) {
+                const modal = window.bootstrap.Modal.getInstance(modalElement);
+                if (modal) {
+                    modal.hide();
+                }
+            }
             // Recargar página
             window.location.reload();
         } else {
-            alert('Error al crear usuario: ' + data.message);
+            alert('Error al crear usuario: ' + (data.message || 'Error desconocido'));
         }
     })
     .catch(error => {
