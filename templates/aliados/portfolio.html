@@ -313,6 +313,78 @@
 </div>
 {% endblock %}
 
+<!-- Modal Añadir Producto -->
+<div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" style="border-radius: 12px; border: none;">
+            <div class="modal-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 12px 12px 0 0; padding: 20px 30px; position: relative;">
+                <h5 class="modal-title" id="addProductModalLabel" style="font-weight: 600; margin: 0;">Añadir Proyecto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background: none; border: none; color: white; font-size: 24px; font-weight: 300; position: absolute; right: 20px; top: 50%; transform: translateY(-50%); opacity: 0.8;">&times;</button>
+            </div>
+            <div class="modal-body" style="padding: 30px; background: white;">
+                <div class="form-section" style="margin-bottom: 25px;">
+                    <h6 style="color: #4a5568; font-weight: 600; margin-bottom: 20px; font-size: 16px;">Información del Proyecto</h6>
+                    
+                    <form id="addProductForm">
+                        <div class="mb-4">
+                            <label for="productName" class="form-label" style="color: #4a5568; font-weight: 500; margin-bottom: 8px; display: block;">Nombre del Proyecto</label>
+                            <input type="text" class="form-control" id="productName" placeholder="Ej: Sistema de Gestión Empresarial" required style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 16px; font-size: 14px; transition: border-color 0.2s;">
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="productAliado" class="form-label" style="color: #4a5568; font-weight: 500; margin-bottom: 8px; display: block;">Aliado</label>
+                            <select class="form-select" id="productAliado" required style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 16px; font-size: 14px; background-color: white;">
+                                <option value="">Seleccionar aliado...</option>
+                                {% for aliado_id, aliado in aliados.items() %}
+                                <option value="{{ aliado_id }}">{{ aliado.nombre }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label for="productFechaInicio" class="form-label" style="color: #4a5568; font-weight: 500; margin-bottom: 8px; display: block;">Fecha de Inicio</label>
+                                <input type="date" class="form-control" id="productFechaInicio" required style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 16px; font-size: 14px;">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="productFechaFin" class="form-label" style="color: #4a5568; font-weight: 500; margin-bottom: 8px; display: block;">Fecha de Fin</label>
+                                <input type="date" class="form-control" id="productFechaFin" required style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 16px; font-size: 14px;">
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="productEtapa" class="form-label" style="color: #4a5568; font-weight: 500; margin-bottom: 8px; display: block;">Etapa</label>
+                            <select class="form-select" id="productEtapa" required style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 16px; font-size: 14px; background-color: white;">
+                                <option value="">Seleccionar etapa...</option>
+                                <option value="propuesta">Propuesta</option>
+                                <option value="planificacion">Planificación</option>
+                                <option value="ejecucion">Ejecución</option>
+                                <option value="cierre">Cierre</option>
+                                <option value="post-evaluacion">Post-evaluación</option>
+                            </select>
+                        </div>
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label for="productMonto" class="form-label" style="color: #4a5568; font-weight: 500; margin-bottom: 8px; display: block;">Monto</label>
+                                <input type="number" class="form-control" id="productMonto" placeholder="$ Monto del proyecto" required style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 16px; font-size: 14px;">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="productConsultores" class="form-label" style="color: #4a5568; font-weight: 500; margin-bottom: 8px; display: block;">Consultores Asignados</label>
+                                <input type="number" class="form-control" id="productConsultores" placeholder="Número de consultores" required style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 16px; font-size: 14px;">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer" style="padding: 20px 30px; border-top: 1px solid #e2e8f0; display: flex; gap: 12px; justify-content: flex-end;">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="background: #f7fafc; color: #4a5568; border: 1px solid #e2e8f0; padding: 10px 20px; border-radius: 8px; font-weight: 500;">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="submitProductForm()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; padding: 10px 20px; border-radius: 8px; color: white; font-weight: 500;">Guardar Proyecto</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% block scripts %}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -434,14 +506,17 @@
         
         const formData = {
             nombre: document.getElementById('productName').value,
-            categoria: document.getElementById('productCategory').value,
-            familia: document.getElementById('productFamily').value,
-            estado: document.getElementById('productStatus').value
+            aliado_id: parseInt(document.getElementById('productAliado').value),
+            fecha_inicio: document.getElementById('productFechaInicio').value,
+            fecha_fin: document.getElementById('productFechaFin').value,
+            etapa: document.getElementById('productEtapa').value,
+            monto: parseFloat(document.getElementById('productMonto').value),
+            consultores_asignados: parseInt(document.getElementById('productConsultores').value)
         };
         
-        console.log('Enviando datos del producto:', formData);
+        console.log('Enviando datos del proyecto:', formData);
         
-        fetch('/api/productos', {
+        fetch('/api/proyectos', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -452,11 +527,11 @@
         .then(data => {
             console.log('Respuesta del servidor:', data);
             if (data.status === 'success') {
-                alert('Producto creado exitosamente');
+                alert('Proyecto creado exitosamente');
                 hideProductModal();
-                // Aquí podrías recargar la página o actualizar la lista de productos
+                location.reload(); // Recargar para mostrar el nuevo proyecto
             } else {
-                alert('Error al crear el producto: ' + data.message);
+                alert('Error al crear el proyecto: ' + data.message);
             }
         })
         .catch(error => {
