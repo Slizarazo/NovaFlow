@@ -458,6 +458,14 @@
 </div>
 
 <script>
+// Esperar a que el DOM esté completamente cargado
+document.addEventListener('DOMContentLoaded', function() {
+    // Inicializar feather icons
+    if (typeof feather !== 'undefined') {
+        feather.replace();
+    }
+});
+
 function showUserForm() {
     const userType = document.getElementById('userType').value;
     
@@ -468,7 +476,10 @@ function showUserForm() {
     
     // Mostrar el formulario correspondiente
     if (userType) {
-        document.getElementById(userType + 'Form').style.display = 'block';
+        const targetForm = document.getElementById(userType + 'Form');
+        if (targetForm) {
+            targetForm.style.display = 'block';
+        }
     }
 }
 
