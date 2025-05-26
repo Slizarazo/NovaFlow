@@ -322,19 +322,21 @@
         const projectsCards = document.getElementById('projectsCards');
         const projectsTable = document.getElementById('projectsTable');
         
-        viewCardsBtn.addEventListener('click', function() {
-            projectsCards.classList.remove('d-none');
-            projectsTable.classList.add('d-none');
-            viewCardsBtn.classList.add('active');
-            viewTableBtn.classList.remove('active');
-        });
-        
-        viewTableBtn.addEventListener('click', function() {
-            projectsCards.classList.add('d-none');
-            projectsTable.classList.remove('d-none');
-            viewCardsBtn.classList.remove('active');
-            viewTableBtn.classList.add('active');
-        });
+        if (viewCardsBtn && viewTableBtn && projectsCards && projectsTable) {
+            viewCardsBtn.addEventListener('click', function() {
+                projectsCards.classList.remove('d-none');
+                projectsTable.classList.add('d-none');
+                viewCardsBtn.classList.add('active');
+                viewTableBtn.classList.remove('active');
+            });
+            
+            viewTableBtn.addEventListener('click', function() {
+                projectsCards.classList.add('d-none');
+                projectsTable.classList.remove('d-none');
+                viewCardsBtn.classList.remove('active');
+                viewTableBtn.classList.add('active');
+            });
+        }
         
         // Manejar click del botón de añadir producto
         const addButton = document.querySelector('[data-bs-target="#addProductModal"]');
@@ -343,31 +345,43 @@
         if (addButton && modal) {
             addButton.addEventListener('click', function(e) {
                 e.preventDefault();
+                console.log('Botón de añadir producto clickeado');
                 showProductModal();
             });
+            
+            // Manejar cierre del modal
+            const closeButtons = modal.querySelectorAll('[data-bs-dismiss="modal"]');
+            closeButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    hideProductModal();
+                });
+            });
+            
+            // Cerrar modal al hacer click fuera de él
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    hideProductModal();
+                }
+            });
+        } else {
+            console.error('No se encontró el botón o modal de producto');
         }
         
-        // Manejar cierre del modal
-        const closeButtons = modal.querySelectorAll('[data-bs-dismiss="modal"]');
-        closeButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                hideProductModal();
-            });
-        });
-        
-        // Cerrar modal al hacer click fuera de él
-        modal.addEventListener('click', function(e) {
-            if (e.target === modal) {
-                hideProductModal();
-            }
-        });
-        
         // Initialize Feather icons
-        feather.replace();
+        if (typeof feather !== 'undefined') {
+            feather.replace();
+        }
     });
     
     function showProductModal() {
+        console.log('Mostrando modal de producto');
         const modal = document.getElementById('addProductModal');
+        
+        if (!modal) {
+            console.error('Modal no encontrado');
+            return;
+        }
+        
         modal.style.display = 'block';
         modal.classList.add('show');
         document.body.style.overflow = 'hidden';
@@ -378,10 +392,19 @@
             backdrop.className = 'modal-backdrop fade show';
             document.body.appendChild(backdrop);
         }
+        
+        console.log('Modal mostrado correctamente');
     }
 
     function hideProductModal() {
+        console.log('Ocultando modal de producto');
         const modal = document.getElementById('addProductModal');
+        
+        if (!modal) {
+            console.error('Modal no encontrado');
+            return;
+        }
+        
         modal.style.display = 'none';
         modal.classList.remove('show');
         document.body.style.overflow = '';
@@ -393,7 +416,12 @@
         }
         
         // Limpiar formulario
-        document.getElementById('addProductForm').reset();
+        const form = document.getElementById('addProductForm');
+        if (form) {
+            form.reset();
+        }
+        
+        console.log('Modal ocultado correctamente');
     }
 
     function submitProductForm() {
