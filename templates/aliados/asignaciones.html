@@ -356,21 +356,30 @@
 {% block scripts %}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        console.log('DOM cargado, inicializando eventos...');
+        
         // Initialize Feather icons
         if (typeof feather !== 'undefined') {
             feather.replace();
         }
         
-        // Configurar eventos del modal
-        const addAssignmentBtn = document.querySelector('[data-bs-target="#addAssignmentModal"]');
-        const modal = document.getElementById('addAssignmentModal');
-        
-        if (addAssignmentBtn && modal) {
-            addAssignmentBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                showModal('addAssignmentModal');
-            });
-        }
+        // Configurar eventos del modal - usar setTimeout para asegurar que los elementos estén cargados
+        setTimeout(function() {
+            const addAssignmentBtn = document.querySelector('[data-bs-target="#addAssignmentModal"]');
+            console.log('Botón encontrado:', addAssignmentBtn);
+            
+            if (addAssignmentBtn) {
+                addAssignmentBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('Click en botón nueva asignación');
+                    showModal('addAssignmentModal');
+                });
+                console.log('Event listener añadido al botón');
+            } else {
+                console.error('Botón de nueva asignación no encontrado');
+            }
+        }, 100);
         
         // Configurar botones de cerrar
         document.addEventListener('click', function(e) {
@@ -380,6 +389,13 @@
                 if (modal) {
                     hideModal(modal.id);
                 }
+            }
+        });
+        
+        // Cerrar modales al hacer click en el backdrop
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('modal')) {
+                hideModal(e.target.id);
             }
         });
     });
