@@ -197,4 +197,198 @@
         </div>
     </div>
 </div>
+
+<!-- Modal Añadir Aliado -->
+<div class="modal fade" id="addAliadoModal" tabindex="-1" aria-labelledby="addAliadoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addAliadoModalLabel">Añadir Aliado</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addAliadoForm">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="aliadoNombre" class="form-label">Nombre</label>
+                                <input type="text" class="form-control" id="aliadoNombre" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="aliadoCorreo" class="form-label">Correo</label>
+                                <input type="email" class="form-control" id="aliadoCorreo" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="aliadoRegion" class="form-label">Región</label>
+                                <select class="form-select" id="aliadoRegion" required>
+                                    <option value="">Seleccionar...</option>
+                                    <option value="Norte">Norte</option>
+                                    <option value="Sur">Sur</option>
+                                    <option value="Este">Este</option>
+                                    <option value="Oeste">Oeste</option>
+                                    <option value="Centro">Centro</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="aliadoIndustria" class="form-label">Industria</label>
+                                <select class="form-select" id="aliadoIndustria" required>
+                                    <option value="">Seleccionar...</option>
+                                    <option value="Tecnología">Tecnología</option>
+                                    <option value="Finanzas">Finanzas</option>
+                                    <option value="Manufactura">Manufactura</option>
+                                    <option value="Servicios">Servicios</option>
+                                    <option value="Salud">Salud</option>
+                                    <option value="Educación">Educación</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="aliadoContactoPrincipal" class="form-label">Contacto Principal</label>
+                                <input type="text" class="form-control" id="aliadoContactoPrincipal" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="aliadoTamano" class="form-label">Tamaño</label>
+                                <select class="form-select" id="aliadoTamano" required>
+                                    <option value="">Seleccionar...</option>
+                                    <option value="Pequeña (1-50)">Pequeña (1-50)</option>
+                                    <option value="Mediana (51-250)">Mediana (51-250)</option>
+                                    <option value="Grande (251-1000)">Grande (251-1000)</option>
+                                    <option value="Empresa (1000+)">Empresa (1000+)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="aliadoEmpleados" class="form-label">Número de Empleados</label>
+                                <input type="number" class="form-control" id="aliadoEmpleados" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="aliadoDireccion" class="form-label">Dirección</label>
+                                <input type="text" class="form-control" id="aliadoDireccion" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="aliadoCiudad" class="form-label">Ciudad</label>
+                                <input type="text" class="form-control" id="aliadoCiudad" required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="aliadoEstado" class="form-label">Estado</label>
+                                <input type="text" class="form-control" id="aliadoEstado" required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="aliadoCodigoPostal" class="form-label">Código Postal</label>
+                                <input type="text" class="form-control" id="aliadoCodigoPostal" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="mb-3">
+                                <label for="aliadoPais" class="form-label">País</label>
+                                <select class="form-select" id="aliadoPais" required>
+                                    <option value="">Seleccionar...</option>
+                                    <option value="México">México</option>
+                                    <option value="Estados Unidos">Estados Unidos</option>
+                                    <option value="Colombia">Colombia</option>
+                                    <option value="Perú">Perú</option>
+                                    <option value="Argentina">Argentina</option>
+                                    <option value="Chile">Chile</option>
+                                    <option value="Brasil">Brasil</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="submitAliadoForm()">Guardar Aliado</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function submitAliadoForm() {
+    const formData = {
+        tipo: 'aliado',
+        nombre: document.getElementById('aliadoNombre').value,
+        correo: document.getElementById('aliadoCorreo').value,
+        region: document.getElementById('aliadoRegion').value,
+        industria: document.getElementById('aliadoIndustria').value,
+        contacto_principal: document.getElementById('aliadoContactoPrincipal').value,
+        tamano: document.getElementById('aliadoTamano').value,
+        empleados: document.getElementById('aliadoEmpleados').value,
+        direccion: document.getElementById('aliadoDireccion').value,
+        ciudad: document.getElementById('aliadoCiudad').value,
+        estado_dir: document.getElementById('aliadoEstado').value,
+        codigo_postal: document.getElementById('aliadoCodigoPostal').value,
+        pais: document.getElementById('aliadoPais').value
+    };
+
+    // Validación básica
+    const requiredFields = ['nombre', 'correo', 'region', 'industria', 'contacto_principal', 'tamano', 'empleados', 'direccion', 'ciudad', 'estado_dir', 'codigo_postal', 'pais'];
+    const missingFields = requiredFields.filter(field => !formData[field]);
+    
+    if (missingFields.length > 0) {
+        alert('Por favor complete todos los campos requeridos: ' + missingFields.join(', '));
+        return;
+    }
+
+    // Enviar datos al servidor
+    fetch('/api/usuarios', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            alert('Aliado creado exitosamente');
+            // Cerrar modal
+            const modalElement = document.getElementById('addAliadoModal');
+            if (modalElement && window.bootstrap) {
+                const modal = window.bootstrap.Modal.getInstance(modalElement);
+                if (modal) {
+                    modal.hide();
+                }
+            }
+            // Recargar página para mostrar el nuevo aliado
+            window.location.reload();
+        } else {
+            alert('Error al crear aliado: ' + (data.message || 'Error desconocido'));
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error al conectar con el servidor');
+    });
+}
+</script>
 {% endblock %}
