@@ -1,83 +1,266 @@
 
 {% extends "layout.html" %}
+
+{% block head %}
+<style>
+.dashboard-container {
+    padding: 2rem;
+    background-color: #f8f9fa;
+    min-height: 100vh;
+}
+
+.projects-header {
+    display: flex;
+    justify-content: between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.projects-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #2d3748;
+    margin: 0;
+}
+
+.projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+.project-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e2e8f0;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.project-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.project-card-header {
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.project-card-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    line-height: 1;
+}
+
+.project-card-label {
+    font-size: 0.875rem;
+    color: #718096;
+    margin: 0;
+}
+
+/* Colores específicos para cada etapa */
+.card-oportunidad .project-card-header { color: #3182ce; }
+.card-oportunidad .project-card-number { color: #3182ce; }
+
+.card-propuesta .project-card-header { color: #4a5568; }
+.card-propuesta .project-card-number { color: #4a5568; }
+
+.card-aprobacion .project-card-header { color: #d69e2e; }
+.card-aprobacion .project-card-number { color: #d69e2e; }
+
+.card-desarrollo .project-card-header { color: #38a169; }
+.card-desarrollo .project-card-number { color: #38a169; }
+
+.card-testing .project-card-header { color: #3182ce; }
+.card-testing .project-card-number { color: #3182ce; }
+
+.card-cierre .project-card-header { color: #4a5568; }
+.card-cierre .project-card-number { color: #4a5568; }
+
+.card-evaluacion .project-card-header { color: #d69e2e; }
+.card-evaluacion .project-card-number { color: #d69e2e; }
+
+.card-finalizados .project-card-header { color: #38a169; }
+.card-finalizados .project-card-number { color: #38a169; }
+
+.timeline-section {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e2e8f0;
+}
+
+.timeline-tabs {
+    display: flex;
+    border-bottom: 1px solid #e2e8f0;
+    margin-bottom: 1.5rem;
+    gap: 2rem;
+}
+
+.timeline-tab {
+    padding: 0.75rem 0;
+    font-weight: 500;
+    color: #718096;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.timeline-tab.active {
+    color: #2d3748;
+    border-bottom-color: #3182ce;
+}
+
+.timeline-content {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+}
+
+.timeline-project {
+    background: #f7fafc;
+    border-radius: 8px;
+    padding: 1rem;
+    border-left: 4px solid #3182ce;
+    flex: 1;
+}
+
+.timeline-project-title {
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 0.25rem;
+}
+
+.timeline-project-id {
+    font-size: 0.875rem;
+    color: #718096;
+}
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="dashboard-container p-4">
-    <div class="dashboard-grid">
-        <!-- Ingresos vs Costos -->
-        <div class="dashboard-card">
-            <div class="card-header">
-                <h3>Ingresos vs Costos</h3>
-                <p class="text-muted">Análisis comparativo mensual</p>
-            </div>
-            <div class="card-body">
-                {{ ingresos_vs_costos | safe }}
-            </div>
+<div class="dashboard-container">
+    <div class="projects-header">
+        <h1 class="projects-title">Gestión de Proyectos</h1>
+    </div>
+    
+    <!-- Grid de tarjetas de proyectos -->
+    <div class="projects-grid">
+        <!-- Oportunidad -->
+        <div class="project-card card-oportunidad">
+            <div class="project-card-header">Oportunidad</div>
+            <div class="project-card-number">0</div>
+            <p class="project-card-label">Proyectos</p>
         </div>
-
-        <!-- Tasa de Crecimiento -->
-        <div class="dashboard-card">
-            <div class="card-header">
-                <h3>Tasa de Crecimiento</h3>
-                <p class="text-muted">Crecimiento interanual</p>
-            </div>
-            <div class="card-body">
-                {{ crecimiento_yoy | safe }}
-            </div>
+        
+        <!-- Propuesta -->
+        <div class="project-card card-propuesta">
+            <div class="project-card-header">Propuesta</div>
+            <div class="project-card-number">1</div>
+            <p class="project-card-label">Proyectos</p>
         </div>
-
-        <!-- Clientes Nuevos vs Recurrentes -->
-        <div class="dashboard-card">
-            <div class="card-header">
-                <h3>Clientes Nuevos vs Recurrentes</h3>
-                <p class="text-muted">Distribución mensual de clientes</p>
-            </div>
-            <div class="card-body">
-                {{ clientes_nuevos_recurrentes | safe }}
-            </div>
+        
+        <!-- Aprobación -->
+        <div class="project-card card-aprobacion">
+            <div class="project-card-header">Aprobación</div>
+            <div class="project-card-number">0</div>
+            <p class="project-card-label">Proyectos</p>
         </div>
-
-        <!-- Análisis de Rentabilidad -->
-        <div class="dashboard-card">
-            <div class="card-header">
-                <h3>Análisis de Rentabilidad</h3>
-                <p class="text-muted">Por línea de servicio</p>
+        
+        <!-- En Desarrollo -->
+        <div class="project-card card-desarrollo">
+            <div class="project-card-header">En Desarrollo</div>
+            <div class="project-card-number">0</div>
+            <p class="project-card-label">Proyectos</p>
+        </div>
+        
+        <!-- Testing -->
+        <div class="project-card card-testing">
+            <div class="project-card-header">Testing</div>
+            <div class="project-card-number">0</div>
+            <p class="project-card-label">Proyectos</p>
+        </div>
+        
+        <!-- Cierre -->
+        <div class="project-card card-cierre">
+            <div class="project-card-header">Cierre</div>
+            <div class="project-card-number">1</div>
+            <p class="project-card-label">Proyectos</p>
+        </div>
+        
+        <!-- Evaluación -->
+        <div class="project-card card-evaluacion">
+            <div class="project-card-header">Evaluación</div>
+            <div class="project-card-number">0</div>
+            <p class="project-card-label">Proyectos</p>
+        </div>
+        
+        <!-- Finalizados -->
+        <div class="project-card card-finalizados">
+            <div class="project-card-header">Finalizados</div>
+            <div class="project-card-number">0</div>
+            <p class="project-card-label">Proyectos</p>
+        </div>
+    </div>
+    
+    <!-- Sección de timeline de proyectos -->
+    <div class="timeline-section">
+        <div class="timeline-tabs">
+            <div class="timeline-tab active">Oportunidad</div>
+            <div class="timeline-tab">Propuesta</div>
+            <div class="timeline-tab">Aprobación</div>
+            <div class="timeline-tab">En Desarrollo</div>
+            <div class="timeline-tab">Testing</div>
+            <div class="timeline-tab">Cierre</div>
+            <div class="timeline-tab">Evaluación</div>
+        </div>
+        
+        <div class="timeline-content">
+            <div class="timeline-project">
+                <div class="timeline-project-title">Implementación ERP</div>
+                <div class="timeline-project-id">ID: 3</div>
             </div>
-            <div class="card-body">
-                {{ rentabilidad | safe }}
+            
+            <div class="timeline-project">
+                <div class="timeline-project-title">Estrategia de Mercado</div>
+                <div class="timeline-project-id">ID: 4</div>
             </div>
         </div>
     </div>
 </div>
 {% endblock %}
 
-{% block head %}
-<style>
-.dashboard-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
-    gap: 1.5rem;
-    margin-top: 1rem;
-}
-
-.dashboard-card {
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    padding: 1.5rem;
-}
-
-.card-header {
-    margin-bottom: 1rem;
-}
-
-.card-header h3 {
-    margin: 0;
-    color: var(--primary);
-    font-size: 1.2rem;
-}
-
-.card-body {
-    min-height: 300px;
-}
-</style>
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Inicializar los iconos de Feather si están disponibles
+    if (typeof feather !== 'undefined') {
+        feather.replace();
+    }
+    
+    // Funcionalidad para las pestañas del timeline
+    const tabs = document.querySelectorAll('.timeline-tab');
+    
+    tabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+            // Remover clase active de todas las pestañas
+            tabs.forEach(t => t.classList.remove('active'));
+            
+            // Agregar clase active a la pestaña clickeada
+            this.classList.add('active');
+            
+            // Aquí puedes agregar lógica para cambiar el contenido según la pestaña seleccionada
+            console.log('Pestaña seleccionada:', this.textContent);
+        });
+    });
+});
+</script>
 {% endblock %}
