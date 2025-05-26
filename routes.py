@@ -684,6 +684,32 @@ def create_product():
         print(f"Error al procesar producto: {str(e)}")
         return jsonify({'status': 'error', 'message': str(e)}), 500
 
+@app.route('/api/aliados', methods=['POST'])
+@login_required
+def create_aliado():
+    try:
+        data = request.get_json()
+        
+        if not data:
+            return jsonify({'status': 'error', 'message': 'No se recibieron datos'}), 400
+
+        print("\n=== DATOS DEL ALIADO RECIBIDOS ===")
+        print(f"Nombre de la Empresa: {data.get('companyName')}")
+        print(f"Correo Electrónico: {data.get('email')}")
+        print(f"Contacto Principal: {data.get('contact')}")
+        print(f"Industria: {data.get('industry')}")
+        print("=" * 40)
+
+        return jsonify({
+            'status': 'success',
+            'message': 'Aliado creado exitosamente',
+            'data': data
+        })
+
+    except Exception as e:
+        app.logger.error(f"Error al crear aliado: {str(e)}")
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+
 @app.route('/aliados/aliados')
 @login_required
 def aliados_aliados():

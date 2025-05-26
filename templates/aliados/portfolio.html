@@ -562,15 +562,15 @@
         }
         
         const formData = {
-            nombre: document.getElementById('productName').value,
-            categoria: document.getElementById('productCategory').value,
-            familia: document.getElementById('productFamily').value,
-            estado: document.getElementById('productStatus').value
+            companyName: document.getElementById('companyName').value,
+            email: document.getElementById('email').value,
+            contact: document.getElementById('contact').value,
+            industry: document.getElementById('industry').value
         };
         
-        console.log('Enviando datos del producto:', formData);
+        console.log('Enviando datos del aliado:', formData);
         
-        fetch('/api/proyectos', {
+        fetch('/api/aliados', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -581,11 +581,11 @@
         .then(data => {
             console.log('Respuesta del servidor:', data);
             if (data.status === 'success') {
-                alert('Producto creado exitosamente');
+                alert('Aliado creado exitosamente');
                 hideModal('addProductModal');
                 location.reload();
             } else {
-                alert('Error al crear el producto: ' + data.message);
+                alert('Error al crear el aliado: ' + data.message);
             }
         })
         .catch(error => {
