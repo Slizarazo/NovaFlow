@@ -625,8 +625,7 @@ def create_user():
             print(f"  - Tarifa Hora: {data.get('tarifaHora')}")
             print(f"  - Disponibilidad: {data.get('disponibilidad')}")
             print(f"  - Experiencia: {data.get('experiencia')}")
-            print(f"  - Portfolio: {data.get('portfolio')}")
-
+            print(f"  - Portfolio: {data.get('portfolio')}")```python
         return jsonify({
             'status': 'success',
             'message': f'Usuario {tipo} procesado correctamente',
@@ -689,7 +688,7 @@ def create_product():
 def create_aliado():
     try:
         data = request.get_json()
-        
+
         if not data:
             return jsonify({'status': 'error', 'message': 'No se recibieron datos'}), 400
 
@@ -715,7 +714,7 @@ def create_aliado():
 def create_asignacion():
     try:
         data = request.get_json()
-        
+
         if not data:
             return jsonify({'status': 'error', 'message': 'No se recibieron datos'}), 400
 
@@ -807,6 +806,7 @@ def aliados_portfolio():
 def aliados_asignaciones():
     consultores = Consultor.CONSULTORES
     proyectos = {proyecto.id: proyecto for proyecto in Proyecto.PROYECTOS}
+    aliados = Aliado.ALIADOS
 
     # Datos estándar o extendidos según disponibilidad
     if USAR_DATOS_EXTENDIDOS:
@@ -829,6 +829,7 @@ def aliados_asignaciones():
         title='Asignaciones de Consultores',
         consultores=consultores,
         proyectos=proyectos,
+        aliados=aliados,
         config=app.config,
         role=current_user.role,
         # Nuevos datos extendidos

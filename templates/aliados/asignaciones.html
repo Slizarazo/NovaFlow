@@ -71,7 +71,7 @@
             </button>
         </div>
     </div>
-    
+
     <!-- Filter Section -->
     <div class="filter-section mb-4">
         <form class="filter-form">
@@ -117,7 +117,7 @@
             </div>
         </form>
     </div>
-    
+
     <!-- Consultants Availability View -->
     <div class="card mb-4">
         <div class="card-header d-flex justify-content-between align-items-center">
@@ -190,7 +190,7 @@
             </div>
         </div>
     </div>
-    
+
     <!-- Current Assignments -->
     <div class="dashboard-section-title">
         <h4>Asignaciones Actuales</h4>
@@ -214,7 +214,7 @@
                 </div>
                 <div class="card-body">
                     <p class="text-muted">Consultores asignados: {{ proyecto.consultores_asignados }}</p>
-                    
+
                     <div class="mb-3">
                         <h6>Equipo:</h6>
                         <div class="d-flex flex-wrap">
@@ -230,12 +230,12 @@
                             {% endfor %}
                         </div>
                     </div>
-                    
+
                     <div class="mb-3">
                         <h6>Fecha de Asignación:</h6>
                         <p>{{ proyecto.fecha_inicio }}</p>
                     </div>
-                    
+
                     <div class="mb-3">
                         <h6>Fecha de Finalización:</h6>
                         <p>{{ proyecto.fecha_fin }}</p>
@@ -258,7 +258,7 @@
         {% endif %}
         {% endfor %}
     </div>
-    
+
     <!-- Consultant Retention Process -->
     <div class="dashboard-section-title mt-3">
         <h4>Proceso de Retención de Talento</h4>
@@ -280,7 +280,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="col-md-4 mb-3">
                     <div class="card h-100 border-0 shadow-sm">
                         <div class="card-body text-center p-4">
@@ -295,7 +295,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="col-md-4 mb-3">
                     <div class="card h-100 border-0 shadow-sm">
                         <div class="card-body text-center p-4">
@@ -311,7 +311,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="text-center mt-3">
                 <a href="#" class="btn btn-primary">
                     <i data-feather="info" style="width: 16px; height: 16px; margin-right: 5px;"></i>
@@ -320,7 +320,7 @@
             </div>
         </div>
     </div>
-    
+
     <!-- Modal Nueva Asignación -->
     <div class="modal fade" id="addAssignmentModal" tabindex="-1" aria-labelledby="addAssignmentModalLabel" aria-hidden="true" style="display: none;">
         <div class="modal-dialog" style="max-width: 480px; margin: 1rem auto; max-height: calc(100vh - 2rem);">
@@ -329,7 +329,7 @@
                     <h5 class="modal-title" id="addAssignmentModalLabel" style="font-weight: 600; margin: 0; font-size: 18px; color: white; flex: 1;">Nueva Asignación</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background: none; border: none; color: white; font-size: 24px; opacity: 0.8; padding: 0; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-weight: normal; line-height: 1; transition: all 0.2s ease; margin-left: 16px;" onmouseover="this.style.background='rgba(255,255,255,0.2)'; this.style.opacity='1'" onmouseout="this.style.background='none'; this.style.opacity='0.8'">×</button>
                 </div>
-                
+
                 <div class="modal-body" style="padding: 24px 20px; background: white; flex: 1; overflow-y: auto; min-height: 0;">
                     <div id="assignmentTypeSelection">
                         <h6 style="color: #4a5568; font-weight: 600; margin-bottom: 20px;">Tipo de Asignación</h6>
@@ -354,7 +354,7 @@
                             </button>
                         </div>
                     </div>
-                    
+
                     <div id="comunidadMessage" style="display: none;">
                         <div class="text-center" style="padding: 40px 20px;">
                             <i data-feather="tool" style="width: 48px; height: 48px; color: #f59e0b; margin-bottom: 20px;"></i>
@@ -363,15 +363,15 @@
                             <button type="button" class="btn btn-secondary mt-3" onclick="backToTypeSelection()">Volver</button>
                         </div>
                     </div>
-                    
+
                     <div id="freelanceForm" style="display: none;">
                         <button type="button" class="btn btn-link p-0 mb-3" onclick="backToTypeSelection()" style="color: #667eea; text-decoration: none;">
                             <i data-feather="arrow-left" style="width: 16px; height: 16px; margin-right: 5px;"></i>
                             Volver
                         </button>
-                        
+
                         <h6 style="color: #4a5568; font-weight: 600; margin-bottom: 20px;">Asignación de Freelance</h6>
-                        
+
                         <form id="assignmentForm">
                             <div class="mb-4">
                                 <label for="proyectoSelect" class="form-label" style="color: #2d3748; font-weight: 500; margin-bottom: 8px; display: block; font-size: 14px;">Proyecto</label>
@@ -382,7 +382,7 @@
                                     {% endfor %}
                                 </select>
                             </div>
-                            
+
                             <div class="mb-4">
                                 <label for="freelanceSelect" class="form-label" style="color: #2d3748; font-weight: 500; margin-bottom: 8px; display: block; font-size: 14px;">Consultor</label>
                                 <select class="form-select" id="freelanceSelect" required style="border: 1px solid #d1d5db; border-radius: 8px; padding: 12px 14px; font-size: 14px; width: 100%; background-color: #f9fafb; appearance: none; background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"%23666\" stroke-width=\"2\"><polyline points=\"6,9 12,15 18,9\"></polyline></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px;">
@@ -392,17 +392,17 @@
                                     {% endfor %}
                                 </select>
                             </div>
-                            
+
                             <div class="mb-4">
                                 <label for="fechaInicio" class="form-label" style="color: #2d3748; font-weight: 500; margin-bottom: 8px; display: block; font-size: 14px;">Fecha de Inicio</label>
                                 <input type="date" class="form-control" id="fechaInicio" required style="border: 1px solid #d1d5db; border-radius: 8px; padding: 12px 14px; font-size: 14px; width: 100%; background-color: #f9fafb;">
                             </div>
-                            
+
                             <div class="mb-4">
                                 <label for="fechaFin" class="form-label" style="color: #2d3748; font-weight: 500; margin-bottom: 8px; display: block; font-size: 14px;">Fecha de Finalización</label>
                                 <input type="date" class="form-control" id="fechaFin" required style="border: 1px solid #d1d5db; border-radius: 8px; padding: 12px 14px; font-size: 14px; width: 100%; background-color: #f9fafb;">
                             </div>
-                            
+
                             <div class="mb-4">
                                 <label for="horasSemanales" class="form-label" style="color: #2d3748; font-weight: 500; margin-bottom: 8px; display: block; font-size: 14px;">Horas Semanales</label>
                                 <input type="number" class="form-control" id="horasSemanales" placeholder="40" min="1" max="50" required style="border: 1px solid #d1d5db; border-radius: 8px; padding: 12px 14px; font-size: 14px; width: 100%; background-color: #f9fafb;">
@@ -410,7 +410,7 @@
                         </form>
                     </div>
                 </div>
-                
+
                 <div class="modal-footer" id="modalFooter" style="padding: 16px 20px; border-top: 1px solid #e5e7eb; background: white; border-radius: 0 0 12px 12px; display: flex; gap: 12px; justify-content: flex-end; flex-shrink: 0;">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="background: #f3f4f6; color: #6b7280; border: 1px solid #d1d5db; padding: 10px 20px; border-radius: 8px; font-weight: 500; font-size: 14px; cursor: pointer; transition: all 0.2s;">Cancelar</button>
                     <button type="button" class="btn btn-primary" id="submitAssignmentBtn" onclick="submitAssignment()" style="display: none; background: linear-gradient(135deg, #8b7bc8 0%, #7b68c7 100%); border: none; padding: 10px 20px; border-radius: 8px; color: white; font-weight: 500; font-size: 14px; cursor: pointer; transition: all 0.2s;">Crear Asignación</button>
@@ -425,26 +425,26 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         console.log('DOM cargado, inicializando eventos...');
-        
+
         // Initialize Feather icons
         if (typeof feather !== 'undefined') {
             feather.replace();
         }
-        
+
         // Configurar eventos del modal - buscar todos los posibles botones
         setTimeout(function() {
             // Buscar por múltiples selectores
             const addAssignmentBtn = document.querySelector('[data-bs-target="#addAssignmentModal"]') || 
                                    document.querySelector('button[title="Nueva Asignación"]') ||
                                    document.querySelector('.dashboard-section-action[title="Nueva Asignación"]');
-            
+
             console.log('Botón encontrado:', addAssignmentBtn);
-            
+
             if (addAssignmentBtn) {
                 // Remover listeners existentes
                 const newBtn = addAssignmentBtn.cloneNode(true);
                 addAssignmentBtn.parentNode.replaceChild(newBtn, addAssignmentBtn);
-                
+
                 newBtn.addEventListener('click', function(e) {
                     e.preventDefault();
                     e.stopPropagation();
@@ -459,7 +459,7 @@
                 console.log('Botones disponibles:', allButtons);
             }
         }, 200);
-        
+
         // Configurar botones de cerrar
         document.addEventListener('click', function(e) {
             if (e.target.hasAttribute('data-bs-dismiss') && e.target.getAttribute('data-bs-dismiss') === 'modal') {
@@ -470,7 +470,7 @@
                 }
             }
         });
-        
+
         // Cerrar modales al hacer click en el backdrop
         document.addEventListener('click', function(e) {
             if (e.target.classList.contains('modal')) {
@@ -478,19 +478,19 @@
             }
         });
     });
-    
+
     function showModal(modalId) {
         console.log('Mostrando modal:', modalId);
         const modal = document.getElementById(modalId);
-        
+
         if (!modal) {
             console.error('Modal no encontrado:', modalId);
             return;
         }
-        
+
         // Resetear modal al estado inicial
         resetModal();
-        
+
         // Mostrar modal con estilo específico
         modal.style.display = 'flex';
         modal.style.alignItems = 'center';
@@ -503,12 +503,12 @@
         modal.style.zIndex = '1055';
         modal.classList.add('show');
         modal.setAttribute('aria-hidden', 'false');
-        
+
         // Ocultar scroll de la página pero mantener el ancho
         const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
         document.body.style.overflow = 'hidden';
         document.body.style.paddingRight = scrollbarWidth + 'px';
-        
+
         // Añadir backdrop
         let backdrop = document.querySelector('.modal-backdrop');
         if (!backdrop) {
@@ -523,24 +523,24 @@
             backdrop.style.zIndex = '1050';
             document.body.appendChild(backdrop);
         }
-        
+
         // Reinicializar iconos de Feather
         if (typeof feather !== 'undefined') {
             feather.replace();
         }
-        
+
         console.log('Modal mostrado correctamente:', modalId);
     }
-    
+
     function hideModal(modalId) {
         console.log('Ocultando modal:', modalId);
         const modal = document.getElementById(modalId);
-        
+
         if (!modal) {
             console.error('Modal no encontrado:', modalId);
             return;
         }
-        
+
         // Ocultar modal
         modal.style.display = 'none';
         modal.style.position = '';
@@ -553,39 +553,39 @@
         modal.style.zIndex = '';
         modal.classList.remove('show');
         modal.setAttribute('aria-hidden', 'true');
-        
+
         // Restaurar scroll de la página
         document.body.style.overflow = '';
         document.body.style.paddingRight = '';
-        
+
         // Remover backdrop
         const backdrop = document.querySelector('.modal-backdrop');
         if (backdrop) {
             backdrop.remove();
         }
-        
+
         // Resetear modal
         resetModal();
-        
+
         console.log('Modal ocultado correctamente:', modalId);
     }
-    
+
     function resetModal() {
         document.getElementById('assignmentTypeSelection').style.display = 'block';
         document.getElementById('comunidadMessage').style.display = 'none';
         document.getElementById('freelanceForm').style.display = 'none';
         document.getElementById('submitAssignmentBtn').style.display = 'none';
-        
+
         // Limpiar formulario
         const form = document.getElementById('assignmentForm');
         if (form) {
             form.reset();
         }
     }
-    
+
     function selectAssignmentType(type) {
         document.getElementById('assignmentTypeSelection').style.display = 'none';
-        
+
         if (type === 'comunidad') {
             document.getElementById('comunidadMessage').style.display = 'block';
             document.getElementById('submitAssignmentBtn').style.display = 'none';
@@ -593,54 +593,55 @@
             document.getElementById('freelanceForm').style.display = 'block';
             document.getElementById('submitAssignmentBtn').style.display = 'inline-block';
         }
-        
+
         // Reinicializar iconos de Feather
         if (typeof feather !== 'undefined') {
             feather.replace();
         }
     }
-    
+
     function backToTypeSelection() {
         document.getElementById('assignmentTypeSelection').style.display = 'block';
         document.getElementById('comunidadMessage').style.display = 'none';
         document.getElementById('freelanceForm').style.display = 'none';
         document.getElementById('submitAssignmentBtn').style.display = 'none';
-        
+
         // Reinicializar iconos de Feather
         if (typeof feather !== 'undefined') {
             feather.replace();
         }
     }
-    
+
     function submitAssignment() {
         const form = document.getElementById('assignmentForm');
-        
+
         if (!form || !form.checkValidity()) {
             if (form) form.reportValidity();
             return;
         }
-        
+
         const proyectoSelect = document.getElementById('proyectoSelect');
         const freelanceSelect = document.getElementById('freelanceSelect');
         const fechaInicio = document.getElementById('fechaInicio');
         const fechaFin = document.getElementById('fechaFin');
         const horasSemanales = document.getElementById('horasSemanales');
-        
+
         if (!proyectoSelect || !freelanceSelect || !fechaInicio || !fechaFin || !horasSemanales) {
             alert('Error: No se pudieron encontrar todos los campos del formulario');
             return;
         }
-        
+
         const formData = {
             proyecto: proyectoSelect.value,
             consultor: freelanceSelect.value,
             fecha_inicio: fechaInicio.value,
+            ```python
             fecha_fin: fechaFin.value,
             horas_semanales: parseInt(horasSemanales.value)
         };
-        
+
         console.log('Enviando datos de asignación:', formData);
-        
+
         fetch('/api/asignaciones', {
             method: 'POST',
             headers: {
