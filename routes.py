@@ -634,9 +634,27 @@ def create_user():
         })
 
     except Exception as e:
-        print(f"Error al procesar usuario: {str(e)}")
+        app.logger.error(f"Error al crear usuario: {str(e)}")
         return jsonify({'status': 'error', 'message': str(e)}), 500
 
+@app.route('/api/proyectos', methods=['POST'])
+@login_required
+def create_proyecto():
+    try:
+        data = request.get_json()
+
+        print("\n=== DATOS DEL PROYECTO RECIBIDOS ===")
+        print(f"Nombre: {data.get('nombre')}")
+        print(f"Categoría: {data.get('categoria')}")
+        print(f"Familia: {data.get('familia')}")
+        print(f"Estado: {data.get('estado')}")
+        print("=" * 40)
+
+        return jsonify({'status': 'success', 'message': 'Proyecto creado exitosamente'})
+
+    except Exception as e:
+        app.logger.error(f"Error al crear proyecto: {str(e)}")
+        return jsonify({'status': 'error', 'message': str(e)}), 500
 @app.route('/api/productos', methods=['POST'])
 @login_required
 def create_product():

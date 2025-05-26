@@ -310,11 +310,9 @@
             </div>
         </div>
     </div>
-</div>
-{% endblock %}
-
-<!-- Modal Añadir Producto -->
-<div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel" aria-hidden="true" style="display: none;">
+    
+    <!-- Modal Añadir Producto -->
+    <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel" aria-hidden="true" style="display: none;">
     <div class="modal-dialog modal-lg">
         <div class="modal-content" style="border-radius: 12px; border: none;">
             <div class="modal-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 12px 12px 0 0; padding: 20px 30px; position: relative;">
@@ -409,6 +407,7 @@
             </div>
         </div>
     </div>
+</div>
 </div>
 
 {% block scripts %}
@@ -577,7 +576,7 @@
         
         console.log('Enviando datos del producto:', formData);
         
-        fetch('/api/productos', {
+        fetch('/api/proyectos', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
