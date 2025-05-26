@@ -1,5 +1,60 @@
 {% extends "layout.html" %}
 
+{% block head %}
+<style>
+/* Estilos para modales */
+.modal {
+    display: none !important;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1055;
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal.show {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1050;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-dialog {
+    position: relative;
+    margin: 2rem auto;
+    max-width: 500px;
+    width: 90%;
+}
+
+.modal-content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    background-color: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    outline: 0;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="dashboard-container">
     <div class="dashboard-section-title">
@@ -363,13 +418,21 @@
             feather.replace();
         }
         
-        // Configurar eventos del modal - usar setTimeout para asegurar que los elementos estén cargados
+        // Configurar eventos del modal - buscar todos los posibles botones
         setTimeout(function() {
-            const addAssignmentBtn = document.querySelector('[data-bs-target="#addAssignmentModal"]');
+            // Buscar por múltiples selectores
+            const addAssignmentBtn = document.querySelector('[data-bs-target="#addAssignmentModal"]') || 
+                                   document.querySelector('button[title="Nueva Asignación"]') ||
+                                   document.querySelector('.dashboard-section-action[title="Nueva Asignación"]');
+            
             console.log('Botón encontrado:', addAssignmentBtn);
             
             if (addAssignmentBtn) {
-                addAssignmentBtn.addEventListener('click', function(e) {
+                // Remover listeners existentes
+                const newBtn = addAssignmentBtn.cloneNode(true);
+                addAssignmentBtn.parentNode.replaceChild(newBtn, addAssignmentBtn);
+                
+                newBtn.addEventListener('click', function(e) {
                     e.preventDefault();
                     e.stopPropagation();
                     console.log('Click en botón nueva asignación');
@@ -378,8 +441,11 @@
                 console.log('Event listener añadido al botón');
             } else {
                 console.error('Botón de nueva asignación no encontrado');
+                // Buscar todos los botones disponibles para debug
+                const allButtons = document.querySelectorAll('button');
+                console.log('Botones disponibles:', allButtons);
             }
-        }, 100);
+        }, 200);
         
         // Configurar botones de cerrar
         document.addEventListener('click', function(e) {
@@ -412,17 +478,36 @@
         // Resetear modal al estado inicial
         resetModal();
         
-        // Mostrar modal
-        modal.style.display = 'block';
+        // Mostrar modal con estilo específico
+        modal.style.display = 'flex';
+        modal.style.alignItems = 'center';
+        modal.style.justifyContent = 'center';
+        modal.style.position = 'fixed';
+        modal.style.top = '0';
+        modal.style.left = '0';
+        modal.style.width = '100%';
+        modal.style.height = '100%';
+        modal.style.zIndex = '1055';
         modal.classList.add('show');
         modal.setAttribute('aria-hidden', 'false');
+        
+        // Ocultar scroll de la página pero mantener el ancho
+        const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
         document.body.style.overflow = 'hidden';
+        document.body.style.paddingRight = scrollbarWidth + 'px';
         
         // Añadir backdrop
         let backdrop = document.querySelector('.modal-backdrop');
         if (!backdrop) {
             backdrop = document.createElement('div');
             backdrop.className = 'modal-backdrop fade show';
+            backdrop.style.position = 'fixed';
+            backdrop.style.top = '0';
+            backdrop.style.left = '0';
+            backdrop.style.width = '100%';
+            backdrop.style.height = '100%';
+            backdrop.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+            backdrop.style.zIndex = '1050';
             document.body.appendChild(backdrop);
         }
         
@@ -430,6 +515,8 @@
         if (typeof feather !== 'undefined') {
             feather.replace();
         }
+        
+        console.log('Modal mostrado correctamente:', modalId);
     }
     
     function hideModal(modalId) {
@@ -443,9 +530,20 @@
         
         // Ocultar modal
         modal.style.display = 'none';
+        modal.style.position = '';
+        modal.style.top = '';
+        modal.style.left = '';
+        modal.style.width = '';
+        modal.style.height = '';
+        modal.style.alignItems = '';
+        modal.style.justifyContent = '';
+        modal.style.zIndex = '';
         modal.classList.remove('show');
         modal.setAttribute('aria-hidden', 'true');
+        
+        // Restaurar scroll de la página
         document.body.style.overflow = '';
+        document.body.style.paddingRight = '';
         
         // Remover backdrop
         const backdrop = document.querySelector('.modal-backdrop');
@@ -455,6 +553,8 @@
         
         // Resetear modal
         resetModal();
+        
+        console.log('Modal ocultado correctamente:', modalId);
     }
     
     function resetModal() {
