@@ -574,6 +574,69 @@ def aliados_usuarios():
                          config=app.config,
                          role=current_user.role)
 
+@app.route('/api/usuarios', methods=['POST'])
+@login_required
+def create_user():
+    try:
+        data = request.get_json()
+        user_type = data.get('tipo')
+        
+        print("=== DATOS RECIBIDOS PARA NUEVO USUARIO ===")
+        print(f"Tipo de usuario: {user_type}")
+        
+        if user_type == 'gestor':
+            print("Datos del Gestor:")
+            print(f"  - Nombre completo: {data.get('nombre_completo', '')}")
+            print(f"  - Correo: {data.get('correo', '')}")
+            print(f"  - Nombre organización: {data.get('nombre_organizacion', '')}")
+            
+        elif user_type == 'aliado':
+            print("Datos del Aliado:")
+            print(f"  - Nombre completo: {data.get('nombre_completo', '')}")
+            print(f"  - Correo: {data.get('correo', '')}")
+            print(f"  - Región: {data.get('region', '')}")
+            print(f"  - Industria: {data.get('industria', '')}")
+            print(f"  - Contacto principal: {data.get('contacto_principal', '')}")
+            print(f"  - Tamaño: {data.get('tamano', '')}")
+            print(f"  - Empleados: {data.get('empleados', '')}")
+            print(f"  - Dirección: {data.get('direccion', '')}")
+            print(f"  - Ciudad: {data.get('ciudad', '')}")
+            print(f"  - Estado: {data.get('estado_dir', '')}")
+            print(f"  - Código postal: {data.get('codigo_postal', '')}")
+            print(f"  - País: {data.get('pais', '')}")
+            
+        elif user_type == 'empleado':
+            print("Datos del Empleado:")
+            print(f"  - Aliado: {data.get('aliado', '')}")
+            print(f"  - Cargo: {data.get('cargo', '')}")
+            print(f"  - Rol laboral: {data.get('rol_laboral', '')}")
+            
+        elif user_type == 'freelance':
+            print("Datos del Freelance:")
+            print(f"  - Especialidad: {data.get('especialidad', '')}")
+            print(f"  - Disponibilidad: {data.get('disponibilidad', '')}%")
+            print(f"  - Nivel: {data.get('nivel', '')}")
+            print(f"  - Fecha incorporación: {data.get('fecha_incorporacion', '')}")
+            print(f"  - Ubicación: {data.get('ubicacion', '')}")
+            print(f"  - Tarifa por hora: ${data.get('tarifa_hora', '')}")
+            
+        print("=========================================")
+        
+        # Aquí se podría agregar la lógica para guardar en base de datos
+        # Por ahora solo retornamos éxito
+        
+        return jsonify({
+            'status': 'success', 
+            'message': f'Usuario de tipo {user_type} creado exitosamente'
+        })
+        
+    except Exception as e:
+        print(f"Error al crear usuario: {str(e)}")
+        return jsonify({
+            'status': 'error', 
+            'message': f'Error interno del servidor: {str(e)}'
+        }), 500
+
 @app.route('/aliados/aliados')
 @login_required
 def aliados_aliados():

@@ -204,4 +204,343 @@
         </div>
     </div>
 </div>
+
+<!-- Modal Añadir Usuario -->
+<div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addUserModalLabel">Añadir Usuario</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addUserForm">
+                    <!-- Tipo de Usuario -->
+                    <div class="mb-3">
+                        <label for="userType" class="form-label">Tipo de Usuario</label>
+                        <select class="form-select" id="userType" required onchange="showUserForm()">
+                            <option value="">Seleccionar...</option>
+                            <option value="gestor">Gestor</option>
+                            <option value="aliado">Aliado</option>
+                            <option value="empleado">Empleado</option>
+                            <option value="freelance">Freelance</option>
+                        </select>
+                    </div>
+
+                    <!-- Formulario Gestor -->
+                    <div id="gestorForm" class="user-form" style="display: none;">
+                        <h6>Datos del Gestor</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="gestorNombre" class="form-label">Nombre Completo</label>
+                                    <input type="text" class="form-control" id="gestorNombre">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="gestorCorreo" class="form-label">Correo</label>
+                                    <input type="email" class="form-control" id="gestorCorreo">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="gestorOrganizacion" class="form-label">Nombre Organización</label>
+                            <input type="text" class="form-control" id="gestorOrganizacion">
+                        </div>
+                    </div>
+
+                    <!-- Formulario Aliado -->
+                    <div id="aliadoForm" class="user-form" style="display: none;">
+                        <h6>Datos del Aliado</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="aliadoNombre" class="form-label">Nombre Completo</label>
+                                    <input type="text" class="form-control" id="aliadoNombre">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="aliadoCorreo" class="form-label">Correo</label>
+                                    <input type="email" class="form-control" id="aliadoCorreo">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="aliadoRegion" class="form-label">Región</label>
+                                    <select class="form-select" id="aliadoRegion">
+                                        <option value="">Seleccionar...</option>
+                                        <option value="Norte">Norte</option>
+                                        <option value="Sur">Sur</option>
+                                        <option value="Este">Este</option>
+                                        <option value="Oeste">Oeste</option>
+                                        <option value="Centro">Centro</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="aliadoIndustria" class="form-label">Industria</label>
+                                    <select class="form-select" id="aliadoIndustria">
+                                        <option value="">Seleccionar...</option>
+                                        <option value="Tecnología">Tecnología</option>
+                                        <option value="Finanzas">Finanzas</option>
+                                        <option value="Manufactura">Manufactura</option>
+                                        <option value="Servicios">Servicios</option>
+                                        <option value="Salud">Salud</option>
+                                        <option value="Educación">Educación</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="aliadoContacto" class="form-label">Contacto Principal</label>
+                                    <input type="text" class="form-control" id="aliadoContacto">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="aliadoTamano" class="form-label">Tamaño</label>
+                                    <select class="form-select" id="aliadoTamano">
+                                        <option value="">Seleccionar...</option>
+                                        <option value="Pequeña (1-50)">Pequeña (1-50)</option>
+                                        <option value="Mediana (51-250)">Mediana (51-250)</option>
+                                        <option value="Grande (251-1000)">Grande (251-1000)</option>
+                                        <option value="Empresa (1000+)">Empresa (1000+)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="aliadoEmpleados" class="form-label">Número de Empleados</label>
+                            <input type="number" class="form-control" id="aliadoEmpleados" min="1">
+                        </div>
+                        <div class="mb-3">
+                            <label for="aliadoDireccion" class="form-label">Dirección</label>
+                            <input type="text" class="form-control" id="aliadoDireccion">
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="aliadoCiudad" class="form-label">Ciudad</label>
+                                    <input type="text" class="form-control" id="aliadoCiudad">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="aliadoEstado" class="form-label">Estado</label>
+                                    <input type="text" class="form-control" id="aliadoEstado">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="aliadoCodigoPostal" class="form-label">Código Postal</label>
+                                    <input type="text" class="form-control" id="aliadoCodigoPostal">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="aliadoPais" class="form-label">País</label>
+                            <input type="text" class="form-control" id="aliadoPais">
+                        </div>
+                    </div>
+
+                    <!-- Formulario Empleado -->
+                    <div id="empleadoForm" class="user-form" style="display: none;">
+                        <h6>Datos del Empleado</h6>
+                        <div class="mb-3">
+                            <label for="empleadoAliado" class="form-label">Aliado</label>
+                            <select class="form-select" id="empleadoAliado">
+                                <option value="">Seleccionar...</option>
+                                <option value="1">Aliado Tech</option>
+                                <option value="2">Financiera Global</option>
+                                <option value="3">Industrias Este</option>
+                                <option value="4">Consultores Sur</option>
+                                <option value="5">Servicios Oeste</option>
+                            </select>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="empleadoCargo" class="form-label">Cargo</label>
+                                    <input type="text" class="form-control" id="empleadoCargo">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="empleadoRol" class="form-label">Rol Laboral</label>
+                                    <select class="form-select" id="empleadoRol">
+                                        <option value="">Seleccionar...</option>
+                                        <option value="Supervisor">Supervisor</option>
+                                        <option value="Consultor">Consultor</option>
+                                        <option value="Analista">Analista</option>
+                                        <option value="Gerente">Gerente</option>
+                                        <option value="Coordinador">Coordinador</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Formulario Freelance -->
+                    <div id="freelanceForm" class="user-form" style="display: none;">
+                        <h6>Datos del Freelance</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="freelanceEspecialidad" class="form-label">Especialidad</label>
+                                    <select class="form-select" id="freelanceEspecialidad">
+                                        <option value="">Seleccionar...</option>
+                                        <option value="Desarrollo Web">Desarrollo Web</option>
+                                        <option value="Análisis de Datos">Análisis de Datos</option>
+                                        <option value="DevOps">DevOps</option>
+                                        <option value="UI/UX Design">UI/UX Design</option>
+                                        <option value="Consultoría">Consultoría</option>
+                                        <option value="Marketing Digital">Marketing Digital</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="freelanceDisponibilidad" class="form-label">Disponibilidad (%)</label>
+                                    <input type="number" class="form-control" id="freelanceDisponibilidad" min="0" max="100">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="freelanceNivel" class="form-label">Nivel</label>
+                                    <select class="form-select" id="freelanceNivel">
+                                        <option value="">Seleccionar...</option>
+                                        <option value="Junior">Junior</option>
+                                        <option value="Mid">Mid</option>
+                                        <option value="Senior">Senior</option>
+                                        <option value="Expert">Expert</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="freelanceFecha" class="form-label">Fecha Incorporación</label>
+                                    <input type="date" class="form-control" id="freelanceFecha">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="freelanceUbicacion" class="form-label">Ubicación</label>
+                                    <input type="text" class="form-control" id="freelanceUbicacion">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="freelanceTarifa" class="form-label">Tarifa por Hora</label>
+                                    <input type="number" class="form-control" id="freelanceTarifa" min="0" step="0.01">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="submitUserForm()">Guardar Usuario</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function showUserForm() {
+    const userType = document.getElementById('userType').value;
+    
+    // Ocultar todos los formularios
+    document.querySelectorAll('.user-form').forEach(form => {
+        form.style.display = 'none';
+    });
+    
+    // Mostrar el formulario correspondiente
+    if (userType) {
+        document.getElementById(userType + 'Form').style.display = 'block';
+    }
+}
+
+function submitUserForm() {
+    const userType = document.getElementById('userType').value;
+    
+    if (!userType) {
+        alert('Por favor seleccione un tipo de usuario');
+        return;
+    }
+    
+    let userData = {
+        tipo: userType
+    };
+    
+    // Recopilar datos según el tipo de usuario
+    if (userType === 'gestor') {
+        userData.nombre_completo = document.getElementById('gestorNombre').value;
+        userData.correo = document.getElementById('gestorCorreo').value;
+        userData.nombre_organizacion = document.getElementById('gestorOrganizacion').value;
+    } else if (userType === 'aliado') {
+        userData.nombre_completo = document.getElementById('aliadoNombre').value;
+        userData.correo = document.getElementById('aliadoCorreo').value;
+        userData.region = document.getElementById('aliadoRegion').value;
+        userData.industria = document.getElementById('aliadoIndustria').value;
+        userData.contacto_principal = document.getElementById('aliadoContacto').value;
+        userData.tamano = document.getElementById('aliadoTamano').value;
+        userData.empleados = document.getElementById('aliadoEmpleados').value;
+        userData.direccion = document.getElementById('aliadoDireccion').value;
+        userData.ciudad = document.getElementById('aliadoCiudad').value;
+        userData.estado_dir = document.getElementById('aliadoEstado').value;
+        userData.codigo_postal = document.getElementById('aliadoCodigoPostal').value;
+        userData.pais = document.getElementById('aliadoPais').value;
+    } else if (userType === 'empleado') {
+        userData.aliado = document.getElementById('empleadoAliado').value;
+        userData.cargo = document.getElementById('empleadoCargo').value;
+        userData.rol_laboral = document.getElementById('empleadoRol').value;
+    } else if (userType === 'freelance') {
+        userData.especialidad = document.getElementById('freelanceEspecialidad').value;
+        userData.disponibilidad = document.getElementById('freelanceDisponibilidad').value;
+        userData.nivel = document.getElementById('freelanceNivel').value;
+        userData.fecha_incorporacion = document.getElementById('freelanceFecha').value;
+        userData.ubicacion = document.getElementById('freelanceUbicacion').value;
+        userData.tarifa_hora = document.getElementById('freelanceTarifa').value;
+    }
+    
+    // Enviar datos al servidor
+    fetch('/api/usuarios', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            alert('Usuario creado exitosamente');
+            // Cerrar modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('addUserModal'));
+            modal.hide();
+            // Recargar página
+            window.location.reload();
+        } else {
+            alert('Error al crear usuario: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error al enviar los datos');
+    });
+}
+</script>
+
 {% endblock %}
