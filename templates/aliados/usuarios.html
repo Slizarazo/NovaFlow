@@ -211,8 +211,196 @@
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
+<style>
+/* Modal styles */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1055;
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal:not(.show) {
+    display: none !important;
+}
+
+.modal.fade:not(.show) {
+    opacity: 0;
+}
+
+.modal.show {
+    display: block !important;
+    opacity: 1;
+}
+
+.modal-dialog {
+    max-width: 600px;
+    margin: 2rem auto;
+}
+
+.modal-content {
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    overflow: hidden;
+}
+
+.modal-header {
+    background: transparent;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 1.5rem 2rem;
+}
+
+.modal-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: white;
+}
+
+.btn-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    opacity: 0.8;
+    padding: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-close:hover {
+    opacity: 1;
+}
+
+.btn-close::before {
+    content: "×";
+    font-size: 24px;
+    line-height: 1;
+}
+
+.modal-body {
+    background: white;
+    color: #333;
+    padding: 2rem;
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+.modal-footer {
+    background: white;
+    border-top: 1px solid #eee;
+    padding: 1.5rem 2rem;
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+}
+
+.form-section {
+    margin-bottom: 2rem;
+}
+
+.section-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #667eea;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.form-label {
+    font-weight: 500;
+    color: #555;
+    margin-bottom: 0.5rem;
+}
+
+.form-control, .form-select {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 0.75rem;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.btn-secondary {
+    background: #6c757d;
+    border: none;
+    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+    background: #5a6268;
+    transform: translateY(-1px);
+}
+
+.user-form {
+    display: none;
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-top: 1rem;
+}
+
+.user-form h6 {
+    color: #667eea;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+/* Scrollbar personalizado */
+.modal-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+.modal-body::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+    background: #667eea;
+    border-radius: 3px;
+}
+
+.modal-body::-webkit-scrollbar-thumb:hover {
+    background: #5a6fd8;
+}
+</style>
+
 <!-- Modal Añadir Usuario -->
-<div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
+<div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true" style="display: none;">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
@@ -221,16 +409,19 @@
             </div>
             <div class="modal-body">
                 <form id="addUserForm">
-                    <!-- Tipo de Usuario -->
-                    <div class="mb-3">
-                        <label for="userType" class="form-label">Tipo de Usuario</label>
-                        <select class="form-select" id="userType" required onchange="showUserForm()">
-                            <option value="">Seleccionar...</option>
-                            <option value="gestor">Gestor</option>
-                            <option value="aliado">Aliado</option>
-                            <option value="empleado">Empleado</option>
-                            <option value="freelance">Freelance</option>
-                        </select>
+                    <!-- Selección de Tipo -->
+                    <div class="form-section">
+                        <h6 class="section-title">Tipo de Usuario</h6>
+                        <div class="mb-3">
+                            <label for="userType" class="form-label">Seleccione el tipo de usuario</label>
+                            <select class="form-select" id="userType" required onchange="showUserForm()">
+                                <option value="">Seleccionar tipo...</option>
+                                <option value="gestor">Gestor</option>
+                                <option value="aliado">Aliado</option>
+                                <option value="empleado">Empleado</option>
+                                <option value="freelance">Freelance</option>
+                            </select>
+                        </div>
                     </div>
 
                     <!-- Formulario Gestor -->
@@ -240,25 +431,25 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="gestorNombre" class="form-label">Nombre Completo</label>
-                                    <input type="text" class="form-control" id="gestorNombre">
+                                    <input type="text" class="form-control" id="gestorNombre" placeholder="Ej: Juan Pérez García">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="gestorCorreo" class="form-label">Correo</label>
-                                    <input type="email" class="form-control" id="gestorCorreo">
+                                    <label for="gestorCorreo" class="form-label">Correo Electrónico</label>
+                                    <input type="email" class="form-control" id="gestorCorreo" placeholder="juan.perez@empresa.com">
                                 </div>
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label for="gestorOrganizacion" class="form-label">Nombre Organización</label>
-                            <input type="text" class="form-control" id="gestorOrganizacion">
+                            <label for="gestorOrganizacion" class="form-label">Nombre de la Organización</label>
+                            <input type="text" class="form-control" id="gestorOrganizacion" placeholder="Ej: DeepNova Solutions">
                         </div>
                     </div>
 
                     <!-- Formulario Aliado -->
                     <div id="aliadoForm" class="user-form" style="display: none;">
-                        <h6>Datos del Aliado</h6>
+                        <h6>Información del Aliado</h6>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
@@ -358,7 +549,7 @@
 
                     <!-- Formulario Empleado -->
                     <div id="empleadoForm" class="user-form" style="display: none;">
-                        <h6>Datos del Empleado</h6>
+                        <h6>Información del Empleado</h6>
                         <div class="mb-3">
                             <label for="empleadoAliado" class="form-label">Aliado</label>
                             <select class="form-select" id="empleadoAliado">
@@ -395,7 +586,7 @@
 
                     <!-- Formulario Freelance -->
                     <div id="freelanceForm" class="user-form" style="display: none;">
-                        <h6>Datos del Freelance</h6>
+                        <h6>Información del Freelance</h6>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
@@ -470,7 +661,70 @@ document.addEventListener('DOMContentLoaded', function() {
     if (typeof feather !== 'undefined') {
         feather.replace();
     }
+    
+    // Manejar click del botón de añadir usuario
+    const addButton = document.querySelector('[data-bs-target="#addUserModal"]');
+    const modal = document.getElementById('addUserModal');
+    
+    if (addButton && modal) {
+        addButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            showUserModal();
+        });
+    }
+    
+    // Manejar cierre del modal
+    const closeButtons = modal.querySelectorAll('[data-bs-dismiss="modal"]');
+    closeButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            hideUserModal();
+        });
+    });
+    
+    // Cerrar modal al hacer click fuera de él
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            hideUserModal();
+        }
+    });
 });
+
+function showUserModal() {
+    const modal = document.getElementById('addUserModal');
+    modal.style.display = 'block';
+    modal.classList.add('show');
+    document.body.style.overflow = 'hidden';
+    
+    // Añadir backdrop si no existe
+    if (!document.querySelector('.modal-backdrop')) {
+        const backdrop = document.createElement('div');
+        backdrop.className = 'modal-backdrop fade show';
+        document.body.appendChild(backdrop);
+    }
+}
+
+function hideUserModal() {
+    const modal = document.getElementById('addUserModal');
+    modal.style.display = 'none';
+    modal.classList.remove('show');
+    document.body.style.overflow = '';
+    
+    // Remover backdrop
+    const backdrop = document.querySelector('.modal-backdrop');
+    if (backdrop) {
+        backdrop.remove();
+    }
+    
+    // Limpiar formulario
+    document.getElementById('addUserForm').reset();
+    document.getElementById('userType').value = '';
+    
+    // Ocultar todos los formularios
+    const userForms = document.querySelectorAll('.user-form');
+    userForms.forEach(form => {
+        form.style.display = 'none';
+    });
+}
 
 function showUserForm() {
     const userType = document.getElementById('userType');
