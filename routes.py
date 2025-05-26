@@ -625,7 +625,8 @@ def create_user():
             print(f"  - Tarifa Hora: {data.get('tarifaHora')}")
             print(f"  - Disponibilidad: {data.get('disponibilidad')}")
             print(f"  - Experiencia: {data.get('experiencia')}")
-            print(f"  - Portfolio: {data.get('portfolio')}")```python
+            print(f"  - Portfolio: {data.get('portfolio')}")
+
         return jsonify({
             'status': 'success',
             'message': f'Usuario {tipo} procesado correctamente',
