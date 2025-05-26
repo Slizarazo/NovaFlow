@@ -313,7 +313,7 @@
 </div>
 {% endblock %}
 
-<!-- Modal Añadir Producto -->
+<!-- Modal Añadir Proyecto -->
 <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel" aria-hidden="true" style="display: none;">
     <div class="modal-dialog modal-lg">
         <div class="modal-content" style="border-radius: 12px; border: none;">
@@ -385,6 +385,41 @@
     </div>
 </div>
 
+<!-- Modales adicionales -->
+<div class="modal fade" id="importProductModal" tabindex="-1" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Importar Proyecto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Funcionalidad de importación en desarrollo...</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="exportProductModal" tabindex="-1" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Exportar Proyecto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Funcionalidad de exportación en desarrollo...</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% block scripts %}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -438,7 +473,7 @@
                 console.log('Click en botón para abrir modal:', targetModalId);
                 
                 if (targetModalId === '#addProductModal') {
-                    showProductModal();
+                    showModal('addProductModal');
                 } else if (targetModalId === '#importProductModal') {
                     showModal('importProductModal');
                 } else if (targetModalId === '#exportProductModal') {
@@ -517,17 +552,14 @@
         
         console.log('Modal ocultado correctamente:', modalId);
     }
-    
-    function showProductModal() {
-        showModal('addProductModal');
-    }
-
-    function hideProductModal() {
-        hideModal('addProductModal');
-    }
 
     function submitProductForm() {
         const form = document.getElementById('addProductForm');
+        
+        if (!form) {
+            console.error('Formulario no encontrado');
+            return;
+        }
         
         if (!form.checkValidity()) {
             form.reportValidity();
@@ -558,7 +590,7 @@
             console.log('Respuesta del servidor:', data);
             if (data.status === 'success') {
                 alert('Proyecto creado exitosamente');
-                hideProductModal();
+                hideModal('addProductModal');
                 location.reload();
             } else {
                 alert('Error al crear el proyecto: ' + data.message);
