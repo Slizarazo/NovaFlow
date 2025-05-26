@@ -265,5 +265,261 @@
             </div>
         </div>
     </div>
+    
+    <!-- Modal Nueva Asignación -->
+    <div class="modal fade" id="addAssignmentModal" tabindex="-1" aria-labelledby="addAssignmentModalLabel" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog" style="max-width: 500px; margin: 2rem auto;">
+            <div class="modal-content" style="border-radius: 12px; border: none;">
+                <div class="modal-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 12px 12px 0 0; padding: 20px 30px;">
+                    <h5 class="modal-title" id="addAssignmentModalLabel" style="font-weight: 600; margin: 0;">Nueva Asignación</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background: rgba(255,255,255,0.2); border: none; color: white; font-size: 18px; opacity: 1; padding: 0; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-weight: bold;">×</button>
+                </div>
+                
+                <div class="modal-body" style="padding: 30px;">
+                    <div id="assignmentTypeSelection">
+                        <h6 style="color: #4a5568; font-weight: 600; margin-bottom: 20px;">Tipo de Asignación</h6>
+                        <div class="d-grid gap-3">
+                            <button type="button" class="btn btn-outline-primary btn-lg" onclick="selectAssignmentType('comunidad')" style="padding: 15px; text-align: left; border: 2px solid #e2e8f0; border-radius: 8px;">
+                                <div class="d-flex align-items-center">
+                                    <i data-feather="users" style="width: 24px; height: 24px; margin-right: 15px;"></i>
+                                    <div>
+                                        <div style="font-weight: 600;">Asignar Comunidad</div>
+                                        <small class="text-muted">Asignar un grupo de consultores especializados</small>
+                                    </div>
+                                </div>
+                            </button>
+                            <button type="button" class="btn btn-outline-success btn-lg" onclick="selectAssignmentType('freelance')" style="padding: 15px; text-align: left; border: 2px solid #e2e8f0; border-radius: 8px;">
+                                <div class="d-flex align-items-center">
+                                    <i data-feather="user" style="width: 24px; height: 24px; margin-right: 15px;"></i>
+                                    <div>
+                                        <div style="font-weight: 600;">Asignar Freelance</div>
+                                        <small class="text-muted">Asignar un consultor independiente específico</small>
+                                    </div>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div id="comunidadMessage" style="display: none;">
+                        <div class="text-center" style="padding: 40px 20px;">
+                            <i data-feather="tool" style="width: 48px; height: 48px; color: #f59e0b; margin-bottom: 20px;"></i>
+                            <h5 style="color: #4a5568; margin-bottom: 15px;">Funcionalidad en Construcción</h5>
+                            <p class="text-muted">La asignación de comunidades está actualmente en desarrollo. Esta funcionalidad estará disponible próximamente.</p>
+                            <button type="button" class="btn btn-secondary mt-3" onclick="backToTypeSelection()">Volver</button>
+                        </div>
+                    </div>
+                    
+                    <div id="freelanceForm" style="display: none;">
+                        <button type="button" class="btn btn-link p-0 mb-3" onclick="backToTypeSelection()" style="color: #667eea; text-decoration: none;">
+                            <i data-feather="arrow-left" style="width: 16px; height: 16px; margin-right: 5px;"></i>
+                            Volver
+                        </button>
+                        
+                        <h6 style="color: #4a5568; font-weight: 600; margin-bottom: 20px;">Asignación de Freelance</h6>
+                        
+                        <form id="assignmentForm">
+                            <div class="mb-4">
+                                <label for="aliadoSelect" class="form-label" style="color: #2d3748; font-weight: 500; margin-bottom: 8px;">Aliado</label>
+                                <select class="form-select" id="aliadoSelect" required style="border: 1px solid #d1d5db; border-radius: 8px; padding: 12px 14px; font-size: 14px;">
+                                    <option value="">Seleccionar aliado...</option>
+                                    <option value="1">TechCorp Solutions</option>
+                                    <option value="2">InnovateLab</option>
+                                    <option value="3">GlobalTech Partners</option>
+                                    <option value="4">FutureSoft Inc.</option>
+                                    <option value="5">NextGen Consulting</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="freelanceSelect" class="form-label" style="color: #2d3748; font-weight: 500; margin-bottom: 8px;">Freelance</label>
+                                <select class="form-select" id="freelanceSelect" required style="border: 1px solid #d1d5db; border-radius: 8px; padding: 12px 14px; font-size: 14px;">
+                                    <option value="">Seleccionar freelance...</option>
+                                    {% for consultor in consultores %}
+                                    <option value="{{ consultor.id }}">{{ consultor.nombre }} - {{ consultor.especialidad }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <div class="modal-footer" id="modalFooter" style="padding: 20px 30px; border-top: 1px solid #e5e7eb; background: white; border-radius: 0 0 12px 12px;">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="submitAssignmentBtn" onclick="submitAssignment()" style="display: none;">Crear Asignación</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize Feather icons
+        if (typeof feather !== 'undefined') {
+            feather.replace();
+        }
+        
+        // Configurar eventos del modal
+        const addAssignmentBtn = document.querySelector('[data-bs-target="#addAssignmentModal"]');
+        const modal = document.getElementById('addAssignmentModal');
+        
+        if (addAssignmentBtn && modal) {
+            addAssignmentBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                showModal('addAssignmentModal');
+            });
+        }
+        
+        // Configurar botones de cerrar
+        document.addEventListener('click', function(e) {
+            if (e.target.hasAttribute('data-bs-dismiss') && e.target.getAttribute('data-bs-dismiss') === 'modal') {
+                e.preventDefault();
+                const modal = e.target.closest('.modal');
+                if (modal) {
+                    hideModal(modal.id);
+                }
+            }
+        });
+    });
+    
+    function showModal(modalId) {
+        console.log('Mostrando modal:', modalId);
+        const modal = document.getElementById(modalId);
+        
+        if (!modal) {
+            console.error('Modal no encontrado:', modalId);
+            return;
+        }
+        
+        // Resetear modal al estado inicial
+        resetModal();
+        
+        // Mostrar modal
+        modal.style.display = 'block';
+        modal.classList.add('show');
+        modal.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+        
+        // Añadir backdrop
+        let backdrop = document.querySelector('.modal-backdrop');
+        if (!backdrop) {
+            backdrop = document.createElement('div');
+            backdrop.className = 'modal-backdrop fade show';
+            document.body.appendChild(backdrop);
+        }
+        
+        // Reinicializar iconos de Feather
+        if (typeof feather !== 'undefined') {
+            feather.replace();
+        }
+    }
+    
+    function hideModal(modalId) {
+        console.log('Ocultando modal:', modalId);
+        const modal = document.getElementById(modalId);
+        
+        if (!modal) {
+            console.error('Modal no encontrado:', modalId);
+            return;
+        }
+        
+        // Ocultar modal
+        modal.style.display = 'none';
+        modal.classList.remove('show');
+        modal.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+        
+        // Remover backdrop
+        const backdrop = document.querySelector('.modal-backdrop');
+        if (backdrop) {
+            backdrop.remove();
+        }
+        
+        // Resetear modal
+        resetModal();
+    }
+    
+    function resetModal() {
+        document.getElementById('assignmentTypeSelection').style.display = 'block';
+        document.getElementById('comunidadMessage').style.display = 'none';
+        document.getElementById('freelanceForm').style.display = 'none';
+        document.getElementById('submitAssignmentBtn').style.display = 'none';
+        
+        // Limpiar formulario
+        const form = document.getElementById('assignmentForm');
+        if (form) {
+            form.reset();
+        }
+    }
+    
+    function selectAssignmentType(type) {
+        document.getElementById('assignmentTypeSelection').style.display = 'none';
+        
+        if (type === 'comunidad') {
+            document.getElementById('comunidadMessage').style.display = 'block';
+            document.getElementById('submitAssignmentBtn').style.display = 'none';
+        } else if (type === 'freelance') {
+            document.getElementById('freelanceForm').style.display = 'block';
+            document.getElementById('submitAssignmentBtn').style.display = 'inline-block';
+        }
+        
+        // Reinicializar iconos de Feather
+        if (typeof feather !== 'undefined') {
+            feather.replace();
+        }
+    }
+    
+    function backToTypeSelection() {
+        document.getElementById('assignmentTypeSelection').style.display = 'block';
+        document.getElementById('comunidadMessage').style.display = 'none';
+        document.getElementById('freelanceForm').style.display = 'none';
+        document.getElementById('submitAssignmentBtn').style.display = 'none';
+        
+        // Reinicializar iconos de Feather
+        if (typeof feather !== 'undefined') {
+            feather.replace();
+        }
+    }
+    
+    function submitAssignment() {
+        const form = document.getElementById('assignmentForm');
+        
+        if (!form.checkValidity()) {
+            form.reportValidity();
+            return;
+        }
+        
+        const formData = {
+            aliado: document.getElementById('aliadoSelect').value,
+            freelance: document.getElementById('freelanceSelect').value
+        };
+        
+        console.log('Enviando datos de asignación:', formData);
+        
+        fetch('/api/asignaciones', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Respuesta del servidor:', data);
+            if (data.status === 'success') {
+                alert('Asignación creada exitosamente');
+                hideModal('addAssignmentModal');
+                location.reload();
+            } else {
+                alert('Error al crear la asignación: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error al enviar los datos');
+        });
+    }
+</script>
 {% endblock %}

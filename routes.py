@@ -710,6 +710,30 @@ def create_aliado():
         app.logger.error(f"Error al crear aliado: {str(e)}")
         return jsonify({'status': 'error', 'message': str(e)}), 500
 
+@app.route('/api/asignaciones', methods=['POST'])
+@login_required
+def create_asignacion():
+    try:
+        data = request.get_json()
+        
+        if not data:
+            return jsonify({'status': 'error', 'message': 'No se recibieron datos'}), 400
+
+        print("\n=== DATOS DE ASIGNACIÓN RECIBIDOS ===")
+        print(f"Aliado ID: {data.get('aliado')}")
+        print(f"Freelance ID: {data.get('freelance')}")
+        print("=" * 40)
+
+        return jsonify({
+            'status': 'success',
+            'message': 'Asignación creada exitosamente',
+            'data': data
+        })
+
+    except Exception as e:
+        app.logger.error(f"Error al crear asignación: {str(e)}")
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+
 @app.route('/aliados/aliados')
 @login_required
 def aliados_aliados():
