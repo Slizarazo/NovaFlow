@@ -103,7 +103,7 @@ def dashboard_crecimiento():
 def dashboard_growth():
     if current_user.role == 'supervisor':
         return redirect(url_for('dashboard'))
-        
+
     # Data for growth dashboard
     aliados = Aliado.ALIADOS
     ventas_trimestre_total = sum(aliado.ventas_trimestre for aliado in aliados)
@@ -579,106 +579,92 @@ def aliados_usuarios():
 def create_user():
     try:
         data = request.get_json()
-        user_type = data.get('tipo')
-        
-        print("=== DATOS RECIBIDOS PARA NUEVO USUARIO ===")
-        print(f"Tipo de usuario: {user_type}")
-        
-        if user_type == 'gestor':
-            print("Datos del Gestor:")
-            print(f"  - Nombre completo: {data.get('nombre_completo', '')}")
-            print(f"  - Correo: {data.get('correo', '')}")
-            print(f"  - Nombre organización: {data.get('nombre_organizacion', '')}")
-            
-        elif user_type == 'aliado':
-            print("Datos del Aliado:")
-            print(f"  - Nombre completo: {data.get('nombre_completo', '')}")
-            print(f"  - Correo: {data.get('correo', '')}")
-            print(f"  - Región: {data.get('region', '')}")
-            print(f"  - Industria: {data.get('industria', '')}")
-            print(f"  - Contacto principal: {data.get('contacto_principal', '')}")
-            print(f"  - Tamaño: {data.get('tamano', '')}")
-            print(f"  - Empleados: {data.get('empleados', '')}")
-            print(f"  - Dirección: {data.get('direccion', '')}")
-            print(f"  - Ciudad: {data.get('ciudad', '')}")
-            print(f"  - Estado: {data.get('estado_dir', '')}")
-            print(f"  - Código postal: {data.get('codigo_postal', '')}")
-            print(f"  - País: {data.get('pais', '')}")
-            
-        elif user_type == 'empleado':
-            print("Datos del Empleado:")
-            print(f"  - Aliado: {data.get('aliado', '')}")
-            print(f"  - Cargo: {data.get('cargo', '')}")
-            print(f"  - Rol laboral: {data.get('rol_laboral', '')}")
-            
-        elif user_type == 'freelance':
-            print("Datos del Freelance:")
-            print(f"  - Especialidad: {data.get('especialidad', '')}")
-            print(f"  - Disponibilidad: {data.get('disponibilidad', '')}%")
-            print(f"  - Nivel: {data.get('nivel', '')}")
-            print(f"  - Fecha incorporación: {data.get('fecha_incorporacion', '')}")
-            print(f"  - Ubicación: {data.get('ubicacion', '')}")
-            print(f"  - Tarifa por hora: ${data.get('tarifa_hora', '')}")
-            
-        print("=========================================")
-        
-        # Aquí se podría agregar la lógica para guardar en base de datos
-        # Por ahora solo retornamos éxito
-        
+        print(f"Datos recibidos: {data}")
+
+        if not data:
+            return jsonify({'status': 'error', 'message': 'No se recibieron datos'}), 400
+
+        tipo = data.get('tipo')
+        print(f"Tipo de usuario: {tipo}")
+
+        if tipo == 'gestor':
+            print("Datos del gestor:")
+            print(f"  - Nombre: {data.get('nombre')}")
+            print(f"  - Email: {data.get('email')}")
+            print(f"  - Teléfono: {data.get('telefono')}")
+            print(f"  - Departamento: {data.get('departamento')}")
+            print(f"  - Cargo: {data.get('cargo')}")
+
+        elif tipo == 'aliado':
+            print("Datos del aliado:")
+            print(f"  - Nombre Empresa: {data.get('nombreEmpresa')}")
+            print(f"  - Email: {data.get('email')}")
+            print(f"  - Teléfono: {data.get('telefono')}")
+            print(f"  - Contacto Principal: {data.get('contactoPrincipal')}")
+            print(f"  - Industria: {data.get('industria')}")
+            print(f"  - Dirección: {data.get('direccion')}")
+            print(f"  - Ciudad: {data.get('ciudad')}")
+            print(f"  - País: {data.get('pais')}")
+
+        elif tipo == 'empleado':
+            print("Datos del empleado:")
+            print(f"  - Nombre: {data.get('nombre')}")
+            print(f"  - Email: {data.get('email')}")
+            print(f"  - Teléfono: {data.get('telefono')}")
+            print(f"  - Puesto: {data.get('puesto')}")
+            print(f"  - Departamento: {data.get('departamento')}")
+            print(f"  - Salario: {data.get('salario')}")
+            print(f"  - Fecha Ingreso: {data.get('fechaIngreso')}")
+
+        elif tipo == 'freelance':
+            print("Datos del freelance:")
+            print(f"  - Nombre: {data.get('nombre')}")
+            print(f"  - Email: {data.get('email')}")
+            print(f"  - Teléfono: {data.get('telefono')}")
+            print(f"  - Especialidad: {data.get('especialidad')}")
+            print(f"  - Tarifa Hora: {data.get('tarifaHora')}")
+            print(f"  - Disponibilidad: {data.get('disponibilidad')}")
+            print(f"  - Experiencia: {data.get('experiencia')}")
+            print(f"  - Portfolio: {data.get('portfolio')}")
+
         return jsonify({
-            'status': 'success', 
-            'message': f'Usuario de tipo {user_type} creado exitosamente'
+            'status': 'success',
+            'message': f'Usuario {tipo} procesado correctamente',
+            'data': data
         })
-        
+
     except Exception as e:
-        print(f"Error al crear usuario: {str(e)}")
-        return jsonify({
-            'status': 'error', 
-            'message': f'Error interno del servidor: {str(e)}'
-        }), 500
+        print(f"Error al procesar usuario: {str(e)}")
+        return jsonify({'status': 'error', 'message': str(e)}), 500
 
 @app.route('/api/productos', methods=['POST'])
 @login_required
 def create_product():
     try:
         data = request.get_json()
-        
-        print("=== DATOS RECIBIDOS PARA NUEVO PRODUCTO ===")
-        print(f"Nombre: {data.get('nombre', '')}")
-        print(f"Categoría: {data.get('categoria', '')}")
-        print(f"Familia: {data.get('familia', '')}")
-        print(f"Estado: {data.get('estado', '')}")
-        print("==========================================")
-        
-        # Validar que todos los campos requeridos estén presentes
-        required_fields = ['nombre', 'categoria', 'familia', 'estado']
-        for field in required_fields:
-            if not data.get(field):
-                return jsonify({
-                    'status': 'error',
-                    'message': f'El campo {field} es requerido'
-                }), 400
-        
-        # Aquí se podría agregar la lógica para guardar en base de datos
-        # Por ahora solo retornamos éxito
-        
+        print(f"Datos del producto recibidos: {data}")
+
+        if not data:
+            return jsonify({'status': 'error', 'message': 'No se recibieron datos'}), 400
+
+        print("Datos del producto:")
+        print(f"  - Nombre: {data.get('nombre')}")
+        print(f"  - Categoría: {data.get('categoria')}")
+        print(f"  - Familia: {data.get('familia')}")
+        print(f"  - Estado: {data.get('estado')}")
+
+        # Aquí puedes agregar la lógica para guardar en base de datos
+        # Por ahora solo imprimimos los datos
+
         return jsonify({
             'status': 'success',
             'message': 'Producto creado exitosamente',
-            'data': {
-                'nombre': data.get('nombre'),
-                'categoria': data.get('categoria'),
-                'familia': data.get('familia'),
-                'estado': data.get('estado')
-            }
+            'data': data
         })
-        
+
     except Exception as e:
-        print(f"Error al crear producto: {str(e)}")
-        return jsonify({
-            'status': 'error',
-            'message': f'Error interno del servidor: {str(e)}'
-        }), 500
+        print(f"Error al procesar producto: {str(e)}")
+        return jsonify({'status': 'error', 'message': str(e)}), 500
 
 @app.route('/aliados/aliados')
 @login_required
@@ -904,7 +890,7 @@ def proyectos_calculadora():
         data = request.json
         print("Received calculator data:", data)
         return jsonify({"status": "success"})
-        
+
     proyectos = Proyecto.PROYECTOS
     return render_template('proyectos/calculadora.html', 
                          title='Calculadora de Tiempos',

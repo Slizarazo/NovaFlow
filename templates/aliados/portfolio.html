@@ -313,73 +313,64 @@
 </div>
 {% endblock %}
 
-<!-- Modal Añadir Proyecto -->
+<!-- Modal Añadir Producto -->
 <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel" aria-hidden="true" style="display: none;">
     <div class="modal-dialog modal-lg">
         <div class="modal-content" style="border-radius: 12px; border: none;">
             <div class="modal-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 12px 12px 0 0; padding: 20px 30px; position: relative;">
-                <h5 class="modal-title" id="addProductModalLabel" style="font-weight: 600; margin: 0;">Añadir Proyecto</h5>
+                <h5 class="modal-title" id="addProductModalLabel" style="font-weight: 600; margin: 0;">Añadir Producto</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background: none; border: none; color: white; font-size: 24px; font-weight: 300; position: absolute; right: 20px; top: 50%; transform: translateY(-50%); opacity: 0.8;">&times;</button>
             </div>
             <div class="modal-body" style="padding: 30px; background: white;">
                 <div class="form-section" style="margin-bottom: 25px;">
-                    <h6 style="color: #4a5568; font-weight: 600; margin-bottom: 20px; font-size: 16px;">Información del Proyecto</h6>
+                    <h6 style="color: #4a5568; font-weight: 600; margin-bottom: 20px; font-size: 16px;">Información del Producto</h6>
                     
                     <form id="addProductForm">
                         <div class="mb-4">
-                            <label for="productName" class="form-label" style="color: #4a5568; font-weight: 500; margin-bottom: 8px; display: block;">Nombre del Proyecto</label>
+                            <label for="productName" class="form-label" style="color: #4a5568; font-weight: 500; margin-bottom: 8px; display: block;">Nombre del Producto</label>
                             <input type="text" class="form-control" id="productName" placeholder="Ej: Sistema de Gestión Empresarial" required style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 16px; font-size: 14px; transition: border-color 0.2s;">
                         </div>
                         
                         <div class="mb-4">
-                            <label for="productAliado" class="form-label" style="color: #4a5568; font-weight: 500; margin-bottom: 8px; display: block;">Aliado</label>
-                            <select class="form-select" id="productAliado" required style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 16px; font-size: 14px; background-color: white;">
-                                <option value="">Seleccionar aliado...</option>
-                                {% for aliado_id, aliado in aliados.items() %}
-                                <option value="{{ aliado_id }}">{{ aliado.nombre }}</option>
-                                {% endfor %}
+                            <label for="productCategory" class="form-label" style="color: #4a5568; font-weight: 500; margin-bottom: 8px; display: block;">Categoría</label>
+                            <select class="form-select" id="productCategory" required style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 16px; font-size: 14px; background-color: white;">
+                                <option value="">Seleccionar categoría...</option>
+                                <option value="software">Software</option>
+                                <option value="consultoria">Consultoría</option>
+                                <option value="desarrollo">Desarrollo</option>
+                                <option value="analisis">Análisis</option>
+                                <option value="soporte">Soporte</option>
                             </select>
-                        </div>
-                        
-                        <div class="row mb-4">
-                            <div class="col-md-6">
-                                <label for="productFechaInicio" class="form-label" style="color: #4a5568; font-weight: 500; margin-bottom: 8px; display: block;">Fecha de Inicio</label>
-                                <input type="date" class="form-control" id="productFechaInicio" required style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 16px; font-size: 14px;">
-                            </div>
-                            <div class="col-md-6">
-                                <label for="productFechaFin" class="form-label" style="color: #4a5568; font-weight: 500; margin-bottom: 8px; display: block;">Fecha de Fin</label>
-                                <input type="date" class="form-control" id="productFechaFin" required style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 16px; font-size: 14px;">
-                            </div>
                         </div>
                         
                         <div class="mb-4">
-                            <label for="productEtapa" class="form-label" style="color: #4a5568; font-weight: 500; margin-bottom: 8px; display: block;">Etapa</label>
-                            <select class="form-select" id="productEtapa" required style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 16px; font-size: 14px; background-color: white;">
-                                <option value="">Seleccionar etapa...</option>
-                                <option value="propuesta">Propuesta</option>
-                                <option value="planificacion">Planificación</option>
-                                <option value="ejecucion">Ejecución</option>
-                                <option value="cierre">Cierre</option>
-                                <option value="post-evaluacion">Post-evaluación</option>
+                            <label for="productFamily" class="form-label" style="color: #4a5568; font-weight: 500; margin-bottom: 8px; display: block;">Familia</label>
+                            <select class="form-select" id="productFamily" required style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 16px; font-size: 14px; background-color: white;">
+                                <option value="">Seleccionar familia...</option>
+                                <option value="tecnologia">Tecnología</option>
+                                <option value="finanzas">Finanzas</option>
+                                <option value="recursos-humanos">Recursos Humanos</option>
+                                <option value="marketing">Marketing</option>
+                                <option value="operaciones">Operaciones</option>
                             </select>
                         </div>
                         
-                        <div class="row mb-4">
-                            <div class="col-md-6">
-                                <label for="productMonto" class="form-label" style="color: #4a5568; font-weight: 500; margin-bottom: 8px; display: block;">Monto</label>
-                                <input type="number" class="form-control" id="productMonto" placeholder="$ Monto del proyecto" required style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 16px; font-size: 14px;">
-                            </div>
-                            <div class="col-md-6">
-                                <label for="productConsultores" class="form-label" style="color: #4a5568; font-weight: 500; margin-bottom: 8px; display: block;">Consultores Asignados</label>
-                                <input type="number" class="form-control" id="productConsultores" placeholder="Número de consultores" required style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 16px; font-size: 14px;">
-                            </div>
+                        <div class="mb-4">
+                            <label for="productStatus" class="form-label" style="color: #4a5568; font-weight: 500; margin-bottom: 8px; display: block;">Estado</label>
+                            <select class="form-select" id="productStatus" required style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 16px; font-size: 14px; background-color: white;">
+                                <option value="">Seleccionar estado...</option>
+                                <option value="activo">Activo</option>
+                                <option value="desarrollo">En Desarrollo</option>
+                                <option value="pausado">Pausado</option>
+                                <option value="descontinuado">Descontinuado</option>
+                            </select>
                         </div>
                     </form>
                 </div>
             </div>
             <div class="modal-footer" style="padding: 20px 30px; border-top: 1px solid #e2e8f0; display: flex; gap: 12px; justify-content: flex-end;">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="background: #f7fafc; color: #4a5568; border: 1px solid #e2e8f0; padding: 10px 20px; border-radius: 8px; font-weight: 500;">Cancelar</button>
-                <button type="button" class="btn btn-primary" onclick="submitProductForm()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; padding: 10px 20px; border-radius: 8px; color: white; font-weight: 500;">Guardar Proyecto</button>
+                <button type="button" class="btn btn-primary" onclick="submitProductForm()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; padding: 10px 20px; border-radius: 8px; color: white; font-weight: 500;">Guardar Producto</button>
             </div>
         </div>
     </div>
@@ -452,61 +443,59 @@
             });
         }
         
-        // Configurar eventos de botones por ID
-        const addBtn = document.getElementById('addProjectBtn');
-        if (addBtn) {
-            console.log('Configurando botón de añadir proyecto');
-            addBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                console.log('Click en botón añadir proyecto');
-                showModal('addProductModal');
-            });
-        } else {
-            console.error('Botón de añadir no encontrado');
-        }
-        
-        const importBtn = document.getElementById('importProjectBtn');
-        if (importBtn) {
-            importBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                console.log('Click en botón importar proyecto');
-                showModal('importProductModal');
-            });
-        }
-        
-        const exportBtn = document.getElementById('exportProjectBtn');
-        if (exportBtn) {
-            exportBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                console.log('Click en botón exportar proyecto');
-                showModal('exportProductModal');
-            });
-        }
+        // Configurar eventos de botones por ID específicos
+        setTimeout(function() {
+            const addBtn = document.getElementById('addProjectBtn');
+            if (addBtn) {
+                console.log('Configurando botón de añadir producto');
+                addBtn.onclick = function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('Click en botón añadir producto');
+                    showModal('addProductModal');
+                };
+            } else {
+                console.error('Botón de añadir no encontrado');
+            }
+            
+            const importBtn = document.getElementById('importProjectBtn');
+            if (importBtn) {
+                importBtn.onclick = function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('Click en botón importar producto');
+                    showModal('importProductModal');
+                };
+            }
+            
+            const exportBtn = document.getElementById('exportProjectBtn');
+            if (exportBtn) {
+                exportBtn.onclick = function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('Click en botón exportar producto');
+                    showModal('exportProductModal');
+                };
+            }
+        }, 100);
         
         // Configurar botones de cerrar
-        const closeButtons = document.querySelectorAll('[data-bs-dismiss="modal"]');
-        closeButtons.forEach(function(btn) {
-            btn.addEventListener('click', function(e) {
+        document.addEventListener('click', function(e) {
+            if (e.target.hasAttribute('data-bs-dismiss') && e.target.getAttribute('data-bs-dismiss') === 'modal') {
                 e.preventDefault();
                 e.stopPropagation();
-                const modal = btn.closest('.modal');
+                const modal = e.target.closest('.modal');
                 if (modal) {
                     hideModal(modal.id);
                 }
-            });
+            }
         });
         
         // Cerrar modales al hacer click en el backdrop
-        const modals = document.querySelectorAll('.modal');
-        modals.forEach(function(modal) {
-            modal.addEventListener('click', function(e) {
-                if (e.target === modal) {
-                    hideModal(modal.id);
-                }
-            });
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('modal')) {
+                hideModal(e.target.id);
+            }
         });
     });
     
@@ -581,17 +570,14 @@
         
         const formData = {
             nombre: document.getElementById('productName').value,
-            aliado_id: parseInt(document.getElementById('productAliado').value),
-            fecha_inicio: document.getElementById('productFechaInicio').value,
-            fecha_fin: document.getElementById('productFechaFin').value,
-            etapa: document.getElementById('productEtapa').value,
-            monto: parseFloat(document.getElementById('productMonto').value),
-            consultores_asignados: parseInt(document.getElementById('productConsultores').value)
+            categoria: document.getElementById('productCategory').value,
+            familia: document.getElementById('productFamily').value,
+            estado: document.getElementById('productStatus').value
         };
         
-        console.log('Enviando datos del proyecto:', formData);
+        console.log('Enviando datos del producto:', formData);
         
-        fetch('/api/proyectos', {
+        fetch('/api/productos', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -602,11 +588,11 @@
         .then(data => {
             console.log('Respuesta del servidor:', data);
             if (data.status === 'success') {
-                alert('Proyecto creado exitosamente');
+                alert('Producto creado exitosamente');
                 hideModal('addProductModal');
                 location.reload();
             } else {
-                alert('Error al crear el proyecto: ' + data.message);
+                alert('Error al crear el producto: ' + data.message);
             }
         })
         .catch(error => {
@@ -618,123 +604,4 @@
 {% endblock %}
 
 
-        <!-- Modal Añadir Producto -->
-        <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel" aria-hidden="true" style="display: none;">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content" style="border-radius: 12px; border: none;">
-                    <div class="modal-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 12px 12px 0 0; padding: 20px 30px; position: relative;">
-                        <h5 class="modal-title" id="addProductModalLabel" style="font-weight: 600; margin: 0;">Añadir Producto</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background: none; border: none; color: white; font-size: 24px; font-weight: 300; position: absolute; right: 20px; top: 50%; transform: translateY(-50%); opacity: 0.8;">&times;</button>
-                    </div>
-                    <div class="modal-body" style="padding: 30px; background: white;">
-                        <div class="form-section" style="margin-bottom: 25px;">
-                            <h6 style="color: #4a5568; font-weight: 600; margin-bottom: 20px; font-size: 16px;">Información del Producto</h6>
-                            
-                            <form id="addProductForm">
-                                <div class="mb-4">
-                                    <label for="productName" class="form-label" style="color: #4a5568; font-weight: 500; margin-bottom: 8px; display: block;">Nombre del Producto</label>
-                                    <input type="text" class="form-control" id="productName" placeholder="Ej: Sistema de Gestión Empresarial" required style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 16px; font-size: 14px; transition: border-color 0.2s;">
-                                </div>
-                                
-                                <div class="mb-4">
-                                    <label for="productCategory" class="form-label" style="color: #4a5568; font-weight: 500; margin-bottom: 8px; display: block;">Categoría</label>
-                                    <select class="form-select" id="productCategory" required style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 16px; font-size: 14px; background-color: white;">
-                                        <option value="">Seleccionar categoría...</option>
-                                        <option value="software">Software</option>
-                                        <option value="consultoria">Consultoría</option>
-                                        <option value="desarrollo">Desarrollo</option>
-                                        <option value="analisis">Análisis</option>
-                                        <option value="soporte">Soporte</option>
-                                    </select>
-                                </div>
-                                
-                                <div class="mb-4">
-                                    <label for="productFamily" class="form-label" style="color: #4a5568; font-weight: 500; margin-bottom: 8px; display: block;">Familia</label>
-                                    <select class="form-select" id="productFamily" required style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 16px; font-size: 14px; background-color: white;">
-                                        <option value="">Seleccionar familia...</option>
-                                        <option value="tecnologia">Tecnología</option>
-                                        <option value="finanzas">Finanzas</option>
-                                        <option value="recursos-humanos">Recursos Humanos</option>
-                                        <option value="marketing">Marketing</option>
-                                        <option value="operaciones">Operaciones</option>
-                                    </select>
-                                </div>
-                                
-                                <div class="mb-4">
-                                    <label for="productStatus" class="form-label" style="color: #4a5568; font-weight: 500; margin-bottom: 8px; display: block;">Estado</label>
-                                    <select class="form-select" id="productStatus" required style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 16px; font-size: 14px; background-color: white;">
-                                        <option value="">Seleccionar estado...</option>
-                                        <option value="activo">Activo</option>
-                                        <option value="desarrollo">En Desarrollo</option>
-                                        <option value="pausado">Pausado</option>
-                                        <option value="descontinuado">Descontinuado</option>
-                                    </select>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                    <div class="modal-footer" style="padding: 20px 30px; border-top: 1px solid #e2e8f0; display: flex; gap: 12px; justify-content: flex-end;">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="background: #f7fafc; color: #4a5568; border: 1px solid #e2e8f0; padding: 10px 20px; border-radius: 8px; font-weight: 500;">Cancelar</button>
-                        <button type="button" class="btn btn-primary" onclick="submitProductForm()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; padding: 10px 20px; border-radius: 8px; color: white; font-weight: 500;">Guardar Producto</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Modal Importar Producto -->
-        <div class="modal fade" id="importProductModal" tabindex="-1" aria-labelledby="importProductModalLabel" aria-hidden="true" style="display: none;">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="importProductModalLabel">Importar Producto</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="importProductForm">
-                            <div class="mb-3">
-                                <label for="productFile" class="form-label">Archivo CSV/Excel</label>
-                                <input type="file" class="form-control" id="productFile" accept=".csv,.xlsx" required>
-                            </div>
-                            <div class="alert alert-info">
-                                <small>El archivo debe contener las columnas: Nombre, Descripción, Categoría</small>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="submit" form="importProductForm" class="btn btn-primary">Importar</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Modal Exportar Producto -->
-        <div class="modal fade" id="exportProductModal" tabindex="-1" aria-labelledby="exportProductModalLabel" aria-hidden="true" style="display: none;">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exportProductModalLabel">Exportar Producto</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="exportProductForm">
-                            <div class="mb-3">
-                                <label class="form-label">Formato de Exportación</label>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="exportFormat" id="formatCSV" value="csv" checked>
-                                    <label class="form-check-label" for="formatCSV">CSV</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="exportFormat" id="formatExcel" value="excel">
-                                    <label class="form-check-label" for="formatExcel">Excel</label>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="submit" form="exportProductForm" class="btn btn-primary">Exportar</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+        
