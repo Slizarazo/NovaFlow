@@ -637,6 +637,49 @@ def create_user():
             'message': f'Error interno del servidor: {str(e)}'
         }), 500
 
+@app.route('/api/productos', methods=['POST'])
+@login_required
+def create_product():
+    try:
+        data = request.get_json()
+        
+        print("=== DATOS RECIBIDOS PARA NUEVO PRODUCTO ===")
+        print(f"Nombre: {data.get('nombre', '')}")
+        print(f"Categoría: {data.get('categoria', '')}")
+        print(f"Familia: {data.get('familia', '')}")
+        print(f"Estado: {data.get('estado', '')}")
+        print("==========================================")
+        
+        # Validar que todos los campos requeridos estén presentes
+        required_fields = ['nombre', 'categoria', 'familia', 'estado']
+        for field in required_fields:
+            if not data.get(field):
+                return jsonify({
+                    'status': 'error',
+                    'message': f'El campo {field} es requerido'
+                }), 400
+        
+        # Aquí se podría agregar la lógica para guardar en base de datos
+        # Por ahora solo retornamos éxito
+        
+        return jsonify({
+            'status': 'success',
+            'message': 'Producto creado exitosamente',
+            'data': {
+                'nombre': data.get('nombre'),
+                'categoria': data.get('categoria'),
+                'familia': data.get('familia'),
+                'estado': data.get('estado')
+            }
+        })
+        
+    except Exception as e:
+        print(f"Error al crear producto: {str(e)}")
+        return jsonify({
+            'status': 'error',
+            'message': f'Error interno del servidor: {str(e)}'
+        }), 500
+
 @app.route('/aliados/aliados')
 @login_required
 def aliados_aliados():
