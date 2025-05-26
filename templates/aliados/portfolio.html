@@ -64,13 +64,13 @@
     <div class="dashboard-section-title">
         <h4>Portafolio de Proyectos</h4>
         <div class="dashboard-section-actions">
-            <button type="button" class="dashboard-section-action" data-bs-toggle="modal" data-bs-target="#addProductModal" title="Añadir Producto">
+            <button type="button" class="dashboard-section-action" id="addProjectBtn" title="Añadir Proyecto">
                 <i data-feather="plus"></i>
             </button>
-            <button type="button" class="dashboard-section-action" data-bs-toggle="modal" data-bs-target="#importProductModal" title="Importar Producto">
+            <button type="button" class="dashboard-section-action" id="importProjectBtn" title="Importar Proyecto">
                 <i data-feather="upload"></i>
             </button>
-            <button type="button" class="dashboard-section-action" data-bs-toggle="modal" data-bs-target="#exportProductModal" title="Exportar Producto">
+            <button type="button" class="dashboard-section-action" id="exportProjectBtn" title="Exportar Proyecto">
                 <i data-feather="download"></i>
             </button>
         </div>
@@ -452,8 +452,8 @@
             });
         }
         
-        // Configurar eventos de botones directamente
-        const addBtn = document.querySelector('[data-bs-toggle="modal"][data-bs-target="#addProductModal"]');
+        // Configurar eventos de botones por ID
+        const addBtn = document.getElementById('addProjectBtn');
         if (addBtn) {
             console.log('Configurando botón de añadir proyecto');
             addBtn.addEventListener('click', function(e) {
@@ -466,18 +466,22 @@
             console.error('Botón de añadir no encontrado');
         }
         
-        const importBtn = document.querySelector('[data-bs-toggle="modal"][data-bs-target="#importProductModal"]');
+        const importBtn = document.getElementById('importProjectBtn');
         if (importBtn) {
             importBtn.addEventListener('click', function(e) {
                 e.preventDefault();
+                e.stopPropagation();
+                console.log('Click en botón importar proyecto');
                 showModal('importProductModal');
             });
         }
         
-        const exportBtn = document.querySelector('[data-bs-toggle="modal"][data-bs-target="#exportProductModal"]');
+        const exportBtn = document.getElementById('exportProjectBtn');
         if (exportBtn) {
             exportBtn.addEventListener('click', function(e) {
                 e.preventDefault();
+                e.stopPropagation();
+                console.log('Click en botón exportar proyecto');
                 showModal('exportProductModal');
             });
         }
@@ -485,7 +489,9 @@
         // Configurar botones de cerrar
         const closeButtons = document.querySelectorAll('[data-bs-dismiss="modal"]');
         closeButtons.forEach(function(btn) {
-            btn.addEventListener('click', function() {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
                 const modal = btn.closest('.modal');
                 if (modal) {
                     hideModal(modal.id);
