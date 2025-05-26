@@ -394,6 +394,16 @@
                                     {% endfor %}
                                 </select>
                             </div>
+                            
+                            <div class="mb-4">
+                                <label for="fechaInicio" class="form-label" style="color: #2d3748; font-weight: 500; margin-bottom: 8px; display: block; font-size: 14px;">Fecha de Inicio</label>
+                                <input type="date" class="form-control" id="fechaInicio" required style="border: 1px solid #d1d5db; border-radius: 8px; padding: 12px 14px; font-size: 14px; width: 100%; background-color: #f9fafb;">
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="fechaFin" class="form-label" style="color: #2d3748; font-weight: 500; margin-bottom: 8px; display: block; font-size: 14px;">Fecha de Fin</label>
+                                <input type="date" class="form-control" id="fechaFin" required style="border: 1px solid #d1d5db; border-radius: 8px; padding: 12px 14px; font-size: 14px; width: 100%; background-color: #f9fafb;">
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -609,15 +619,25 @@
         
         const aliadoSelect = document.getElementById('aliadoSelect');
         const freelanceSelect = document.getElementById('freelanceSelect');
+        const fechaInicio = document.getElementById('fechaInicio');
+        const fechaFin = document.getElementById('fechaFin');
         
-        if (!aliadoSelect || !freelanceSelect) {
+        if (!aliadoSelect || !freelanceSelect || !fechaInicio || !fechaFin) {
             alert('Error: No se pudieron encontrar todos los campos del formulario');
+            return;
+        }
+        
+        // Validar que la fecha de fin sea posterior a la fecha de inicio
+        if (fechaFin.value && fechaInicio.value && fechaFin.value <= fechaInicio.value) {
+            alert('La fecha de fin debe ser posterior a la fecha de inicio');
             return;
         }
         
         const formData = {
             aliado: aliadoSelect.value,
-            freelance: freelanceSelect.value
+            freelance: freelanceSelect.value,
+            fecha_inicio: fechaInicio.value,
+            fecha_fin: fechaFin.value
         };
         
         console.log('Enviando datos de asignación:', formData);

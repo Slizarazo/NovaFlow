@@ -722,6 +722,8 @@ def create_asignacion():
         print("\n=== DATOS DE ASIGNACIÓN RECIBIDOS ===")
         print(f"Aliado ID: {data.get('aliado')}")
         print(f"Freelance ID: {data.get('freelance')}")
+        print(f"Fecha de Inicio: {data.get('fecha_inicio')}")
+        print(f"Fecha de Fin: {data.get('fecha_fin')}")
         print("=" * 40)
 
         return jsonify({
