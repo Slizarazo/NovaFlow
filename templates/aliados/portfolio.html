@@ -314,25 +314,26 @@
     
     <!-- Modal Añadir Producto -->
     <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel" aria-hidden="true" style="display: none;">
-        <div class="modal-dialog" style="max-width: 350px; margin: 2rem auto;">
-            <div class="modal-content" style="border-radius: 12px; border: none;">
-                <div class="modal-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 12px 12px 0 0; padding: 20px 30px; position: relative;">
-                    <h5 class="modal-title" id="addProductModalLabel" style="font-weight: 600; margin: 0;">Añadir Producto</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background: none; border: none; color: white; font-size: 24px; font-weight: 300; position: absolute; right: 20px; top: 50%; transform: translateY(-50%); opacity: 0.8;">&times;</button>
+        <div class="modal-dialog" style="max-width: 400px; margin: 1rem auto; max-height: calc(100vh - 2rem);">
+            <div class="modal-content" style="border-radius: 12px; border: none; max-height: 100%; display: flex; flex-direction: column;">
+                <div class="modal-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 12px 12px 0 0; padding: 15px 20px; flex-shrink: 0;">
+                    <h5 class="modal-title" id="addProductModalLabel" style="font-weight: 600; margin: 0; font-size: 18px;">Añadir Producto</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background: none; border: none; color: white; font-size: 20px; opacity: 0.8; padding: 0; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center;">&times;</button>
                 </div>
-                <div class="modal-body" style="padding: 30px; background: white;">
-                    <div class="form-section" style="margin-bottom: 25px;">
-                        <h6 style="color: #4a5568; font-weight: 600; margin-bottom: 20px; font-size: 16px;">Información del Producto</h6>
+                
+                <div class="modal-body" style="padding: 20px; background: white; flex: 1; overflow-y: auto; min-height: 0;">
+                    <div class="form-section">
+                        <h6 style="color: #4a5568; font-weight: 600; margin-bottom: 16px; font-size: 14px;">Información del Producto</h6>
                         
                         <form id="addProductForm">
-                            <div class="mb-4">
-                                <label for="productName" class="form-label" style="color: #4a5568; font-weight: 500; margin-bottom: 8px; display: block;">Nombre del Producto</label>
-                                <input type="text" class="form-control" id="productName" placeholder="Ej: Sistema de Gestión Empresarial" required style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 16px; font-size: 14px; transition: border-color 0.2s;">
+                            <div class="mb-3">
+                                <label for="productName" class="form-label" style="color: #4a5568; font-weight: 500; margin-bottom: 6px; display: block; font-size: 13px;">Nombre del Producto</label>
+                                <input type="text" class="form-control" id="productName" placeholder="Ej: Sistema de Gestión Empresarial" required style="border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px 12px; font-size: 13px; transition: border-color 0.2s;">
                             </div>
                             
-                            <div class="mb-4">
-                                <label for="productCategory" class="form-label" style="color: #4a5568; font-weight: 500; margin-bottom: 8px; display: block;">Categoría</label>
-                                <select class="form-select" id="productCategory" required style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 16px; font-size: 14px; background-color: white;">
+                            <div class="mb-3">
+                                <label for="productCategory" class="form-label" style="color: #4a5568; font-weight: 500; margin-bottom: 6px; display: block; font-size: 13px;">Categoría</label>
+                                <select class="form-select" id="productCategory" required style="border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px 12px; font-size: 13px; background-color: white;">
                                     <option value="">Seleccionar categoría...</option>
                                     <option value="software">Software</option>
                                     <option value="consultoria">Consultoría</option>
@@ -342,9 +343,9 @@
                                 </select>
                             </div>
                             
-                            <div class="mb-4">
-                                <label for="productFamily" class="form-label" style="color: #4a5568; font-weight: 500; margin-bottom: 8px; display: block;">Familia</label>
-                                <select class="form-select" id="productFamily" required style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 16px; font-size: 14px; background-color: white;">
+                            <div class="mb-3">
+                                <label for="productFamily" class="form-label" style="color: #4a5568; font-weight: 500; margin-bottom: 6px; display: block; font-size: 13px;">Familia</label>
+                                <select class="form-select" id="productFamily" required style="border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px 12px; font-size: 13px; background-color: white;">
                                     <option value="">Seleccionar familia...</option>
                                     <option value="tecnologia">Tecnología</option>
                                     <option value="finanzas">Finanzas</option>
@@ -354,9 +355,9 @@
                                 </select>
                             </div>
                             
-                            <div class="mb-4">
-                                <label for="productStatus" class="form-label" style="color: #4a5568; font-weight: 500; margin-bottom: 8px; display: block;">Estado</label>
-                                <select class="form-select" id="productStatus" required style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 16px; font-size: 14px; background-color: white;">
+                            <div class="mb-3">
+                                <label for="productStatus" class="form-label" style="color: #4a5568; font-weight: 500; margin-bottom: 6px; display: block; font-size: 13px;">Estado</label>
+                                <select class="form-select" id="productStatus" required style="border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px 12px; font-size: 13px; background-color: white;">
                                     <option value="">Seleccionar estado...</option>
                                     <option value="activo">Activo</option>
                                     <option value="desarrollo">En Desarrollo</option>
@@ -367,9 +368,10 @@
                         </form>
                     </div>
                 </div>
-                <div class="modal-footer" style="padding: 20px 30px; border-top: 1px solid #e2e8f0; display: flex; gap: 12px; justify-content: flex-end;">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="background: #f7fafc; color: #4a5568; border: 1px solid #e2e8f0; padding: 10px 20px; border-radius: 8px; font-weight: 500;">Cancelar</button>
-                    <button type="button" class="btn btn-primary" onclick="submitProductForm()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; padding: 10px 20px; border-radius: 8px; color: white; font-weight: 500;">Guardar Producto</button>
+                
+                <div class="modal-footer" style="padding: 15px 20px; border-top: 1px solid #e2e8f0; background: white; border-radius: 0 0 12px 12px; display: flex; gap: 10px; justify-content: flex-end; flex-shrink: 0;">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="background: #f7fafc; color: #4a5568; border: 1px solid #e2e8f0; padding: 8px 16px; border-radius: 6px; font-weight: 500; font-size: 13px;">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="submitProductForm()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; padding: 8px 16px; border-radius: 6px; color: white; font-weight: 500; font-size: 13px;">Guardar Producto</button>
                 </div>
             </div>
         </div>
