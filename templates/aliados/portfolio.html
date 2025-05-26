@@ -452,55 +452,57 @@
             });
         }
         
-        // Configurar todos los botones de modal
-        setupModalEvents();
-    });
-    
-    function setupModalEvents() {
-        console.log('Configurando eventos de modal...');
-        
-        // Buscar todos los botones que abren modales
-        const modalButtons = document.querySelectorAll('[data-bs-toggle="modal"]');
-        console.log('Botones de modal encontrados:', modalButtons.length);
-        
-        modalButtons.forEach(function(button) {
-            const targetModalId = button.getAttribute('data-bs-target');
-            console.log('Configurando botón para modal:', targetModalId);
-            
-            button.addEventListener('click', function(e) {
+        // Configurar eventos de botones directamente
+        const addBtn = document.querySelector('[data-bs-toggle="modal"][data-bs-target="#addProductModal"]');
+        if (addBtn) {
+            console.log('Configurando botón de añadir proyecto');
+            addBtn.addEventListener('click', function(e) {
                 e.preventDefault();
                 e.stopPropagation();
-                console.log('Click en botón para abrir modal:', targetModalId);
-                
-                if (targetModalId === '#addProductModal') {
-                    showModal('addProductModal');
-                } else if (targetModalId === '#importProductModal') {
-                    showModal('importProductModal');
-                } else if (targetModalId === '#exportProductModal') {
-                    showModal('exportProductModal');
+                console.log('Click en botón añadir proyecto');
+                showModal('addProductModal');
+            });
+        } else {
+            console.error('Botón de añadir no encontrado');
+        }
+        
+        const importBtn = document.querySelector('[data-bs-toggle="modal"][data-bs-target="#importProductModal"]');
+        if (importBtn) {
+            importBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                showModal('importProductModal');
+            });
+        }
+        
+        const exportBtn = document.querySelector('[data-bs-toggle="modal"][data-bs-target="#exportProductModal"]');
+        if (exportBtn) {
+            exportBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                showModal('exportProductModal');
+            });
+        }
+        
+        // Configurar botones de cerrar
+        const closeButtons = document.querySelectorAll('[data-bs-dismiss="modal"]');
+        closeButtons.forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                const modal = btn.closest('.modal');
+                if (modal) {
+                    hideModal(modal.id);
                 }
             });
         });
         
-        // Configurar eventos de cierre para todos los modales
-        const allModals = document.querySelectorAll('.modal');
-        allModals.forEach(function(modal) {
-            // Botones de cerrar
-            const closeButtons = modal.querySelectorAll('[data-bs-dismiss="modal"]');
-            closeButtons.forEach(function(closeBtn) {
-                closeBtn.addEventListener('click', function() {
-                    hideModal(modal.id);
-                });
-            });
-            
-            // Cerrar al hacer click fuera del modal
+        // Cerrar modales al hacer click en el backdrop
+        const modals = document.querySelectorAll('.modal');
+        modals.forEach(function(modal) {
             modal.addEventListener('click', function(e) {
                 if (e.target === modal) {
                     hideModal(modal.id);
                 }
             });
         });
-    }
+    });
     
     function showModal(modalId) {
         console.log('Mostrando modal:', modalId);
@@ -511,13 +513,16 @@
             return;
         }
         
+        // Mostrar modal
         modal.style.display = 'block';
         modal.classList.add('show');
+        modal.setAttribute('aria-hidden', 'false');
         document.body.style.overflow = 'hidden';
         
-        // Añadir backdrop si no existe
-        if (!document.querySelector('.modal-backdrop')) {
-            const backdrop = document.createElement('div');
+        // Añadir backdrop
+        let backdrop = document.querySelector('.modal-backdrop');
+        if (!backdrop) {
+            backdrop = document.createElement('div');
             backdrop.className = 'modal-backdrop fade show';
             document.body.appendChild(backdrop);
         }
@@ -534,8 +539,10 @@
             return;
         }
         
+        // Ocultar modal
         modal.style.display = 'none';
         modal.classList.remove('show');
+        modal.setAttribute('aria-hidden', 'true');
         document.body.style.overflow = '';
         
         // Remover backdrop
@@ -544,7 +551,7 @@
             backdrop.remove();
         }
         
-        // Limpiar formulario si existe
+        // Limpiar formulario
         const form = modal.querySelector('form');
         if (form) {
             form.reset();
