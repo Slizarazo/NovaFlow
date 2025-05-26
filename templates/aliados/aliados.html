@@ -91,6 +91,24 @@
     display: block !important;
     opacity: 1;
 }
+
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1050;
+    width: 100vw;
+    height: 100vh;
+    background-color: #000;
+}
+
+.modal-backdrop.fade {
+    opacity: 0;
+}
+
+.modal-backdrop.show {
+    opacity: 0.5;
+}
 </style>
 {% endblock %}
 
@@ -359,6 +377,65 @@
 </div>
 
 <script>
+// Inicializar el modal cuando se carga la página
+document.addEventListener('DOMContentLoaded', function() {
+    // Manejar click del botón de añadir aliado
+    const addButton = document.querySelector('[data-bs-target="#addAliadoModal"]');
+    const modal = document.getElementById('addAliadoModal');
+    
+    if (addButton && modal) {
+        addButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            showModal();
+        });
+    }
+    
+    // Manejar cierre del modal
+    const closeButtons = modal.querySelectorAll('[data-bs-dismiss="modal"]');
+    closeButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            hideModal();
+        });
+    });
+    
+    // Cerrar modal al hacer click fuera de él
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            hideModal();
+        }
+    });
+});
+
+function showModal() {
+    const modal = document.getElementById('addAliadoModal');
+    modal.style.display = 'block';
+    modal.classList.add('show');
+    document.body.style.overflow = 'hidden';
+    
+    // Añadir backdrop si no existe
+    if (!document.querySelector('.modal-backdrop')) {
+        const backdrop = document.createElement('div');
+        backdrop.className = 'modal-backdrop fade show';
+        document.body.appendChild(backdrop);
+    }
+}
+
+function hideModal() {
+    const modal = document.getElementById('addAliadoModal');
+    modal.style.display = 'none';
+    modal.classList.remove('show');
+    document.body.style.overflow = 'auto';
+    
+    // Remover backdrop
+    const backdrop = document.querySelector('.modal-backdrop');
+    if (backdrop) {
+        backdrop.remove();
+    }
+    
+    // Limpiar formulario
+    document.getElementById('addAliadoForm').reset();
+}
+
 function submitAliadoForm() {
     const formData = {
         tipo: 'aliado',
@@ -397,14 +474,7 @@ function submitAliadoForm() {
     .then(data => {
         if (data.status === 'success') {
             alert('Aliado creado exitosamente');
-            // Cerrar modal
-            const modalElement = document.getElementById('addAliadoModal');
-            if (modalElement && window.bootstrap) {
-                const modal = window.bootstrap.Modal.getInstance(modalElement);
-                if (modal) {
-                    modal.hide();
-                }
-            }
+            hideModal();
             // Recargar página para mostrar el nuevo aliado
             window.location.reload();
         } else {
