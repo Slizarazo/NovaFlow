@@ -1070,6 +1070,7 @@ def proyectos_general():
                          role=current_user.role)
 
 @app.route('/dashboard/supervisor')
+@login_required
 def dashboard_supervisor():
     # Simulamos estados de proyectos para el kanban
     estados = {
@@ -1114,4 +1115,8 @@ def dashboard_supervisor():
             {'id': 24, 'nombre': 'Sistema de Inventario'}
         ]
     }
-    return render_template('dashboard/supervisor.html', estados=estados)
+    return render_template('dashboard/supervisor.html', 
+                         title='Gestión de Proyectos', 
+                         config=app.config, 
+                         role=current_user.role, 
+                         estados=estados)

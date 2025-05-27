@@ -63,8 +63,9 @@
         <div style="min-width: 150px; background: #f8f9fa; border-radius: 6px; padding: 0.75rem;">
             <h6 style="margin: 0 0 0.5rem 0; color: #666; font-weight: 600; font-size: 0.8rem;">Oportunidad</h6>
             {% for proyecto in estados.oportunidad %}
-                <div style="background: white; border-radius: 4px; padding: 0.5rem; margin-bottom: 0.25rem; box-shadow: 0 1px 2px rgba(0,0,0,0.1);">
-                    <div style="font-weight: 500; margin-bottom: 0.1rem; font-size: 0.75rem;">{{ proyecto.nombre }}</div>
+                <div style="background: white; border-radius: 4px; padding: 0.5rem; margin-bottom: 0.25rem; box-shadow: 0 1px 2px rgba(0,0,0,0.1); position: relative;">
+                    <button onclick="openProyectoModal({{ proyecto.id }}, 'oportunidad')" style="position: absolute; top: 2px; right: 2px; background: none; border: none; padding: 2px; cursor: pointer; opacity: 0.7; font-size: 12px;" title="Ver detalles">👁️</button>
+                    <div style="font-weight: 500; margin-bottom: 0.1rem; font-size: 0.75rem; padding-right: 20px;">{{ proyecto.nombre }}</div>
                     <div style="font-size: 0.65rem; color: #666;">ID: {{ proyecto.id }}</div>
                 </div>
             {% endfor %}
@@ -73,8 +74,9 @@
         <div style="min-width: 150px; background: #f8f9fa; border-radius: 6px; padding: 0.75rem;">
             <h6 style="margin: 0 0 0.5rem 0; color: #666; font-weight: 600; font-size: 0.8rem;">Propuesta</h6>
             {% for proyecto in estados.propuesta %}
-                <div style="background: white; border-radius: 4px; padding: 0.5rem; margin-bottom: 0.25rem; box-shadow: 0 1px 2px rgba(0,0,0,0.1);">
-                    <div style="font-weight: 500; margin-bottom: 0.1rem; font-size: 0.75rem;">{{ proyecto.nombre }}</div>
+                <div style="background: white; border-radius: 4px; padding: 0.5rem; margin-bottom: 0.25rem; box-shadow: 0 1px 2px rgba(0,0,0,0.1); position: relative;">
+                    <button onclick="openProyectoModal({{ proyecto.id }}, 'propuesta')" style="position: absolute; top: 2px; right: 2px; background: none; border: none; padding: 2px; cursor: pointer; opacity: 0.7; font-size: 12px;" title="Ver detalles">👁️</button>
+                    <div style="font-weight: 500; margin-bottom: 0.1rem; font-size: 0.75rem; padding-right: 20px;">{{ proyecto.nombre }}</div>
                     <div style="font-size: 0.65rem; color: #666;">ID: {{ proyecto.id }}</div>
                 </div>
             {% endfor %}
@@ -83,8 +85,9 @@
         <div style="min-width: 150px; background: #f8f9fa; border-radius: 6px; padding: 0.75rem;">
             <h6 style="margin: 0 0 0.5rem 0; color: #666; font-weight: 600; font-size: 0.8rem;">Aprobación</h6>
             {% for proyecto in estados.aprobacion %}
-                <div style="background: white; border-radius: 4px; padding: 0.5rem; margin-bottom: 0.25rem; box-shadow: 0 1px 2px rgba(0,0,0,0.1);">
-                    <div style="font-weight: 500; margin-bottom: 0.1rem; font-size: 0.75rem;">{{ proyecto.nombre }}</div>
+                <div style="background: white; border-radius: 4px; padding: 0.5rem; margin-bottom: 0.25rem; box-shadow: 0 1px 2px rgba(0,0,0,0.1); position: relative;">
+                    <button onclick="openProyectoModal({{ proyecto.id }}, 'aprobado')" style="position: absolute; top: 2px; right: 2px; background: none; border: none; padding: 2px; cursor: pointer; opacity: 0.7; font-size: 12px;" title="Ver detalles">👁️</button>
+                    <div style="font-weight: 500; margin-bottom: 0.1rem; font-size: 0.75rem; padding-right: 20px;">{{ proyecto.nombre }}</div>
                     <div style="font-size: 0.65rem; color: #666;">ID: {{ proyecto.id }}</div>
                 </div>
             {% endfor %}
@@ -93,8 +96,9 @@
         <div style="min-width: 150px; background: #f8f9fa; border-radius: 6px; padding: 0.75rem;">
             <h6 style="margin: 0 0 0.5rem 0; color: #666; font-weight: 600; font-size: 0.8rem;">En Desarrollo</h6>
             {% for proyecto in estados.desarrollo %}
-                <div style="background: white; border-radius: 4px; padding: 0.5rem; margin-bottom: 0.25rem; box-shadow: 0 1px 2px rgba(0,0,0,0.1);">
-                    <div style="font-weight: 500; margin-bottom: 0.1rem; font-size: 0.75rem;">{{ proyecto.nombre }}</div>
+                <div style="background: white; border-radius: 4px; padding: 0.5rem; margin-bottom: 0.25rem; box-shadow: 0 1px 2px rgba(0,0,0,0.1); position: relative;">
+                    <button onclick="openProyectoModal({{ proyecto.id }}, 'desarrollo')" style="position: absolute; top: 2px; right: 2px; background: none; border: none; padding: 2px; cursor: pointer; opacity: 0.7; font-size: 12px;" title="Ver detalles">👁️</button>
+                    <div style="font-weight: 500; margin-bottom: 0.1rem; font-size: 0.75rem; padding-right: 20px;">{{ proyecto.nombre }}</div>
                     <div style="font-size: 0.65rem; color: #666;">ID: {{ proyecto.id }}</div>
                 </div>
             {% endfor %}
@@ -103,8 +107,9 @@
         <div style="min-width: 150px; background: #f8f9fa; border-radius: 6px; padding: 0.75rem;">
             <h6 style="margin: 0 0 0.5rem 0; color: #666; font-weight: 600; font-size: 0.8rem;">Testing</h6>
             {% for proyecto in estados.testing %}
-                <div style="background: white; border-radius: 4px; padding: 0.5rem; margin-bottom: 0.25rem; box-shadow: 0 1px 2px rgba(0,0,0,0.1);">
-                    <div style="font-weight: 500; margin-bottom: 0.1rem; font-size: 0.75rem;">{{ proyecto.nombre }}</div>
+                <div style="background: white; border-radius: 4px; padding: 0.5rem; margin-bottom: 0.25rem; box-shadow: 0 1px 2px rgba(0,0,0,0.1); position: relative;">
+                    <button onclick="openProyectoModal({{ proyecto.id }}, 'testing')" style="position: absolute; top: 2px; right: 2px; background: none; border: none; padding: 2px; cursor: pointer; opacity: 0.7; font-size: 12px;" title="Ver detalles">👁️</button>
+                    <div style="font-weight: 500; margin-bottom: 0.1rem; font-size: 0.75rem; padding-right: 20px;">{{ proyecto.nombre }}</div>
                     <div style="font-size: 0.65rem; color: #666;">ID: {{ proyecto.id }}</div>
                 </div>
             {% endfor %}
@@ -113,8 +118,9 @@
         <div style="min-width: 150px; background: #f8f9fa; border-radius: 6px; padding: 0.75rem;">
             <h6 style="margin: 0 0 0.5rem 0; color: #666; font-weight: 600; font-size: 0.8rem;">Cierre</h6>
             {% for proyecto in estados.cierre %}
-                <div style="background: white; border-radius: 4px; padding: 0.5rem; margin-bottom: 0.25rem; box-shadow: 0 1px 2px rgba(0,0,0,0.1);">
-                    <div style="font-weight: 500; margin-bottom: 0.1rem; font-size: 0.75rem;">{{ proyecto.nombre }}</div>
+                <div style="background: white; border-radius: 4px; padding: 0.5rem; margin-bottom: 0.25rem; box-shadow: 0 1px 2px rgba(0,0,0,0.1); position: relative;">
+                    <button onclick="openProyectoModal({{ proyecto.id }}, 'cierre')" style="position: absolute; top: 2px; right: 2px; background: none; border: none; padding: 2px; cursor: pointer; opacity: 0.7; font-size: 12px;" title="Ver detalles">👁️</button>
+                    <div style="font-weight: 500; margin-bottom: 0.1rem; font-size: 0.75rem; padding-right: 20px;">{{ proyecto.nombre }}</div>
                     <div style="font-size: 0.65rem; color: #666;">ID: {{ proyecto.id }}</div>
                 </div>
             {% endfor %}
@@ -123,8 +129,9 @@
         <div style="min-width: 150px; background: #f8f9fa; border-radius: 6px; padding: 0.75rem;">
             <h6 style="margin: 0 0 0.5rem 0; color: #666; font-weight: 600; font-size: 0.8rem;">Evaluación</h6>
             {% for proyecto in estados.evaluacion %}
-                <div style="background: white; border-radius: 4px; padding: 0.5rem; margin-bottom: 0.25rem; box-shadow: 0 1px 2px rgba(0,0,0,0.1);">
-                    <div style="font-weight: 500; margin-bottom: 0.1rem; font-size: 0.75rem;">{{ proyecto.nombre }}</div>
+                <div style="background: white; border-radius: 4px; padding: 0.5rem; margin-bottom: 0.25rem; box-shadow: 0 1px 2px rgba(0,0,0,0.1); position: relative;">
+                    <button onclick="openProyectoModal({{ proyecto.id }}, 'evaluacion')" style="position: absolute; top: 2px; right: 2px; background: none; border: none; padding: 2px; cursor: pointer; opacity: 0.7; font-size: 12px;" title="Ver detalles">👁️</button>
+                    <div style="font-weight: 500; margin-bottom: 0.1rem; font-size: 0.75rem; padding-right: 20px;">{{ proyecto.nombre }}</div>
                     <div style="font-size: 0.65rem; color: #666;">ID: {{ proyecto.id }}</div>
                 </div>
             {% endfor %}
@@ -133,8 +140,9 @@
         <div style="min-width: 150px; background: #f8f9fa; border-radius: 6px; padding: 0.75rem;">
             <h6 style="margin: 0 0 0.5rem 0; color: #666; font-weight: 600; font-size: 0.8rem;">Finalizados</h6>
             {% for proyecto in estados.finalizados %}
-                <div style="background: white; border-radius: 4px; padding: 0.5rem; margin-bottom: 0.25rem; box-shadow: 0 1px 2px rgba(0,0,0,0.1);">
-                    <div style="font-weight: 500; margin-bottom: 0.1rem; font-size: 0.75rem;">{{ proyecto.nombre }}</div>
+                <div style="background: white; border-radius: 4px; padding: 0.5rem; margin-bottom: 0.25rem; box-shadow: 0 1px 2px rgba(0,0,0,0.1); position: relative;">
+                    <button onclick="openProyectoModal({{ proyecto.id }}, 'finalizado')" style="position: absolute; top: 2px; right: 2px; background: none; border: none; padding: 2px; cursor: pointer; opacity: 0.7; font-size: 12px;" title="Ver detalles">👁️</button>
+                    <div style="font-weight: 500; margin-bottom: 0.1rem; font-size: 0.75rem; padding-right: 20px;">{{ proyecto.nombre }}</div>
                     <div style="font-size: 0.65rem; color: #666;">ID: {{ proyecto.id }}</div>
                 </div>
             {% endfor %}
@@ -208,50 +216,314 @@
     </div>
 </div>
 
+<!-- Modal de Detalles del Proyecto -->
+<div id="proyectoDetallesModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 9999;">
+    <div class="modal-dialog" style="max-width: 800px; width: 90%; margin: 1.75rem auto;">
+        <div class="modal-content" style="border: none; border-radius: 12px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); overflow: hidden; max-height: 90vh;">
+            <div class="modal-header" style="background: #8B5A9D; border-bottom: none; padding: 1.25rem 1.5rem; position: relative;">
+                <h5 class="modal-title" style="font-size: 1.125rem; font-weight: 600; color: white; margin: 0;">Detalles del Proyecto</h5>
+                <button type="button" class="btn-close-custom" onclick="closeProyectoModal()" style="background: none; border: none; color: white; font-size: 1.5rem; opacity: 1; padding: 0; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; position: absolute; right: 1.5rem; top: 50%; transform: translateY(-50%);">×</button>
+            </div>
+            <div class="modal-body" style="background: white; color: #333; padding: 1.5rem; max-height: 70vh; overflow-y: auto;">
+                <form id="proyectoDetallesForm">
+                    <div class="row">
+                        <!-- Columna izquierda -->
+                        <div class="col-md-6">
+                            <div class="form-group" style="margin-bottom: 1rem;">
+                                <label class="form-label" style="font-weight: 500; color: #555; margin-bottom: 0.5rem;">ID del Caso</label>
+                                <input type="text" id="proyecto_id" readonly style="border: 1px solid #ddd; border-radius: 8px; padding: 0.75rem; font-size: 0.95rem; width: 100%; background-color: #f8f9fa;">
+                            </div>
+                            
+                            <div class="form-group" style="margin-bottom: 1rem;">
+                                <label class="form-label" style="font-weight: 500; color: #555; margin-bottom: 0.5rem;">Cuenta</label>
+                                <input type="text" id="proyecto_cuenta" readonly style="border: 1px solid #ddd; border-radius: 8px; padding: 0.75rem; font-size: 0.95rem; width: 100%; background-color: #f8f9fa;">
+                            </div>
+                            
+                            <div class="form-group" style="margin-bottom: 1rem;">
+                                <label class="form-label" style="font-weight: 500; color: #555; margin-bottom: 0.5rem;">Caso de Uso</label>
+                                <input type="text" id="proyecto_caso_uso" style="border: 1px solid #ddd; border-radius: 8px; padding: 0.75rem; font-size: 0.95rem; width: 100%;" placeholder="Sin datos">
+                            </div>
+                            
+                            <div class="form-group" style="margin-bottom: 1rem;">
+                                <label class="form-label" style="font-weight: 500; color: #555; margin-bottom: 0.5rem;">Descripción</label>
+                                <textarea id="proyecto_descripcion" rows="3" style="border: 1px solid #ddd; border-radius: 8px; padding: 0.75rem; font-size: 0.95rem; width: 100%; resize: vertical;" placeholder="Sin datos"></textarea>
+                            </div>
+                            
+                            <div class="form-group" style="margin-bottom: 1rem;">
+                                <label class="form-label" style="font-weight: 500; color: #555; margin-bottom: 0.5rem;">Impacto</label>
+                                <textarea id="proyecto_impacto" rows="3" style="border: 1px solid #ddd; border-radius: 8px; padding: 0.75rem; font-size: 0.95rem; width: 100%; resize: vertical;" placeholder="Sin datos"></textarea>
+                            </div>
+                            
+                            <div class="form-group" style="margin-bottom: 1rem;">
+                                <label class="form-label" style="font-weight: 500; color: #555; margin-bottom: 0.5rem;">Puntuación Impacto</label>
+                                <input type="number" id="proyecto_puntuacion_impacto" min="1" max="10" style="border: 1px solid #ddd; border-radius: 8px; padding: 0.75rem; font-size: 0.95rem; width: 100%;" placeholder="Sin datos">
+                            </div>
+                            
+                            <div class="form-group" style="margin-bottom: 1rem;">
+                                <label class="form-label" style="font-weight: 500; color: #555; margin-bottom: 0.5rem;">Puntuación Técnica</label>
+                                <input type="number" id="proyecto_puntuacion_tecnica" min="1" max="10" style="border: 1px solid #ddd; border-radius: 8px; padding: 0.75rem; font-size: 0.95rem; width: 100%;" placeholder="Sin datos">
+                            </div>
+                            
+                            <div class="form-group" style="margin-bottom: 1rem;">
+                                <label class="form-label" style="font-weight: 500; color: #555; margin-bottom: 0.5rem;">Palabras Clave</label>
+                                <input type="text" id="proyecto_palabras_clave" style="border: 1px solid #ddd; border-radius: 8px; padding: 0.75rem; font-size: 0.95rem; width: 100%;" placeholder="Sin datos">
+                            </div>
+                        </div>
+                        
+                        <!-- Columna derecha -->
+                        <div class="col-md-6">
+                            <div class="form-group" style="margin-bottom: 1rem;">
+                                <label class="form-label" style="font-weight: 500; color: #555; margin-bottom: 0.5rem;">Estado</label>
+                                <input type="text" id="proyecto_estado" readonly style="border: 1px solid #ddd; border-radius: 8px; padding: 0.75rem; font-size: 0.95rem; width: 100%; background-color: #f8f9fa;">
+                            </div>
+                            
+                            <div class="form-group" style="margin-bottom: 1rem;">
+                                <label class="form-label" style="font-weight: 500; color: #555; margin-bottom: 0.5rem;">Producto</label>
+                                <select id="proyecto_producto" style="border: 1px solid #ddd; border-radius: 8px; padding: 0.75rem; font-size: 0.95rem; width: 100%;">
+                                    <option value="">Sin datos</option>
+                                    <option value="analytics">Analytics</option>
+                                    <option value="ia">Inteligencia Artificial</option>
+                                    <option value="desarrollo">Desarrollo de Software</option>
+                                    <option value="consultoria">Consultoría</option>
+                                    <option value="automatizacion">Automatización</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group" style="margin-bottom: 1rem;">
+                                <label class="form-label" style="font-weight: 500; color: #555; margin-bottom: 0.5rem;">Fecha Inicio</label>
+                                <input type="date" id="proyecto_fecha_inicio" style="border: 1px solid #ddd; border-radius: 8px; padding: 0.75rem; font-size: 0.95rem; width: 100%;">
+                            </div>
+                            
+                            <div class="form-group" style="margin-bottom: 1rem;">
+                                <label class="form-label" style="font-weight: 500; color: #555; margin-bottom: 0.5rem;">Fecha Cierre</label>
+                                <input type="date" id="proyecto_fecha_cierre" style="border: 1px solid #ddd; border-radius: 8px; padding: 0.75rem; font-size: 0.95rem; width: 100%;">
+                            </div>
+                            
+                            <div class="form-group" style="margin-bottom: 1rem;">
+                                <label class="form-label" style="font-weight: 500; color: #555; margin-bottom: 0.5rem;">Monto Venta</label>
+                                <input type="number" id="proyecto_monto_venta" style="border: 1px solid #ddd; border-radius: 8px; padding: 0.75rem; font-size: 0.95rem; width: 100%;" placeholder="Sin datos">
+                            </div>
+                            
+                            <div class="form-group" style="margin-bottom: 1rem;">
+                                <label class="form-label" style="font-weight: 500; color: #555; margin-bottom: 0.5rem;">Costos Proyecto</label>
+                                <input type="number" id="proyecto_costos_proyecto" style="border: 1px solid #ddd; border-radius: 8px; padding: 0.75rem; font-size: 0.95rem; width: 100%;" placeholder="Sin datos">
+                            </div>
+                            
+                            <div class="form-group" style="margin-bottom: 1rem;">
+                                <label class="form-label" style="font-weight: 500; color: #555; margin-bottom: 0.5rem;">Margen Estimado %</label>
+                                <input type="number" id="proyecto_margen_estimado_porcentaje" style="border: 1px solid #ddd; border-radius: 8px; padding: 0.75rem; font-size: 0.95rem; width: 100%;" placeholder="Sin datos">
+                            </div>
+                            
+                            <div class="form-group" style="margin-bottom: 1rem;">
+                                <label class="form-label" style="font-weight: 500; color: #555; margin-bottom: 0.5rem;">Margen Estimado Bruto</label>
+                                <input type="number" id="proyecto_margen_estimado_bruto" style="border: 1px solid #ddd; border-radius: 8px; padding: 0.75rem; font-size: 0.95rem; width: 100%;" placeholder="Sin datos">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group" style="margin-bottom: 1.5rem;">
+                        <label class="form-label" style="font-weight: 500; color: #555; margin-bottom: 0.5rem;">Feedback</label>
+                        <textarea id="proyecto_feedback" rows="3" style="border: 1px solid #ddd; border-radius: 8px; padding: 0.75rem; font-size: 0.95rem; width: 100%; resize: vertical;" placeholder="Sin datos"></textarea>
+                    </div>
+                    
+                    <div class="form-actions" style="display: flex; justify-content: flex-end; gap: 1rem; padding-top: 1rem; border-top: 1px solid #eee;">
+                        <button type="button" onclick="closeProyectoModal()" style="background: #f8f9fa; color: #666; border: 1px solid #ddd; padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 500; cursor: pointer;">Cerrar</button>
+                        <button type="submit" id="guardarCambiosBtn" style="background: #8B5A9D; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 500; cursor: pointer; display: none;">Guardar Cambios</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
+// Datos simulados de proyectos
+const proyectosData = {
+    1: { nombre: "IA para Detección de Fraudes", cuenta: "Banco Nacional S.A.", estado: "oportunidad" },
+    2: { nombre: "Chatbot Inteligente", cuenta: "Telecomunicaciones Globales", estado: "oportunidad" },
+    3: { nombre: "Optimización de Inventarios", cuenta: "Retail Fashion Group", estado: "oportunidad" },
+    4: { nombre: "Análisis Predictivo Cliente A", cuenta: "Industrias Alimentarias del Sur", estado: "propuesta" },
+    5: { nombre: "Dashboard BI Cliente B", cuenta: "Corporación Minera del Norte", estado: "propuesta" },
+    6: { nombre: "Sistema de Recomendaciones", cuenta: "Energía Renovable Colombia", estado: "propuesta" },
+    7: { nombre: "Migración a la Nube", cuenta: "Universidad Tecnológica Nacional", estado: "aprobado" },
+    8: { nombre: "App de Logística", cuenta: "Constructora Metropolitan", estado: "aprobado" },
+    9: { nombre: "Portal de Autoservicio", cuenta: "Banco Nacional S.A.", estado: "desarrollo" },
+    10: { nombre: "Sistema de Monitoreo", cuenta: "Farmaceutica Nacional", estado: "desarrollo" },
+    11: { nombre: "Plataforma E-learning", cuenta: "Universidad Tecnológica Nacional", estado: "desarrollo" },
+    12: { nombre: "API de Integración", cuenta: "Seguros y Fianzas del Pacífico", estado: "desarrollo" },
+    13: { nombre: "App Bancaria Mobile", cuenta: "Banco Nacional S.A.", estado: "testing" },
+    14: { nombre: "Sistema de Pagos", cuenta: "Retail Fashion Group", estado: "testing" },
+    15: { nombre: "Sistema CRM Cliente C", cuenta: "Telecomunicaciones Globales", estado: "cierre" },
+    16: { nombre: "App Mobile Cliente D", cuenta: "Industrias Alimentarias del Sur", estado: "cierre" },
+    17: { nombre: "Dashboard Ejecutivo", cuenta: "Corporación Minera del Norte", estado: "cierre" },
+    18: { nombre: "Proyecto Analytics", cuenta: "Energía Renovable Colombia", estado: "evaluacion" },
+    19: { nombre: "Sistema de Reportes", cuenta: "Farmaceutica Nacional", estado: "evaluacion" },
+    20: { nombre: "Portal Corporativo", cuenta: "Constructora Metropolitan", estado: "finalizado" },
+    21: { nombre: "Sistema de Facturación", cuenta: "Seguros y Fianzas del Pacífico", estado: "finalizado" },
+    22: { nombre: "App de Ventas", cuenta: "Universidad Tecnológica Nacional", estado: "finalizado" },
+    23: { nombre: "Plataforma de Marketing", cuenta: "Banco Nacional S.A.", estado: "finalizado" },
+    24: { nombre: "Sistema de Inventario", cuenta: "Retail Fashion Group", estado: "finalizado" }
+};
+
+function openProyectoModal(proyectoId, estado) {
+    const proyecto = proyectosData[proyectoId];
+    if (!proyecto) return;
+    
+    // Llenar campos no editables
+    document.getElementById('proyecto_id').value = proyectoId;
+    document.getElementById('proyecto_cuenta').value = proyecto.cuenta;
+    document.getElementById('proyecto_estado').value = estado.charAt(0).toUpperCase() + estado.slice(1);
+    
+    // Llenar campos editables con datos simulados o vacíos
+    document.getElementById('proyecto_caso_uso').value = proyecto.nombre;
+    document.getElementById('proyecto_descripcion').value = "";
+    document.getElementById('proyecto_impacto').value = "";
+    document.getElementById('proyecto_puntuacion_impacto').value = "";
+    document.getElementById('proyecto_puntuacion_tecnica').value = "";
+    document.getElementById('proyecto_palabras_clave').value = "";
+    document.getElementById('proyecto_producto').value = "";
+    document.getElementById('proyecto_fecha_inicio').value = "";
+    document.getElementById('proyecto_fecha_cierre').value = "";
+    document.getElementById('proyecto_monto_venta').value = "";
+    document.getElementById('proyecto_costos_proyecto').value = "";
+    document.getElementById('proyecto_margen_estimado_porcentaje').value = "";
+    document.getElementById('proyecto_margen_estimado_bruto').value = "";
+    document.getElementById('proyecto_feedback').value = "";
+    
+    // Determinar si el proyecto es editable
+    const esEditable = estado === 'oportunidad' || estado === 'propuesta';
+    const guardarBtn = document.getElementById('guardarCambiosBtn');
+    
+    // Configurar editabilidad de campos
+    const camposEditables = [
+        'proyecto_caso_uso', 'proyecto_descripcion', 'proyecto_impacto',
+        'proyecto_puntuacion_impacto', 'proyecto_puntuacion_tecnica', 'proyecto_palabras_clave',
+        'proyecto_producto', 'proyecto_fecha_inicio', 'proyecto_fecha_cierre',
+        'proyecto_monto_venta', 'proyecto_costos_proyecto', 'proyecto_margen_estimado_porcentaje',
+        'proyecto_margen_estimado_bruto', 'proyecto_feedback'
+    ];
+    
+    camposEditables.forEach(campo => {
+        const elemento = document.getElementById(campo);
+        elemento.readOnly = !esEditable;
+        elemento.disabled = !esEditable;
+        elemento.style.backgroundColor = esEditable ? '#fff' : '#f8f9fa';
+    });
+    
+    // Mostrar/ocultar botón de guardar
+    guardarBtn.style.display = esEditable ? 'inline-block' : 'none';
+    
+    // Mostrar modal
+    document.getElementById('proyectoDetallesModal').style.display = 'block';
+}
+
+function closeProyectoModal() {
+    document.getElementById('proyectoDetallesModal').style.display = 'none';
+}
+
 function openOportunidadModal() {
-    document.getElementById('nuevaOportunidadModal').style.display = 'block';
+    const modal = document.getElementById('nuevaOportunidadModal');
+    if (modal) {
+        modal.style.display = 'block';
+    }
 }
 
 function closeOportunidadModal() {
-    document.getElementById('nuevaOportunidadModal').style.display = 'none';
-    document.getElementById('nuevaOportunidadForm').reset();
+    const modal = document.getElementById('nuevaOportunidadModal');
+    if (modal) {
+        modal.style.display = 'none';
+        const form = document.getElementById('nuevaOportunidadForm');
+        if (form) {
+            form.reset();
+        }
+    }
 }
 
-// Envío del formulario
-document.getElementById('nuevaOportunidadForm').addEventListener('submit', function(e) {
-    e.preventDefault();
+// Event listeners cuando el DOM esté cargado
+document.addEventListener('DOMContentLoaded', function() {
+    // Envío del formulario de nueva oportunidad
+    const oportunidadForm = document.getElementById('nuevaOportunidadForm');
+    if (oportunidadForm) {
+        oportunidadForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData);
+            
+            fetch('/api/oportunidades', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.status === 'success') {
+                    alert('Oportunidad creada exitosamente');
+                    closeOportunidadModal();
+                    location.reload();
+                } else {
+                    alert('Error al crear oportunidad: ' + result.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error al procesar la solicitud');
+            });
+        });
+    }
     
-    const formData = new FormData(this);
-    const data = Object.fromEntries(formData);
+    // Envío del formulario de detalles del proyecto
+    const proyectoForm = document.getElementById('proyectoDetallesForm');
+    if (proyectoForm) {
+        proyectoForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const proyectoId = document.getElementById('proyecto_id').value;
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData);
+            
+            fetch(`/api/proyecto/${proyectoId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.status === 'success') {
+                    alert('Proyecto actualizado exitosamente');
+                    closeProyectoModal();
+                } else {
+                    alert('Error al actualizar proyecto: ' + result.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error al procesar la solicitud');
+            });
+        });
+    }
     
-    fetch('/api/oportunidades', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data)
-    })
-    .then(response => response.json())
-    .then(result => {
-        if (result.status === 'success') {
-            alert('Oportunidad creada exitosamente');
-            closeOportunidadModal();
-            location.reload();
-        } else {
-            alert('Error al crear oportunidad: ' + result.message);
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('Error al procesar la solicitud');
-    });
-});
-
-// Cerrar modal al hacer click fuera
-document.getElementById('nuevaOportunidadModal').addEventListener('click', function(e) {
-    if (e.target === this) {
-        closeOportunidadModal();
+    // Cerrar modales al hacer click fuera
+    const nuevaOportunidadModal = document.getElementById('nuevaOportunidadModal');
+    if (nuevaOportunidadModal) {
+        nuevaOportunidadModal.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeOportunidadModal();
+            }
+        });
+    }
+    
+    const proyectoDetallesModal = document.getElementById('proyectoDetallesModal');
+    if (proyectoDetallesModal) {
+        proyectoDetallesModal.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeProyectoModal();
+            }
+        });
     }
 });
 </script>
