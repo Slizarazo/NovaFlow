@@ -1,3 +1,4 @@
+
 {% extends "layout.html" %}
 
 {% block content %}
@@ -63,191 +64,79 @@
         <div style="min-width: 150px; background: #f8f9fa; border-radius: 6px; padding: 0.75rem;">
             <h6 style="margin: 0 0 0.5rem 0; color: #666; font-weight: 600; font-size: 0.8rem;">Oportunidad</h6>
             {% for proyecto in estados.oportunidad %}
-                <div style="background: white; border-radius: 4px; padding: 0.5rem; margin-bottom: 0.25rem; box-shadow: 0 1px 2px rgba(0,0,0,0.1); position: relative;">
+                <div style="background: white; border-radius: 4px; padding: 0.5rem; margin-bottom: 0.25rem; box-shadow: 0 1px 2px rgba(0,0,0,0.1);">
                     <div style="font-weight: 500; margin-bottom: 0.1rem; font-size: 0.75rem;">{{ proyecto.nombre }}</div>
-                    <div style="font-size: 0.65rem; color: #666; margin-bottom: 0.25rem;">ID: {{ proyecto.id }}</div>
-                    <div style="display: flex; gap: 0.25rem; justify-content: flex-end;">
-                        <button onclick="viewProjectDetails({{ proyecto.id }}, '{{ proyecto.nombre }}')" 
-                                style="background: #007bff; color: white; border: none; border-radius: 3px; padding: 0.2rem 0.4rem; font-size: 0.6rem; cursor: pointer;" 
-                                title="Ver detalles">
-                            👁️
-                        </button>
-                        {% if loop.parent.loop.key in ['oportunidad', 'propuesta'] %}
-                        <button onclick="editProject({{ proyecto.id }}, '{{ proyecto.nombre }}')" 
-                                style="background: #28a745; color: white; border: none; border-radius: 3px; padding: 0.2rem 0.4rem; font-size: 0.6rem; cursor: pointer;" 
-                                title="Editar">
-                            ✏️
-                        </button>
-                        {% endif %}
-                    </div>
+                    <div style="font-size: 0.65rem; color: #666;">ID: {{ proyecto.id }}</div>
                 </div>
             {% endfor %}
         </div>
-
+        
         <div style="min-width: 150px; background: #f8f9fa; border-radius: 6px; padding: 0.75rem;">
             <h6 style="margin: 0 0 0.5rem 0; color: #666; font-weight: 600; font-size: 0.8rem;">Propuesta</h6>
             {% for proyecto in estados.propuesta %}
-                <div style="background: white; border-radius: 4px; padding: 0.5rem; margin-bottom: 0.25rem; box-shadow: 0 1px 2px rgba(0,0,0,0.1); position: relative;">
+                <div style="background: white; border-radius: 4px; padding: 0.5rem; margin-bottom: 0.25rem; box-shadow: 0 1px 2px rgba(0,0,0,0.1);">
                     <div style="font-weight: 500; margin-bottom: 0.1rem; font-size: 0.75rem;">{{ proyecto.nombre }}</div>
-                    <div style="font-size: 0.65rem; color: #666; margin-bottom: 0.25rem;">ID: {{ proyecto.id }}</div>
-                    <div style="display: flex; gap: 0.25rem; justify-content: flex-end;">
-                        <button onclick="viewProjectDetails({{ proyecto.id }}, '{{ proyecto.nombre }}')" 
-                                style="background: #007bff; color: white; border: none; border-radius: 3px; padding: 0.2rem 0.4rem; font-size: 0.6rem; cursor: pointer;" 
-                                title="Ver detalles">
-                            👁️
-                        </button>
-                        {% if loop.parent.loop.key in ['oportunidad', 'propuesta'] %}
-                        <button onclick="editProject({{ proyecto.id }}, '{{ proyecto.nombre }}')" 
-                                style="background: #28a745; color: white; border: none; border-radius: 3px; padding: 0.2rem 0.4rem; font-size: 0.6rem; cursor: pointer;" 
-                                title="Editar">
-                            ✏️
-                        </button>
-                        {% endif %}
-                    </div>
+                    <div style="font-size: 0.65rem; color: #666;">ID: {{ proyecto.id }}</div>
                 </div>
             {% endfor %}
         </div>
-
+        
         <div style="min-width: 150px; background: #f8f9fa; border-radius: 6px; padding: 0.75rem;">
             <h6 style="margin: 0 0 0.5rem 0; color: #666; font-weight: 600; font-size: 0.8rem;">Aprobación</h6>
             {% for proyecto in estados.aprobacion %}
-                <div style="background: white; border-radius: 4px; padding: 0.5rem; margin-bottom: 0.25rem; box-shadow: 0 1px 2px rgba(0,0,0,0.1); position: relative;">
+                <div style="background: white; border-radius: 4px; padding: 0.5rem; margin-bottom: 0.25rem; box-shadow: 0 1px 2px rgba(0,0,0,0.1);">
                     <div style="font-weight: 500; margin-bottom: 0.1rem; font-size: 0.75rem;">{{ proyecto.nombre }}</div>
-                    <div style="font-size: 0.65rem; color: #666; margin-bottom: 0.25rem;">ID: {{ proyecto.id }}</div>
-                    <div style="display: flex; gap: 0.25rem; justify-content: flex-end;">
-                        <button onclick="viewProjectDetails({{ proyecto.id }}, '{{ proyecto.nombre }}')" 
-                                style="background: #007bff; color: white; border: none; border-radius: 3px; padding: 0.2rem 0.4rem; font-size: 0.6rem; cursor: pointer;" 
-                                title="Ver detalles">
-                            👁️
-                        </button>
-                        {% if loop.parent.loop.key in ['oportunidad', 'propuesta'] %}
-                        <button onclick="editProject({{ proyecto.id }}, '{{ proyecto.nombre }}')" 
-                                style="background: #28a745; color: white; border: none; border-radius: 3px; padding: 0.2rem 0.4rem; font-size: 0.6rem; cursor: pointer;" 
-                                title="Editar">
-                            ✏️
-                        </button>
-                        {% endif %}
-                    </div>
+                    <div style="font-size: 0.65rem; color: #666;">ID: {{ proyecto.id }}</div>
                 </div>
             {% endfor %}
         </div>
-
+        
         <div style="min-width: 150px; background: #f8f9fa; border-radius: 6px; padding: 0.75rem;">
             <h6 style="margin: 0 0 0.5rem 0; color: #666; font-weight: 600; font-size: 0.8rem;">En Desarrollo</h6>
             {% for proyecto in estados.desarrollo %}
-                <div style="background: white; border-radius: 4px; padding: 0.5rem; margin-bottom: 0.25rem; box-shadow: 0 1px 2px rgba(0,0,0,0.1); position: relative;">
+                <div style="background: white; border-radius: 4px; padding: 0.5rem; margin-bottom: 0.25rem; box-shadow: 0 1px 2px rgba(0,0,0,0.1);">
                     <div style="font-weight: 500; margin-bottom: 0.1rem; font-size: 0.75rem;">{{ proyecto.nombre }}</div>
-                    <div style="font-size: 0.65rem; color: #666; margin-bottom: 0.25rem;">ID: {{ proyecto.id }}</div>
-                    <div style="display: flex; gap: 0.25rem; justify-content: flex-end;">
-                        <button onclick="viewProjectDetails({{ proyecto.id }}, '{{ proyecto.nombre }}')" 
-                                style="background: #007bff; color: white; border: none; border-radius: 3px; padding: 0.2rem 0.4rem; font-size: 0.6rem; cursor: pointer;" 
-                                title="Ver detalles">
-                            👁️
-                        </button>
-                        {% if loop.parent.loop.key in ['oportunidad', 'propuesta'] %}
-                        <button onclick="editProject({{ proyecto.id }}, '{{ proyecto.nombre }}')" 
-                                style="background: #28a745; color: white; border: none; border-radius: 3px; padding: 0.2rem 0.4rem; font-size: 0.6rem; cursor: pointer;" 
-                                title="Editar">
-                            ✏️
-                        </button>
-                        {% endif %}
-                    </div>
+                    <div style="font-size: 0.65rem; color: #666;">ID: {{ proyecto.id }}</div>
                 </div>
             {% endfor %}
         </div>
-
+        
         <div style="min-width: 150px; background: #f8f9fa; border-radius: 6px; padding: 0.75rem;">
             <h6 style="margin: 0 0 0.5rem 0; color: #666; font-weight: 600; font-size: 0.8rem;">Testing</h6>
             {% for proyecto in estados.testing %}
-                <div style="background: white; border-radius: 4px; padding: 0.5rem; margin-bottom: 0.25rem; box-shadow: 0 1px 2px rgba(0,0,0,0.1); position: relative;">
+                <div style="background: white; border-radius: 4px; padding: 0.5rem; margin-bottom: 0.25rem; box-shadow: 0 1px 2px rgba(0,0,0,0.1);">
                     <div style="font-weight: 500; margin-bottom: 0.1rem; font-size: 0.75rem;">{{ proyecto.nombre }}</div>
-                    <div style="font-size: 0.65rem; color: #666; margin-bottom: 0.25rem;">ID: {{ proyecto.id }}</div>
-                    <div style="display: flex; gap: 0.25rem; justify-content: flex-end;">
-                        <button onclick="viewProjectDetails({{ proyecto.id }}, '{{ proyecto.nombre }}')" 
-                                style="background: #007bff; color: white; border: none; border-radius: 3px; padding: 0.2rem 0.4rem; font-size: 0.6rem; cursor: pointer;" 
-                                title="Ver detalles">
-                            👁️
-                        </button>
-                        {% if loop.parent.loop.key in ['oportunidad', 'propuesta'] %}
-                        <button onclick="editProject({{ proyecto.id }}, '{{ proyecto.nombre }}')" 
-                                style="background: #28a745; color: white; border: none; border-radius: 3px; padding: 0.2rem 0.4rem; font-size: 0.6rem; cursor: pointer;" 
-                                title="Editar">
-                            ✏️
-                        </button>
-                        {% endif %}
-                    </div>
+                    <div style="font-size: 0.65rem; color: #666;">ID: {{ proyecto.id }}</div>
                 </div>
             {% endfor %}
         </div>
-
+        
         <div style="min-width: 150px; background: #f8f9fa; border-radius: 6px; padding: 0.75rem;">
             <h6 style="margin: 0 0 0.5rem 0; color: #666; font-weight: 600; font-size: 0.8rem;">Cierre</h6>
             {% for proyecto in estados.cierre %}
-                <div style="background: white; border-radius: 4px; padding: 0.5rem; margin-bottom: 0.25rem; box-shadow: 0 1px 2px rgba(0,0,0,0.1); position: relative;">
+                <div style="background: white; border-radius: 4px; padding: 0.5rem; margin-bottom: 0.25rem; box-shadow: 0 1px 2px rgba(0,0,0,0.1);">
                     <div style="font-weight: 500; margin-bottom: 0.1rem; font-size: 0.75rem;">{{ proyecto.nombre }}</div>
-                    <div style="font-size: 0.65rem; color: #666; margin-bottom: 0.25rem;">ID: {{ proyecto.id }}</div>
-                    <div style="display: flex; gap: 0.25rem; justify-content: flex-end;">
-                        <button onclick="viewProjectDetails({{ proyecto.id }}, '{{ proyecto.nombre }}')" 
-                                style="background: #007bff; color: white; border: none; border-radius: 3px; padding: 0.2rem 0.4rem; font-size: 0.6rem; cursor: pointer;" 
-                                title="Ver detalles">
-                            👁️
-                        </button>
-                        {% if loop.parent.loop.key in ['oportunidad', 'propuesta'] %}
-                        <button onclick="editProject({{ proyecto.id }}, '{{ proyecto.nombre }}')" 
-                                style="background: #28a745; color: white; border: none; border-radius: 3px; padding: 0.2rem 0.4rem; font-size: 0.6rem; cursor: pointer;" 
-                                title="Editar">
-                            ✏️
-                        </button>
-                        {% endif %}
-                    </div>
+                    <div style="font-size: 0.65rem; color: #666;">ID: {{ proyecto.id }}</div>
                 </div>
             {% endfor %}
         </div>
-
+        
         <div style="min-width: 150px; background: #f8f9fa; border-radius: 6px; padding: 0.75rem;">
             <h6 style="margin: 0 0 0.5rem 0; color: #666; font-weight: 600; font-size: 0.8rem;">Evaluación</h6>
             {% for proyecto in estados.evaluacion %}
-                <div style="background: white; border-radius: 4px; padding: 0.5rem; margin-bottom: 0.25rem; box-shadow: 0 1px 2px rgba(0,0,0,0.1); position: relative;">
+                <div style="background: white; border-radius: 4px; padding: 0.5rem; margin-bottom: 0.25rem; box-shadow: 0 1px 2px rgba(0,0,0,0.1);">
                     <div style="font-weight: 500; margin-bottom: 0.1rem; font-size: 0.75rem;">{{ proyecto.nombre }}</div>
-                    <div style="font-size: 0.65rem; color: #666; margin-bottom: 0.25rem;">ID: {{ proyecto.id }}</div>
-                    <div style="display: flex; gap: 0.25rem; justify-content: flex-end;">
-                        <button onclick="viewProjectDetails({{ proyecto.id }}, '{{ proyecto.nombre }}')" 
-                                style="background: #007bff; color: white; border: none; border-radius: 3px; padding: 0.2rem 0.4rem; font-size: 0.6rem; cursor: pointer;" 
-                                title="Ver detalles">
-                            👁️
-                        </button>
-                        {% if loop.parent.loop.key in ['oportunidad', 'propuesta'] %}
-                        <button onclick="editProject({{ proyecto.id }}, '{{ proyecto.nombre }}')" 
-                                style="background: #28a745; color: white; border: none; border-radius: 3px; padding: 0.2rem 0.4rem; font-size: 0.6rem; cursor: pointer;" 
-                                title="Editar">
-                            ✏️
-                        </button>
-                        {% endif %}
-                    </div>
+                    <div style="font-size: 0.65rem; color: #666;">ID: {{ proyecto.id }}</div>
                 </div>
             {% endfor %}
         </div>
-
+        
         <div style="min-width: 150px; background: #f8f9fa; border-radius: 6px; padding: 0.75rem;">
             <h6 style="margin: 0 0 0.5rem 0; color: #666; font-weight: 600; font-size: 0.8rem;">Finalizados</h6>
             {% for proyecto in estados.finalizados %}
-                <div style="background: white; border-radius: 4px; padding: 0.5rem; margin-bottom: 0.25rem; box-shadow: 0 1px 2px rgba(0,0,0,0.1); position: relative;">
+                <div style="background: white; border-radius: 4px; padding: 0.5rem; margin-bottom: 0.25rem; box-shadow: 0 1px 2px rgba(0,0,0,0.1);">
                     <div style="font-weight: 500; margin-bottom: 0.1rem; font-size: 0.75rem;">{{ proyecto.nombre }}</div>
-                    <div style="font-size: 0.65rem; color: #666; margin-bottom: 0.25rem;">ID: {{ proyecto.id }}</div>
-                    <div style="display: flex; gap: 0.25rem; justify-content: flex-end;">
-                        <button onclick="viewProjectDetails({{ proyecto.id }}, '{{ proyecto.nombre }}')" 
-                                style="background: #007bff; color: white; border: none; border-radius: 3px; padding: 0.2rem 0.4rem; font-size: 0.6rem; cursor: pointer;" 
-                                title="Ver detalles">
-                            👁️
-                        </button>
-                        {% if loop.parent.loop.key in ['oportunidad', 'propuesta'] %}
-                        <button onclick="editProject({{ proyecto.id }}, '{{ proyecto.nombre }}')" 
-                                style="background: #28a745; color: white; border: none; border-radius: 3px; padding: 0.2rem 0.4rem; font-size: 0.6rem; cursor: pointer;" 
-                                title="Editar">
-                            ✏️
-                        </button>
-                        {% endif %}
-                    </div>
+                    <div style="font-size: 0.65rem; color: #666;">ID: {{ proyecto.id }}</div>
                 </div>
             {% endfor %}
         </div>
@@ -267,7 +156,7 @@
                     <span style="margin-right: 0.5rem;">←</span>
                     <span>Volver</span>
                 </div>
-
+                
                 <form id="nuevaOportunidadForm">
                     <div class="form-group" style="margin-bottom: 1.25rem;">
                         <label for="cuenta" class="form-label" style="font-weight: 500; color: #555; margin-bottom: 0.5rem;">Cuenta</label>
@@ -333,10 +222,10 @@ function closeOportunidadModal() {
 // Envío del formulario
 document.getElementById('nuevaOportunidadForm').addEventListener('submit', function(e) {
     e.preventDefault();
-
+    
     const formData = new FormData(this);
     const data = Object.fromEntries(formData);
-
+    
     fetch('/api/oportunidades', {
         method: 'POST',
         headers: {
@@ -366,17 +255,5 @@ document.getElementById('nuevaOportunidadModal').addEventListener('click', funct
         closeOportunidadModal();
     }
 });
-
-function viewProjectDetails(projectId, projectName) {
-    alert(`Detalles del proyecto ${projectName} (ID: ${projectId})`);
-    // Aquí puedes implementar la lógica para mostrar los detalles del proyecto,
-    // por ejemplo, abriendo un modal o redirigiendo a una página de detalles.
-}
-
-function editProject(projectId, projectName) {
-    alert(`Editar proyecto ${projectName} (ID: ${projectId})`);
-    // Aquí puedes implementar la lógica para editar el proyecto,
-    // por ejemplo, abriendo un formulario de edición en un modal.
-}
 </script>
 {% endblock %}

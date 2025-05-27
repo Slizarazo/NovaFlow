@@ -56,72 +56,17 @@ def logout():
 @login_required
 def dashboard():
     if current_user.role == 'supervisor':
-        # Simulamos estados de proyectos para el kanban con mayor distribución
+        # Obtener proyectos y agrupar por estado
+        proyectos = Proyecto.PROYECTOS
         estados = {
-            'oportunidad': [
-                {'id': 1, 'nombre': 'IA para Detección de Fraudes'},
-                {'id': 2, 'nombre': 'Chatbot Inteligente'},
-                {'id': 3, 'nombre': 'Optimización de Inventarios'},
-                {'id': 25, 'nombre': 'Análisis de Sentimientos'},
-                {'id': 26, 'nombre': 'Automatización RPA'}
-            ],
-            'propuesta': [
-                {'id': 4, 'nombre': 'Análisis Predictivo Cliente A'},
-                {'id': 5, 'nombre': 'Dashboard BI Cliente B'},
-                {'id': 6, 'nombre': 'Sistema de Recomendaciones'},
-                {'id': 27, 'nombre': 'Plataforma IoT'},
-                {'id': 28, 'nombre': 'Sistema de Alertas'},
-                {'id': 29, 'nombre': 'App de Gestión'}
-            ],
-            'aprobacion': [
-                {'id': 7, 'nombre': 'Migración a la Nube'},
-                {'id': 8, 'nombre': 'App de Logística'},
-                {'id': 30, 'nombre': 'Portal de Proveedores'},
-                {'id': 31, 'nombre': 'Sistema de Tickets'}
-            ],
-            'desarrollo': [
-                {'id': 9, 'nombre': 'Portal de Autoservicio'},
-                {'id': 10, 'nombre': 'Sistema de Monitoreo'},
-                {'id': 11, 'nombre': 'Plataforma E-learning'},
-                {'id': 12, 'nombre': 'API de Integración'},
-                {'id': 32, 'nombre': 'App de Recursos Humanos'},
-                {'id': 33, 'nombre': 'Sistema de Inventario Digital'},
-                {'id': 34, 'nombre': 'Plataforma de Comunicación'}
-            ],
-            'testing': [
-                {'id': 13, 'nombre': 'App Bancaria Mobile'},
-                {'id': 14, 'nombre': 'Sistema de Pagos'},
-                {'id': 35, 'nombre': 'Portal de Clientes'},
-                {'id': 36, 'nombre': 'Sistema de Backup'},
-                {'id': 37, 'nombre': 'App de Delivery'}
-            ],
-            'cierre': [
-                {'id': 15, 'nombre': 'Sistema CRM Cliente C'},
-                {'id': 16, 'nombre': 'App Mobile Cliente D'},
-                {'id': 17, 'nombre': 'Dashboard Ejecutivo'},
-                {'id': 38, 'nombre': 'Plataforma de Ventas'},
-                {'id': 39, 'nombre': 'Sistema de Reportes'},
-                {'id': 40, 'nombre': 'App de Facturación'}
-            ],
-            'evaluacion': [
-                {'id': 18, 'nombre': 'Proyecto Analytics'},
-                {'id': 19, 'nombre': 'Sistema de Reportes'},
-                {'id': 41, 'nombre': 'Dashboard de KPIs'},
-                {'id': 42, 'nombre': 'Sistema de Auditoría'},
-                {'id': 43, 'nombre': 'Plataforma de Métricas'}
-            ],
-            'finalizados': [
-                {'id': 20, 'nombre': 'Portal Corporativo'},
-                {'id': 21, 'nombre': 'Sistema de Facturación'},
-                {'id': 22, 'nombre': 'App de Ventas'},
-                {'id': 23, 'nombre': 'Plataforma de Marketing'},
-                {'id': 24, 'nombre': 'Sistema de Inventario'},
-                {'id': 44, 'nombre': 'App de Soporte'},
-                {'id': 45, 'nombre': 'Sistema de Nómina'},
-                {'id': 46, 'nombre': 'Portal de Empleados'},
-                {'id': 47, 'nombre': 'Sistema de Calidad'},
-                {'id': 48, 'nombre': 'App de Capacitación'}
-            ]
+            'oportunidad': [p for p in proyectos if p.etapa == 'oportunidad'],
+            'propuesta': [p for p in proyectos if p.etapa == 'propuesta'],
+            'aprobacion': [p for p in proyectos if p.etapa == 'aprobado'],
+            'desarrollo': [p for p in proyectos if p.etapa == 'desarrollo'],
+            'testing': [p for p in proyectos if p.etapa == 'testing'],
+            'cierre': [p for p in proyectos if p.etapa == 'cierre'],
+            'evaluacion': [p for p in proyectos if p.etapa == 'evaluacion'],
+            'finalizados': [p for p in proyectos if p.etapa == 'finalizado']
         }
         return render_template('dashboard/supervisor.html', title='Gestión de Proyectos', config=app.config, role=current_user.role, estados=estados)
     elif current_user.role == 'aliado':
@@ -829,47 +774,6 @@ def create_oportunidad():
         app.logger.error(f"Error al crear oportunidad: {str(e)}")
         return jsonify({'status': 'error', 'message': str(e)}), 500
 
-@app.route('/api/proyectos/edit', methods=['POST'])
-@login_required
-def edit_proyecto():
-    try:
-        data = request.get_json()
-
-        if not data:
-            return jsonify({'status': 'error', 'message': 'No se recibieron datos'}), 400
-
-        print("\n=== DATOS DE PROYECTO EDITADO RECIBIDOS ===")
-        print(f"ID Proyecto: {data.get('project_id')}")
-        print(f"ID Caso de Uso: {data.get('id_caso_uso')}")
-        print(f"Aliado: {data.get('aliado')}")
-        print(f"Cuenta: {data.get('cuenta')}")
-        print(f"Caso de Uso: {data.get('caso_uso')}")
-        print(f"Descripción: {data.get('descripcion')}")
-        print(f"Impacto: {data.get('impacto')}")
-        print(f"Puntuación Impacto: {data.get('puntuacion_impacto')}")
-        print(f"Puntuación Técnica: {data.get('puntuacion_tecnica')}")
-        print(f"Tags: {data.get('tags')}")
-        print(f"Estado: {data.get('estado')}")
-        print(f"Producto: {data.get('producto')}")
-        print(f"Fecha Inicio: {data.get('fecha_inicio')}")
-        print(f"Fecha Fin: {data.get('fecha_fin')}")
-        print(f"Monto Venta: {data.get('monto_venta')}")
-        print(f"Costos Proyecto: {data.get('costos_proyecto')}")
-        print(f"Margen %: {data.get('margen_porcentaje')}")
-        print(f"Margen Bruto: {data.get('margen_bruto')}")
-        print(f"Feedback: {data.get('feedback')}")
-        print("=" * 50)
-
-        return jsonify({
-            'status': 'success',
-            'message': 'Proyecto actualizado exitosamente',
-            'data': data
-        })
-
-    except Exception as e:
-        app.logger.error(f"Error al editar proyecto: {str(e)}")
-        return jsonify({'status': 'error', 'message': str(e)}), 500
-
 @app.route('/aliados/aliados')
 @login_required
 def aliados_aliados():
@@ -1129,71 +1033,47 @@ def proyectos_general():
 
 @app.route('/dashboard/supervisor')
 def dashboard_supervisor():
-    # Simulamos estados de proyectos para el kanban con mayor distribución
+    # Simulamos estados de proyectos para el kanban
     estados = {
         'oportunidad': [
             {'id': 1, 'nombre': 'IA para Detección de Fraudes'},
             {'id': 2, 'nombre': 'Chatbot Inteligente'},
-            {'id': 3, 'nombre': 'Optimización de Inventarios'},
-            {'id': 25, 'nombre': 'Análisis de Sentimientos'},
-            {'id': 26, 'nombre': 'Automatización RPA'}
+            {'id': 3, 'nombre': 'Optimización de Inventarios'}
         ],
         'propuesta': [
             {'id': 4, 'nombre': 'Análisis Predictivo Cliente A'},
             {'id': 5, 'nombre': 'Dashboard BI Cliente B'},
-            {'id': 6, 'nombre': 'Sistema de Recomendaciones'},
-            {'id': 27, 'nombre': 'Plataforma IoT'},
-            {'id': 28, 'nombre': 'Sistema de Alertas'},
-            {'id': 29, 'nombre': 'App de Gestión'}
+            {'id': 6, 'nombre': 'Sistema de Recomendaciones'}
         ],
         'aprobacion': [
             {'id': 7, 'nombre': 'Migración a la Nube'},
-            {'id': 8, 'nombre': 'App de Logística'},
-            {'id': 30, 'nombre': 'Portal de Proveedores'},
-            {'id': 31, 'nombre': 'Sistema de Tickets'}
+            {'id': 8, 'nombre': 'App de Logística'}
         ],
         'desarrollo': [
             {'id': 9, 'nombre': 'Portal de Autoservicio'},
             {'id': 10, 'nombre': 'Sistema de Monitoreo'},
             {'id': 11, 'nombre': 'Plataforma E-learning'},
-            {'id': 12, 'nombre': 'API de Integración'},
-            {'id': 32, 'nombre': 'App de Recursos Humanos'},
-            {'id': 33, 'nombre': 'Sistema de Inventario Digital'},
-            {'id': 34, 'nombre': 'Plataforma de Comunicación'}
+            {'id': 12, 'nombre': 'API de Integración'}
         ],
         'testing': [
             {'id': 13, 'nombre': 'App Bancaria Mobile'},
-            {'id': 14, 'nombre': 'Sistema de Pagos'},
-            {'id': 35, 'nombre': 'Portal de Clientes'},
-            {'id': 36, 'nombre': 'Sistema de Backup'},
-            {'id': 37, 'nombre': 'App de Delivery'}
+            {'id': 14, 'nombre': 'Sistema de Pagos'}
         ],
         'cierre': [
             {'id': 15, 'nombre': 'Sistema CRM Cliente C'},
             {'id': 16, 'nombre': 'App Mobile Cliente D'},
-            {'id': 17, 'nombre': 'Dashboard Ejecutivo'},
-            {'id': 38, 'nombre': 'Plataforma de Ventas'},
-            {'id': 39, 'nombre': 'Sistema de Reportes'},
-            {'id': 40, 'nombre': 'App de Facturación'}
+            {'id': 17, 'nombre': 'Dashboard Ejecutivo'}
         ],
         'evaluacion': [
             {'id': 18, 'nombre': 'Proyecto Analytics'},
-            {'id': 19, 'nombre': 'Sistema de Reportes'},
-            {'id': 41, 'nombre': 'Dashboard de KPIs'},
-            {'id': 42, 'nombre': 'Sistema de Auditoría'},
-            {'id': 43, 'nombre': 'Plataforma de Métricas'}
+            {'id': 19, 'nombre': 'Sistema de Reportes'}
         ],
         'finalizados': [
             {'id': 20, 'nombre': 'Portal Corporativo'},
             {'id': 21, 'nombre': 'Sistema de Facturación'},
             {'id': 22, 'nombre': 'App de Ventas'},
             {'id': 23, 'nombre': 'Plataforma de Marketing'},
-            {'id': 24, 'nombre': 'Sistema de Inventario'},
-            {'id': 44, 'nombre': 'App de Soporte'},
-            {'id': 45, 'nombre': 'Sistema de Nómina'},
-            {'id': 46, 'nombre': 'Portal de Empleados'},
-            {'id': 47, 'nombre': 'Sistema de Calidad'},
-            {'id': 48, 'nombre': 'App de Capacitación'}
+            {'id': 24, 'nombre': 'Sistema de Inventario'}
         ]
     }
     return render_template('dashboard/supervisor.html', estados=estados)
