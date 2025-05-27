@@ -56,7 +56,19 @@ def logout():
 @login_required
 def dashboard():
     if current_user.role == 'supervisor':
-        return render_template('dashboard/overview.html', title='Inicio', config=app.config, role=current_user.role)
+        # Obtener proyectos y agrupar por estado
+        proyectos = Proyecto.PROYECTOS
+        estados = {
+            'oportunidad': [p for p in proyectos if p.etapa == 'oportunidad'],
+            'propuesta': [p for p in proyectos if p.etapa == 'propuesta'],
+            'aprobacion': [p for p in proyectos if p.etapa == 'aprobado'],
+            'desarrollo': [p for p in proyectos if p.etapa == 'desarrollo'],
+            'testing': [p for p in proyectos if p.etapa == 'testing'],
+            'cierre': [p for p in proyectos if p.etapa == 'cierre'],
+            'evaluacion': [p for p in proyectos if p.etapa == 'evaluacion'],
+            'finalizados': [p for p in proyectos if p.etapa == 'finalizado']
+        }
+        return render_template('dashboard/supervisor.html', title='Gestión de Proyectos', config=app.config, role=current_user.role, estados=estados)
     elif current_user.role == 'aliado':
         return render_template('dashboard/growth_overview.html', title='Dashboard de Crecimiento', config=app.config, role=current_user.role)
     return redirect(url_for('dashboard_growth'))
