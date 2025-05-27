@@ -64,7 +64,12 @@
             <h6 style="margin: 0 0 0.5rem 0; color: #666; font-weight: 600; font-size: 0.8rem;">Oportunidad</h6>
             {% for proyecto in estados.oportunidad %}
                 <div style="background: white; border-radius: 4px; padding: 0.5rem; margin-bottom: 0.25rem; box-shadow: 0 1px 2px rgba(0,0,0,0.1); position: relative;">
-                    <button onclick="openProyectoModal({{ proyecto.id }}, 'oportunidad')" style="position: absolute; top: 2px; right: 2px; background: none; border: none; padding: 2px; cursor: pointer; opacity: 0.7; font-size: 12px;" title="Ver detalles">👁️</button>
+                    <button onclick="openProyectoModal({{ proyecto.id }}, 'oportunidad')" style="position: absolute; top: 2px; right: 2px; background: none; border: none; padding: 2px; cursor: pointer; opacity: 0.7;" title="Ver detalles">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </button>
                     <div style="font-weight: 500; margin-bottom: 0.1rem; font-size: 0.75rem; padding-right: 20px;">{{ proyecto.nombre }}</div>
                     <div style="font-size: 0.65rem; color: #666;">ID: {{ proyecto.id }}</div>
                 </div>
@@ -75,7 +80,12 @@
             <h6 style="margin: 0 0 0.5rem 0; color: #666; font-weight: 600; font-size: 0.8rem;">Propuesta</h6>
             {% for proyecto in estados.propuesta %}
                 <div style="background: white; border-radius: 4px; padding: 0.5rem; margin-bottom: 0.25rem; box-shadow: 0 1px 2px rgba(0,0,0,0.1); position: relative;">
-                    <button onclick="openProyectoModal({{ proyecto.id }}, 'propuesta')" style="position: absolute; top: 2px; right: 2px; background: none; border: none; padding: 2px; cursor: pointer; opacity: 0.7; font-size: 12px;" title="Ver detalles">👁️</button>
+                    <button onclick="openProyectoModal({{ proyecto.id }}, 'propuesta')" style="position: absolute; top: 2px; right: 2px; background: none; border: none; padding: 2px; cursor: pointer; opacity: 0.7;" title="Ver detalles">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </button>
                     <div style="font-weight: 500; margin-bottom: 0.1rem; font-size: 0.75rem; padding-right: 20px;">{{ proyecto.nombre }}</div>
                     <div style="font-size: 0.65rem; color: #666;">ID: {{ proyecto.id }}</div>
                 </div>
@@ -86,7 +96,12 @@
             <h6 style="margin: 0 0 0.5rem 0; color: #666; font-weight: 600; font-size: 0.8rem;">Aprobación</h6>
             {% for proyecto in estados.aprobacion %}
                 <div style="background: white; border-radius: 4px; padding: 0.5rem; margin-bottom: 0.25rem; box-shadow: 0 1px 2px rgba(0,0,0,0.1); position: relative;">
-                    <button onclick="openProyectoModal({{ proyecto.id }}, 'aprobado')" style="position: absolute; top: 2px; right: 2px; background: none; border: none; padding: 2px; cursor: pointer; opacity: 0.7; font-size: 12px;" title="Ver detalles">👁️</button>
+                    <button onclick="openProyectoModal({{ proyecto.id }}, 'aprobado')" style="position: absolute; top: 2px; right: 2px; background: none; border: none; padding: 2px; cursor: pointer; opacity: 0.7;" title="Ver detalles">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </button>
                     <div style="font-weight: 500; margin-bottom: 0.1rem; font-size: 0.75rem; padding-right: 20px;">{{ proyecto.nombre }}</div>
                     <div style="font-size: 0.65rem; color: #666;">ID: {{ proyecto.id }}</div>
                 </div>
@@ -97,7 +112,12 @@
             <h6 style="margin: 0 0 0.5rem 0; color: #666; font-weight: 600; font-size: 0.8rem;">En Desarrollo</h6>
             {% for proyecto in estados.desarrollo %}
                 <div style="background: white; border-radius: 4px; padding: 0.5rem; margin-bottom: 0.25rem; box-shadow: 0 1px 2px rgba(0,0,0,0.1); position: relative;">
-                    <button onclick="openProyectoModal({{ proyecto.id }}, 'desarrollo')" style="position: absolute; top: 2px; right: 2px; background: none; border: none; padding: 2px; cursor: pointer; opacity: 0.7; font-size: 12px;" title="Ver detalles">👁️</button>
+                    <button onclick="openProyectoModal({{ proyecto.id }}, 'desarrollo')" style="position: absolute; top: 2px; right: 2px; background: none; border: none; padding: 2px; cursor: pointer; opacity: 0.7;" title="Ver detalles">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </button>
                     <div style="font-weight: 500; margin-bottom: 0.1rem; font-size: 0.75rem; padding-right: 20px;">{{ proyecto.nombre }}</div>
                     <div style="font-size: 0.65rem; color: #666;">ID: {{ proyecto.id }}</div>
                 </div>
@@ -108,7 +128,12 @@
             <h6 style="margin: 0 0 0.5rem 0; color: #666; font-weight: 600; font-size: 0.8rem;">Testing</h6>
             {% for proyecto in estados.testing %}
                 <div style="background: white; border-radius: 4px; padding: 0.5rem; margin-bottom: 0.25rem; box-shadow: 0 1px 2px rgba(0,0,0,0.1); position: relative;">
-                    <button onclick="openProyectoModal({{ proyecto.id }}, 'testing')" style="position: absolute; top: 2px; right: 2px; background: none; border: none; padding: 2px; cursor: pointer; opacity: 0.7; font-size: 12px;" title="Ver detalles">👁️</button>
+                    <button onclick="openProyectoModal({{ proyecto.id }}, 'testing')" style="position: absolute; top: 2px; right: 2px; background: none; border: none; padding: 2px; cursor: pointer; opacity: 0.7;" title="Ver detalles">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </button>
                     <div style="font-weight: 500; margin-bottom: 0.1rem; font-size: 0.75rem; padding-right: 20px;">{{ proyecto.nombre }}</div>
                     <div style="font-size: 0.65rem; color: #666;">ID: {{ proyecto.id }}</div>
                 </div>
@@ -119,7 +144,12 @@
             <h6 style="margin: 0 0 0.5rem 0; color: #666; font-weight: 600; font-size: 0.8rem;">Cierre</h6>
             {% for proyecto in estados.cierre %}
                 <div style="background: white; border-radius: 4px; padding: 0.5rem; margin-bottom: 0.25rem; box-shadow: 0 1px 2px rgba(0,0,0,0.1); position: relative;">
-                    <button onclick="openProyectoModal({{ proyecto.id }}, 'cierre')" style="position: absolute; top: 2px; right: 2px; background: none; border: none; padding: 2px; cursor: pointer; opacity: 0.7; font-size: 12px;" title="Ver detalles">👁️</button>
+                    <button onclick="openProyectoModal({{ proyecto.id }}, 'cierre')" style="position: absolute; top: 2px; right: 2px; background: none; border: none; padding: 2px; cursor: pointer; opacity: 0.7;" title="Ver detalles">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </button>
                     <div style="font-weight: 500; margin-bottom: 0.1rem; font-size: 0.75rem; padding-right: 20px;">{{ proyecto.nombre }}</div>
                     <div style="font-size: 0.65rem; color: #666;">ID: {{ proyecto.id }}</div>
                 </div>
@@ -130,7 +160,12 @@
             <h6 style="margin: 0 0 0.5rem 0; color: #666; font-weight: 600; font-size: 0.8rem;">Evaluación</h6>
             {% for proyecto in estados.evaluacion %}
                 <div style="background: white; border-radius: 4px; padding: 0.5rem; margin-bottom: 0.25rem; box-shadow: 0 1px 2px rgba(0,0,0,0.1); position: relative;">
-                    <button onclick="openProyectoModal({{ proyecto.id }}, 'evaluacion')" style="position: absolute; top: 2px; right: 2px; background: none; border: none; padding: 2px; cursor: pointer; opacity: 0.7; font-size: 12px;" title="Ver detalles">👁️</button>
+                    <button onclick="openProyectoModal({{ proyecto.id }}, 'evaluacion')" style="position: absolute; top: 2px; right: 2px; background: none; border: none; padding: 2px; cursor: pointer; opacity: 0.7;" title="Ver detalles">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </button>
                     <div style="font-weight: 500; margin-bottom: 0.1rem; font-size: 0.75rem; padding-right: 20px;">{{ proyecto.nombre }}</div>
                     <div style="font-size: 0.65rem; color: #666;">ID: {{ proyecto.id }}</div>
                 </div>
@@ -141,7 +176,12 @@
             <h6 style="margin: 0 0 0.5rem 0; color: #666; font-weight: 600; font-size: 0.8rem;">Finalizados</h6>
             {% for proyecto in estados.finalizados %}
                 <div style="background: white; border-radius: 4px; padding: 0.5rem; margin-bottom: 0.25rem; box-shadow: 0 1px 2px rgba(0,0,0,0.1); position: relative;">
-                    <button onclick="openProyectoModal({{ proyecto.id }}, 'finalizado')" style="position: absolute; top: 2px; right: 2px; background: none; border: none; padding: 2px; cursor: pointer; opacity: 0.7; font-size: 12px;" title="Ver detalles">👁️</button>
+                    <button onclick="openProyectoModal({{ proyecto.id }}, 'finalizado')" style="position: absolute; top: 2px; right: 2px; background: none; border: none; padding: 2px; cursor: pointer; opacity: 0.7;" title="Ver detalles">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </button>
                     <div style="font-weight: 500; margin-bottom: 0.1rem; font-size: 0.75rem; padding-right: 20px;">{{ proyecto.nombre }}</div>
                     <div style="font-size: 0.65rem; color: #666;">ID: {{ proyecto.id }}</div>
                 </div>
@@ -441,72 +481,6 @@ function closeOportunidadModal() {
 
 // Event listeners cuando el DOM esté cargado
 document.addEventListener('DOMContentLoaded', function() {
-    // Envío del formulario de nueva oportunidad
-    const oportunidadForm = document.getElementById('nuevaOportunidadForm');
-    if (oportunidadForm) {
-        oportunidadForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const formData = new FormData(this);
-            const data = Object.fromEntries(formData);
-            
-            fetch('/api/oportunidades', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data)
-            })
-            .then(response => response.json())
-            .then(result => {
-                if (result.status === 'success') {
-                    alert('Oportunidad creada exitosamente');
-                    closeOportunidadModal();
-                    location.reload();
-                } else {
-                    alert('Error al crear oportunidad: ' + result.message);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Error al procesar la solicitud');
-            });
-        });
-    }
-    
-    // Envío del formulario de detalles del proyecto
-    const proyectoForm = document.getElementById('proyectoDetallesForm');
-    if (proyectoForm) {
-        proyectoForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const proyectoId = document.getElementById('proyecto_id').value;
-            const formData = new FormData(this);
-            const data = Object.fromEntries(formData);
-            
-            fetch(`/api/proyecto/${proyectoId}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data)
-            })
-            .then(response => response.json())
-            .then(result => {
-                if (result.status === 'success') {
-                    alert('Proyecto actualizado exitosamente');
-                    closeProyectoModal();
-                } else {
-                    alert('Error al actualizar proyecto: ' + result.message);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Error al procesar la solicitud');
-            });
-        });
-    }
-    
     // Cerrar modales al hacer click fuera
     const nuevaOportunidadModal = document.getElementById('nuevaOportunidadModal');
     if (nuevaOportunidadModal) {
