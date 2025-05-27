@@ -3,10 +3,74 @@
     <h2>Gestión de Proyectos</h2>
     <button
         class="btn btn-primary"
-        onclick="window.location.href='/proyectos/nuevo'"
+        onclick="openOportunidadModal()"
+        data-bs-toggle="modal"
+        data-bs-target="#nuevaOportunidadModal"
     >
         <i data-feather="plus"></i> Nueva Oportunidad
     </button>
+</div>
+
+<!-- Modal para Nueva Oportunidad -->
+<div class="modal fade" id="nuevaOportunidadModal" tabindex="-1" aria-labelledby="nuevaOportunidadModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="nuevaOportunidadModalLabel">Nueva Oportunidad</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="nuevaOportunidadForm">
+                    <div class="mb-3">
+                        <label for="cuenta" class="form-label">Cuenta</label>
+                        <select class="form-select" id="cuenta" name="cuenta" required>
+                            <option value="">Seleccionar cuenta</option>
+                            {% for aliado in aliados.values() %}
+                            <option value="{{ aliado.id }}">{{ aliado.nombre }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="nombre" class="form-label">
+                            Nombre 
+                            <span class="text-muted" data-bs-toggle="tooltip" data-bs-placement="top" title="Business Problem">
+                                <i data-feather="help-circle" style="width: 16px; height: 16px;"></i>
+                            </span>
+                        </label>
+                        <input type="text" class="form-control" id="nombre" name="nombre" required 
+                               placeholder="Describe el problema de negocio">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="descripcion" class="form-label">
+                            Descripción 
+                            <span class="text-muted" data-bs-toggle="tooltip" data-bs-placement="top" title="Iniciativa Analítica">
+                                <i data-feather="help-circle" style="width: 16px; height: 16px;"></i>
+                            </span>
+                        </label>
+                        <textarea class="form-control" id="descripcion" name="descripcion" rows="3" required
+                                  placeholder="Describe la iniciativa analítica propuesta"></textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="impacto" class="form-label">
+                            Impacto 
+                            <span class="text-muted" data-bs-toggle="tooltip" data-bs-placement="top" title="Impacto de negocio esperado (decisiones)">
+                                <i data-feather="help-circle" style="width: 16px; height: 16px;"></i>
+                            </span>
+                        </label>
+                        <textarea class="form-control" id="impacto" name="impacto" rows="3" required
+                                  placeholder="Describe el impacto de negocio esperado y las decisiones que se tomarán"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="submitOportunidad()">Crear Oportunidad</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="container-fluid px-4">
@@ -230,6 +294,63 @@
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         feather.replace();
+        
+        // Inicializar tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
     });
+
+    function openOportunidadModal() {
+        // Limpiar formulario
+        document.getElementById('nuevaOportunidadForm').reset();
+        // Reemplazar iconos de Feather
+        setTimeout(() => {
+            feather.replace();
+        }, 100);
+    }
+
+    function submitOportunidad() {
+        const form = document.getElementById('nuevaOportunidadForm');
+        
+        if (!form.checkValidity()) {
+            form.reportValidity();
+            return;
+        }
+
+        const formData = {
+            cuenta: document.getElementById('cuenta').value,
+            nombre: document.getElementById('nombre').value,
+            descripcion: document.getElementById('descripcion').value,
+            impacto: document.getElementById('impacto').value
+        };
+
+        // Enviar datos al servidor
+        fetch('/api/oportunidades', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                alert('Oportunidad creada exitosamente');
+                // Cerrar modal
+                const modal = bootstrap.Modal.getInstance(document.getElementById('nuevaOportunidadModal'));
+                modal.hide();
+                // Recargar página para mostrar la nueva oportunidad
+                window.location.reload();
+            } else {
+                alert('Error al crear oportunidad: ' + (data.message || 'Error desconocido'));
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error al conectar con el servidor');
+        });
+    }
 </script>
 {% endblock %}

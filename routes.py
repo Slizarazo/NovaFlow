@@ -736,6 +736,32 @@ def create_asignacion():
         app.logger.error(f"Error al crear asignación: {str(e)}")
         return jsonify({'status': 'error', 'message': str(e)}), 500
 
+@app.route('/api/oportunidades', methods=['POST'])
+@login_required
+def create_oportunidad():
+    try:
+        data = request.get_json()
+        
+        if not data:
+            return jsonify({'status': 'error', 'message': 'No se recibieron datos'}), 400
+
+        print("\n=== DATOS DE NUEVA OPORTUNIDAD RECIBIDOS ===")
+        print(f"Cuenta ID: {data.get('cuenta')}")
+        print(f"Nombre (Business Problem): {data.get('nombre')}")
+        print(f"Descripción (Iniciativa Analítica): {data.get('descripcion')}")
+        print(f"Impacto (Impacto de negocio esperado): {data.get('impacto')}")
+        print("=" * 50)
+
+        return jsonify({
+            'status': 'success',
+            'message': 'Oportunidad creada exitosamente',
+            'data': data
+        })
+
+    except Exception as e:
+        app.logger.error(f"Error al crear oportunidad: {str(e)}")
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+
 @app.route('/aliados/aliados')
 @login_required
 def aliados_aliados():
