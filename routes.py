@@ -701,7 +701,7 @@ def create_product():
 def create_aliado():
     try:
         data = request.get_json()
-        
+
         if not data:
             return jsonify({'status': 'error', 'message': 'No se recibieron datos'}), 400
 
@@ -727,7 +727,7 @@ def create_aliado():
 def create_asignacion():
     try:
         data = request.get_json()
-        
+
         if not data:
             return jsonify({'status': 'error', 'message': 'No se recibieron datos'}), 400
 
@@ -753,7 +753,7 @@ def create_asignacion():
 def create_oportunidad():
     try:
         data = request.get_json()
-        
+
         if not data:
             return jsonify({'status': 'error', 'message': 'No se recibieron datos'}), 400
 
@@ -1030,3 +1030,50 @@ def proyectos_general():
                          estados=estados,
                          config=app.config,
                          role=current_user.role)
+
+@app.route('/dashboard/supervisor')
+def dashboard_supervisor():
+    # Simulamos estados de proyectos para el kanban
+    estados = {
+        'oportunidad': [
+            {'id': 1, 'nombre': 'IA para Detección de Fraudes'},
+            {'id': 2, 'nombre': 'Chatbot Inteligente'},
+            {'id': 3, 'nombre': 'Optimización de Inventarios'}
+        ],
+        'propuesta': [
+            {'id': 4, 'nombre': 'Análisis Predictivo Cliente A'},
+            {'id': 5, 'nombre': 'Dashboard BI Cliente B'},
+            {'id': 6, 'nombre': 'Sistema de Recomendaciones'}
+        ],
+        'aprobacion': [
+            {'id': 7, 'nombre': 'Migración a la Nube'},
+            {'id': 8, 'nombre': 'App de Logística'}
+        ],
+        'desarrollo': [
+            {'id': 9, 'nombre': 'Portal de Autoservicio'},
+            {'id': 10, 'nombre': 'Sistema de Monitoreo'},
+            {'id': 11, 'nombre': 'Plataforma E-learning'},
+            {'id': 12, 'nombre': 'API de Integración'}
+        ],
+        'testing': [
+            {'id': 13, 'nombre': 'App Bancaria Mobile'},
+            {'id': 14, 'nombre': 'Sistema de Pagos'}
+        ],
+        'cierre': [
+            {'id': 15, 'nombre': 'Sistema CRM Cliente C'},
+            {'id': 16, 'nombre': 'App Mobile Cliente D'},
+            {'id': 17, 'nombre': 'Dashboard Ejecutivo'}
+        ],
+        'evaluacion': [
+            {'id': 18, 'nombre': 'Proyecto Analytics'},
+            {'id': 19, 'nombre': 'Sistema de Reportes'}
+        ],
+        'finalizados': [
+            {'id': 20, 'nombre': 'Portal Corporativo'},
+            {'id': 21, 'nombre': 'Sistema de Facturación'},
+            {'id': 22, 'nombre': 'App de Ventas'},
+            {'id': 23, 'nombre': 'Plataforma de Marketing'},
+            {'id': 24, 'nombre': 'Sistema de Inventario'}
+        ]
+    }
+    return render_template('dashboard/supervisor.html', estados=estados)
