@@ -4,26 +4,29 @@
     <button
         class="btn btn-primary"
         onclick="openOportunidadModal()"
-        data-bs-toggle="modal"
-        data-bs-target="#nuevaOportunidadModal"
     >
         <i data-feather="plus"></i> Nueva Oportunidad
     </button>
 </div>
 
 <!-- Modal para Nueva Oportunidad -->
-<div class="modal fade" id="nuevaOportunidadModal" tabindex="-1" aria-labelledby="nuevaOportunidadModalLabel" aria-hidden="true">
+<div class="modal" id="nuevaOportunidadModal" style="display: none;">
     <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="nuevaOportunidadModalLabel">Nueva Oportunidad</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="modal-content" style="border: none; border-radius: 16px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); overflow: hidden;">
+            <div class="modal-header" style="background: linear-gradient(135deg, #8B5A9D, #A084B8); border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding: 1.5rem 2rem;">
+                <h5 class="modal-title" style="font-size: 1.5rem; font-weight: 600; color: white; margin: 0;">Nueva Oportunidad</h5>
+                <button type="button" class="btn-close-custom" onclick="closeOportunidadModal()" style="background: none; border: none; color: white; font-size: 1.5rem; opacity: 0.8; padding: 0; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer;">×</button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body" style="background: white; color: #333; padding: 2rem; max-height: 70vh; overflow-y: auto;">
+                <div style="display: flex; align-items: center; margin-bottom: 1.5rem; color: #8B5A9D; font-size: 0.9rem;">
+                    <button type="button" onclick="closeOportunidadModal()" style="background: none; border: none; color: #8B5A9D; margin-right: 0.5rem; padding: 0; cursor: pointer;">←</button>
+                    <span>Volver</span>
+                </div>
+                
                 <form id="nuevaOportunidadForm">
                     <div class="mb-3">
-                        <label for="cuenta" class="form-label">Cuenta</label>
-                        <select class="form-select" id="cuenta" name="cuenta" required>
+                        <label for="cuenta" class="form-label" style="font-weight: 500; color: #555; margin-bottom: 0.5rem;">Cuenta</label>
+                        <select class="form-control" id="cuenta" name="cuenta" required style="border: 1px solid #ddd; border-radius: 8px; padding: 0.75rem; font-size: 0.95rem; width: 100%;">
                             <option value="">Seleccionar cuenta</option>
                             {% for aliado in aliados.values() %}
                             <option value="{{ aliado.id }}">{{ aliado.nombre }}</option>
@@ -32,42 +35,45 @@
                     </div>
                     
                     <div class="mb-3">
-                        <label for="nombre" class="form-label">
+                        <label for="nombre" class="form-label" style="font-weight: 500; color: #555; margin-bottom: 0.5rem;">
                             Nombre 
                             <span class="text-muted" data-bs-toggle="tooltip" data-bs-placement="top" title="Business Problem">
                                 <i data-feather="help-circle" style="width: 16px; height: 16px;"></i>
                             </span>
                         </label>
                         <input type="text" class="form-control" id="nombre" name="nombre" required 
-                               placeholder="Describe el problema de negocio">
+                               placeholder="Describe el problema de negocio"
+                               style="border: 1px solid #ddd; border-radius: 8px; padding: 0.75rem; font-size: 0.95rem; width: 100%;">
                     </div>
                     
                     <div class="mb-3">
-                        <label for="descripcion" class="form-label">
+                        <label for="descripcion" class="form-label" style="font-weight: 500; color: #555; margin-bottom: 0.5rem;">
                             Descripción 
                             <span class="text-muted" data-bs-toggle="tooltip" data-bs-placement="top" title="Iniciativa Analítica">
                                 <i data-feather="help-circle" style="width: 16px; height: 16px;"></i>
                             </span>
                         </label>
                         <textarea class="form-control" id="descripcion" name="descripcion" rows="3" required
-                                  placeholder="Describe la iniciativa analítica propuesta"></textarea>
+                                  placeholder="Describe la iniciativa analítica propuesta"
+                                  style="border: 1px solid #ddd; border-radius: 8px; padding: 0.75rem; font-size: 0.95rem; width: 100%; resize: vertical;"></textarea>
                     </div>
                     
                     <div class="mb-3">
-                        <label for="impacto" class="form-label">
+                        <label for="impacto" class="form-label" style="font-weight: 500; color: #555; margin-bottom: 0.5rem;">
                             Impacto 
                             <span class="text-muted" data-bs-toggle="tooltip" data-bs-placement="top" title="Impacto de negocio esperado (decisiones)">
                                 <i data-feather="help-circle" style="width: 16px; height: 16px;"></i>
                             </span>
                         </label>
                         <textarea class="form-control" id="impacto" name="impacto" rows="3" required
-                                  placeholder="Describe el impacto de negocio esperado y las decisiones que se tomarán"></textarea>
+                                  placeholder="Describe el impacto de negocio esperado y las decisiones que se tomarán"
+                                  style="border: 1px solid #ddd; border-radius: 8px; padding: 0.75rem; font-size: 0.95rem; width: 100%; resize: vertical;"></textarea>
                     </div>
                 </form>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary" onclick="submitOportunidad()">Crear Oportunidad</button>
+            <div class="modal-footer" style="background: white; border-top: 1px solid #eee; padding: 1.5rem 2rem; display: flex; justify-content: flex-end; gap: 1rem;">
+                <button type="button" onclick="closeOportunidadModal()" style="background: #6c757d; border: none; border-radius: 8px; padding: 0.75rem 1.5rem; font-weight: 500; color: white; cursor: pointer;">Cancelar</button>
+                <button type="button" onclick="submitOportunidad()" style="background: linear-gradient(135deg, #8B5A9D, #A084B8); border: none; border-radius: 8px; padding: 0.75rem 1.5rem; font-weight: 500; color: white; cursor: pointer;">Crear Oportunidad</button>
             </div>
         </div>
     </div>
@@ -294,36 +300,66 @@
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         feather.replace();
-        
-        // Inicializar tooltips
-        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-            return new bootstrap.Tooltip(tooltipTriggerEl);
-        });
     });
 
     function openOportunidadModal() {
-        // Limpiar formulario
-        document.getElementById('nuevaOportunidadForm').reset();
-        // Reemplazar iconos de Feather
-        setTimeout(() => {
-            feather.replace();
-        }, 100);
+        const modal = document.getElementById('nuevaOportunidadModal');
+        if (modal) {
+            // Limpiar formulario
+            const form = document.getElementById('nuevaOportunidadForm');
+            if (form) {
+                form.reset();
+            }
+            
+            // Mostrar modal
+            modal.style.display = 'flex';
+            modal.style.alignItems = 'center';
+            modal.style.justifyContent = 'center';
+            modal.style.position = 'fixed';
+            modal.style.top = '0';
+            modal.style.left = '0';
+            modal.style.width = '100%';
+            modal.style.height = '100%';
+            modal.style.backgroundColor = 'rgba(0, 0, 0, 0.6)';
+            modal.style.zIndex = '1055';
+            
+            // Reemplazar iconos de Feather
+            setTimeout(() => {
+                feather.replace();
+            }, 100);
+        }
+    }
+
+    function closeOportunidadModal() {
+        const modal = document.getElementById('nuevaOportunidadModal');
+        if (modal) {
+            modal.style.display = 'none';
+        }
     }
 
     function submitOportunidad() {
         const form = document.getElementById('nuevaOportunidadForm');
         
-        if (!form.checkValidity()) {
-            form.reportValidity();
+        if (!form || !form.checkValidity()) {
+            if (form) form.reportValidity();
+            return;
+        }
+
+        const cuentaElement = document.getElementById('cuenta');
+        const nombreElement = document.getElementById('nombre');
+        const descripcionElement = document.getElementById('descripcion');
+        const impactoElement = document.getElementById('impacto');
+
+        if (!cuentaElement || !nombreElement || !descripcionElement || !impactoElement) {
+            alert('Error: No se pudieron encontrar todos los campos del formulario');
             return;
         }
 
         const formData = {
-            cuenta: document.getElementById('cuenta').value,
-            nombre: document.getElementById('nombre').value,
-            descripcion: document.getElementById('descripcion').value,
-            impacto: document.getElementById('impacto').value
+            cuenta: cuentaElement.value,
+            nombre: nombreElement.value,
+            descripcion: descripcionElement.value,
+            impacto: impactoElement.value
         };
 
         // Enviar datos al servidor
@@ -338,9 +374,7 @@
         .then(data => {
             if (data.status === 'success') {
                 alert('Oportunidad creada exitosamente');
-                // Cerrar modal
-                const modal = bootstrap.Modal.getInstance(document.getElementById('nuevaOportunidadModal'));
-                modal.hide();
+                closeOportunidadModal();
                 // Recargar página para mostrar la nueva oportunidad
                 window.location.reload();
             } else {
@@ -352,5 +386,13 @@
             alert('Error al conectar con el servidor');
         });
     }
+
+    // Cerrar modal al hacer click en el fondo
+    document.addEventListener('click', function(e) {
+        const modal = document.getElementById('nuevaOportunidadModal');
+        if (e.target === modal) {
+            closeOportunidadModal();
+        }
+    });
 </script>
 {% endblock %}
