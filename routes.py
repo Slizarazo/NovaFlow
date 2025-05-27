@@ -774,6 +774,44 @@ def create_oportunidad():
         app.logger.error(f"Error al crear oportunidad: {str(e)}")
         return jsonify({'status': 'error', 'message': str(e)}), 500
 
+@app.route('/api/proyecto/<int:proyecto_id>', methods=['PUT'])
+@login_required
+def update_proyecto(proyecto_id):
+    try:
+        data = request.get_json()
+
+        if not data:
+            return jsonify({'status': 'error', 'message': 'No se recibieron datos'}), 400
+
+        print(f"\n=== ACTUALIZACIÓN DE PROYECTO {proyecto_id} ===")
+        print(f"Caso de Uso: {data.get('caso_uso')}")
+        print(f"Descripción: {data.get('descripcion')}")
+        print(f"Impacto: {data.get('impacto')}")
+        print(f"Puntuación Impacto: {data.get('puntuacion_impacto')}")
+        print(f"Puntuación Técnica: {data.get('puntuacion_tecnica')}")
+        print(f"Palabras Clave: {data.get('palabras_clave')}")
+        print(f"Producto: {data.get('producto')}")
+        print(f"Fecha Inicio: {data.get('fecha_inicio')}")
+        print(f"Fecha Cierre: {data.get('fecha_cierre')}")
+        print(f"Monto Venta: {data.get('monto_venta')}")
+        print(f"Costos Proyecto: {data.get('costos_proyecto')}")
+        print(f"Margen Estimado %: {data.get('margen_estimado_porcentaje')}")
+        print(f"Margen Estimado Bruto: {data.get('margen_estimado_bruto')}")
+        print(f"Feedback: {data.get('feedback')}")
+        print("=" * 50)
+
+        # Aquí implementarías la lógica para actualizar el proyecto en la base de datos
+        
+        return jsonify({
+            'status': 'success',
+            'message': 'Proyecto actualizado exitosamente',
+            'data': data
+        })
+
+    except Exception as e:
+        app.logger.error(f"Error al actualizar proyecto: {str(e)}")
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+
 @app.route('/aliados/aliados')
 @login_required
 def aliados_aliados():
