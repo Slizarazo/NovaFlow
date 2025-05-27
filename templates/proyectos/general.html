@@ -11,23 +11,27 @@
 
 <!-- Modal para Nueva Oportunidad -->
 <div class="modal" id="nuevaOportunidadModal" style="display: none;">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content" style="border: none; border-radius: 16px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); overflow: hidden;">
-            <div class="modal-header" style="background: linear-gradient(135deg, #8B5A9D, #A084B8); border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding: 1.5rem 2rem;">
-                <h5 class="modal-title" style="font-size: 1.5rem; font-weight: 600; color: white; margin: 0;">Nueva Oportunidad</h5>
-                <button type="button" class="btn-close-custom" onclick="closeOportunidadModal()" style="background: none; border: none; color: white; font-size: 1.5rem; opacity: 0.8; padding: 0; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer;">×</button>
+    <div class="modal-dialog" style="max-width: 600px; width: 90%; margin: 1.75rem auto;">
+        <div class="modal-content" style="border: none; border-radius: 12px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); overflow: hidden;">
+            <div class="modal-header" style="background: #8B5A9D; border-bottom: none; padding: 1.25rem 1.5rem; position: relative;">
+                <h5 class="modal-title" style="font-size: 1.125rem; font-weight: 600; color: white; margin: 0;">Nueva Asignación</h5>
+                <button type="button" class="btn-close-custom" onclick="closeOportunidadModal()" style="background: none; border: none; color: white; font-size: 1.5rem; opacity: 1; padding: 0; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; position: absolute; right: 1.5rem; top: 50%; transform: translateY(-50%);">×</button>
             </div>
-            <div class="modal-body" style="background: white; color: #333; padding: 2rem; max-height: 70vh; overflow-y: auto;">
-                <div style="display: flex; align-items: center; margin-bottom: 1.5rem; color: #8B5A9D; font-size: 0.9rem;">
-                    <button type="button" onclick="closeOportunidadModal()" style="background: none; border: none; color: #8B5A9D; margin-right: 0.5rem; padding: 0; cursor: pointer;">←</button>
+            <div class="modal-body" style="background: white; color: #333; padding: 1.5rem; max-height: 70vh; overflow-y: auto;">
+                <div style="display: flex; align-items: center; margin-bottom: 1rem; color: #8B5A9D; font-size: 0.875rem; cursor: pointer;" onclick="closeOportunidadModal()">
+                    <span style="margin-right: 0.5rem;">←</span>
                     <span>Volver</span>
+                </div>
+                
+                <div style="margin-bottom: 1.5rem;">
+                    <h6 style="color: #333; font-weight: 500; margin-bottom: 1rem; font-size: 0.9rem;">Asignación de Freelance</h6>
                 </div>
                 
                 <form id="nuevaOportunidadForm">
                     <div class="mb-3">
-                        <label for="cuenta" class="form-label" style="font-weight: 500; color: #555; margin-bottom: 0.5rem;">Cuenta</label>
-                        <select class="form-control" id="cuenta" name="cuenta" required style="border: 1px solid #ddd; border-radius: 8px; padding: 0.75rem; font-size: 0.95rem; width: 100%;">
-                            <option value="">Seleccionar cuenta</option>
+                        <label for="aliado" class="form-label" style="font-weight: 500; color: #555; margin-bottom: 0.5rem;">Aliado</label>
+                        <select class="form-control" id="aliado" name="aliado" required style="border: 1px solid #ddd; border-radius: 8px; padding: 0.75rem; font-size: 0.95rem; width: 100%; background-color: #f8f9fa;">
+                            <option value="">Seleccionar aliado...</option>
                             {% for aliado in aliados.values() %}
                             <option value="{{ aliado.id }}">{{ aliado.nombre }}</option>
                             {% endfor %}
@@ -35,45 +39,29 @@
                     </div>
                     
                     <div class="mb-3">
-                        <label for="nombre" class="form-label" style="font-weight: 500; color: #555; margin-bottom: 0.5rem;">
-                            Nombre 
-                            <span class="text-muted" data-bs-toggle="tooltip" data-bs-placement="top" title="Business Problem">
-                                <i data-feather="help-circle" style="width: 16px; height: 16px;"></i>
-                            </span>
-                        </label>
-                        <input type="text" class="form-control" id="nombre" name="nombre" required 
-                               placeholder="Describe el problema de negocio"
+                        <label for="freelance" class="form-label" style="font-weight: 500; color: #555; margin-bottom: 0.5rem;">Freelance</label>
+                        <select class="form-control" id="freelance" name="freelance" required style="border: 1px solid #ddd; border-radius: 8px; padding: 0.75rem; font-size: 0.95rem; width: 100%; background-color: #f8f9fa;">
+                            <option value="">Seleccionar freelance...</option>
+                            <!-- Las opciones se cargarán dinámicamente -->
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="fechaInicio" class="form-label" style="font-weight: 500; color: #555; margin-bottom: 0.5rem;">Fecha de Inicio</label>
+                        <input type="date" class="form-control" id="fechaInicio" name="fechaInicio" required 
                                style="border: 1px solid #ddd; border-radius: 8px; padding: 0.75rem; font-size: 0.95rem; width: 100%;">
                     </div>
                     
                     <div class="mb-3">
-                        <label for="descripcion" class="form-label" style="font-weight: 500; color: #555; margin-bottom: 0.5rem;">
-                            Descripción 
-                            <span class="text-muted" data-bs-toggle="tooltip" data-bs-placement="top" title="Iniciativa Analítica">
-                                <i data-feather="help-circle" style="width: 16px; height: 16px;"></i>
-                            </span>
-                        </label>
-                        <textarea class="form-control" id="descripcion" name="descripcion" rows="3" required
-                                  placeholder="Describe la iniciativa analítica propuesta"
-                                  style="border: 1px solid #ddd; border-radius: 8px; padding: 0.75rem; font-size: 0.95rem; width: 100%; resize: vertical;"></textarea>
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="impacto" class="form-label" style="font-weight: 500; color: #555; margin-bottom: 0.5rem;">
-                            Impacto 
-                            <span class="text-muted" data-bs-toggle="tooltip" data-bs-placement="top" title="Impacto de negocio esperado (decisiones)">
-                                <i data-feather="help-circle" style="width: 16px; height: 16px;"></i>
-                            </span>
-                        </label>
-                        <textarea class="form-control" id="impacto" name="impacto" rows="3" required
-                                  placeholder="Describe el impacto de negocio esperado y las decisiones que se tomarán"
-                                  style="border: 1px solid #ddd; border-radius: 8px; padding: 0.75rem; font-size: 0.95rem; width: 100%; resize: vertical;"></textarea>
+                        <label for="fechaFin" class="form-label" style="font-weight: 500; color: #555; margin-bottom: 0.5rem;">Fecha de Fin</label>
+                        <input type="date" class="form-control" id="fechaFin" name="fechaFin" required 
+                               style="border: 1px solid #ddd; border-radius: 8px; padding: 0.75rem; font-size: 0.95rem; width: 100%;">
                     </div>
                 </form>
             </div>
-            <div class="modal-footer" style="background: white; border-top: 1px solid #eee; padding: 1.5rem 2rem; display: flex; justify-content: flex-end; gap: 1rem;">
-                <button type="button" onclick="closeOportunidadModal()" style="background: #6c757d; border: none; border-radius: 8px; padding: 0.75rem 1.5rem; font-weight: 500; color: white; cursor: pointer;">Cancelar</button>
-                <button type="button" onclick="submitOportunidad()" style="background: linear-gradient(135deg, #8B5A9D, #A084B8); border: none; border-radius: 8px; padding: 0.75rem 1.5rem; font-weight: 500; color: white; cursor: pointer;">Crear Oportunidad</button>
+            <div class="modal-footer" style="background: white; border-top: 1px solid #eee; padding: 1.5rem; display: flex; justify-content: flex-end; gap: 1rem;">
+                <button type="button" onclick="closeOportunidadModal()" style="background: #e5e7eb; border: none; border-radius: 8px; padding: 0.75rem 1.5rem; font-weight: 500; color: #6b7280; cursor: pointer;">Cancelar</button>
+                <button type="button" onclick="submitOportunidad()" style="background: #8B5A9D; border: none; border-radius: 8px; padding: 0.75rem 1.5rem; font-weight: 500; color: white; cursor: pointer;">Crear Asignación</button>
             </div>
         </div>
     </div>
