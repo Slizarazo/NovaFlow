@@ -409,9 +409,9 @@ function openProyectoModal(proyectoId, estado) {
     document.getElementById('proyecto_puntuacion_tecnica').value = "";
     document.getElementById('proyecto_palabras_clave').value = "";
     document.getElementById('proyecto_producto').value = "";
-    document.getElementById('proyecto_fecha_inicio').value = "";
-    document.getElementById('proyecto_fecha_cierre').value = "";
-    document.getElementById('proyecto_monto_venta').value = "";
+    document.getElementById('proyecto_fecha_inicio').value = proyecto.fecha_inicio || "";
+    document.getElementById('proyecto_fecha_cierre').value = proyecto.fecha_fin || "";
+    document.getElementById('proyecto_monto_venta').value = proyecto.monto || "";
     document.getElementById('proyecto_costos_proyecto').value = "";
     document.getElementById('proyecto_margen_estimado_porcentaje').value = "";
     document.getElementById('proyecto_margen_estimado_bruto').value = "";
