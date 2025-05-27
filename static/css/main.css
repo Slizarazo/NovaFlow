@@ -151,24 +151,24 @@ a:hover {
 
 .btn-primary {
     color: var(--white);
-    background-color: var(--primary);
-    border-color: var(--primary);
+    background-color: #00BCD4;
+    border-color: #00BCD4;
 }
 
 .btn-primary:hover {
-    background-color: #1a252f;
-    border-color: #1a252f;
+    background-color: #00ACC1;
+    border-color: #00ACC1;
 }
 
 .btn-secondary {
     color: var(--white);
-    background-color: var(--secondary);
-    border-color: var(--secondary);
+    background-color: #00BCD4;
+    border-color: #00BCD4;
 }
 
 .btn-secondary:hover {
-    background-color: #217dbb;
-    border-color: #217dbb;
+    background-color: #00ACC1;
+    border-color: #00ACC1;
 }
 
 .btn-success {

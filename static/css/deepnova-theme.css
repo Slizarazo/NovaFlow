@@ -685,21 +685,21 @@ a:hover {
 
 .btn-primary {
     color: var(--white);
-    background: var(--primary-blue);
+    background: #00BCD4;
 }
 
 .btn-primary:hover {
-    background: var(--dark-blue);
+    background: #00ACC1;
     box-shadow: var(--shadow-sm);
 }
 
 .btn-secondary {
     color: var(--white);
-    background: var(--primary-purple);
+    background: #00BCD4;
 }
 
 .btn-secondary:hover {
-    background: var(--light-purple);
+    background: #00ACC1;
     box-shadow: var(--shadow-sm);
 }
 
