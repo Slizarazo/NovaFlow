@@ -29,33 +29,45 @@
                 
                 <form id="nuevaOportunidadForm">
                     <div class="mb-3">
-                        <label for="aliado" class="form-label" style="font-weight: 500; color: #555; margin-bottom: 0.5rem;">Aliado</label>
-                        <select class="form-control" id="aliado" name="aliado" required style="border: 1px solid #ddd; border-radius: 8px; padding: 0.75rem; font-size: 0.95rem; width: 100%; background-color: #f8f9fa;">
-                            <option value="">Seleccionar aliado...</option>
-                            {% for aliado in aliados.values() %}
-                            <option value="{{ aliado.id }}">{{ aliado.nombre }}</option>
+                        <label for="cuenta" class="form-label" style="font-weight: 500; color: #555; margin-bottom: 0.5rem;">Cuenta</label>
+                        <select class="form-control" id="cuenta" name="cuenta" required style="border: 1px solid #ddd; border-radius: 8px; padding: 0.75rem; font-size: 0.95rem; width: 100%; background-color: #f8f9fa;">
+                            <option value="">Seleccionar cuenta...</option>
+                            {% for cuenta in cuentas %}
+                            <option value="{{ cuenta.id }}">{{ cuenta.nombre }}</option>
                             {% endfor %}
                         </select>
                     </div>
                     
                     <div class="mb-3">
-                        <label for="freelance" class="form-label" style="font-weight: 500; color: #555; margin-bottom: 0.5rem;">Freelance</label>
-                        <select class="form-control" id="freelance" name="freelance" required style="border: 1px solid #ddd; border-radius: 8px; padding: 0.75rem; font-size: 0.95rem; width: 100%; background-color: #f8f9fa;">
-                            <option value="">Seleccionar freelance...</option>
-                            <!-- Las opciones se cargarán dinámicamente -->
-                        </select>
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="fechaInicio" class="form-label" style="font-weight: 500; color: #555; margin-bottom: 0.5rem;">Fecha de Inicio</label>
-                        <input type="date" class="form-control" id="fechaInicio" name="fechaInicio" required 
+                        <label for="casoUso" class="form-label" style="font-weight: 500; color: #555; margin-bottom: 0.5rem; display: flex; align-items: center;">
+                            Caso de Uso
+                            <span class="tooltip-icon" style="margin-left: 0.5rem; cursor: help; color: #8B5A9D; font-weight: bold;" title="Nombre (Business problem)">ⓘ</span>
+                        </label>
+                        <input type="text" class="form-control" id="casoUso" name="casoUso" required 
+                               placeholder="Ingrese el caso de uso..."
                                style="border: 1px solid #ddd; border-radius: 8px; padding: 0.75rem; font-size: 0.95rem; width: 100%;">
                     </div>
                     
                     <div class="mb-3">
-                        <label for="fechaFin" class="form-label" style="font-weight: 500; color: #555; margin-bottom: 0.5rem;">Fecha de Fin</label>
-                        <input type="date" class="form-control" id="fechaFin" name="fechaFin" required 
-                               style="border: 1px solid #ddd; border-radius: 8px; padding: 0.75rem; font-size: 0.95rem; width: 100%;">
+                        <label for="descripcion" class="form-label" style="font-weight: 500; color: #555; margin-bottom: 0.5rem; display: flex; align-items: center;">
+                            Descripción
+                            <span class="tooltip-icon" style="margin-left: 0.5rem; cursor: help; color: #8B5A9D; font-weight: bold;" title="Iniciativa analítica">ⓘ</span>
+                        </label>
+                        <textarea class="form-control" id="descripcion" name="descripcion" required 
+                                  placeholder="Describa la iniciativa analítica..."
+                                  rows="3"
+                                  style="border: 1px solid #ddd; border-radius: 8px; padding: 0.75rem; font-size: 0.95rem; width: 100%; resize: vertical;"></textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="impacto" class="form-label" style="font-weight: 500; color: #555; margin-bottom: 0.5rem; display: flex; align-items: center;">
+                            Impacto
+                            <span class="tooltip-icon" style="margin-left: 0.5rem; cursor: help; color: #8B5A9D; font-weight: bold;" title="Impacto de negocio esperado (decisiones)">ⓘ</span>
+                        </label>
+                        <textarea class="form-control" id="impacto" name="impacto" required 
+                                  placeholder="Describa el impacto de negocio esperado..."
+                                  rows="3"
+                                  style="border: 1px solid #ddd; border-radius: 8px; padding: 0.75rem; font-size: 0.95rem; width: 100%; resize: vertical;"></textarea>
                     </div>
                 </form>
             </div>
@@ -288,6 +300,17 @@
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         feather.replace();
+        
+        // Inicializar tooltips
+        const tooltips = document.querySelectorAll('.tooltip-icon');
+        tooltips.forEach(tooltip => {
+            tooltip.addEventListener('mouseenter', function() {
+                this.style.transform = 'scale(1.2)';
+            });
+            tooltip.addEventListener('mouseleave', function() {
+                this.style.transform = 'scale(1)';
+            });
+        });
     });
 
     function openOportunidadModal() {
@@ -334,18 +357,18 @@
         }
 
         const cuentaElement = document.getElementById('cuenta');
-        const nombreElement = document.getElementById('nombre');
+        const casoUsoElement = document.getElementById('casoUso');
         const descripcionElement = document.getElementById('descripcion');
         const impactoElement = document.getElementById('impacto');
 
-        if (!cuentaElement || !nombreElement || !descripcionElement || !impactoElement) {
+        if (!cuentaElement || !casoUsoElement || !descripcionElement || !impactoElement) {
             alert('Error: No se pudieron encontrar todos los campos del formulario');
             return;
         }
 
         const formData = {
             cuenta: cuentaElement.value,
-            nombre: nombreElement.value,
+            casoUso: casoUsoElement.value,
             descripcion: descripcionElement.value,
             impacto: impactoElement.value
         };
