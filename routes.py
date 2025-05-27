@@ -829,6 +829,47 @@ def create_oportunidad():
         app.logger.error(f"Error al crear oportunidad: {str(e)}")
         return jsonify({'status': 'error', 'message': str(e)}), 500
 
+@app.route('/api/proyectos/edit', methods=['POST'])
+@login_required
+def edit_proyecto():
+    try:
+        data = request.get_json()
+
+        if not data:
+            return jsonify({'status': 'error', 'message': 'No se recibieron datos'}), 400
+
+        print("\n=== DATOS DE PROYECTO EDITADO RECIBIDOS ===")
+        print(f"ID Proyecto: {data.get('project_id')}")
+        print(f"ID Caso de Uso: {data.get('id_caso_uso')}")
+        print(f"Aliado: {data.get('aliado')}")
+        print(f"Cuenta: {data.get('cuenta')}")
+        print(f"Caso de Uso: {data.get('caso_uso')}")
+        print(f"Descripción: {data.get('descripcion')}")
+        print(f"Impacto: {data.get('impacto')}")
+        print(f"Puntuación Impacto: {data.get('puntuacion_impacto')}")
+        print(f"Puntuación Técnica: {data.get('puntuacion_tecnica')}")
+        print(f"Tags: {data.get('tags')}")
+        print(f"Estado: {data.get('estado')}")
+        print(f"Producto: {data.get('producto')}")
+        print(f"Fecha Inicio: {data.get('fecha_inicio')}")
+        print(f"Fecha Fin: {data.get('fecha_fin')}")
+        print(f"Monto Venta: {data.get('monto_venta')}")
+        print(f"Costos Proyecto: {data.get('costos_proyecto')}")
+        print(f"Margen %: {data.get('margen_porcentaje')}")
+        print(f"Margen Bruto: {data.get('margen_bruto')}")
+        print(f"Feedback: {data.get('feedback')}")
+        print("=" * 50)
+
+        return jsonify({
+            'status': 'success',
+            'message': 'Proyecto actualizado exitosamente',
+            'data': data
+        })
+
+    except Exception as e:
+        app.logger.error(f"Error al editar proyecto: {str(e)}")
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+
 @app.route('/aliados/aliados')
 @login_required
 def aliados_aliados():
