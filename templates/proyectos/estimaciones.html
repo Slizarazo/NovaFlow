@@ -1,0 +1,235 @@
+
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="dashboard-container">
+    <!-- Header -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+        <h3 style="margin: 0; color: #333; font-weight: 600;">Estimaciones de Proyectos</h3>
+        <button onclick="openNuevaEstimacionModal()" style="background: #8B5A9D; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 500; cursor: pointer;">
+            + Nueva Estimación
+        </button>
+    </div>
+
+    <!-- Filtros -->
+    <div style="background: white; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; align-items: end;">
+            <div>
+                <label style="display: block; margin-bottom: 0.5rem; font-weight: 500; color: #555;">Aliado</label>
+                <select id="filtroAliado" style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 8px; font-size: 0.95rem;">
+                    <option value="">Todos los aliados</option>
+                    <option value="Aliado Tech">Aliado Tech</option>
+                    <option value="Financiera Global">Financiera Global</option>
+                    <option value="Industrias Este">Industrias Este</option>
+                    <option value="Consultores Sur">Consultores Sur</option>
+                    <option value="Servicios Oeste">Servicios Oeste</option>
+                </select>
+            </div>
+            <div>
+                <label style="display: block; margin-bottom: 0.5rem; font-weight: 500; color: #555;">Estado</label>
+                <select id="filtroEstado" style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 8px; font-size: 0.95rem;">
+                    <option value="">Todos los estados</option>
+                    <option value="Pendiente">Pendiente</option>
+                    <option value="En Revisión">En Revisión</option>
+                    <option value="Aprobada">Aprobada</option>
+                    <option value="Rechazada">Rechazada</option>
+                </select>
+            </div>
+            <div>
+                <label style="display: block; margin-bottom: 0.5rem; font-weight: 500; color: #555;">Tipo</label>
+                <select id="filtroTipo" style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 8px; font-size: 0.95rem;">
+                    <option value="">Todos los tipos</option>
+                    <option value="Desarrollo Completo">Desarrollo Completo</option>
+                    <option value="MVP">MVP</option>
+                    <option value="Prototipo">Prototipo</option>
+                    <option value="Consultoría">Consultoría</option>
+                </select>
+            </div>
+            <div>
+                <button onclick="aplicarFiltros()" style="background: #8B5A9D; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 500; cursor: pointer; width: 100%;">
+                    Filtrar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabla de Estimaciones -->
+    <div style="background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); overflow: hidden;">
+        <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+                <thead>
+                    <tr style="background: #f8f9fa; border-bottom: 2px solid #dee2e6;">
+                        <th style="padding: 1rem; text-align: left; font-weight: 600; color: #495057; white-space: nowrap;">ID Estimación</th>
+                        <th style="padding: 1rem; text-align: left; font-weight: 600; color: #495057; white-space: nowrap;">Aliado</th>
+                        <th style="padding: 1rem; text-align: left; font-weight: 600; color: #495057; white-space: nowrap;">Caso de Uso</th>
+                        <th style="padding: 1rem; text-align: left; font-weight: 600; color: #495057; white-space: nowrap;">Fecha</th>
+                        <th style="padding: 1rem; text-align: left; font-weight: 600; color: #495057; white-space: nowrap;">Tipo de Estimación</th>
+                        <th style="padding: 1rem; text-align: left; font-weight: 600; color: #495057; white-space: nowrap;">Horas Estimadas</th>
+                        <th style="padding: 1rem; text-align: left; font-weight: 600; color: #495057; white-space: nowrap;">Tarifa Freelance</th>
+                        <th style="padding: 1rem; text-align: left; font-weight: 600; color: #495057; white-space: nowrap;">Recursos</th>
+                        <th style="padding: 1rem; text-align: left; font-weight: 600; color: #495057; white-space: nowrap;">Estado</th>
+                        <th style="padding: 1rem; text-align: center; font-weight: 600; color: #495057; white-space: nowrap;">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tablaEstimaciones">
+                    {% for estimacion in estimaciones %}
+                    <tr style="border-bottom: 1px solid #e9ecef;" data-aliado="{{ estimacion.aliado }}" data-estado="{{ estimacion.estado }}" data-tipo="{{ estimacion.tipo }}">
+                        <td style="padding: 1rem; color: #495057; font-weight: 500;">{{ estimacion.id }}</td>
+                        <td style="padding: 1rem; color: #495057;">{{ estimacion.aliado }}</td>
+                        <td style="padding: 1rem; color: #495057; max-width: 200px;">
+                            <div style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="{{ estimacion.caso_uso }}">
+                                {{ estimacion.caso_uso }}
+                            </div>
+                        </td>
+                        <td style="padding: 1rem; color: #495057;">{{ estimacion.fecha }}</td>
+                        <td style="padding: 1rem; color: #495057;">
+                            <span style="background: #e3f2fd; color: #1976d2; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem; font-weight: 500;">
+                                {{ estimacion.tipo }}
+                            </span>
+                        </td>
+                        <td style="padding: 1rem; color: #495057; text-align: center; font-weight: 500;">{{ estimacion.horas_estimadas }}h</td>
+                        <td style="padding: 1rem; color: #495057; text-align: center; font-weight: 500;">${{ estimacion.tarifa_freelance }}/h</td>
+                        <td style="padding: 1rem; color: #495057; max-width: 150px;">
+                            <div style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="{{ estimacion.recursos }}">
+                                {{ estimacion.recursos }}
+                            </div>
+                        </td>
+                        <td style="padding: 1rem; color: #495057;">
+                            {% if estimacion.estado == 'Aprobada' %}
+                                <span style="background: #e8f5e8; color: #2e7d32; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem; font-weight: 500;">
+                                    ✓ Aprobada
+                                </span>
+                            {% elif estimacion.estado == 'En Revisión' %}
+                                <span style="background: #fff3e0; color: #f57c00; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem; font-weight: 500;">
+                                    ⏳ En Revisión
+                                </span>
+                            {% elif estimacion.estado == 'Pendiente' %}
+                                <span style="background: #f3e5f5; color: #8e24aa; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem; font-weight: 500;">
+                                    ⏸ Pendiente
+                                </span>
+                            {% elif estimacion.estado == 'Rechazada' %}
+                                <span style="background: #ffebee; color: #d32f2f; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem; font-weight: 500;">
+                                    ✗ Rechazada
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td style="padding: 1rem; text-align: center;">
+                            <button onclick="verDetallesEstimacion('{{ estimacion.id }}')" style="background: none; border: none; color: #8B5A9D; cursor: pointer; padding: 0.25rem; margin: 0 0.25rem;" title="Ver detalles">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                            </button>
+                            <button onclick="editarEstimacion('{{ estimacion.id }}')" style="background: none; border: none; color: #28a745; cursor: pointer; padding: 0.25rem; margin: 0 0.25rem;" title="Editar">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                    <path d="m18.5 2.5 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                </svg>
+                            </button>
+                            <button onclick="eliminarEstimacion('{{ estimacion.id }}')" style="background: none; border: none; color: #dc3545; cursor: pointer; padding: 0.25rem; margin: 0 0.25rem;" title="Eliminar">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="3,6 5,6 21,6"></polyline>
+                                    <path d="m19,6v14a2,2 0 0,1 -2,2H7a2,2 0 0,1 -2,-2V6m3,0V4a2,2 0 0,1 2,-2h4a2,2 0 0,1 2,2v2"></path>
+                                </svg>
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Resumen al final de la tabla -->
+        <div style="background: #f8f9fa; padding: 1rem 1.5rem; border-top: 1px solid #dee2e6;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; font-size: 0.9rem;">
+                <div>
+                    <strong>Total Estimaciones:</strong> <span id="totalEstimaciones">{{ estimaciones|length }}</span>
+                </div>
+                <div>
+                    <strong>Horas Totales:</strong> <span id="horasTotales">{{ estimaciones|sum(attribute='horas_estimadas') }}</span>h
+                </div>
+                <div>
+                    <strong>Costo Estimado:</strong> <span id="costoTotal">${{ "{:,.0f}".format((estimaciones|sum(attribute='horas_estimadas')) * (estimaciones|map(attribute='tarifa_freelance')|sum / estimaciones|length)) }}</span>
+                </div>
+                <div>
+                    <strong>Aprobadas:</strong> <span id="aprobadas">{{ estimaciones|selectattr('estado', 'equalto', 'Aprobada')|list|length }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function aplicarFiltros() {
+    const filtroAliado = document.getElementById('filtroAliado').value;
+    const filtroEstado = document.getElementById('filtroEstado').value;
+    const filtroTipo = document.getElementById('filtroTipo').value;
+    
+    const filas = document.querySelectorAll('#tablaEstimaciones tr');
+    let contadorVisible = 0;
+    let horasVisibles = 0;
+    let aprobadas = 0;
+    
+    filas.forEach(fila => {
+        const aliado = fila.getAttribute('data-aliado');
+        const estado = fila.getAttribute('data-estado');
+        const tipo = fila.getAttribute('data-tipo');
+        
+        const mostrar = (!filtroAliado || aliado === filtroAliado) &&
+                       (!filtroEstado || estado === filtroEstado) &&
+                       (!filtroTipo || tipo === filtroTipo);
+        
+        if (mostrar) {
+            fila.style.display = '';
+            contadorVisible++;
+            
+            const horasTexto = fila.cells[5].textContent;
+            const horas = parseInt(horasTexto.replace('h', ''));
+            horasVisibles += horas;
+            
+            if (estado === 'Aprobada') {
+                aprobadas++;
+            }
+        } else {
+            fila.style.display = 'none';
+        }
+    });
+    
+    // Actualizar resumen
+    document.getElementById('totalEstimaciones').textContent = contadorVisible;
+    document.getElementById('horasTotales').textContent = horasVisibles;
+    document.getElementById('aprobadas').textContent = aprobadas;
+    
+    // Calcular costo estimado promedio
+    const tarifaPromedio = 50; // Simplificado para el ejemplo
+    const costoTotal = horasVisibles * tarifaPromedio;
+    document.getElementById('costoTotal').textContent = '$' + costoTotal.toLocaleString();
+}
+
+function openNuevaEstimacionModal() {
+    alert('Funcionalidad para crear nueva estimación - Por implementar');
+}
+
+function verDetallesEstimacion(id) {
+    alert('Ver detalles de estimación: ' + id);
+}
+
+function editarEstimacion(id) {
+    alert('Editar estimación: ' + id);
+}
+
+function eliminarEstimacion(id) {
+    if (confirm('¿Está seguro de que desea eliminar esta estimación?')) {
+        alert('Eliminar estimación: ' + id);
+    }
+}
+
+// Inicializar los filtros
+document.addEventListener('DOMContentLoaded', function() {
+    // Event listeners para filtros automáticos
+    document.getElementById('filtroAliado').addEventListener('change', aplicarFiltros);
+    document.getElementById('filtroEstado').addEventListener('change', aplicarFiltros);
+    document.getElementById('filtroTipo').addEventListener('change', aplicarFiltros);
+});
+</script>
+{% endblock %}

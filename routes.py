@@ -1044,6 +1044,85 @@ def proyectos_calculadora():
                          role=current_user.role,
                          proyectos=proyectos)
 
+@app.route('/proyectos/estimaciones')
+@login_required
+def proyectos_estimaciones():
+    # Datos de ejemplo para las estimaciones
+    estimaciones = [
+        {
+            'id': 'EST-001',
+            'aliado': 'Aliado Tech',
+            'caso_uso': 'IA para Detección de Fraudes',
+            'fecha': '2023-05-15',
+            'tipo': 'Desarrollo Completo',
+            'horas_estimadas': 320,
+            'tarifa_freelance': 45,
+            'recursos': 'Senior Dev, Data Scientist',
+            'estado': 'Aprobada'
+        },
+        {
+            'id': 'EST-002',
+            'aliado': 'Financiera Global',
+            'caso_uso': 'Chatbot Inteligente',
+            'fecha': '2023-05-12',
+            'tipo': 'MVP',
+            'horas_estimadas': 180,
+            'tarifa_freelance': 40,
+            'recursos': 'Frontend Dev, Backend Dev',
+            'estado': 'En Revisión'
+        },
+        {
+            'id': 'EST-003',
+            'aliado': 'Industrias Este',
+            'caso_uso': 'Optimización de Inventarios',
+            'fecha': '2023-05-10',
+            'tipo': 'Consultoría',
+            'horas_estimadas': 120,
+            'tarifa_freelance': 60,
+            'recursos': 'Consultor Senior',
+            'estado': 'Pendiente'
+        },
+        {
+            'id': 'EST-004',
+            'aliado': 'Consultores Sur',
+            'caso_uso': 'Dashboard BI Cliente B',
+            'fecha': '2023-05-08',
+            'tipo': 'Desarrollo Completo',
+            'horas_estimadas': 240,
+            'tarifa_freelance': 50,
+            'recursos': 'BI Developer, UX Designer',
+            'estado': 'Rechazada'
+        },
+        {
+            'id': 'EST-005',
+            'aliado': 'Servicios Oeste',
+            'caso_uso': 'Sistema de Recomendaciones',
+            'fecha': '2023-05-05',
+            'tipo': 'Prototipo',
+            'horas_estimadas': 160,
+            'tarifa_freelance': 55,
+            'recursos': 'ML Engineer, Data Analyst',
+            'estado': 'Aprobada'
+        },
+        {
+            'id': 'EST-006',
+            'aliado': 'Aliado Tech',
+            'caso_uso': 'Portal de Autoservicio',
+            'fecha': '2023-05-03',
+            'tipo': 'Desarrollo Completo',
+            'horas_estimadas': 280,
+            'tarifa_freelance': 45,
+            'recursos': 'Fullstack Dev, DevOps',
+            'estado': 'En Revisión'
+        }
+    ]
+    
+    return render_template('proyectos/estimaciones.html',
+                         title='Estimaciones de Proyectos',
+                         estimaciones=estimaciones,
+                         config=app.config,
+                         role=current_user.role)
+
 @app.route('/proyectos/general')
 @login_required
 def proyectos_general():
