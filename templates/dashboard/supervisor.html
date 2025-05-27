@@ -9,82 +9,74 @@
     </div>
 
     <!-- Kanban Board Compacto -->
-    <div style="display: grid; grid-template-columns: repeat(8, 1fr); gap: 0.75rem; margin-bottom: 1.5rem;">
+    <div style="display: grid; grid-template-columns: repeat(8, 1fr); gap: 0.5rem; margin-bottom: 1rem;">
         <!-- Oportunidad -->
-        <div style="background: white; border-radius: 8px; padding: 0.75rem; box-shadow: 0 1px 4px rgba(0,0,0,0.1);">
-            <div style="color: #00BCD4; font-weight: 600; margin-bottom: 0.25rem; font-size: 0.8rem;">Oportunidad</div>
-            <div style="font-size: 1.5rem; font-weight: bold; color: #333; margin-bottom: 0.1rem;">{{ estados.oportunidad|length }}</div>
-            <div style="color: #999; font-size: 0.7rem;">Proyectos</div>
+        <div style="background: white; border-radius: 4px; padding: 0.4rem; box-shadow: 0 1px 2px rgba(0,0,0,0.08);">
+            <div style="color: #00BCD4; font-weight: 600; margin-bottom: 0.1rem; font-size: 0.7rem;">Oportunidad</div>
+            <div style="font-size: 1.1rem; font-weight: bold; color: #333;">{{ estados.oportunidad|length }}</div>
         </div>
 
         <!-- Propuesta -->
-        <div style="background: white; border-radius: 8px; padding: 0.75rem; box-shadow: 0 1px 4px rgba(0,0,0,0.1);">
-            <div style="color: #666; font-weight: 600; margin-bottom: 0.25rem; font-size: 0.8rem;">Propuesta</div>
-            <div style="font-size: 1.5rem; font-weight: bold; color: #333; margin-bottom: 0.1rem;">{{ estados.propuesta|length }}</div>
-            <div style="color: #999; font-size: 0.7rem;">Proyectos</div>
+        <div style="background: white; border-radius: 4px; padding: 0.4rem; box-shadow: 0 1px 2px rgba(0,0,0,0.08);">
+            <div style="color: #666; font-weight: 600; margin-bottom: 0.1rem; font-size: 0.7rem;">Propuesta</div>
+            <div style="font-size: 1.1rem; font-weight: bold; color: #333;">{{ estados.propuesta|length }}</div>
         </div>
 
         <!-- Aprobación -->
-        <div style="background: white; border-radius: 8px; padding: 0.75rem; box-shadow: 0 1px 4px rgba(0,0,0,0.1);">
-            <div style="color: #FFA726; font-weight: 600; margin-bottom: 0.25rem; font-size: 0.8rem;">Aprobación</div>
-            <div style="font-size: 1.5rem; font-weight: bold; color: #333; margin-bottom: 0.1rem;">{{ estados.aprobacion|length }}</div>
-            <div style="color: #999; font-size: 0.7rem;">Proyectos</div>
+        <div style="background: white; border-radius: 4px; padding: 0.4rem; box-shadow: 0 1px 2px rgba(0,0,0,0.08);">
+            <div style="color: #FFA726; font-weight: 600; margin-bottom: 0.1rem; font-size: 0.7rem;">Aprobación</div>
+            <div style="font-size: 1.1rem; font-weight: bold; color: #333;">{{ estados.aprobacion|length }}</div>
         </div>
 
         <!-- En Desarrollo -->
-        <div style="background: white; border-radius: 8px; padding: 0.75rem; box-shadow: 0 1px 4px rgba(0,0,0,0.1);">
-            <div style="color: #66BB6A; font-weight: 600; margin-bottom: 0.25rem; font-size: 0.8rem;">En Desarrollo</div>
-            <div style="font-size: 1.5rem; font-weight: bold; color: #333; margin-bottom: 0.1rem;">{{ estados.desarrollo|length }}</div>
-            <div style="color: #999; font-size: 0.7rem;">Proyectos</div>
+        <div style="background: white; border-radius: 4px; padding: 0.4rem; box-shadow: 0 1px 2px rgba(0,0,0,0.08);">
+            <div style="color: #66BB6A; font-weight: 600; margin-bottom: 0.1rem; font-size: 0.7rem;">En Desarrollo</div>
+            <div style="font-size: 1.1rem; font-weight: bold; color: #333;">{{ estados.desarrollo|length }}</div>
         </div>
 
         <!-- Testing -->
-        <div style="background: white; border-radius: 8px; padding: 0.75rem; box-shadow: 0 1px 4px rgba(0,0,0,0.1);">
-            <div style="color: #00BCD4; font-weight: 600; margin-bottom: 0.25rem; font-size: 0.8rem;">Testing</div>
-            <div style="font-size: 1.5rem; font-weight: bold; color: #333; margin-bottom: 0.1rem;">{{ estados.testing|length }}</div>
-            <div style="color: #999; font-size: 0.7rem;">Proyectos</div>
+        <div style="background: white; border-radius: 4px; padding: 0.4rem; box-shadow: 0 1px 2px rgba(0,0,0,0.08);">
+            <div style="color: #00BCD4; font-weight: 600; margin-bottom: 0.1rem; font-size: 0.7rem;">Testing</div>
+            <div style="font-size: 1.1rem; font-weight: bold; color: #333;">{{ estados.testing|length }}</div>
         </div>
 
         <!-- Cierre -->
-        <div style="background: white; border-radius: 8px; padding: 0.75rem; box-shadow: 0 1px 4px rgba(0,0,0,0.1);">
-            <div style="color: #666; font-weight: 600; margin-bottom: 0.25rem; font-size: 0.8rem;">Cierre</div>
-            <div style="font-size: 1.5rem; font-weight: bold; color: #333; margin-bottom: 0.1rem;">{{ estados.cierre|length }}</div>
-            <div style="color: #999; font-size: 0.7rem;">Proyectos</div>
+        <div style="background: white; border-radius: 4px; padding: 0.4rem; box-shadow: 0 1px 2px rgba(0,0,0,0.08);">
+            <div style="color: #666; font-weight: 600; margin-bottom: 0.1rem; font-size: 0.7rem;">Cierre</div>
+            <div style="font-size: 1.1rem; font-weight: bold; color: #333;">{{ estados.cierre|length }}</div>
         </div>
 
         <!-- Evaluación -->
-        <div style="background: white; border-radius: 8px; padding: 0.75rem; box-shadow: 0 1px 4px rgba(0,0,0,0.1);">
-            <div style="color: #FFA726; font-weight: 600; margin-bottom: 0.25rem; font-size: 0.8rem;">Evaluación</div>
-            <div style="font-size: 1.5rem; font-weight: bold; color: #333; margin-bottom: 0.1rem;">{{ estados.evaluacion|length }}</div>
-            <div style="color: #999; font-size: 0.7rem;">Proyectos</div>
+        <div style="background: white; border-radius: 4px; padding: 0.4rem; box-shadow: 0 1px 2px rgba(0,0,0,0.08);">
+            <div style="color: #FFA726; font-weight: 600; margin-bottom: 0.1rem; font-size: 0.7rem;">Evaluación</div>
+            <div style="font-size: 1.1rem; font-weight: bold; color: #333;">{{ estados.evaluacion|length }}</div>
         </div>
 
         <!-- Finalizados -->
-        <div style="background: white; border-radius: 8px; padding: 0.75rem; box-shadow: 0 1px 4px rgba(0,0,0,0.1);">
-            <div style="color: #66BB6A; font-weight: 600; margin-bottom: 0.25rem; font-size: 0.8rem;">Finalizados</div>
-            <div style="font-size: 1.5rem; font-weight: bold; color: #333; margin-bottom: 0.1rem;">{{ estados.finalizados|length }}</div>
-            <div style="color: #999; font-size: 0.7rem;">Proyectos</div>
+        <div style="background: white; border-radius: 4px; padding: 0.4rem; box-shadow: 0 1px 2px rgba(0,0,0,0.08);">
+            <div style="color: #66BB6A; font-weight: 600; margin-bottom: 0.1rem; font-size: 0.7rem;">Finalizados</div>
+            <div style="font-size: 1.1rem; font-weight: bold; color: #333;">{{ estados.finalizados|length }}</div>
         </div>
     </div>
 
-    <!-- Pipeline de Proyectos -->
-    <div style="display: flex; gap: 1rem; margin-bottom: 2rem; overflow-x: auto; padding-bottom: 1rem;">
+    <!-- Pipeline de Proyectos Compacto -->
+    <div style="display: flex; gap: 0.75rem; margin-bottom: 1.5rem; overflow-x: auto; padding-bottom: 0.5rem; max-height: 200px;">
         {% set etapas_orden = ['Oportunidad', 'Propuesta', 'Aprobación', 'En Desarrollo', 'Testing', 'Cierre', 'Evaluación'] %}
         {% for etapa in etapas_orden %}
-            <div style="min-width: 200px; background: #f8f9fa; border-radius: 8px; padding: 1rem;">
-                <h6 style="margin: 0 0 1rem 0; color: #666; font-weight: 600;">{{ etapa }}</h6>
+            <div style="min-width: 150px; background: #f8f9fa; border-radius: 6px; padding: 0.75rem;">
+                <h6 style="margin: 0 0 0.5rem 0; color: #666; font-weight: 600; font-size: 0.8rem;">{{ etapa }}</h6>
                 {% if etapa == 'Propuesta' %}
                     {% for proyecto in estados.propuesta %}
-                        <div style="background: white; border-radius: 6px; padding: 0.75rem; margin-bottom: 0.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-                            <div style="font-weight: 500; margin-bottom: 0.25rem;">{{ proyecto.nombre }}</div>
-                            <div style="font-size: 0.8rem; color: #666;">ID: {{ proyecto.id }}</div>
+                        <div style="background: white; border-radius: 4px; padding: 0.5rem; margin-bottom: 0.25rem; box-shadow: 0 1px 2px rgba(0,0,0,0.1);">
+                            <div style="font-weight: 500; margin-bottom: 0.1rem; font-size: 0.75rem;">{{ proyecto.nombre }}</div>
+                            <div style="font-size: 0.65rem; color: #666;">ID: {{ proyecto.id }}</div>
                         </div>
                     {% endfor %}
                 {% elif etapa == 'Cierre' %}
                     {% for proyecto in estados.cierre %}
-                        <div style="background: white; border-radius: 6px; padding: 0.75rem; margin-bottom: 0.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-                            <div style="font-weight: 500; margin-bottom: 0.25rem;">{{ proyecto.nombre }}</div>
-                            <div style="font-size: 0.8rem; color: #666;">ID: {{ proyecto.id }}</div>
+                        <div style="background: white; border-radius: 4px; padding: 0.5rem; margin-bottom: 0.25rem; box-shadow: 0 1px 2px rgba(0,0,0,0.1);">
+                            <div style="font-weight: 500; margin-bottom: 0.1rem; font-size: 0.75rem;">{{ proyecto.nombre }}</div>
+                            <div style="font-size: 0.65rem; color: #666;">ID: {{ proyecto.id }}</div>
                         </div>
                     {% endfor %}
                 {% endif %}
