@@ -8,7 +8,7 @@
     </div>
 
     <!-- Kanban Board Compacto -->
-    <div style="display: grid; grid-template-columns: repeat(8, 1fr); gap: 0.5rem; margin-bottom: 1rem;">
+    <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.5rem; margin-bottom: 1rem;">
         <!-- Oportunidad -->
         <div style="background: white; border-radius: 4px; padding: 0.4rem; box-shadow: 0 1px 2px rgba(0,0,0,0.08);">
             <div style="color: #00BCD4; font-weight: 600; margin-bottom: 0.1rem; font-size: 0.7rem;">Oportunidad</div>
@@ -51,12 +51,7 @@
             <div style="font-size: 1.1rem; font-weight: bold; color: #333;">{{ estados.evaluacion|length }}</div>
         </div>
 
-        <!-- Finalizados -->
-        <div style="background: white; border-radius: 4px; padding: 0.4rem; box-shadow: 0 1px 2px rgba(0,0,0,0.08);">
-            <div style="color: #66BB6A; font-weight: 600; margin-bottom: 0.1rem; font-size: 0.7rem;">Finalizados</div>
-            <div style="font-size: 1.1rem; font-weight: bold; color: #333;">{{ estados.finalizados|length }}</div>
         </div>
-    </div>
 
     <!-- Pipeline de Proyectos Compacto -->
     <div style="display: flex; gap: 0.75rem; margin-bottom: 1.5rem; overflow-x: auto; padding-bottom: 0.5rem;">
@@ -172,22 +167,7 @@
             {% endfor %}
         </div>
         
-        <div style="min-width: 150px; background: #f8f9fa; border-radius: 6px; padding: 0.75rem;">
-            <h6 style="margin: 0 0 0.5rem 0; color: #666; font-weight: 600; font-size: 0.8rem;">Finalizados</h6>
-            {% for proyecto in estados.finalizados %}
-                <div style="background: white; border-radius: 4px; padding: 0.5rem; margin-bottom: 0.25rem; box-shadow: 0 1px 2px rgba(0,0,0,0.1); position: relative;">
-                    <button onclick="openProyectoModal({{ proyecto.id }}, 'finalizado')" style="position: absolute; top: 2px; right: 2px; background: none; border: none; padding: 2px; cursor: pointer; opacity: 0.7;" title="Ver detalles">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                            <circle cx="12" cy="12" r="3"></circle>
-                        </svg>
-                    </button>
-                    <div style="font-weight: 500; margin-bottom: 0.1rem; font-size: 0.75rem; padding-right: 20px;">{{ proyecto.nombre }}</div>
-                    <div style="font-size: 0.65rem; color: #666;">ID: {{ proyecto.id }} | ${{ "{:,.0f}".format(proyecto.monto) }}</div>
-                </div>
-            {% endfor %}
         </div>
-    </div>
 </div>
 
 <!-- Modal de Nueva Oportunidad -->
