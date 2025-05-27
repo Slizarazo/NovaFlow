@@ -71,7 +71,7 @@
                         </svg>
                     </button>
                     <div style="font-weight: 500; margin-bottom: 0.1rem; font-size: 0.75rem; padding-right: 20px;">{{ proyecto.nombre }}</div>
-                    <div style="font-size: 0.65rem; color: #666;">ID: {{ proyecto.id }}</div>
+                    <div style="font-size: 0.65rem; color: #666;">ID: {{ proyecto.id }} | ${{ "{:,.0f}".format(proyecto.monto) }}</div>
                 </div>
             {% endfor %}
         </div>
@@ -87,7 +87,7 @@
                         </svg>
                     </button>
                     <div style="font-weight: 500; margin-bottom: 0.1rem; font-size: 0.75rem; padding-right: 20px;">{{ proyecto.nombre }}</div>
-                    <div style="font-size: 0.65rem; color: #666;">ID: {{ proyecto.id }}</div>
+                    <div style="font-size: 0.65rem; color: #666;">ID: {{ proyecto.id }} | ${{ "{:,.0f}".format(proyecto.monto) }}</div>
                 </div>
             {% endfor %}
         </div>
@@ -103,7 +103,7 @@
                         </svg>
                     </button>
                     <div style="font-weight: 500; margin-bottom: 0.1rem; font-size: 0.75rem; padding-right: 20px;">{{ proyecto.nombre }}</div>
-                    <div style="font-size: 0.65rem; color: #666;">ID: {{ proyecto.id }}</div>
+                    <div style="font-size: 0.65rem; color: #666;">ID: {{ proyecto.id }} | ${{ "{:,.0f}".format(proyecto.monto) }}</div>
                 </div>
             {% endfor %}
         </div>
@@ -119,7 +119,7 @@
                         </svg>
                     </button>
                     <div style="font-weight: 500; margin-bottom: 0.1rem; font-size: 0.75rem; padding-right: 20px;">{{ proyecto.nombre }}</div>
-                    <div style="font-size: 0.65rem; color: #666;">ID: {{ proyecto.id }}</div>
+                    <div style="font-size: 0.65rem; color: #666;">ID: {{ proyecto.id }} | ${{ "{:,.0f}".format(proyecto.monto) }}</div>
                 </div>
             {% endfor %}
         </div>
@@ -135,7 +135,7 @@
                         </svg>
                     </button>
                     <div style="font-weight: 500; margin-bottom: 0.1rem; font-size: 0.75rem; padding-right: 20px;">{{ proyecto.nombre }}</div>
-                    <div style="font-size: 0.65rem; color: #666;">ID: {{ proyecto.id }}</div>
+                    <div style="font-size: 0.65rem; color: #666;">ID: {{ proyecto.id }} | ${{ "{:,.0f}".format(proyecto.monto) }}</div>
                 </div>
             {% endfor %}
         </div>
@@ -151,7 +151,7 @@
                         </svg>
                     </button>
                     <div style="font-weight: 500; margin-bottom: 0.1rem; font-size: 0.75rem; padding-right: 20px;">{{ proyecto.nombre }}</div>
-                    <div style="font-size: 0.65rem; color: #666;">ID: {{ proyecto.id }}</div>
+                    <div style="font-size: 0.65rem; color: #666;">ID: {{ proyecto.id }} | ${{ "{:,.0f}".format(proyecto.monto) }}</div>
                 </div>
             {% endfor %}
         </div>
@@ -167,7 +167,7 @@
                         </svg>
                     </button>
                     <div style="font-weight: 500; margin-bottom: 0.1rem; font-size: 0.75rem; padding-right: 20px;">{{ proyecto.nombre }}</div>
-                    <div style="font-size: 0.65rem; color: #666;">ID: {{ proyecto.id }}</div>
+                    <div style="font-size: 0.65rem; color: #666;">ID: {{ proyecto.id }} | ${{ "{:,.0f}".format(proyecto.monto) }}</div>
                 </div>
             {% endfor %}
         </div>
@@ -183,7 +183,7 @@
                         </svg>
                     </button>
                     <div style="font-weight: 500; margin-bottom: 0.1rem; font-size: 0.75rem; padding-right: 20px;">{{ proyecto.nombre }}</div>
-                    <div style="font-size: 0.65rem; color: #666;">ID: {{ proyecto.id }}</div>
+                    <div style="font-size: 0.65rem; color: #666;">ID: {{ proyecto.id }} | ${{ "{:,.0f}".format(proyecto.monto) }}</div>
                 </div>
             {% endfor %}
         </div>
@@ -377,32 +377,19 @@
 </div>
 
 <script>
-// Datos simulados de proyectos
+// Datos de proyectos desde el backend
 const proyectosData = {
-    1: { nombre: "IA para Detección de Fraudes", cuenta: "Banco Nacional S.A.", estado: "oportunidad" },
-    2: { nombre: "Chatbot Inteligente", cuenta: "Telecomunicaciones Globales", estado: "oportunidad" },
-    3: { nombre: "Optimización de Inventarios", cuenta: "Retail Fashion Group", estado: "oportunidad" },
-    4: { nombre: "Análisis Predictivo Cliente A", cuenta: "Industrias Alimentarias del Sur", estado: "propuesta" },
-    5: { nombre: "Dashboard BI Cliente B", cuenta: "Corporación Minera del Norte", estado: "propuesta" },
-    6: { nombre: "Sistema de Recomendaciones", cuenta: "Energía Renovable Colombia", estado: "propuesta" },
-    7: { nombre: "Migración a la Nube", cuenta: "Universidad Tecnológica Nacional", estado: "aprobado" },
-    8: { nombre: "App de Logística", cuenta: "Constructora Metropolitan", estado: "aprobado" },
-    9: { nombre: "Portal de Autoservicio", cuenta: "Banco Nacional S.A.", estado: "desarrollo" },
-    10: { nombre: "Sistema de Monitoreo", cuenta: "Farmaceutica Nacional", estado: "desarrollo" },
-    11: { nombre: "Plataforma E-learning", cuenta: "Universidad Tecnológica Nacional", estado: "desarrollo" },
-    12: { nombre: "API de Integración", cuenta: "Seguros y Fianzas del Pacífico", estado: "desarrollo" },
-    13: { nombre: "App Bancaria Mobile", cuenta: "Banco Nacional S.A.", estado: "testing" },
-    14: { nombre: "Sistema de Pagos", cuenta: "Retail Fashion Group", estado: "testing" },
-    15: { nombre: "Sistema CRM Cliente C", cuenta: "Telecomunicaciones Globales", estado: "cierre" },
-    16: { nombre: "App Mobile Cliente D", cuenta: "Industrias Alimentarias del Sur", estado: "cierre" },
-    17: { nombre: "Dashboard Ejecutivo", cuenta: "Corporación Minera del Norte", estado: "cierre" },
-    18: { nombre: "Proyecto Analytics", cuenta: "Energía Renovable Colombia", estado: "evaluacion" },
-    19: { nombre: "Sistema de Reportes", cuenta: "Farmaceutica Nacional", estado: "evaluacion" },
-    20: { nombre: "Portal Corporativo", cuenta: "Constructora Metropolitan", estado: "finalizado" },
-    21: { nombre: "Sistema de Facturación", cuenta: "Seguros y Fianzas del Pacífico", estado: "finalizado" },
-    22: { nombre: "App de Ventas", cuenta: "Universidad Tecnológica Nacional", estado: "finalizado" },
-    23: { nombre: "Plataforma de Marketing", cuenta: "Banco Nacional S.A.", estado: "finalizado" },
-    24: { nombre: "Sistema de Inventario", cuenta: "Retail Fashion Group", estado: "finalizado" }
+    {% for proyecto in (estados.oportunidad + estados.propuesta + estados.aprobacion + estados.desarrollo + estados.testing + estados.cierre + estados.evaluacion + estados.finalizados) %}
+    {{ proyecto.id }}: { 
+        nombre: "{{ proyecto.nombre }}", 
+        cuenta: "{{ proyecto.aliado_id }}", 
+        estado: "{{ proyecto.etapa }}",
+        monto: {{ proyecto.monto }},
+        fecha_inicio: "{{ proyecto.fecha_inicio }}",
+        fecha_fin: "{{ proyecto.fecha_fin }}",
+        consultores: {{ proyecto.consultores_asignados }}
+    }{% if not loop.last %},{% endif %}
+    {% endfor %}
 };
 
 function openProyectoModal(proyectoId, estado) {

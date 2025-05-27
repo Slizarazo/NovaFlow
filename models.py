@@ -120,13 +120,45 @@ Aliado.ALIADOS = [
 ]
 
 Proyecto.PROYECTOS = [
-    Proyecto(1, 'Transformación Digital', 1, 'ejecucion', '2023-01-15', '2023-06-30', 85000, 4),
-    Proyecto(2, 'Optimización Procesos', 2, 'planificacion', '2023-02-10', '2023-09-20', 72000, 3),
-    Proyecto(3, 'Implementación ERP', 3, 'propuesta', '2023-03-05', '2023-08-15', 95000, 5),
-    Proyecto(4, 'Estrategia de Mercado', 4, 'cierre', '2023-01-20', '2023-04-10', 45000, 2),
-    Proyecto(5, 'Mejora Continua', 5, 'post-evaluacion', '2022-11-10', '2023-03-20', 65000, 3),
-    Proyecto(6, 'Desarrollo Plataforma', 1, 'ejecucion', '2023-02-05', '2023-07-15', 78000, 4),
-    Proyecto(7, 'Automatización', 3, 'ejecucion', '2023-01-25', '2023-05-30', 53000, 2)
+    # Oportunidad
+    Proyecto(1, 'IA para Detección de Fraudes', 1, 'oportunidad', '2023-01-15', '2023-06-30', 85000, 4),
+    Proyecto(2, 'Chatbot Inteligente', 2, 'oportunidad', '2023-02-10', '2023-09-20', 72000, 3),
+    Proyecto(3, 'Optimización de Inventarios', 3, 'oportunidad', '2023-03-05', '2023-08-15', 95000, 5),
+    
+    # Propuesta
+    Proyecto(4, 'Análisis Predictivo Cliente A', 4, 'propuesta', '2023-01-20', '2023-04-10', 45000, 2),
+    Proyecto(5, 'Dashboard BI Cliente B', 5, 'propuesta', '2022-11-10', '2023-03-20', 65000, 3),
+    Proyecto(6, 'Sistema de Recomendaciones', 1, 'propuesta', '2023-02-05', '2023-07-15', 78000, 4),
+    
+    # Aprobado
+    Proyecto(7, 'Migración a la Nube', 2, 'aprobado', '2023-01-25', '2023-05-30', 53000, 2),
+    Proyecto(8, 'App de Logística', 3, 'aprobado', '2023-03-10', '2023-08-20', 67000, 3),
+    
+    # Desarrollo
+    Proyecto(9, 'Portal de Autoservicio', 1, 'desarrollo', '2023-01-15', '2023-06-30', 85000, 4),
+    Proyecto(10, 'Sistema de Monitoreo', 2, 'desarrollo', '2023-02-10', '2023-09-20', 72000, 3),
+    Proyecto(11, 'Plataforma E-learning', 3, 'desarrollo', '2023-03-05', '2023-08-15', 95000, 5),
+    Proyecto(12, 'API de Integración', 4, 'desarrollo', '2023-01-20', '2023-04-10', 45000, 2),
+    
+    # Testing
+    Proyecto(13, 'App Bancaria Mobile', 1, 'testing', '2022-11-10', '2023-03-20', 65000, 3),
+    Proyecto(14, 'Sistema de Pagos', 2, 'testing', '2023-02-05', '2023-07-15', 78000, 4),
+    
+    # Cierre
+    Proyecto(15, 'Sistema CRM Cliente C', 3, 'cierre', '2023-01-25', '2023-05-30', 53000, 2),
+    Proyecto(16, 'App Mobile Cliente D', 4, 'cierre', '2023-03-10', '2023-08-20', 67000, 3),
+    Proyecto(17, 'Dashboard Ejecutivo', 5, 'cierre', '2023-01-15', '2023-06-30', 85000, 4),
+    
+    # Evaluación
+    Proyecto(18, 'Proyecto Analytics', 1, 'evaluacion', '2023-02-10', '2023-09-20', 72000, 3),
+    Proyecto(19, 'Sistema de Reportes', 2, 'evaluacion', '2023-03-05', '2023-08-15', 95000, 5),
+    
+    # Finalizados
+    Proyecto(20, 'Portal Corporativo', 3, 'finalizado', '2023-01-20', '2023-04-10', 45000, 2),
+    Proyecto(21, 'Sistema de Facturación', 4, 'finalizado', '2022-11-10', '2023-03-20', 65000, 3),
+    Proyecto(22, 'App de Ventas', 5, 'finalizado', '2023-02-05', '2023-07-15', 78000, 4),
+    Proyecto(23, 'Plataforma de Marketing', 1, 'finalizado', '2023-01-25', '2023-05-30', 53000, 2),
+    Proyecto(24, 'Sistema de Inventario', 2, 'finalizado', '2023-03-10', '2023-08-20', 67000, 3)
 ]
 
 Consultor.CONSULTORES = [
