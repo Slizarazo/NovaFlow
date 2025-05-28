@@ -222,7 +222,8 @@
                 'url': '/cuentas/usuarios'} ]} ] %} {% elif role == 'supervisor'
                 %} {% set navigation = [ {'name': 'Inicio', 'icon': 'home',
                 'url': '/dashboard'}, {'name': 'Proyectos', 'icon': 'briefcase',
-                'url': '/proyectos', 'submenu': [ {'name': 'Planificación',
+                'url': '/proyectos', 'submenu': [ {'name': 'Gestión de proyectos',
+                'url': '/proyectos/gestion'}, {'name': 'Planificación',
                 'url': '/proyectos/calculadora'}, {'name': 'Estimaciones',
                 'url': '/proyectos/estimaciones'} ]}, {'name': 'Consultores',
                 'icon': 'user-check', 'url': '/consultores', 'submenu': [
