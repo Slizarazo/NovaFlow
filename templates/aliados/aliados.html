@@ -22,20 +22,21 @@
     <div class="card mb-4">
         <div class="card-body">
             <form id="filterForm" class="filter-form">
+                <!-- Primera fila de filtros -->
                 <div class="filter-row">
                     <div class="filter-group">
-                        <label class="form-label">Nombre</label>
-                        <select class="form-select" name="nombre">
-                            <option value="">Todos</option>
+                        <label class="filter-label">Nombre</label>
+                        <select class="filter-control" name="nombre">
+                            <option value="">Todos los aliados</option>
                             {% for aliado in aliados %}
                             <option value="{{ aliado.nombre }}">{{ aliado.nombre }}</option>
                             {% endfor %}
                         </select>
                     </div>
                     <div class="filter-group">
-                        <label class="form-label">Industria</label>
-                        <select class="form-select" name="industria">
-                            <option value="">Todas</option>
+                        <label class="filter-label">Industria</label>
+                        <select class="filter-control" name="industria">
+                            <option value="">Todas las industrias</option>
                             <option value="Tecnología">Tecnología</option>
                             <option value="Finanzas">Finanzas</option>
                             <option value="Manufactura">Manufactura</option>
@@ -43,18 +44,22 @@
                         </select>
                     </div>
                     <div class="filter-group">
-                        <label class="form-label">Estado</label>
-                        <select class="form-select" name="estado">
-                            <option value="">Todos</option>
+                        <label class="filter-label">Estado</label>
+                        <select class="filter-control" name="estado">
+                            <option value="">Todos los estados</option>
                             <option value="activo">Activo</option>
                             <option value="inactivo">Inactivo</option>
                             <option value="pendiente">Pendiente</option>
                         </select>
                     </div>
+                </div>
+
+                <!-- Segunda fila de filtros -->
+                <div class="filter-row">
                     <div class="filter-group">
-                        <label class="form-label">Región</label>
-                        <select class="form-select" name="region">
-                            <option value="">Todas</option>
+                        <label class="filter-label">Región</label>
+                        <select class="filter-control" name="region">
+                            <option value="">Todas las regiones</option>
                             <option value="Norte">Norte</option>
                             <option value="Sur">Sur</option>
                             <option value="Este">Este</option>
@@ -63,9 +68,9 @@
                         </select>
                     </div>
                     <div class="filter-group">
-                        <label class="form-label">Subregión</label>
-                        <select class="form-select" name="subregion">
-                            <option value="">Todas</option>
+                        <label class="filter-label">Subregión</label>
+                        <select class="filter-control" name="subregion">
+                            <option value="">Todas las subregiones</option>
                             <option value="Noreste">Noreste</option>
                             <option value="Noroeste">Noroeste</option>
                             <option value="Sureste">Sureste</option>
@@ -75,9 +80,9 @@
                         </select>
                     </div>
                     <div class="filter-group">
-                        <label class="form-label">País</label>
-                        <select class="form-select" name="pais">
-                            <option value="">Todos</option>
+                        <label class="filter-label">País</label>
+                        <select class="filter-control" name="pais">
+                            <option value="">Todos los países</option>
                             <option value="México">México</option>
                             <option value="Estados Unidos">Estados Unidos</option>
                             <option value="Colombia">Colombia</option>
@@ -406,16 +411,18 @@
 }
 
 .filter-form {
-    background: #f8f9fa;
-    border-radius: 12px;
-    padding: 1.5rem;
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(102, 126, 234, 0.1);
 }
 
 .filter-row {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
-    margin-bottom: 1rem;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
 }
 
 .filter-group {
@@ -423,12 +430,64 @@
     flex-direction: column;
 }
 
-.filter-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 1rem;
-    padding-top: 1rem;
-    border-top: 1px solid #dee2e6;
+.filter-label {
+    font-weight: 600;
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.filter-control {
+    padding: 12px 16px;
+    border: 2px solid #e1e8ed;
+    border-radius: 12px;
+    background: white;
+    color: var(--dark);
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.filter-control:focus {
+    border-color: var(--secondary);
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.15);
+    transform: translateY(-1px);
+}
+
+.filter-control:hover {
+    border-color: var(--secondary);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive design */
+@media (max-width: 1024px) {
+    .filter-row {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+    
+    .filter-form {
+        padding: 1.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .filter-row {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .filter-form {
+        padding: 1rem;
+    }
+    
+    .filter-control {
+        padding: 10px 14px;
+        font-size: 0.9rem;
+    }
 }
 
 .avatar-circle {
