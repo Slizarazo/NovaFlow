@@ -191,7 +191,7 @@
 
 <!-- Modal Añadir Usuario -->
 <div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="addUserModalLabel">Añadir Usuario</h5>
@@ -202,15 +202,53 @@
                     <!-- Selección de Tipo -->
                     <div class="form-section">
                         <h6 class="section-title">Tipo de Usuario</h6>
-                        <div class="mb-3">
-                            <label for="userType" class="form-label">Seleccione el tipo de usuario</label>
-                            <select class="form-select" id="userType" required onchange="showUserForm()">
-                                <option value="">Seleccionar tipo...</option>
-                                <option value="gestor">Gestor</option>
-                                <option value="aliado">Aliado</option>
-                                <option value="empleado">Empleado</option>
-                                <option value="freelance">Freelance</option>
-                            </select>
+                        <div class="user-type-selector">
+                            <div class="row">
+                                <div class="col-md-6 col-lg-3">
+                                    <div class="user-type-option" onclick="selectUserType('gestor')">
+                                        <div class="user-type-icon">
+                                            <i data-feather="user-check" class="text-primary"></i>
+                                        </div>
+                                        <div class="user-type-content">
+                                            <h5 class="user-type-title">Gestor</h5>
+                                            <p class="user-type-desc">Administrador de organización</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-3">
+                                    <div class="user-type-option" onclick="selectUserType('aliado')">
+                                        <div class="user-type-icon">
+                                            <i data-feather="briefcase" class="text-success"></i>
+                                        </div>
+                                        <div class="user-type-content">
+                                            <h5 class="user-type-title">Aliado</h5>
+                                            <p class="user-type-desc">Socio estratégico</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-3">
+                                    <div class="user-type-option" onclick="selectUserType('empleado')">
+                                        <div class="user-type-icon">
+                                            <i data-feather="users" class="text-info"></i>
+                                        </div>
+                                        <div class="user-type-content">
+                                            <h5 class="user-type-title">Empleado</h5>
+                                            <p class="user-type-desc">Miembro del equipo</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-3">
+                                    <div class="user-type-option" onclick="selectUserType('freelance')">
+                                        <div class="user-type-icon">
+                                            <i data-feather="user" class="text-warning"></i>
+                                        </div>
+                                        <div class="user-type-content">
+                                            <h5 class="user-type-title">Freelance</h5>
+                                            <p class="user-type-desc">Consultor independiente</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -646,6 +684,10 @@
     max-width: 800px;
 }
 
+.modal-xl {
+    max-width: 1140px;
+}
+
 .modal-backdrop {
     position: fixed;
     top: 0;
@@ -768,6 +810,63 @@
 
 .btn-close:hover {
     opacity: 1;
+}
+
+/* User type selector styles */
+.user-type-selector {
+    margin-bottom: 2rem;
+}
+
+.user-type-option {
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    padding: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    background: white;
+    margin-bottom: 1rem;
+}
+
+.user-type-option:hover {
+    border-color: #667eea;
+    background: #f8f9ff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+}
+
+.user-type-option.active {
+    border-color: #667eea;
+    background: linear-gradient(135deg, #667eea10, #764ba210);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.25);
+}
+
+.user-type-icon {
+    margin-bottom: 1rem;
+    flex-shrink: 0;
+}
+
+.user-type-icon i {
+    width: 32px;
+    height: 32px;
+    stroke-width: 2;
+}
+
+.user-type-content h5 {
+    margin-bottom: 0.5rem;
+    color: #333;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.user-type-desc {
+    margin: 0;
+    color: #666;
+    font-size: 0.9rem;
 }
 </style>
 
@@ -1055,9 +1154,27 @@
         showModal('dataManagementModal');
     };
     
-    window.showUserForm = function() {
+    window.selectUserType = function(userType) {
+        console.log('🔄 Seleccionando tipo de usuario:', userType);
+        
+        // Actualizar UI
+        document.querySelectorAll('.user-type-option').forEach(option => {
+            option.classList.remove('active');
+        });
+        
+        event.currentTarget.classList.add('active');
+        
+        // Mostrar formulario correspondiente
+        showUserForm(userType);
+        
+        // Actualizar iconos feather
+        if (typeof feather !== 'undefined') {
+            feather.replace();
+        }
+    };
+
+    window.showUserForm = function(userType) {
         try {
-            const userType = document.getElementById('userType')?.value;
             console.log('🔄 Cambiando tipo de usuario a:', userType);
 
             // Ocultar todos los formularios
@@ -1083,12 +1200,15 @@
     
     window.submitUserForm = function() {
         try {
-            const userType = document.getElementById('userType')?.value;
-
-            if (!userType) {
+            const selectedOption = document.querySelector('.user-type-option.active');
+            
+            if (!selectedOption) {
                 alert('Por favor seleccione un tipo de usuario');
                 return;
             }
+            
+            // Obtener el tipo de usuario desde la función onclick
+            const userType = selectedOption.getAttribute('onclick').match(/selectUserType\('(\w+)'\)/)[1];
 
             let userData = { tipo: userType };
 
