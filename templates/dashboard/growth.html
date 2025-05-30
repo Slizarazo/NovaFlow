@@ -1,5 +1,647 @@
+
 {% extends "layout.html" %}
 
+{% block head %}
+<style>
+.profile-container {
+    padding: 2rem;
+    background-color: #f8f9fa;
+    min-height: 100vh;
+}
+
+.profile-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 12px;
+    padding: 2rem;
+    color: white;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.profile-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+.profile-name {
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.profile-title {
+    font-size: 1.2rem;
+    opacity: 0.9;
+    margin-bottom: 1rem;
+}
+
+.profile-level {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    display: inline-block;
+    font-weight: 500;
+}
+
+.profile-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.profile-section {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e2e8f0;
+}
+
+.section-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #e2e8f0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.section-icon {
+    width: 20px;
+    height: 20px;
+    color: #667eea;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.info-row:last-child {
+    border-bottom: none;
+}
+
+.info-label {
+    font-weight: 500;
+    color: #64748b;
+    min-width: 120px;
+}
+
+.info-value {
+    color: #1e293b;
+    font-weight: 500;
+    flex: 1;
+    text-align: right;
+}
+
+.experience-item, .education-item, .certification-item, .project-item {
+    background: #f8fafc;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-left: 4px solid #667eea;
+}
+
+.experience-item:last-child, .education-item:last-child, .certification-item:last-child, .project-item:last-child {
+    margin-bottom: 0;
+}
+
+.item-title {
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 0.25rem;
+}
+
+.item-subtitle {
+    color: #667eea;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.item-date {
+    color: #64748b;
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+}
+
+.item-description {
+    color: #475569;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.skill-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.skill-item:last-child {
+    border-bottom: none;
+}
+
+.skill-name {
+    font-weight: 500;
+    color: #1e293b;
+}
+
+.skill-level {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.skill-bar {
+    width: 100px;
+    height: 8px;
+    background: #e2e8f0;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.skill-progress {
+    height: 100%;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+.tech-tag {
+    display: inline-block;
+    background: #e0e7ff;
+    color: #3730a3;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.875rem;
+    margin: 0.25rem 0.25rem 0.25rem 0;
+    font-weight: 500;
+}
+
+.contact-info {
+    background: #f8fafc;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-top: 1rem;
+}
+
+.rate-display {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    padding: 1rem;
+    border-radius: 8px;
+    text-align: center;
+    margin-top: 1rem;
+}
+
+.rate-amount {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+}
+
+.rate-label {
+    font-size: 0.875rem;
+    opacity: 0.9;
+}
+
+.certification-link {
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.certification-link:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+    .profile-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .profile-header {
+        text-align: center;
+    }
+    
+    .info-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.25rem;
+    }
+    
+    .info-value {
+        text-align: left;
+    }
+}
+</style>
+{% endblock %}
+
 {% block content %}
-<!-- Contenido en blanco para consultor -->
+<div class="profile-container">
+    <!-- Header del Perfil -->
+    <div class="profile-header">
+        <div class="row align-items-center">
+            <div class="col-md-2 text-center">
+                <div class="profile-avatar">
+                    MC
+                </div>
+            </div>
+            <div class="col-md-10">
+                <div class="profile-name">María Carmen Rodríguez</div>
+                <div class="profile-title">Consultora Senior en Transformación Digital</div>
+                <div class="profile-level">Senior Level</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Grid de Secciones -->
+    <div class="profile-grid">
+        
+        <!-- Bloque 1: Información Personal -->
+        <div class="profile-section">
+            <h3 class="section-title">
+                <i data-feather="user" class="section-icon"></i>
+                Información Personal
+            </h3>
+            
+            <div class="info-row">
+                <span class="info-label">Nombre:</span>
+                <span class="info-value">María Carmen Rodríguez</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Especialidad:</span>
+                <span class="info-value">Transformación Digital</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Nivel:</span>
+                <span class="info-value">Senior</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Dirección:</span>
+                <span class="info-value">Av. Reforma 350, Col. Juárez</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Ciudad:</span>
+                <span class="info-value">Ciudad de México</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Código Postal:</span>
+                <span class="info-value">06600</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">País:</span>
+                <span class="info-value">México</span>
+            </div>
+            
+            <div class="rate-display">
+                <div class="rate-amount">$85 USD</div>
+                <div class="rate-label">Tarifa por hora</div>
+            </div>
+            
+            <div class="contact-info">
+                <strong>Resumen del Perfil:</strong><br>
+                Consultora senior con más de 8 años de experiencia en transformación digital, especializada en implementación de soluciones tecnológicas empresariales. Experta en metodologías ágiles, gestión de cambio organizacional y adopción de tecnologías emergentes.
+            </div>
+        </div>
+
+        <!-- Bloque 2: Experiencia como Freelance -->
+        <div class="profile-section">
+            <h3 class="section-title">
+                <i data-feather="briefcase" class="section-icon"></i>
+                Experiencia como Freelance
+            </h3>
+            
+            <div class="experience-item">
+                <div class="item-title">Implementación de ERP SAP</div>
+                <div class="item-subtitle">Consultora Senior - Líder de Proyecto</div>
+                <div class="item-date">Enero 2024 - Mayo 2024</div>
+                <div class="item-description">
+                    Lideré la implementación de SAP S/4HANA para una empresa manufacturera de 500+ empleados. Responsable de análisis de requerimientos, configuración de módulos financieros y capacitación del equipo.
+                </div>
+            </div>
+            
+            <div class="experience-item">
+                <div class="item-title">Transformación Digital Bancaria</div>
+                <div class="item-subtitle">Arquitecta de Soluciones</div>
+                <div class="item-date">Agosto 2023 - Diciembre 2023</div>
+                <div class="item-description">
+                    Diseñé e implementé la arquitectura de microservicios para la plataforma de banca digital, mejorando la experiencia del usuario en un 40% y reduciendo los tiempos de respuesta en un 60%.
+                </div>
+            </div>
+        </div>
+
+        <!-- Bloque 3: Experiencia Profesional -->
+        <div class="profile-section">
+            <h3 class="section-title">
+                <i data-feather="building" class="section-icon"></i>
+                Experiencia Profesional
+            </h3>
+            
+            <div class="experience-item">
+                <div class="item-title">Gerente de Transformación Digital</div>
+                <div class="item-subtitle">Accenture México</div>
+                <div class="item-date">Marzo 2020 - Julio 2023</div>
+                <div class="item-description">
+                    Lideré equipos multidisciplinarios en proyectos de transformación digital para clientes Fortune 500. Gestioné un portafolio de proyectos valuado en $2.5M USD con un ratio de éxito del 95%.
+                </div>
+                <div class="item-date"><strong>Ubicación:</strong> Ciudad de México, México</div>
+            </div>
+            
+            <div class="experience-item">
+                <div class="item-title">Consultora Senior de Procesos</div>
+                <div class="item-subtitle">IBM Global Services</div>
+                <div class="item-date">Enero 2018 - Febrero 2020</div>
+                <div class="item-description">
+                    Especializada en optimización de procesos de negocio y implementación de tecnologías emergentes. Participé en más de 15 proyectos de automatización robótica de procesos (RPA).
+                </div>
+                <div class="item-date"><strong>Ubicación:</strong> Guadalajara, México</div>
+            </div>
+        </div>
+
+        <!-- Bloque 4: Educación -->
+        <div class="profile-section">
+            <h3 class="section-title">
+                <i data-feather="book" class="section-icon"></i>
+                Educación
+            </h3>
+            
+            <div class="education-item">
+                <div class="item-title">Maestría en Administración de Empresas (MBA)</div>
+                <div class="item-subtitle">Instituto Tecnológico de Monterrey</div>
+                <div class="item-date">2016 - 2018</div>
+                <div class="item-description">
+                    <strong>Área de estudio:</strong> Estrategia y Transformación Digital<br>
+                    Tesis sobre "Impacto de la Transformación Digital en la Competitividad Empresarial". Promedio: 9.2/10
+                </div>
+            </div>
+            
+            <div class="education-item">
+                <div class="item-title">Ingeniería en Sistemas Computacionales</div>
+                <div class="item-subtitle">Universidad Nacional Autónoma de México (UNAM)</div>
+                <div class="item-date">2012 - 2016</div>
+                <div class="item-description">
+                    <strong>Área de estudio:</strong> Desarrollo de Software y Sistemas de Información<br>
+                    Proyecto de titulación: Sistema de gestión empresarial basado en la nube. Mención honorífica.
+                </div>
+            </div>
+        </div>
+
+        <!-- Bloque 5: Certificaciones -->
+        <div class="profile-section">
+            <h3 class="section-title">
+                <i data-feather="award" class="section-icon"></i>
+                Certificaciones
+            </h3>
+            
+            <div class="certification-item">
+                <div class="item-title">Project Management Professional (PMP)</div>
+                <div class="item-subtitle">Project Management Institute (PMI)</div>
+                <div class="item-date">Obtenida: Marzo 2022</div>
+                <a href="https://www.credly.com/badges/pmp-certificate" class="certification-link" target="_blank">
+                    Ver certificado
+                </a>
+            </div>
+            
+            <div class="certification-item">
+                <div class="item-title">AWS Solutions Architect Professional</div>
+                <div class="item-subtitle">Amazon Web Services</div>
+                <div class="item-date">Obtenida: Septiembre 2023</div>
+                <a href="https://aws.amazon.com/verification" class="certification-link" target="_blank">
+                    Ver certificado
+                </a>
+            </div>
+            
+            <div class="certification-item">
+                <div class="item-title">Certified ScrumMaster (CSM)</div>
+                <div class="item-subtitle">Scrum Alliance</div>
+                <div class="item-date">Obtenida: Enero 2021</div>
+                <a href="https://www.scrumalliance.org/community/profile/mrodriguez" class="certification-link" target="_blank">
+                    Ver certificado
+                </a>
+            </div>
+        </div>
+
+        <!-- Bloque 6: Proyectos Destacados -->
+        <div class="profile-section">
+            <h3 class="section-title">
+                <i data-feather="star" class="section-icon"></i>
+                Proyectos Destacados
+            </h3>
+            
+            <div class="project-item">
+                <div class="item-title">Plataforma de E-commerce Omnicanal</div>
+                <div class="item-date">Enero 2023 - Junio 2023</div>
+                <div class="item-description">
+                    Desarrollo de plataforma e-commerce integrada con sistemas legacy, procesando +100K transacciones diarias.
+                </div>
+                <div style="margin-top: 0.75rem;">
+                    <div class="tech-tag">React.js</div>
+                    <div class="tech-tag">Node.js</div>
+                    <div class="tech-tag">AWS</div>
+                    <div class="tech-tag">MongoDB</div>
+                    <div class="tech-tag">Microservicios</div>
+                </div>
+                <div style="margin-top: 0.75rem;">
+                    <a href="https://portfolio.mariacarmen.dev/ecommerce" class="certification-link" target="_blank">
+                        Ver en portfolio
+                    </a>
+                </div>
+            </div>
+            
+            <div class="project-item">
+                <div class="item-title">Sistema de Análisis Predictivo</div>
+                <div class="item-date">Agosto 2022 - Diciembre 2022</div>
+                <div class="item-description">
+                    Implementación de ML para predicción de demanda, mejorando la precisión de forecasting en un 35%.
+                </div>
+                <div style="margin-top: 0.75rem;">
+                    <div class="tech-tag">Python</div>
+                    <div class="tech-tag">TensorFlow</div>
+                    <div class="tech-tag">Apache Kafka</div>
+                    <div class="tech-tag">Docker</div>
+                    <div class="tech-tag">Kubernetes</div>
+                </div>
+                <div style="margin-top: 0.75rem;">
+                    <a href="https://portfolio.mariacarmen.dev/ml-analytics" class="certification-link" target="_blank">
+                        Ver en portfolio
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bloque 7: Habilidades -->
+        <div class="profile-section">
+            <h3 class="section-title">
+                <i data-feather="code" class="section-icon"></i>
+                Habilidades Técnicas
+            </h3>
+            
+            <div class="skill-item">
+                <span class="skill-name">Gestión de Proyectos</span>
+                <div class="skill-level">
+                    <div class="skill-bar">
+                        <div class="skill-progress" style="width: 95%"></div>
+                    </div>
+                    <span>Experto</span>
+                </div>
+            </div>
+            
+            <div class="skill-item">
+                <span class="skill-name">Transformación Digital</span>
+                <div class="skill-level">
+                    <div class="skill-bar">
+                        <div class="skill-progress" style="width: 90%"></div>
+                    </div>
+                    <span>Experto</span>
+                </div>
+            </div>
+            
+            <div class="skill-item">
+                <span class="skill-name">Arquitectura de Software</span>
+                <div class="skill-level">
+                    <div class="skill-bar">
+                        <div class="skill-progress" style="width: 85%"></div>
+                    </div>
+                    <span>Avanzado</span>
+                </div>
+            </div>
+            
+            <div class="skill-item">
+                <span class="skill-name">Cloud Computing (AWS)</span>
+                <div class="skill-level">
+                    <div class="skill-bar">
+                        <div class="skill-progress" style="width: 80%"></div>
+                    </div>
+                    <span>Avanzado</span>
+                </div>
+            </div>
+            
+            <div class="skill-item">
+                <span class="skill-name">Machine Learning</span>
+                <div class="skill-level">
+                    <div class="skill-bar">
+                        <div class="skill-progress" style="width: 70%"></div>
+                    </div>
+                    <span>Intermedio</span>
+                </div>
+            </div>
+            
+            <div class="skill-item">
+                <span class="skill-name">Metodologías Ágiles</span>
+                <div class="skill-level">
+                    <div class="skill-bar">
+                        <div class="skill-progress" style="width: 95%"></div>
+                    </div>
+                    <span>Experto</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bloque 8: Idiomas -->
+        <div class="profile-section">
+            <h3 class="section-title">
+                <i data-feather="globe" class="section-icon"></i>
+                Idiomas
+            </h3>
+            
+            <div class="skill-item">
+                <span class="skill-name">Español</span>
+                <div class="skill-level">
+                    <div class="skill-bar">
+                        <div class="skill-progress" style="width: 100%"></div>
+                    </div>
+                    <span>Nativo</span>
+                </div>
+            </div>
+            
+            <div class="skill-item">
+                <span class="skill-name">Inglés</span>
+                <div class="skill-level">
+                    <div class="skill-bar">
+                        <div class="skill-progress" style="width: 90%"></div>
+                    </div>
+                    <span>Avanzado (C1)</span>
+                </div>
+            </div>
+            
+            <div class="skill-item">
+                <span class="skill-name">Francés</span>
+                <div class="skill-level">
+                    <div class="skill-bar">
+                        <div class="skill-progress" style="width: 60%"></div>
+                    </div>
+                    <span>Intermedio (B2)</span>
+                </div>
+            </div>
+            
+            <div class="skill-item">
+                <span class="skill-name">Portugués</span>
+                <div class="skill-level">
+                    <div class="skill-bar">
+                        <div class="skill-progress" style="width: 45%"></div>
+                    </div>
+                    <span>Básico (A2)</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Inicializar los iconos de Feather si están disponibles
+    if (typeof feather !== 'undefined') {
+        feather.replace();
+    }
+    
+    // Animación para las barras de progreso de habilidades
+    const skillBars = document.querySelectorAll('.skill-progress');
+    
+    const animateSkillBars = () => {
+        skillBars.forEach(bar => {
+            const targetWidth = bar.style.width;
+            bar.style.width = '0%';
+            
+            setTimeout(() => {
+                bar.style.transition = 'width 1.5s ease-in-out';
+                bar.style.width = targetWidth;
+            }, Math.random() * 500);
+        });
+    };
+    
+    // Ejecutar animación cuando sea visible
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                animateSkillBars();
+                observer.disconnect();
+            }
+        });
+    });
+    
+    const skillsSection = document.querySelector('.profile-section');
+    if (skillsSection) {
+        observer.observe(skillsSection);
+    }
+});
+</script>
 {% endblock %}
