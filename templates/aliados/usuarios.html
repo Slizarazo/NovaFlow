@@ -498,6 +498,8 @@
 <script>
 // Wait for DOM to be loaded
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM loaded, inicializando página de usuarios');
+    
     // Initialize feather icons
     if (typeof feather !== 'undefined') {
         feather.replace();
@@ -508,32 +510,72 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function setupFilters() {
-    const filterOrganizacion = document.getElementById('filterOrganizacion');
-    const filterRol = document.getElementById('filterRol');
-    const filterEstado = document.getElementById('filterEstado');
+    console.log('Configurando filtros');
+    
+    // Esperar un poco más para asegurar que el DOM esté completamente cargado
+    setTimeout(() => {
+        const filterOrganizacion = document.getElementById('filterOrganizacion');
+        const filterRol = document.getElementById('filterRol');
+        const filterEstado = document.getElementById('filterEstado');
 
-    if (filterOrganizacion) {
-        filterOrganizacion.addEventListener('change', applyFilters);
-    }
-    if (filterRol) {
-        filterRol.addEventListener('change', applyFilters);
-    }
-    if (filterEstado) {
-        filterEstado.addEventListener('change', applyFilters);
-    }
+        console.log('Elementos de filtro encontrados:', {
+            organizacion: !!filterOrganizacion,
+            rol: !!filterRol,
+            estado: !!filterEstado
+        });
+
+        if (filterOrganizacion) {
+            filterOrganizacion.addEventListener('change', function() {
+                console.log('Cambio en filtro organización:', this.value);
+                applyFilters();
+            });
+        }
+        
+        if (filterRol) {
+            filterRol.addEventListener('change', function() {
+                console.log('Cambio en filtro rol:', this.value);
+                applyFilters();
+            });
+        }
+        
+        if (filterEstado) {
+            filterEstado.addEventListener('change', function() {
+                console.log('Cambio en filtro estado:', this.value);
+                applyFilters();
+            });
+        }
+    }, 100);
 }
 
 function applyFilters() {
-    const organizacionValue = document.getElementById('filterOrganizacion')?.value.toLowerCase() || '';
-    const rolValue = document.getElementById('filterRol')?.value.toLowerCase() || '';
-    const estadoValue = document.getElementById('filterEstado')?.value.toLowerCase() || '';
+    console.log('Aplicando filtros');
+    
+    const filterOrganizacion = document.getElementById('filterOrganizacion');
+    const filterRol = document.getElementById('filterRol');
+    const filterEstado = document.getElementById('filterEstado');
+    
+    if (!filterOrganizacion || !filterRol || !filterEstado) {
+        console.error('No se pudieron encontrar los elementos de filtro');
+        return;
+    }
+
+    const organizacionValue = filterOrganizacion.value;
+    const rolValue = filterRol.value;
+    const estadoValue = filterEstado.value;
+
+    console.log('Valores de filtros:', {
+        organizacion: organizacionValue,
+        rol: rolValue,
+        estado: estadoValue
+    });
 
     const tableRows = document.querySelectorAll('#usersTable tbody tr');
+    let visibleCount = 0;
 
     tableRows.forEach(row => {
-        const organizacion = row.getAttribute('data-organizacion')?.toLowerCase() || '';
-        const rol = row.getAttribute('data-rol')?.toLowerCase() || '';
-        const estado = row.getAttribute('data-estado')?.toLowerCase() || '';
+        const organizacion = row.getAttribute('data-organizacion') || '';
+        const rol = row.getAttribute('data-rol') || '';
+        const estado = row.getAttribute('data-estado') || '';
 
         const matchOrganizacion = organizacionValue === '' || organizacion === organizacionValue;
         const matchRol = rolValue === '' || rol === rolValue;
@@ -541,10 +583,13 @@ function applyFilters() {
 
         if (matchOrganizacion && matchRol && matchEstado) {
             row.style.display = '';
+            visibleCount++;
         } else {
             row.style.display = 'none';
         }
     });
+
+    console.log(`Mostrando ${visibleCount} de ${tableRows.length} usuarios`);
 }
 
 function showUserModal() {
