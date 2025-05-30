@@ -53,97 +53,62 @@
 </div>
 
 <!-- Modal Nuevo Cliente -->
-<div class="modal fade" id="addClienteModal" tabindex="-1" aria-labelledby="addClienteModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+<div class="modal fade" id="addClienteModal" tabindex="-1" aria-labelledby="addClienteModalLabel" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-md">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="addClienteModalLabel">Nuevo Cliente</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h5 class="modal-title" id="addClienteModalLabel">Añadir Cliente</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">×</button>
             </div>
             <div class="modal-body">
                 <form id="addClienteForm">
-                    <div class="form-container">
-                        <h6 class="form-section-title">Información del Cliente</h6>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="clienteNombre" class="form-label">Nombre</label>
-                                    <input type="text" class="form-control" id="clienteNombre" placeholder="Nombre del cliente" required>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="clienteIndustria" class="form-label">Industria</label>
-                                    <select class="form-select" id="clienteIndustria" required>
-                                        <option value="">Seleccionar industria...</option>
-                                        <option value="Tecnología">Tecnología</option>
-                                        <option value="Finanzas">Finanzas</option>
-                                        <option value="Manufactura">Manufactura</option>
-                                        <option value="Servicios">Servicios</option>
-                                        <option value="Salud">Salud</option>
-                                        <option value="Educación">Educación</option>
-                                        <option value="Retail">Retail</option>
-                                        <option value="Telecomunicaciones">Telecomunicaciones</option>
-                                        <option value="Energía">Energía</option>
-                                        <option value="Automotriz">Automotriz</option>
-                                    </select>
-                                </div>
-                            </div>
+                    <div class="form-section">
+                        <h6 class="section-title">Información del Cliente</h6>
+                        
+                        <div class="mb-3">
+                            <label for="clienteNombre" class="form-label">Nombre</label>
+                            <input type="text" class="form-control" id="clienteNombre" placeholder="Ej: Empresa ABC S.A." required>
                         </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="clienteRegion" class="form-label">Región</label>
-                                    <select class="form-select" id="clienteRegion" required>
-                                        <option value="">Seleccionar región...</option>
-                                        <option value="Norte">Norte</option>
-                                        <option value="Sur">Sur</option>
-                                        <option value="Este">Este</option>
-                                        <option value="Oeste">Oeste</option>
-                                        <option value="Centro">Centro</option>
-                                        <option value="Noreste">Noreste</option>
-                                        <option value="Noroeste">Noroeste</option>
-                                        <option value="Sureste">Sureste</option>
-                                        <option value="Suroeste">Suroeste</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="clienteCodigo" class="form-label">Código</label>
-                                    <input type="text" class="form-control" id="clienteCodigo" placeholder="Código del cliente" required>
-                                </div>
-                            </div>
+
+                        <div class="mb-3">
+                            <label for="clienteIndustria" class="form-label">Categoría</label>
+                            <select class="form-select" id="clienteIndustria" required>
+                                <option value="">Seleccionar categoría...</option>
+                                <option value="Tecnología">Tecnología</option>
+                                <option value="Finanzas">Finanzas</option>
+                                <option value="Manufactura">Manufactura</option>
+                                <option value="Servicios">Servicios</option>
+                                <option value="Salud">Salud</option>
+                                <option value="Educación">Educación</option>
+                                <option value="Retail">Retail</option>
+                                <option value="Telecomunicaciones">Telecomunicaciones</option>
+                                <option value="Energía">Energía</option>
+                                <option value="Automotriz">Automotriz</option>
+                            </select>
                         </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="clienteSector" class="form-label">Sector</label>
-                                    <input type="text" class="form-control" id="clienteSector" placeholder="Sector específico" required>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="clienteSegmentacion" class="form-label">Segmentación</label>
-                                    <select class="form-select" id="clienteSegmentacion" required>
-                                        <option value="">Seleccionar segmentación...</option>
-                                        <option value="Premium">Premium</option>
-                                        <option value="Business">Business</option>
-                                        <option value="Standard">Standard</option>
-                                        <option value="Basic">Basic</option>
-                                        <option value="Enterprise">Enterprise</option>
-                                        <option value="SME">SME (Pequeña y Mediana Empresa)</option>
-                                        <option value="Startup">Startup</option>
-                                    </select>
-                                </div>
-                            </div>
+
+                        <div class="mb-3">
+                            <label for="clienteSector" class="form-label">Familia</label>
+                            <select class="form-select" id="clienteSector" required>
+                                <option value="">Seleccionar familia...</option>
+                                <option value="Corporativo">Corporativo</option>
+                                <option value="PYME">PYME</option>
+                                <option value="Startup">Startup</option>
+                                <option value="Gobierno">Gobierno</option>
+                                <option value="ONG">ONG</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="clienteDescripcion" class="form-label">Descripción</label>
+                            <textarea class="form-control" id="clienteDescripcion" rows="3" placeholder="Descripción del cliente..."></textarea>
                         </div>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary" onclick="submitClienteForm()">Guardar Cliente</button>
+                <button type="button" class="btn btn-primary" onclick="submitClienteForm()">Guardar</button>
             </div>
         </div>
     </div>
@@ -174,17 +139,15 @@
         // Obtener datos del formulario
         const formData = {
             nombre: document.getElementById('clienteNombre').value,
-            industria: document.getElementById('clienteIndustria').value,
-            region: document.getElementById('clienteRegion').value,
-            codigo: document.getElementById('clienteCodigo').value,
-            sector: document.getElementById('clienteSector').value,
-            segmentacion: document.getElementById('clienteSegmentacion').value
+            categoria: document.getElementById('clienteIndustria').value,
+            familia: document.getElementById('clienteSector').value,
+            descripcion: document.getElementById('clienteDescripcion').value
         };
 
         console.log('Datos del formulario:', formData);
 
         // Validar campos requeridos
-        if (!formData.nombre || !formData.industria || !formData.region || !formData.codigo || !formData.sector || !formData.segmentacion) {
+        if (!formData.nombre || !formData.categoria || !formData.familia) {
             alert('Por favor complete todos los campos requeridos');
             return;
         }
@@ -226,68 +189,111 @@
 </script>
 
 <style>
-/* Asegurar que el modal esté completamente encima */
+/* Modal estilos mejorados */
 .modal {
     z-index: 1055 !important;
+    backdrop-filter: blur(4px);
 }
 
 .modal-backdrop {
     z-index: 1050 !important;
+    background-color: rgba(0, 0, 0, 0.5);
 }
 
-/* Estilos del modal */
-.form-container {
-    background: #f8f9fa;
-    border-radius: 12px;
+.modal-dialog {
+    max-width: 500px;
+    margin: 2rem auto;
+}
+
+.modal-content {
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+}
+
+.modal-header {
+    background: linear-gradient(135deg, #9c88ff 0%, #8b5a9d 100%);
+    color: white;
+    border: none;
+    padding: 1.25rem 1.5rem;
+    position: relative;
+}
+
+.modal-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.btn-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    font-weight: 300;
+    opacity: 0.8;
+    margin: 0;
+    padding: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+
+.btn-close:hover {
+    opacity: 1;
+    color: white;
+}
+
+.modal-body {
     padding: 1.5rem;
+    background: white;
 }
 
-.form-section-title {
-    color: #667eea;
+.form-section {
+    margin-bottom: 0;
+}
+
+.section-title {
+    font-size: 1rem;
     font-weight: 600;
-    margin-bottom: 1rem;
+    color: #495057;
+    margin-bottom: 1.25rem;
     padding-bottom: 0.5rem;
-    border-bottom: 2px solid #e9ecef;
+    border-bottom: 1px solid #e9ecef;
 }
 
-.modal-body .form-label {
-    font-weight: 600;
-    color: var(--primary);
+.form-label {
+    font-weight: 500;
+    color: #495057;
     margin-bottom: 0.5rem;
     font-size: 0.9rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
 }
 
-.modal-body .form-control,
-.modal-body .form-select {
-    padding: 12px 16px;
-    border: 2px solid #e1e8ed;
-    border-radius: 12px;
+.form-control,
+.form-select {
+    padding: 10px 14px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
     background: white;
-    color: var(--dark);
-    font-size: 0.95rem;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    color: #495057;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
     width: 100%;
 }
 
-.modal-body .form-control:focus,
-.modal-body .form-select:focus {
-    border-color: var(--secondary);
+.form-control:focus,
+.form-select:focus {
+    border-color: #9c88ff;
     outline: none;
-    box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.15);
-    transform: translateY(-1px);
+    box-shadow: 0 0 0 3px rgba(156, 136, 255, 0.1);
 }
 
-.modal-body .form-control:hover,
-.modal-body .form-select:hover {
-    border-color: var(--secondary);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.modal-body .form-select {
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23667eea' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+.form-select {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23999' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
     background-repeat: no-repeat;
     background-position: right 12px center;
     background-size: 16px 12px;
@@ -295,56 +301,49 @@
     cursor: pointer;
 }
 
+.modal-footer {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid #e9ecef;
+    background: #f8f9fa;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+}
+
 .modal-footer .btn {
-    padding: 12px 24px;
-    border-radius: 12px;
-    font-weight: 600;
-    font-size: 0.95rem;
-    transition: all 0.3s ease;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 0.9rem;
     border: none;
     cursor: pointer;
+    transition: all 0.2s ease;
 }
 
 .modal-footer .btn-primary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #9c88ff 0%, #8b5a9d 100%);
     color: white;
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
 }
 
 .modal-footer .btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(156, 136, 255, 0.3);
 }
 
 .modal-footer .btn-secondary {
     background: #f8f9fa;
     color: #6c757d;
-    border: 2px solid #e9ecef;
+    border: 1px solid #dee2e6;
 }
 
 .modal-footer .btn-secondary:hover {
     background: #e9ecef;
-    border-color: #dee2e6;
-    transform: translateY(-1px);
+    border-color: #adb5bd;
 }
 
-.modal-dialog {
-    max-width: 800px;
-}
-
-.modal-content {
-    border-radius: 16px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-}
-
-.modal-header {
-    border-top-left-radius: 16px;
-    border-top-right-radius: 16px;
-}
-
-.modal-footer {
-    border-bottom-right-radius: 16px;
-    border-bottom-left-radius: 16px;
+/* Asegurar que el modal esté oculto por defecto */
+.modal:not(.show) {
+    display: none !important;
 }
 </style>
 {% endblock %}
