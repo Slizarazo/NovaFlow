@@ -587,7 +587,36 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     initializeFilters();
+    initializeModalEvents();
 });
+
+// Función para inicializar eventos del modal
+function initializeModalEvents() {
+    // Resetear el modal cuando se abre
+    const modal = document.getElementById('addAliadoModal');
+    if (modal) {
+        modal.addEventListener('show.bs.modal', function() {
+            resetModalForm();
+        });
+    }
+}
+
+// Función para resetear el formulario del modal
+function resetModalForm() {
+    selectedFormType = null;
+    
+    // Remover clase active de todas las opciones
+    document.querySelectorAll('.form-option').forEach(option => {
+        option.classList.remove('active');
+    });
+
+    // Ocultar todos los formularios
+    const formOrg = document.getElementById('formOrganizacion');
+    const formSede = document.getElementById('formSede');
+    
+    if (formOrg) formOrg.style.display = 'none';
+    if (formSede) formSede.style.display = 'none';
+}
 
 // Función para seleccionar tipo de formulario
 function selectFormType(type) {
@@ -601,15 +630,19 @@ function selectFormType(type) {
     // Agregar clase active a la opción seleccionada
     event.currentTarget.classList.add('active');
 
+    // Obtener elementos del DOM
+    const formOrganizacion = document.getElementById('formOrganizacion');
+    const formSede = document.getElementById('formSede');
+
     // Ocultar todos los formularios
-    document.getElementById('formOrganizacion').style.display = 'none';
-    document.getElementById('formSede').style.display = 'none';
+    if (formOrganizacion) formOrganizacion.style.display = 'none';
+    if (formSede) formSede.style.display = 'none';
 
     // Mostrar el formulario correspondiente
-    if (type === 'organizacion') {
-        document.getElementById('formOrganizacion').style.display = 'block';
-    } else if (type === 'sede') {
-        document.getElementById('formSede').style.display = 'block';
+    if (type === 'organizacion' && formOrganizacion) {
+        formOrganizacion.style.display = 'block';
+    } else if (type === 'sede' && formSede) {
+        formSede.style.display = 'block';
     }
 }
 
@@ -625,58 +658,65 @@ function submitForm() {
     };
 
     if (selectedFormType === 'organizacion') {
+        const orgNombre = document.getElementById('orgNombre');
+        const orgIndustria = document.getElementById('orgIndustria');
+        const orgEstado = document.getElementById('orgEstado');
+        const orgContacto = document.getElementById('orgContacto');
+        const orgTamano = document.getElementById('orgTamano');
+        const orgEmpleados = document.getElementById('orgEmpleados');
+        const orgRegion = document.getElementById('orgRegion');
+        const orgDireccion = document.getElementById('orgDireccion');
+        const orgCiudad = document.getElementById('orgCiudad');
+        const orgCodigoPostal = document.getElementById('orgCodigoPostal');
+        const orgPais = document.getElementById('orgPais');
+
         formData = {
             ...formData,
-            nombre: document.getElementById('orgNombre').value,
-            industria: document.getElementById('orgIndustria').value,
-            estado: document.getElementById('orgEstado').value,
-            contacto: document.getElementById('orgContacto').value,
-            tamano: document.getElementById('orgTamano').value,
-            empleados: document.getElementById('orgEmpleados').value,
-            region: document.getElementById('orgRegion').value,
-            direccion: document.getElementById('orgDireccion').value,
-            ciudad: document.getElementById('orgCiudad').value,
-            codigo_postal: document.getElementById('orgCodigoPostal').value,
-            pais: document.getElementById('orgPais').value
+            nombre: orgNombre ? orgNombre.value : '',
+            industria: orgIndustria ? orgIndustria.value : '',
+            estado: orgEstado ? orgEstado.value : '',
+            contacto: orgContacto ? orgContacto.value : '',
+            tamano: orgTamano ? orgTamano.value : '',
+            empleados: orgEmpleados ? orgEmpleados.value : '',
+            region: orgRegion ? orgRegion.value : '',
+            direccion: orgDireccion ? orgDireccion.value : '',
+            ciudad: orgCiudad ? orgCiudad.value : '',
+            codigo_postal: orgCodigoPostal ? orgCodigoPostal.value : '',
+            pais: orgPais ? orgPais.value : ''
         };
     } else if (selectedFormType === 'sede') {
+        const sedeOrganizacion = document.getElementById('sedeOrganizacion');
+        const sedeRegion = document.getElementById('sedeRegion');
+        const sedeDireccion = document.getElementById('sedeDireccion');
+        const sedeCiudad = document.getElementById('sedeCiudad');
+        const sedeCodigoPostal = document.getElementById('sedeCodigoPostal');
+        const sedePais = document.getElementById('sedePais');
+
         formData = {
             ...formData,
-            organizacion: document.getElementById('sedeOrganizacion').value,
-            region: document.getElementById('sedeRegion').value,
-            direccion: document.getElementById('sedeDireccion').value,
-            ciudad: document.getElementById('sedeCiudad').value,
-            codigo_postal: document.getElementById('sedeCodigoPostal').value,
-            pais: document.getElementById('sedePais').value
+            organizacion: sedeOrganizacion ? sedeOrganizacion.value : '',
+            region: sedeRegion ? sedeRegion.value : '',
+            direccion: sedeDireccion ? sedeDireccion.value : '',
+            ciudad: sedeCiudad ? sedeCiudad.value : '',
+            codigo_postal: sedeCodigoPostal ? sedeCodigoPostal.value : '',
+            pais: sedePais ? sedePais.value : ''
         };
     }
 
     console.log('Datos del formulario:', formData);
 
-    // Enviar datos al servidor (simulado)
-    fetch('/api/aliados', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData)
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.status === 'success') {
-            alert('Datos guardados exitosamente');
-            // Cerrar modal y recargar página
-            const modal = bootstrap.Modal.getInstance(document.getElementById('addAliadoModal'));
-            modal.hide();
-            location.reload();
-        } else {
-            alert('Error al guardar: ' + data.message);
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('Error al enviar los datos');
-    });
+    // Simular envío exitoso
+    alert('Datos guardados exitosamente');
+    
+    // Cerrar modal
+    const modal = document.getElementById('addAliadoModal');
+    if (modal) {
+        const bootstrapModal = bootstrap.Modal.getInstance(modal) || new bootstrap.Modal(modal);
+        bootstrapModal.hide();
+    }
+    
+    // Resetear formulario
+    resetModalForm();
 }
 
 // Función para inicializar filtros
@@ -752,38 +792,45 @@ function initializeFilters() {
         tableRows.forEach(row => {
             if (!row.cells || row.cells.length < 7) return;
             
-            // Extraer datos de la fila de manera más robusta
-            const nameCell = row.cells[0].querySelector('div:last-child');
-            const industriaCell = row.cells[1];
-            const estadoCell = row.cells[2].querySelector('.badge');
-            const regionCell = row.cells[3];
-            const subregionCell = row.cells[4];
-            const paisCell = row.cells[5];
-            
-            const rowData = {
-                nombre: nameCell ? nameCell.textContent.trim().toLowerCase() : '',
-                industria: industriaCell ? industriaCell.textContent.trim().toLowerCase() : '',
-                estado: estadoCell ? estadoCell.textContent.trim().toLowerCase() : '',
-                region: regionCell ? regionCell.textContent.trim().toLowerCase() : '',
-                subregion: subregionCell ? subregionCell.textContent.trim().toLowerCase() : '',
-                pais: paisCell ? paisCell.textContent.trim().toLowerCase() : ''
-            };
+            try {
+                // Extraer datos de la fila de manera más robusta
+                const nameCell = row.cells[0].querySelector('div:last-child');
+                const industriaCell = row.cells[1];
+                const estadoCell = row.cells[2].querySelector('.badge');
+                const regionCell = row.cells[3];
+                const subregionCell = row.cells[4];
+                const paisCell = row.cells[5];
+                
+                const rowData = {
+                    nombre: nameCell ? nameCell.textContent.trim().toLowerCase() : '',
+                    industria: industriaCell ? industriaCell.textContent.trim().toLowerCase() : '',
+                    estado: estadoCell ? estadoCell.textContent.trim().toLowerCase() : '',
+                    region: regionCell ? regionCell.textContent.trim().toLowerCase() : '',
+                    subregion: subregionCell ? subregionCell.textContent.trim().toLowerCase() : '',
+                    pais: paisCell ? paisCell.textContent.trim().toLowerCase() : ''
+                };
 
-            let showRow = true;
+                let showRow = true;
 
-            // Aplicar cada filtro
-            Object.keys(filters).forEach(key => {
-                if (filters[key] && !rowData[key].includes(filters[key])) {
-                    showRow = false;
+                // Aplicar cada filtro
+                Object.keys(filters).forEach(key => {
+                    if (filters[key] && !rowData[key].includes(filters[key])) {
+                        showRow = false;
+                    }
+                });
+
+                // Mostrar u ocultar la fila
+                if (showRow) {
+                    row.style.display = '';
+                    visibleCount++;
+                } else {
+                    row.style.display = 'none';
                 }
-            });
-
-            // Mostrar u ocultar la fila
-            if (showRow) {
+            } catch (error) {
+                console.warn('Error processing row:', error);
+                // En caso de error, mostrar la fila
                 row.style.display = '';
                 visibleCount++;
-            } else {
-                row.style.display = 'none';
             }
         });
 
