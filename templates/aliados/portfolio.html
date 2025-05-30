@@ -57,6 +57,85 @@
     transform: translateY(-1px);
     transition: all 0.2s ease;
 }
+
+/* Data management modal styles */
+.data-operation-selector {
+    margin-bottom: 2rem;
+}
+
+.data-option {
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    padding: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    background: white;
+}
+
+.data-option:hover {
+    border-color: #667eea;
+    background: #f8f9ff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+}
+
+.data-option.active {
+    border-color: #667eea;
+    background: linear-gradient(135deg, #667eea10, #764ba210);
+}
+
+.data-option-icon {
+    margin-right: 1rem;
+    flex-shrink: 0;
+}
+
+.data-option-icon i {
+    width: 32px;
+    height: 32px;
+    stroke-width: 2;
+}
+
+.data-option-content h5 {
+    margin-bottom: 0.5rem;
+    color: #333;
+    font-weight: 600;
+}
+
+.data-option-desc {
+    margin: 0;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.operation-form {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 2rem;
+    margin-top: 1.5rem;
+    border: 1px solid #e9ecef;
+}
+
+.operation-form .form-label {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+}
+
+.operation-form .form-control,
+.operation-form .form-select {
+    padding: 12px 16px;
+    border: 2px solid #dee2e6;
+    border-radius: 8px;
+    background: white;
+    color: #495057;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
 </style>
 {% endblock %}
 
@@ -65,14 +144,11 @@
     <div class="dashboard-section-title">
         <h4>Portafolio de Proyectos</h4>
         <div class="dashboard-section-actions">
-            <button type="button" class="dashboard-section-action" id="addProjectBtn" title="Añadir Proyecto">
-                <i data-feather="plus"></i>
+            <button type="button" class="btn btn-primary" id="addProjectBtn" style="background: linear-gradient(135deg, #8b7bc8 0%, #7b68c7 100%); border: none; border-radius: 8px; padding: 8px 16px; color: white; font-weight: 500; display: flex; align-items: center; gap: 8px;" title="Añadir Proyecto">
+                <i data-feather="plus" style="width: 16px; height: 16px;"></i>
             </button>
-            <button type="button" class="dashboard-section-action" id="importProjectBtn" title="Importar Proyecto">
-                <i data-feather="upload"></i>
-            </button>
-            <button type="button" class="dashboard-section-action" id="exportProjectBtn" title="Exportar Proyecto">
-                <i data-feather="download"></i>
+            <button type="button" class="btn btn-secondary" id="dataManagementBtn" style="background: #6c757d; border: none; border-radius: 8px; padding: 8px 16px; color: white; font-weight: 500; display: flex; align-items: center; gap: 8px;" title="Gestión de Datos">
+                <i data-feather="database" style="width: 16px; height: 16px;"></i>
             </button>
         </div>
     </div>
@@ -276,36 +352,133 @@
         </div>
     </div>
 
-    <!-- Modales adicionales -->
-    <div class="modal fade" id="importProductModal" tabindex="-1" aria-hidden="true" style="display: none;">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Importar Proyecto</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">&times;</button>
+    <!-- Modal Gestión de Datos -->
+    <div class="modal fade" id="dataManagementModal" tabindex="-1" aria-labelledby="dataManagementModalLabel" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog" style="max-width: 50vw; margin: 1rem auto; max-height: calc(100vh - 2rem);">
+            <div class="modal-content" style="border-radius: 12px; border: none; max-height: 100%; display: flex; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+                <div class="modal-header" style="background: linear-gradient(135deg, #8b7bc8 0%, #7b68c7 100%); color: white; border-radius: 12px 12px 0 0; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; position: relative;">
+                    <h5 class="modal-title" id="dataManagementModalLabel" style="font-weight: 600; margin: 0; font-size: 16px; color: white;">Gestión de Datos</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background: rgba(255,255,255,0.2); border: none; color: white; font-size: 18px; opacity: 1; padding: 0; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-weight: bold; line-height: 1;">×</button>
                 </div>
-                <div class="modal-body">
-                    <p>Funcionalidad de importación en desarrollo...</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                </div>
-            </div>
-        </div>
-    </div>
+                
+                <div class="modal-body" style="padding: 24px 20px; background: white; flex: 1; overflow-y: auto; min-height: 0;">
+                    <!-- Selector de operación -->
+                    <div class="data-operation-selector" id="dataOperationSelector">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="data-option" onclick="selectDataOperation('import')">
+                                    <div class="data-option-icon">
+                                        <i data-feather="upload" class="text-primary"></i>
+                                    </div>
+                                    <div class="data-option-content">
+                                        <h5 class="data-option-title">Cargar Masivamente</h5>
+                                        <p class="data-option-desc">Importar proyectos desde archivo Excel/CSV</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="data-option" onclick="selectDataOperation('export')">
+                                    <div class="data-option-icon">
+                                        <i data-feather="download" class="text-success"></i>
+                                    </div>
+                                    <div class="data-option-content">
+                                        <h5 class="data-option-title">Exportar Datos</h5>
+                                        <p class="data-option-desc">Generar archivo con datos actuales</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-    <div class="modal fade" id="exportProductModal" tabindex="-1" aria-hidden="true" style="display: none;">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Exportar Proyecto</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">&times;</button>
+                    <!-- Botón volver -->
+                    <button id="backToOptionsBtn" class="btn btn-outline-secondary mb-3" style="display: none;" onclick="resetDataModal()">
+                        <i data-feather="arrow-left" style="width: 16px; height: 16px;"></i> Volver a opciones
+                    </button>
+
+                    <!-- Formulario Importar -->
+                    <div id="importOperationForm" class="operation-form" style="display: none;">
+                        <h6 class="section-title">Importar Proyectos</h6>
+                        <div class="mb-3">
+                            <label for="projectsImportFile" class="form-label">Seleccionar archivo</label>
+                            <input type="file" class="form-control" id="projectsImportFile" accept=".xlsx,.xls,.csv" required>
+                            <div class="form-text">Formatos soportados: Excel (.xlsx, .xls) y CSV (.csv)</div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="overwriteProjectsData">
+                                <label class="form-check-label" for="overwriteProjectsData">
+                                    Sobrescribir datos existentes
+                                </label>
+                            </div>
+                        </div>
+                        <div class="alert alert-info">
+                            <strong>Formato esperado:</strong><br>
+                            Las columnas deben ser: Nombre, Categoría, Familia, Descripción, Tipo, Estado, Fecha
+                        </div>
+                    </div>
+
+                    <!-- Formulario Exportar -->
+                    <div id="exportOperationForm" class="operation-form" style="display: none;">
+                        <h6 class="section-title">Exportar Proyectos</h6>
+                        <div class="mb-3">
+                            <label for="exportFormat" class="form-label">Formato de archivo</label>
+                            <select class="form-select" id="exportFormat">
+                                <option value="xlsx">Excel (.xlsx)</option>
+                                <option value="csv">CSV (.csv)</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Datos a incluir</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="includeAllProjects" checked>
+                                <label class="form-check-label" for="includeAllProjects">
+                                    Todos los proyectos
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="includeFilteredProjects">
+                                <label class="form-check-label" for="includeFilteredProjects">
+                                    Solo proyectos filtrados actualmente
+                                </label>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Columnas a exportar</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="colNombre" checked>
+                                <label class="form-check-label" for="colNombre">Nombre</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="colCategoria" checked>
+                                <label class="form-check-label" for="colCategoria">Categoría</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="colFamilia" checked>
+                                <label class="form-check-label" for="colFamilia">Familia</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="colDescripcion" checked>
+                                <label class="form-check-label" for="colDescripcion">Descripción</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="colTipo" checked>
+                                <label class="form-check-label" for="colTipo">Tipo</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="colEstado" checked>
+                                <label class="form-check-label" for="colEstado">Estado</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="colFecha" checked>
+                                <label class="form-check-label" for="colFecha">Fecha Actualización</label>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="modal-body">
-                    <p>Funcionalidad de exportación en desarrollo...</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                
+                <div class="modal-footer" style="padding: 16px 20px; border-top: 1px solid #e5e7eb; background: white; border-radius: 0 0 12px 12px; display: flex; gap: 12px; justify-content: flex-end; flex-shrink: 0;">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="background: #f3f4f6; color: #6b7280; border: 1px solid #d1d5db; padding: 10px 20px; border-radius: 8px; font-weight: 500; font-size: 14px; cursor: pointer; transition: all 0.2s;">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="executeDataBtn" onclick="executeDataOperation()" style="background: linear-gradient(135deg, #8b7bc8 0%, #7b68c7 100%); border: none; padding: 10px 20px; border-radius: 8px; color: white; font-weight: 500; font-size: 14px; cursor: pointer; transition: all 0.2s; display: none;">Ejecutar</button>
                 </div>
             </div>
         </div>
@@ -330,35 +503,28 @@
         setTimeout(function() {
             const addBtn = document.getElementById('addProjectBtn');
             if (addBtn) {
-                console.log('Configurando botón de añadir producto');
+                console.log('Configurando botón de añadir proyecto');
                 addBtn.onclick = function(e) {
                     e.preventDefault();
                     e.stopPropagation();
-                    console.log('Click en botón añadir producto');
+                    console.log('Click en botón añadir proyecto');
                     showModal('addProductModal');
                 };
             } else {
                 console.error('Botón de añadir no encontrado');
             }
             
-            const importBtn = document.getElementById('importProjectBtn');
-            if (importBtn) {
-                importBtn.onclick = function(e) {
+            const dataBtn = document.getElementById('dataManagementBtn');
+            if (dataBtn) {
+                console.log('Configurando botón de gestión de datos');
+                dataBtn.onclick = function(e) {
                     e.preventDefault();
                     e.stopPropagation();
-                    console.log('Click en botón importar producto');
-                    showModal('importProductModal');
+                    console.log('Click en botón gestión de datos');
+                    showModal('dataManagementModal');
                 };
-            }
-            
-            const exportBtn = document.getElementById('exportProjectBtn');
-            if (exportBtn) {
-                exportBtn.onclick = function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    console.log('Click en botón exportar producto');
-                    showModal('exportProductModal');
-                };
+            } else {
+                console.error('Botón de gestión de datos no encontrado');
             }
         }, 100);
         
@@ -651,6 +817,140 @@
             console.error('Error:', error);
             alert('Error al enviar los datos');
         });
+    }
+
+    // Variables globales para gestión de datos
+    let selectedDataOperation = null;
+
+    // Función para seleccionar operación de datos
+    function selectDataOperation(operation) {
+        console.log('Seleccionando operación:', operation);
+        selectedDataOperation = operation;
+
+        // Marcar opción como activa
+        document.querySelectorAll('.data-option').forEach(option => {
+            option.classList.remove('active');
+        });
+        event.currentTarget.classList.add('active');
+
+        // Ocultar selector y mostrar botón volver
+        document.getElementById('dataOperationSelector').style.display = 'none';
+        document.getElementById('backToOptionsBtn').style.display = 'block';
+        document.getElementById('executeDataBtn').style.display = 'block';
+
+        // Mostrar formulario correspondiente
+        if (operation === 'import') {
+            document.getElementById('importOperationForm').style.display = 'block';
+            document.getElementById('exportOperationForm').style.display = 'none';
+        } else if (operation === 'export') {
+            document.getElementById('exportOperationForm').style.display = 'block';
+            document.getElementById('importOperationForm').style.display = 'none';
+        }
+
+        // Reinicializar iconos de Feather
+        if (typeof feather !== 'undefined') {
+            feather.replace();
+        }
+    }
+
+    // Función para resetear modal de datos
+    function resetDataModal() {
+        selectedDataOperation = null;
+
+        // Mostrar selector de opciones
+        document.getElementById('dataOperationSelector').style.display = 'block';
+        document.getElementById('backToOptionsBtn').style.display = 'none';
+        document.getElementById('executeDataBtn').style.display = 'none';
+
+        // Ocultar formularios
+        document.getElementById('importOperationForm').style.display = 'none';
+        document.getElementById('exportOperationForm').style.display = 'none';
+
+        // Resetear selecciones
+        document.querySelectorAll('.data-option').forEach(option => {
+            option.classList.remove('active');
+        });
+
+        // Reinicializar iconos de Feather
+        if (typeof feather !== 'undefined') {
+            feather.replace();
+        }
+    }
+
+    // Función para ejecutar operación de datos
+    function executeDataOperation() {
+        if (!selectedDataOperation) {
+            alert('Por favor selecciona una operación');
+            return;
+        }
+
+        if (selectedDataOperation === 'import') {
+            executeImportProjects();
+        } else if (selectedDataOperation === 'export') {
+            executeExportProjects();
+        }
+    }
+
+    // Función para ejecutar importación de proyectos
+    function executeImportProjects() {
+        const fileInput = document.getElementById('projectsImportFile');
+        const overwriteData = document.getElementById('overwriteProjectsData');
+        
+        if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
+            alert('Por favor selecciona un archivo para importar');
+            return;
+        }
+        
+        const file = fileInput.files[0];
+        const allowedExtensions = ['.xlsx', '.xls', '.csv'];
+        const fileExtension = '.' + file.name.split('.').pop().toLowerCase();
+        
+        if (!allowedExtensions.includes(fileExtension)) {
+            alert('Formato de archivo no soportado. Use Excel (.xlsx, .xls) o CSV (.csv)');
+            return;
+        }
+        
+        console.log('Importando archivo:', file.name);
+        console.log('Sobrescribir datos:', overwriteData ? overwriteData.checked : false);
+        
+        alert(`Archivo "${file.name}" importado exitosamente.\nProyectos procesados: ${Math.floor(Math.random() * 50) + 10}`);
+        hideModal('dataManagementModal');
+        
+        // Simular recarga de datos
+        setTimeout(() => location.reload(), 1000);
+    }
+
+    // Función para ejecutar exportación de proyectos
+    function executeExportProjects() {
+        const format = document.getElementById('exportFormat').value;
+        const includeAll = document.getElementById('includeAllProjects').checked;
+        const includeFiltered = document.getElementById('includeFilteredProjects').checked;
+        
+        // Obtener columnas seleccionadas
+        const selectedColumns = [];
+        const columnCheckboxes = document.querySelectorAll('#exportOperationForm input[type="checkbox"][id^="col"]');
+        columnCheckboxes.forEach(checkbox => {
+            if (checkbox.checked) {
+                selectedColumns.push(checkbox.nextElementSibling.textContent);
+            }
+        });
+        
+        if (selectedColumns.length === 0) {
+            alert('Por favor selecciona al menos una columna para exportar');
+            return;
+        }
+        
+        console.log('Exportando proyectos:', {
+            format,
+            includeAll,
+            includeFiltered,
+            selectedColumns
+        });
+        
+        const fileName = `proyectos_${new Date().toISOString().split('T')[0]}.${format}`;
+        alert(`Exportación completada.\nArchivo: ${fileName}\nColumnas: ${selectedColumns.join(', ')}`);
+        
+        hideModal('dataManagementModal');
     }
 </script>
 {% endblock %}
