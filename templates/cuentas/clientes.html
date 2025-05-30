@@ -4,7 +4,7 @@
 <div class="container-fluid p-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>Gestión de Clientes</h2>
-        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addClienteModal">
+        <button class="btn btn-primary" data-bs-target="#addClienteModal">
             <i data-feather="plus"></i> Nuevo Cliente
         </button>
     </div>
@@ -54,7 +54,7 @@
 {% endblock %}
 
 <!-- Modal Nuevo Cliente -->
-<div class="modal" id="addClienteModal" tabindex="-1" aria-labelledby="addClienteModalLabel" aria-hidden="true" style="display: none;">
+<div id="addClienteModal" tabindex="-1" aria-labelledby="addClienteModalLabel" aria-hidden="true" style="display: none;">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
@@ -353,34 +353,39 @@
 {% block scripts %}
 <script>
     document.addEventListener("DOMContentLoaded", function() {
+        console.log('Inicializando página de clientes...');
+        
         // Inicializar iconos de Feather
         if (typeof feather !== 'undefined') {
             feather.replace();
         }
         
-        // Configurar modal manualmente (sin usar Bootstrap)
+        // Configurar modal del cliente
+        setupClienteModal();
+    });
+    
+    function setupClienteModal() {
         const modal = document.getElementById('addClienteModal');
-        const newClientButton = document.querySelector('[data-bs-toggle="modal"][data-bs-target="#addClienteModal"]');
+        const newClientButton = document.querySelector('button[data-bs-target="#addClienteModal"]');
+        
+        console.log('Modal encontrado:', modal);
+        console.log('Botón encontrado:', newClientButton);
         
         if (modal && newClientButton) {
-            // Evento para abrir modal
-            newClientButton.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                openClienteModal();
-            });
+            // Remover cualquier event listener previo
+            newClientButton.removeEventListener('click', handleNewClientClick);
+            
+            // Agregar event listener
+            newClientButton.addEventListener('click', handleNewClientClick);
             
             // Configurar botones de cerrar
             const closeButtons = modal.querySelectorAll('[data-bs-dismiss="modal"], .btn-close');
-            if (closeButtons.length > 0) {
-                closeButtons.forEach(button => {
-                    button.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        closeClienteModal();
-                    });
+            closeButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    closeClienteModal();
                 });
-            }
+            });
             
             // Cerrar al hacer click en el backdrop
             modal.addEventListener('click', function(e) {
@@ -396,35 +401,70 @@
                     e.stopPropagation();
                 });
             }
+            
+            console.log('Modal configurado correctamente');
+        } else {
+            console.error('No se pudo configurar el modal. Modal:', modal, 'Botón:', newClientButton);
         }
-    });
+    }
+    
+    function handleNewClientClick(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log('Botón de nuevo cliente clickeado');
+        openClienteModal();
+    }
     
     function openClienteModal() {
         const modal = document.getElementById('addClienteModal');
-        if (!modal) return;
+        if (!modal) {
+            console.error('Modal no encontrado');
+            return;
+        }
         
         console.log('Abriendo modal de cliente');
         
+        // Crear backdrop si no existe
+        let backdrop = document.querySelector('.modal-backdrop');
+        if (!backdrop) {
+            backdrop = document.createElement('div');
+            backdrop.className = 'modal-backdrop fade show';
+            backdrop.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                z-index: 1040;
+                width: 100vw;
+                height: 100vh;
+                background-color: rgba(0, 0, 0, 0.5);
+            `;
+            document.body.appendChild(backdrop);
+        }
+        
         // Mostrar modal
-        modal.style.display = 'flex';
-        modal.style.position = 'fixed';
-        modal.style.top = '0';
-        modal.style.left = '0';
-        modal.style.width = '100%';
-        modal.style.height = '100%';
-        modal.style.zIndex = '1055';
-        modal.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
-        modal.style.alignItems = 'center';
-        modal.style.justifyContent = 'center';
+        modal.style.cssText = `
+            display: flex !important;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1050;
+            align-items: center;
+            justify-content: center;
+            overflow: auto;
+        `;
+        
         modal.classList.add('show');
         modal.setAttribute('aria-hidden', 'false');
         
         // Prevenir scroll del body
+        document.body.classList.add('modal-open');
         document.body.style.overflow = 'hidden';
         
         // Enfocar primer campo
         setTimeout(() => {
-            const firstInput = modal.querySelector('input[type="text"]');
+            const firstInput = modal.querySelector('#clienteNombre');
             if (firstInput) {
                 firstInput.focus();
             }
@@ -442,7 +482,14 @@
         modal.classList.remove('show');
         modal.setAttribute('aria-hidden', 'true');
         
+        // Remover backdrop
+        const backdrop = document.querySelector('.modal-backdrop');
+        if (backdrop) {
+            backdrop.remove();
+        }
+        
         // Restaurar scroll del body
+        document.body.classList.remove('modal-open');
         document.body.style.overflow = '';
         
         // Limpiar formulario
@@ -453,6 +500,8 @@
     }
 
     function submitClienteForm() {
+        console.log('Enviando formulario de cliente...');
+        
         // Obtener datos del formulario
         const formData = {
             nombre: document.getElementById('clienteNombre').value,
@@ -462,6 +511,8 @@
             sector: document.getElementById('clienteSector').value,
             segmentacion: document.getElementById('clienteSegmentacion').value
         };
+
+        console.log('Datos del formulario:', formData);
 
         // Validar campos requeridos
         if (!formData.nombre || !formData.industria || !formData.region || !formData.codigo || !formData.sector || !formData.segmentacion) {
@@ -479,9 +530,10 @@
         })
         .then(response => response.json())
         .then(data => {
+            console.log('Respuesta del servidor:', data);
             if (data.status === 'success') {
                 alert('Cliente creado exitosamente');
-                closeModal();
+                closeClienteModal();
                 // Recargar página para mostrar nuevo cliente
                 location.reload();
             } else {
