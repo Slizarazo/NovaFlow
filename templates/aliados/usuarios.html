@@ -7,13 +7,13 @@
     <div class="dashboard-section-title">
         <h4>Gestión de Usuarios</h4>
         <div class="dashboard-section-actions">
-            <button type="button" class="dashboard-section-action" onclick="showUserModal()" title="Añadir Usuario">
+            <button type="button" class="modern-action-btn" onclick="showUserModal()" title="Añadir Usuario">
                 <i data-feather="plus"></i>
             </button>
-            <button type="button" class="dashboard-section-action" data-bs-toggle="modal" data-bs-target="#importUsersModal" title="Importar">
+            <button type="button" class="modern-action-btn" data-bs-toggle="modal" data-bs-target="#importUsersModal" title="Importar">
                 <i data-feather="upload"></i>
             </button>
-            <button type="button" class="dashboard-section-action" data-bs-toggle="modal" data-bs-target="#exportUsersModal" title="Exportar">
+            <button type="button" class="modern-action-btn" data-bs-toggle="modal" data-bs-target="#exportUsersModal" title="Exportar">
                 <i data-feather="download"></i>
             </button>
         </div>
@@ -362,6 +362,46 @@
 </div>
 
 <style>
+/* Modern action buttons */
+.modern-action-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    border: none;
+    background: #667eea;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
+    margin-left: 8px;
+}
+
+.modern-action-btn:hover {
+    background: #5a6fd8;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
+}
+
+.modern-action-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
+}
+
+.modern-action-btn i {
+    width: 20px;
+    height: 20px;
+    stroke-width: 2;
+}
+
+.dashboard-section-actions {
+    display: flex;
+    align-items: center;
+    gap: 0;
+}
+
 /* Styles for filters */
 .filters-container {
     margin-bottom: 1rem;
