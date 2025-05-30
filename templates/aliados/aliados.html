@@ -175,7 +175,7 @@
 </div>
 
 <!-- Modal Añadir Aliado -->
-<div class="modal fade" id="addAliadoModal" tabindex="-1" aria-labelledby="addAliadoModalLabel" aria-hidden="true" style="display: none;">
+<div class="modal fade" id="addAliadoModal" tabindex="-1" aria-labelledby="addAliadoModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
@@ -574,6 +574,90 @@
     padding-bottom: 0.5rem;
     border-bottom: 2px solid #e9ecef;
 }
+
+/* Modal overlay styles */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1055;
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+}
+
+.modal.show {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-dialog {
+    position: relative;
+    margin: 1.75rem auto;
+    max-width: 90%;
+    pointer-events: none;
+}
+
+.modal-xl {
+    max-width: 1140px;
+}
+
+.modal-content {
+    position: relative;
+    background-color: #fff;
+    border: none;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    pointer-events: auto;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #dee2e6;
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+}
+
+.modal-body {
+    position: relative;
+    flex: 1 1 auto;
+    padding: 1.5rem;
+}
+
+.modal-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 1rem 1.5rem;
+    border-top: 1px solid #dee2e6;
+    border-bottom-right-radius: 0.5rem;
+    border-bottom-left-radius: 0.5rem;
+    gap: 0.5rem;
+}
+
+.btn-close {
+    background: none;
+    border: none;
+    font-size: 1.25rem;
+    font-weight: 700;
+    line-height: 1;
+    color: #000;
+    opacity: 0.5;
+    cursor: pointer;
+}
+
+.btn-close:hover {
+    opacity: 0.75;
+}
 </style>
 
 <script>
@@ -614,16 +698,29 @@ function initializeModalEvents() {
     
     console.log('Inicializando eventos del modal');
     
-    // Evento cuando se abre el modal
-    modal.addEventListener('show.bs.modal', function(e) {
-        console.log('Modal abriéndose...');
-        resetModalForm();
+    // Configurar botones que abren el modal
+    const openModalButtons = document.querySelectorAll('[data-bs-toggle="modal"][data-bs-target="#addAliadoModal"]');
+    openModalButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            showModal('addAliadoModal');
+        });
     });
     
-    // Evento cuando se cierra el modal
-    modal.addEventListener('hidden.bs.modal', function(e) {
-        console.log('Modal cerrado');
-        resetModalForm();
+    // Configurar botones que cierran el modal
+    const closeModalButtons = modal.querySelectorAll('[data-bs-dismiss="modal"]');
+    closeModalButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            hideModal('addAliadoModal');
+        });
+    });
+    
+    // Cerrar modal al hacer click en el backdrop
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            hideModal('addAliadoModal');
+        }
     });
     
     // Inicializar opciones de formulario
@@ -636,6 +733,59 @@ function initializeModalEvents() {
             selectFormType(type, this);
         });
     });
+}
+
+// Función para mostrar modal
+function showModal(modalId) {
+    console.log('Mostrando modal:', modalId);
+    const modal = document.getElementById(modalId);
+    
+    if (!modal) {
+        console.error('Modal no encontrado:', modalId);
+        return;
+    }
+    
+    // Resetear formulario
+    resetModalForm();
+    
+    // Mostrar modal
+    modal.style.display = 'flex';
+    modal.classList.add('show');
+    modal.setAttribute('aria-hidden', 'false');
+    
+    // Prevenir scroll del body
+    document.body.style.overflow = 'hidden';
+    
+    // Reinicializar iconos de Feather
+    if (typeof feather !== 'undefined') {
+        setTimeout(() => feather.replace(), 100);
+    }
+    
+    console.log('Modal mostrado correctamente:', modalId);
+}
+
+// Función para ocultar modal
+function hideModal(modalId) {
+    console.log('Ocultando modal:', modalId);
+    const modal = document.getElementById(modalId);
+    
+    if (!modal) {
+        console.error('Modal no encontrado:', modalId);
+        return;
+    }
+    
+    // Ocultar modal
+    modal.style.display = 'none';
+    modal.classList.remove('show');
+    modal.setAttribute('aria-hidden', 'true');
+    
+    // Restaurar scroll del body
+    document.body.style.overflow = '';
+    
+    // Resetear formulario
+    resetModalForm();
+    
+    console.log('Modal ocultado correctamente:', modalId);
 }
 
 // Función para resetear el formulario del modal
