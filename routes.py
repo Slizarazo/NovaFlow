@@ -625,36 +625,109 @@ def create_user():
             print(f"  - Email: {data.get('email')}")
             print(f"  - Teléfono: {data.get('telefono')}")
             print(f"  - Puesto: {data.get('puesto')}")
-            print(f"  - Departamento: {data.get('salario')}")
-
-        # Enviar datos al servidor
-        fetch('/api/usuarios-cuentas', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(formData)
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log('Respuesta del servidor:', data);
-            if (data.status === 'success') {
-                alert('Usuario creado exitosamente');
-                hideUsuarioModal();
-                // Recargar página para mostrar nuevo usuario
-                location.reload();
-            } else {
-                alert('Error al crear usuario: ' + data.message);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Error al crear usuario');
-        });
-    }
+            print(f"  - Departamento: {data.get('departamento')}")
+            print(f"  - Salario: {data.get('salario')}")
 
         return jsonify({'status': 'success', 'message': 'Usuario creado exitosamente'})
 
     except Exception as e:
         app.logger.error(f"Error al crear usuario: {str(e)}")
         return jsonify({'status': 'error', 'message': str(e)}), 500
+
+@app.route('/api/usuarios-cuentas', methods=['POST'])
+@login_required
+def create_usuario_cuenta():
+    try:
+        data = request.get_json()
+        print(f"Datos recibidos para usuario de cuenta: {data}")
+
+        if not data:
+            return jsonify({'status': 'error', 'message': 'No se recibieron datos'}), 400
+
+        print("Datos del usuario:")
+        print(f"  - Nombre: {data.get('nombre')}")
+        print(f"  - Correo: {data.get('correo')}")
+        print(f"  - Cargo: {data.get('cargo')}")
+        print(f"  - Rol Laboral: {data.get('rol_laboral')}")
+
+        return jsonify({'status': 'success', 'message': 'Usuario de cuenta creado exitosamente'})
+
+    except Exception as e:
+        app.logger.error(f"Error al crear usuario de cuenta: {str(e)}")
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+
+@app.route('/api/clientes', methods=['POST'])
+@login_required
+def create_cliente():
+    try:
+        data = request.get_json()
+        print(f"Datos recibidos para cliente: {data}")
+
+        if not data:
+            return jsonify({'status': 'error', 'message': 'No se recibieron datos'}), 400
+
+        print("Datos del cliente:")
+        print(f"  - Nombre: {data.get('nombre')}")
+        print(f"  - Industria: {data.get('industria')}")
+        print(f"  - Región: {data.get('region')}")
+        print(f"  - Código: {data.get('codigo')}")
+        print(f"  - Sector: {data.get('sector')}")
+
+        return jsonify({'status': 'success', 'message': 'Cliente creado exitosamente'})
+
+    except Exception as e:
+        app.logger.error(f"Error al crear cliente: {str(e)}")
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+
+@app.route('/proyectos/gestion')
+@login_required  
+def proyectos_gestion():
+    # Datos de ejemplo para los proyectos
+    proyectos = [
+        {
+            'id': 1,
+            'nombre': 'Transformación Digital Bancaria',
+            'estado': 'En Desarrollo',
+            'tiempo_estimado': '6 meses',
+            'costos_estimados': '$150,000',
+            'presupuesto': '$180,000',
+            'consultores_asignados': 5,
+            'avance': 65
+        },
+        {
+            'id': 2,
+            'nombre': 'Sistema de Gestión Hospitalaria',
+            'estado': 'Planificación',
+            'tiempo_estimado': '8 meses',
+            'costos_estimados': '$200,000',
+            'presupuesto': '$250,000',
+            'consultores_asignados': 7,
+            'avance': 25
+        },
+        {
+            'id': 3,
+            'nombre': 'E-commerce para Retail',
+            'estado': 'Testing',
+            'tiempo_estimado': '4 meses',
+            'costos_estimados': '$80,000',
+            'presupuesto': '$100,000',
+            'consultores_asignados': 3,
+            'avance': 85
+        },
+        {
+            'id': 4,
+            'nombre': 'Plataforma de Logística',
+            'estado': 'Finalizado',
+            'tiempo_estimado': '5 meses',
+            'costos_estimados': '$120,000',
+            'presupuesto': '$140,000',
+            'consultores_asignados': 4,
+            'avance': 100
+        }
+    ]
+
+    return render_template('proyectos/gestion.html',
+                         title='Gestión de Proyectos',
+                         proyectos=proyectos,
+                         config=app.config,
+                         role=current_user.role)
