@@ -9,11 +9,8 @@
             <button type="button" class="action-button" data-bs-toggle="modal" data-bs-target="#addAliadoModal">
                 <i data-feather="plus"></i>
             </button>
-            <button type="button" class="action-button" data-bs-toggle="modal" data-bs-target="#importAliadosModal">
-                <i data-feather="upload"></i>
-            </button>
-            <button type="button" class="action-button" data-bs-toggle="modal" data-bs-target="#exportAliadosModal">
-                <i data-feather="download"></i>
+            <button type="button" class="action-button" data-bs-toggle="modal" data-bs-target="#dataManagementModal">
+                <i data-feather="database"></i>
             </button>
         </div>
     </div>
@@ -377,6 +374,141 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                 <button type="button" class="btn btn-primary" onclick="submitForm()">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Gestión de Datos -->
+<div class="modal fade" id="dataManagementModal" tabindex="-1" aria-labelledby="dataManagementModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="dataManagementModalLabel">Gestión de Datos</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Selector de tipo de operación -->
+                <div class="data-type-selector mb-4">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="data-option" onclick="selectDataType('import')">
+                                <div class="data-option-icon">
+                                    <i data-feather="upload" class="text-primary"></i>
+                                </div>
+                                <div class="data-option-content">
+                                    <h5 class="data-option-title">Cargar Masivamente</h5>
+                                    <p class="data-option-desc">Importar aliados desde un archivo Excel/CSV</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="data-option" onclick="selectDataType('export')">
+                                <div class="data-option-icon">
+                                    <i data-feather="download" class="text-success"></i>
+                                </div>
+                                <div class="data-option-content">
+                                    <h5 class="data-option-title">Exportar Datos</h5>
+                                    <p class="data-option-desc">Generar archivo Excel/CSV con datos actuales</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Formulario Importar -->
+                <div id="importForm" class="data-container" style="display: none;">
+                    <h6 class="data-section-title">Cargar Archivo</h6>
+                    <div class="mb-3">
+                        <label for="importFile" class="form-label">Seleccionar archivo</label>
+                        <input type="file" class="form-control" id="importFile" accept=".xlsx,.xls,.csv" required>
+                        <div class="form-text">Formatos soportados: Excel (.xlsx, .xls) y CSV (.csv)</div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="overwriteData">
+                            <label class="form-check-label" for="overwriteData">
+                                Sobrescribir datos existentes
+                            </label>
+                        </div>
+                    </div>
+                    <div class="alert alert-info">
+                        <strong>Formato esperado:</strong><br>
+                        Las columnas deben ser: Nombre, Industria, Estado, Región, Subregión, País, Sede, Contacto, Empleados
+                    </div>
+                </div>
+
+                <!-- Formulario Exportar -->
+                <div id="exportForm" class="data-container" style="display: none;">
+                    <h6 class="data-section-title">Opciones de Exportación</h6>
+                    <div class="mb-3">
+                        <label for="exportFormat" class="form-label">Formato de archivo</label>
+                        <select class="form-select" id="exportFormat">
+                            <option value="xlsx">Excel (.xlsx)</option>
+                            <option value="csv">CSV (.csv)</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Datos a incluir</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="includeAll" checked>
+                            <label class="form-check-label" for="includeAll">
+                                Todos los aliados
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="includeFiltered">
+                            <label class="form-check-label" for="includeFiltered">
+                                Solo aliados filtrados actualmente
+                            </label>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Columnas a exportar</label>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="colNombre" checked>
+                                    <label class="form-check-label" for="colNombre">Nombre</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="colIndustria" checked>
+                                    <label class="form-check-label" for="colIndustria">Industria</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="colEstado" checked>
+                                    <label class="form-check-label" for="colEstado">Estado</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="colRegion" checked>
+                                    <label class="form-check-label" for="colRegion">Región</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="colSubregion" checked>
+                                    <label class="form-check-label" for="colSubregion">Subregión</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="colPais" checked>
+                                    <label class="form-check-label" for="colPais">País</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="colSede" checked>
+                                    <label class="form-check-label" for="colSede">Sede</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="colContacto">
+                                    <label class="form-check-label" for="colContacto">Contacto</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="executeDataAction()">Ejecutar</button>
             </div>
         </div>
     </div>
@@ -780,11 +912,85 @@
         margin-bottom: 0.5rem;
     }
 }
+
+/* Estilos para modal de gestión de datos */
+.data-type-selector {
+    margin-bottom: 2rem;
+}
+
+.data-option {
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    padding: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.data-option:hover {
+    border-color: #667eea;
+    background: #f8f9ff;
+}
+
+.data-option.active {
+    border-color: #667eea;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.data-option-icon {
+    margin-right: 1rem;
+    font-size: 1.5rem;
+}
+
+.data-option-title {
+    margin: 0 0 0.25rem 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.data-option-desc {
+    margin: 0;
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+.data-container {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 1.5rem;
+}
+
+.data-section-title {
+    color: #667eea;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #e9ecef;
+}
+
+.form-check {
+    margin-bottom: 0.5rem;
+}
+
+.form-check-input:checked {
+    background-color: #667eea;
+    border-color: #667eea;
+}
+
+.alert-info {
+    background-color: #e3f2fd;
+    border-color: #bbdefb;
+    color: #1976d2;
+}
 </style>
 
 <script>
 // Variables globales
 let selectedFormType = null;
+let selectedDataType = null;
 
 // Inicialización cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', function() {
@@ -801,6 +1007,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Inicializar eventos del modal
     initializeModalEvents();
+    
+    // Inicializar eventos del modal de gestión de datos
+    initializeDataModalEvents();
     
     // Verificar que Bootstrap esté disponible
     if (typeof bootstrap !== 'undefined') {
@@ -914,28 +1123,63 @@ function hideModal(modalId) {
 function resetModalForm() {
     console.log('Reseteando formulario del modal');
     selectedFormType = null;
+    selectedDataType = null;
     
-    // Remover clase active de todas las opciones
+    // Resetear modal de aliados
     document.querySelectorAll('.form-option').forEach(option => {
         option.classList.remove('active');
     });
 
-    // Ocultar todos los formularios
     const formOrg = document.getElementById('formOrganizacion');
     const formSede = document.getElementById('formSede');
     
     if (formOrg) {
         formOrg.style.display = 'none';
-        // Limpiar campos del formulario
         const inputs = formOrg.querySelectorAll('input, select');
         inputs.forEach(input => input.value = '');
     }
     
     if (formSede) {
         formSede.style.display = 'none';
-        // Limpiar campos del formulario
         const inputs = formSede.querySelectorAll('input, select');
         inputs.forEach(input => input.value = '');
+    }
+    
+    // Resetear modal de gestión de datos
+    document.querySelectorAll('.data-option').forEach(option => {
+        option.classList.remove('active');
+    });
+
+    const importForm = document.getElementById('importForm');
+    const exportForm = document.getElementById('exportForm');
+    
+    if (importForm) {
+        importForm.style.display = 'none';
+        const inputs = importForm.querySelectorAll('input, select');
+        inputs.forEach(input => {
+            if (input.type === 'checkbox') {
+                input.checked = false;
+            } else {
+                input.value = '';
+            }
+        });
+    }
+    
+    if (exportForm) {
+        exportForm.style.display = 'none';
+        const inputs = exportForm.querySelectorAll('input, select');
+        inputs.forEach(input => {
+            if (input.type === 'checkbox') {
+                // Restablecer valores por defecto para checkboxes de exportación
+                if (input.id === 'includeAll' || input.id.startsWith('col')) {
+                    input.checked = true;
+                } else {
+                    input.checked = false;
+                }
+            } else {
+                input.value = input.defaultValue || '';
+            }
+        });
     }
 }
 
@@ -1183,6 +1427,185 @@ function initializeFilters() {
 
         console.log(`Mostrando ${visibleCount} de ${tableRows.length} aliados`);
     }
+}
+
+// Función para inicializar eventos del modal de gestión de datos
+function initializeDataModalEvents() {
+    const dataModal = document.getElementById('dataManagementModal');
+    if (!dataModal) {
+        console.error('Modal dataManagementModal no encontrado');
+        return;
+    }
+    
+    console.log('Inicializando eventos del modal de gestión de datos');
+    
+    // Configurar botones que abren el modal
+    const openDataModalButtons = document.querySelectorAll('[data-bs-toggle="modal"][data-bs-target="#dataManagementModal"]');
+    openDataModalButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            showModal('dataManagementModal');
+        });
+    });
+    
+    // Configurar botones que cierran el modal
+    const closeDataModalButtons = dataModal.querySelectorAll('[data-bs-dismiss="modal"]');
+    closeDataModalButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            hideModal('dataManagementModal');
+        });
+    });
+    
+    // Cerrar modal al hacer click en el backdrop
+    dataModal.addEventListener('click', function(e) {
+        if (e.target === dataModal) {
+            hideModal('dataManagementModal');
+        }
+    });
+    
+    // Inicializar opciones de datos
+    const dataOptions = dataModal.querySelectorAll('.data-option');
+    dataOptions.forEach((option, index) => {
+        option.addEventListener('click', function(e) {
+            e.preventDefault();
+            const type = index === 0 ? 'import' : 'export';
+            console.log('Seleccionando tipo de operación:', type);
+            selectDataType(type, this);
+        });
+    });
+}
+
+// Función para seleccionar tipo de operación de datos
+function selectDataType(type, element) {
+    console.log('Seleccionando tipo de operación:', type);
+    selectedDataType = type;
+
+    // Remover clase active de todas las opciones
+    document.querySelectorAll('.data-option').forEach(option => {
+        option.classList.remove('active');
+    });
+
+    // Agregar clase active a la opción seleccionada
+    if (element) {
+        element.classList.add('active');
+    }
+
+    // Obtener elementos del DOM
+    const importForm = document.getElementById('importForm');
+    const exportForm = document.getElementById('exportForm');
+
+    // Ocultar todos los formularios
+    if (importForm) importForm.style.display = 'none';
+    if (exportForm) exportForm.style.display = 'none';
+
+    // Mostrar el formulario correspondiente
+    if (type === 'import' && importForm) {
+        importForm.style.display = 'block';
+        console.log('Mostrando formulario de importación');
+    } else if (type === 'export' && exportForm) {
+        exportForm.style.display = 'block';
+        console.log('Mostrando formulario de exportación');
+    }
+}
+
+// Función para ejecutar acción de datos
+function executeDataAction() {
+    console.log('Ejecutando acción de datos, tipo seleccionado:', selectedDataType);
+    
+    if (!selectedDataType) {
+        alert('Por favor selecciona un tipo de operación');
+        return;
+    }
+
+    if (selectedDataType === 'import') {
+        executeImport();
+    } else if (selectedDataType === 'export') {
+        executeExport();
+    }
+}
+
+// Función para ejecutar importación
+function executeImport() {
+    const fileInput = document.getElementById('importFile');
+    const overwriteData = document.getElementById('overwriteData');
+    
+    if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
+        alert('Por favor selecciona un archivo para importar');
+        return;
+    }
+    
+    const file = fileInput.files[0];
+    const allowedExtensions = ['.xlsx', '.xls', '.csv'];
+    const fileExtension = '.' + file.name.split('.').pop().toLowerCase();
+    
+    if (!allowedExtensions.includes(fileExtension)) {
+        alert('Formato de archivo no soportado. Use Excel (.xlsx, .xls) o CSV (.csv)');
+        return;
+    }
+    
+    console.log('Importando archivo:', file.name);
+    console.log('Sobrescribir datos:', overwriteData ? overwriteData.checked : false);
+    
+    // Simular importación
+    alert(`Archivo "${file.name}" importado exitosamente.\n${Math.floor(Math.random() * 50) + 10} aliados procesados.`);
+    
+    // Cerrar modal
+    hideModal('dataManagementModal');
+    
+    // Recargar página para mostrar nuevos datos
+    setTimeout(() => {
+        location.reload();
+    }, 1000);
+}
+
+// Función para ejecutar exportación
+function executeExport() {
+    const exportFormat = document.getElementById('exportFormat');
+    const includeAll = document.getElementById('includeAll');
+    const includeFiltered = document.getElementById('includeFiltered');
+    
+    // Obtener columnas seleccionadas
+    const selectedColumns = [];
+    const columnCheckboxes = {
+        'colNombre': 'Nombre',
+        'colIndustria': 'Industria',
+        'colEstado': 'Estado',
+        'colRegion': 'Región',
+        'colSubregion': 'Subregión',
+        'colPais': 'País',
+        'colSede': 'Sede',
+        'colContacto': 'Contacto'
+    };
+    
+    Object.keys(columnCheckboxes).forEach(id => {
+        const checkbox = document.getElementById(id);
+        if (checkbox && checkbox.checked) {
+            selectedColumns.push(columnCheckboxes[id]);
+        }
+    });
+    
+    if (selectedColumns.length === 0) {
+        alert('Por favor selecciona al menos una columna para exportar');
+        return;
+    }
+    
+    const format = exportFormat ? exportFormat.value : 'xlsx';
+    const dataScope = includeAll && includeAll.checked ? 'todos' : 'filtrados';
+    
+    console.log('Exportando datos en formato:', format);
+    console.log('Alcance de datos:', dataScope);
+    console.log('Columnas seleccionadas:', selectedColumns);
+    
+    // Simular exportación
+    const fileName = `aliados_${new Date().toISOString().split('T')[0]}.${format}`;
+    alert(`Archivo "${fileName}" generado exitosamente.\nColumnas incluidas: ${selectedColumns.join(', ')}`);
+    
+    // Cerrar modal
+    hideModal('dataManagementModal');
+    
+    // Simular descarga
+    console.log('Simulando descarga del archivo:', fileName);
 }
 </script>
 
