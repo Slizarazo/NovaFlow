@@ -4,7 +4,7 @@
 <div class="container-fluid p-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>Gestión de Clientes</h2>
-        <button class="btn btn-primary" data-bs-target="#addClienteModal">
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addClienteModal">
             <i data-feather="plus"></i> Nuevo Cliente
         </button>
     </div>
@@ -53,8 +53,10 @@
 </div>
 {% endblock %}
 
+{% endblock %}
+
 <!-- Modal Nuevo Cliente -->
-<div id="addClienteModal" tabindex="-1" aria-labelledby="addClienteModalLabel" aria-hidden="true" style="display: none;">
+<div class="modal fade" id="addClienteModal" tabindex="-1" aria-labelledby="addClienteModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
@@ -243,110 +245,24 @@
     transform: translateY(-1px);
 }
 
-/* Estilos adicionales para el modal */
-.modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 1055;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    outline: 0;
-}
-
-.modal.show {
-    display: flex !important;
-    align-items: center;
-    justify-content: center;
-}
-
+/* Personalización del modal manteniendo compatibilidad con Bootstrap */
 .modal-dialog {
-    position: relative;
-    width: auto;
-    margin: 0.5rem;
-    pointer-events: none;
     max-width: 800px;
 }
 
 .modal-content {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    pointer-events: auto;
-    background-color: #fff;
-    background-clip: padding-box;
-    border: none;
     border-radius: 16px;
-    outline: 0;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
 }
 
 .modal-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1rem 1rem;
-    border-bottom: 1px solid #dee2e6;
     border-top-left-radius: 16px;
     border-top-right-radius: 16px;
 }
 
-.modal-body {
-    position: relative;
-    flex: 1 1 auto;
-    padding: 1rem;
-}
-
 .modal-footer {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    padding: 0.75rem;
-    border-top: 1px solid #dee2e6;
     border-bottom-right-radius: 16px;
     border-bottom-left-radius: 16px;
-}
-
-.btn-close {
-    background: transparent;
-    border: 0;
-    font-size: 1.25rem;
-    font-weight: 700;
-    line-height: 1;
-    color: #000;
-    text-shadow: 0 1px 0 #fff;
-    opacity: 0.5;
-    cursor: pointer;
-}
-
-.btn-close:hover {
-    color: #000;
-    text-decoration: none;
-    opacity: 0.75;
-}
-
-.modal-backdrop {
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 1050;
-    width: 100vw;
-    height: 100vh;
-    background-color: #000;
-}
-
-.modal-backdrop.fade {
-    opacity: 0;
-}
-
-.modal-backdrop.show {
-    opacity: 0.5;
-}
-
-.modal-open {
-    overflow: hidden;
 }
 </style>
 
@@ -359,145 +275,7 @@
         if (typeof feather !== 'undefined') {
             feather.replace();
         }
-        
-        // Configurar modal del cliente
-        setupClienteModal();
     });
-    
-    function setupClienteModal() {
-        const modal = document.getElementById('addClienteModal');
-        const newClientButton = document.querySelector('button[data-bs-target="#addClienteModal"]');
-        
-        console.log('Modal encontrado:', modal);
-        console.log('Botón encontrado:', newClientButton);
-        
-        if (modal && newClientButton) {
-            // Remover cualquier event listener previo
-            newClientButton.removeEventListener('click', handleNewClientClick);
-            
-            // Agregar event listener
-            newClientButton.addEventListener('click', handleNewClientClick);
-            
-            // Configurar botones de cerrar
-            const closeButtons = modal.querySelectorAll('[data-bs-dismiss="modal"], .btn-close');
-            closeButtons.forEach(button => {
-                button.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    closeClienteModal();
-                });
-            });
-            
-            // Cerrar al hacer click en el backdrop
-            modal.addEventListener('click', function(e) {
-                if (e.target === modal) {
-                    closeClienteModal();
-                }
-            });
-            
-            // Prevenir cierre al hacer click dentro del modal
-            const modalContent = modal.querySelector('.modal-content');
-            if (modalContent) {
-                modalContent.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                });
-            }
-            
-            console.log('Modal configurado correctamente');
-        } else {
-            console.error('No se pudo configurar el modal. Modal:', modal, 'Botón:', newClientButton);
-        }
-    }
-    
-    function handleNewClientClick(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        console.log('Botón de nuevo cliente clickeado');
-        openClienteModal();
-    }
-    
-    function openClienteModal() {
-        const modal = document.getElementById('addClienteModal');
-        if (!modal) {
-            console.error('Modal no encontrado');
-            return;
-        }
-        
-        console.log('Abriendo modal de cliente');
-        
-        // Crear backdrop si no existe
-        let backdrop = document.querySelector('.modal-backdrop');
-        if (!backdrop) {
-            backdrop = document.createElement('div');
-            backdrop.className = 'modal-backdrop fade show';
-            backdrop.style.cssText = `
-                position: fixed;
-                top: 0;
-                left: 0;
-                z-index: 1040;
-                width: 100vw;
-                height: 100vh;
-                background-color: rgba(0, 0, 0, 0.5);
-            `;
-            document.body.appendChild(backdrop);
-        }
-        
-        // Mostrar modal
-        modal.style.cssText = `
-            display: flex !important;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1050;
-            align-items: center;
-            justify-content: center;
-            overflow: auto;
-        `;
-        
-        modal.classList.add('show');
-        modal.setAttribute('aria-hidden', 'false');
-        
-        // Prevenir scroll del body
-        document.body.classList.add('modal-open');
-        document.body.style.overflow = 'hidden';
-        
-        // Enfocar primer campo
-        setTimeout(() => {
-            const firstInput = modal.querySelector('#clienteNombre');
-            if (firstInput) {
-                firstInput.focus();
-            }
-        }, 100);
-    }
-    
-    function closeClienteModal() {
-        const modal = document.getElementById('addClienteModal');
-        if (!modal) return;
-        
-        console.log('Cerrando modal de cliente');
-        
-        // Ocultar modal
-        modal.style.display = 'none';
-        modal.classList.remove('show');
-        modal.setAttribute('aria-hidden', 'true');
-        
-        // Remover backdrop
-        const backdrop = document.querySelector('.modal-backdrop');
-        if (backdrop) {
-            backdrop.remove();
-        }
-        
-        // Restaurar scroll del body
-        document.body.classList.remove('modal-open');
-        document.body.style.overflow = '';
-        
-        // Limpiar formulario
-        const form = document.getElementById('addClienteForm');
-        if (form) {
-            form.reset();
-        }
-    }
 
     function submitClienteForm() {
         console.log('Enviando formulario de cliente...');
@@ -533,7 +311,11 @@
             console.log('Respuesta del servidor:', data);
             if (data.status === 'success') {
                 alert('Cliente creado exitosamente');
-                closeClienteModal();
+                // Cerrar modal usando Bootstrap
+                const modal = bootstrap.Modal.getInstance(document.getElementById('addClienteModal'));
+                if (modal) {
+                    modal.hide();
+                }
                 // Recargar página para mostrar nuevo cliente
                 location.reload();
             } else {
