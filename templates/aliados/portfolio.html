@@ -58,6 +58,40 @@
     transition: all 0.2s ease;
 }
 
+/* Dashboard section actions */
+.dashboard-section-actions {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.dashboard-section-actions .btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+/* Modal footer */
+.modal-footer {
+    padding: 16px 20px;
+    border-top: 1px solid #e5e7eb;
+    background: white;
+    border-radius: 0 0 12px 12px;
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    flex-shrink: 0;
+}
+
+.modal-footer .btn {
+    padding: 10px 20px;
+    font-weight: 500;
+    font-size: 14px;
+}
+
 /* Data management modal styles */
 .data-operation-selector {
     margin-bottom: 2rem;
@@ -144,11 +178,13 @@
     <div class="dashboard-section-title">
         <h4>Portafolio de Proyectos</h4>
         <div class="dashboard-section-actions">
-            <button type="button" class="btn btn-primary" id="addProjectBtn" style="background: linear-gradient(135deg, #8b7bc8 0%, #7b68c7 100%); border: none; border-radius: 8px; padding: 8px 16px; color: white; font-weight: 500; display: flex; align-items: center; gap: 8px;" title="Añadir Proyecto">
+            <button type="button" class="btn btn-primary" id="addProjectBtn" title="Añadir Proyecto">
                 <i data-feather="plus" style="width: 16px; height: 16px;"></i>
+                Añadir Proyecto
             </button>
-            <button type="button" class="btn btn-secondary" id="dataManagementBtn" style="background: #6c757d; border: none; border-radius: 8px; padding: 8px 16px; color: white; font-weight: 500; display: flex; align-items: center; gap: 8px;" title="Gestión de Datos">
+            <button type="button" class="btn btn-secondary" id="dataManagementBtn" title="Gestión de Datos">
                 <i data-feather="database" style="width: 16px; height: 16px;"></i>
+                Gestión de Datos
             </button>
         </div>
     </div>
@@ -344,9 +380,9 @@
                     </div>
                 </div>
                 
-                <div class="modal-footer" style="padding: 16px 20px; border-top: 1px solid #e5e7eb; background: white; border-radius: 0 0 12px 12px; display: flex; gap: 12px; justify-content: flex-end; flex-shrink: 0;">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="background: #f3f4f6; color: #6b7280; border: 1px solid #d1d5db; padding: 10px 20px; border-radius: 8px; font-weight: 500; font-size: 14px; cursor: pointer; transition: all 0.2s;">Cancelar</button>
-                    <button type="button" class="btn btn-primary" onclick="submitProductForm()" style="background: linear-gradient(135deg, #8b7bc8 0%, #7b68c7 100%); border: none; padding: 10px 20px; border-radius: 8px; color: white; font-weight: 500; font-size: 14px; cursor: pointer; transition: all 0.2s;">Guardar Aliado</button>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="submitProductForm()">Guardar Aliado</button>
                 </div>
             </div>
         </div>
@@ -476,9 +512,9 @@
                     </div>
                 </div>
                 
-                <div class="modal-footer" style="padding: 16px 20px; border-top: 1px solid #e5e7eb; background: white; border-radius: 0 0 12px 12px; display: flex; gap: 12px; justify-content: flex-end; flex-shrink: 0;">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="background: #f3f4f6; color: #6b7280; border: 1px solid #d1d5db; padding: 10px 20px; border-radius: 8px; font-weight: 500; font-size: 14px; cursor: pointer; transition: all 0.2s;">Cancelar</button>
-                    <button type="button" class="btn btn-primary" id="executeDataBtn" onclick="executeDataOperation()" style="background: linear-gradient(135deg, #8b7bc8 0%, #7b68c7 100%); border: none; padding: 10px 20px; border-radius: 8px; color: white; font-weight: 500; font-size: 14px; cursor: pointer; transition: all 0.2s; display: none;">Ejecutar</button>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="executeDataBtn" onclick="executeDataOperation()" style="display: none;">Ejecutar</button>
                 </div>
             </div>
         </div>
