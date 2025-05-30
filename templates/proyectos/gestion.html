@@ -3,48 +3,8 @@
 
 {% block content %}
 <div class="container-fluid p-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="mb-4">
         <h2>Gestión de Proyectos</h2>
-        <button class="btn btn-primary" onclick="location.href='/proyectos/calculadora'">
-            <i data-feather="plus"></i> Nuevo Proyecto
-        </button>
-    </div>
-
-    <!-- Filtros -->
-    <div class="card mb-4">
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-3">
-                    <label class="form-label">Estado</label>
-                    <select class="form-select" id="filtroEstado">
-                        <option value="">Todos</option>
-                        <option value="oportunidad">Oportunidad</option>
-                        <option value="propuesta">Propuesta</option>
-                        <option value="aprobado">Aprobado</option>
-                        <option value="desarrollo">En Desarrollo</option>
-                        <option value="testing">Testing</option>
-                        <option value="cierre">Cierre</option>
-                        <option value="evaluacion">Evaluación</option>
-                    </select>
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label">Aliado</label>
-                    <select class="form-select" id="filtroAliado">
-                        <option value="">Todos</option>
-                        <option value="Aliado 1">Aliado 1</option>
-                        <option value="Aliado 2">Aliado 2</option>
-                        <option value="Aliado 3">Aliado 3</option>
-                    </select>
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label">Rango de Fechas</label>
-                    <input type="date" class="form-control" id="filtroFecha">
-                </div>
-                <div class="col-md-3 d-flex align-items-end">
-                    <button class="btn btn-outline-primary" onclick="aplicarFiltros()">Filtrar</button>
-                </div>
-            </div>
-        </div>
     </div>
 
     <!-- Grid de Proyectos -->
@@ -205,27 +165,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-function aplicarFiltros() {
-    const estado = document.getElementById('filtroEstado').value;
-    const aliado = document.getElementById('filtroAliado').value;
-    const fecha = document.getElementById('filtroFecha').value;
-    
-    const proyectos = document.querySelectorAll('.proyecto-card');
-    
-    proyectos.forEach(proyecto => {
-        let mostrar = true;
-        
-        if (estado && proyecto.dataset.estado !== estado) {
-            mostrar = false;
-        }
-        
-        if (aliado && proyecto.dataset.aliado !== aliado) {
-            mostrar = false;
-        }
-        
-        proyecto.style.display = mostrar ? 'block' : 'none';
-    });
-}
+
 
 function verDetalles(proyectoId) {
     // Cargar detalles del proyecto
