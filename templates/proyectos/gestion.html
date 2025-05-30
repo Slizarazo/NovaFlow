@@ -1,0 +1,301 @@
+
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container-fluid p-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Gestión de Proyectos</h2>
+        <button class="btn btn-primary" onclick="location.href='/proyectos/calculadora'">
+            <i data-feather="plus"></i> Nuevo Proyecto
+        </button>
+    </div>
+
+    <!-- Filtros -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-3">
+                    <label class="form-label">Estado</label>
+                    <select class="form-select" id="filtroEstado">
+                        <option value="">Todos</option>
+                        <option value="oportunidad">Oportunidad</option>
+                        <option value="propuesta">Propuesta</option>
+                        <option value="aprobado">Aprobado</option>
+                        <option value="desarrollo">En Desarrollo</option>
+                        <option value="testing">Testing</option>
+                        <option value="cierre">Cierre</option>
+                        <option value="evaluacion">Evaluación</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Aliado</label>
+                    <select class="form-select" id="filtroAliado">
+                        <option value="">Todos</option>
+                        <option value="Aliado 1">Aliado 1</option>
+                        <option value="Aliado 2">Aliado 2</option>
+                        <option value="Aliado 3">Aliado 3</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Rango de Fechas</label>
+                    <input type="date" class="form-control" id="filtroFecha">
+                </div>
+                <div class="col-md-3 d-flex align-items-end">
+                    <button class="btn btn-outline-primary" onclick="aplicarFiltros()">Filtrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Grid de Proyectos -->
+    <div class="row" id="proyectosGrid">
+        <!-- Proyectos se cargarán aquí dinámicamente -->
+        {% for proyecto in proyectos %}
+        <div class="col-12 col-lg-6 col-xl-4 mb-4 proyecto-card" data-estado="{{ proyecto.etapa }}" data-aliado="{{ proyecto.aliado_id }}">
+            <div class="card h-100 shadow-sm">
+                <!-- Primera Fila -->
+                <div class="card-body">
+                    <div class="row">
+                        <!-- Columna 1: Nombre, Estado, Ver Detalles -->
+                        <div class="col-4">
+                            <h6 class="card-title text-truncate" title="{{ proyecto.nombre }}">{{ proyecto.nombre }}</h6>
+                            <span class="badge bg-{{ 'primary' if proyecto.etapa == 'oportunidad' else 'secondary' if proyecto.etapa == 'propuesta' else 'warning' if proyecto.etapa == 'aprobado' else 'info' if proyecto.etapa == 'desarrollo' else 'success' if proyecto.etapa == 'testing' else 'dark' if proyecto.etapa == 'cierre' else 'danger' }} mb-2">
+                                {{ proyecto.etapa|title }}
+                            </span>
+                            <div>
+                                <button class="btn btn-sm btn-outline-primary" onclick="verDetalles({{ proyecto.id }})">
+                                    <i data-feather="eye" style="width: 12px; height: 12px;"></i>
+                                    Ver
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Columna 2: Tiempo, Costos, Presupuesto -->
+                        <div class="col-4">
+                            <div class="mb-1">
+                                <small class="text-muted">Tiempo Est.</small>
+                                <div class="fw-semibold">{{ proyecto.tiempo_estimado or 'N/A' }} hrs</div>
+                            </div>
+                            <div class="mb-1">
+                                <small class="text-muted">Costos Est.</small>
+                                <div class="fw-semibold">${{ "{:,.0f}".format(proyecto.costos_estimados or 0) }}</div>
+                            </div>
+                            <div class="mb-2">
+                                <small class="text-muted">Presupuesto</small>
+                                <div class="fw-semibold">${{ "{:,.0f}".format(proyecto.monto or 0) }}</div>
+                            </div>
+                            <button class="btn btn-sm btn-outline-success" onclick="verFinanzas({{ proyecto.id }})">
+                                <i data-feather="dollar-sign" style="width: 12px; height: 12px;"></i>
+                                Ver
+                            </button>
+                        </div>
+
+                        <!-- Columna 3: Consultores Asignados -->
+                        <div class="col-4">
+                            <div class="mb-2">
+                                <small class="text-muted">Consultores</small>
+                                <div class="fw-semibold">{{ proyecto.consultores_asignados or 0 }}</div>
+                            </div>
+                            <div class="mb-2">
+                                <small class="text-muted">Cliente</small>
+                                <div class="fw-semibold text-truncate" title="{{ proyecto.aliado_id }}">{{ proyecto.aliado_id }}</div>
+                            </div>
+                            <button class="btn btn-sm btn-outline-info" onclick="verEquipo({{ proyecto.id }})">
+                                <i data-feather="users" style="width: 12px; height: 12px;"></i>
+                                Ver
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Segunda Fila: Barra de Progreso -->
+                <div class="card-footer bg-light">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <small class="text-muted">Progreso del Proyecto</small>
+                        <small class="fw-semibold">{{ proyecto.progreso or 0 }}%</small>
+                    </div>
+                    <div class="progress" style="height: 8px;">
+                        <div class="progress-bar {% if (proyecto.progreso or 0) < 30 %}bg-danger{% elif (proyecto.progreso or 0) < 70 %}bg-warning{% else %}bg-success{% endif %}" 
+                             role="progressbar" 
+                             style="width: {{ proyecto.progreso or 0 }}%"
+                             aria-valuenow="{{ proyecto.progreso or 0 }}" 
+                             aria-valuemin="0" 
+                             aria-valuemax="100">
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <small class="text-muted">
+                            Inicio: {{ proyecto.fecha_inicio or 'N/A' }} | 
+                            Fin: {{ proyecto.fecha_fin or 'N/A' }}
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Modal de Detalles -->
+    <div class="modal fade" id="detallesModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Detalles del Proyecto</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="detallesContent">
+                    <!-- Contenido se carga dinámicamente -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-primary" onclick="editarProyecto()">Editar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Inicializar iconos de Feather
+    if (typeof feather !== 'undefined') {
+        feather.replace();
+    }
+});
+
+function aplicarFiltros() {
+    const estado = document.getElementById('filtroEstado').value;
+    const aliado = document.getElementById('filtroAliado').value;
+    const fecha = document.getElementById('filtroFecha').value;
+    
+    const proyectos = document.querySelectorAll('.proyecto-card');
+    
+    proyectos.forEach(proyecto => {
+        let mostrar = true;
+        
+        if (estado && proyecto.dataset.estado !== estado) {
+            mostrar = false;
+        }
+        
+        if (aliado && proyecto.dataset.aliado !== aliado) {
+            mostrar = false;
+        }
+        
+        proyecto.style.display = mostrar ? 'block' : 'none';
+    });
+}
+
+function verDetalles(proyectoId) {
+    // Cargar detalles del proyecto
+    fetch(`/api/proyectos/${proyectoId}`)
+        .then(response => response.json())
+        .then(data => {
+            const content = `
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>Información General</h6>
+                        <p><strong>ID:</strong> ${data.id}</p>
+                        <p><strong>Nombre:</strong> ${data.nombre}</p>
+                        <p><strong>Estado:</strong> ${data.etapa}</p>
+                        <p><strong>Cliente:</strong> ${data.aliado_id}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Fechas y Progreso</h6>
+                        <p><strong>Fecha Inicio:</strong> ${data.fecha_inicio || 'N/A'}</p>
+                        <p><strong>Fecha Fin:</strong> ${data.fecha_fin || 'N/A'}</p>
+                        <p><strong>Progreso:</strong> ${data.progreso || 0}%</p>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <h6>Recursos y Finanzas</h6>
+                        <p><strong>Consultores Asignados:</strong> ${data.consultores_asignados || 0}</p>
+                        <p><strong>Presupuesto:</strong> $${new Intl.NumberFormat().format(data.monto || 0)}</p>
+                        <p><strong>Costos Estimados:</strong> $${new Intl.NumberFormat().format(data.costos_estimados || 0)}</p>
+                        <p><strong>Tiempo Estimado:</strong> ${data.tiempo_estimado || 'N/A'} horas</p>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('detallesContent').innerHTML = content;
+            const modal = new bootstrap.Modal(document.getElementById('detallesModal'));
+            modal.show();
+        })
+        .catch(error => {
+            console.error('Error al cargar detalles:', error);
+            alert('Error al cargar los detalles del proyecto');
+        });
+}
+
+function verFinanzas(proyectoId) {
+    // Redirigir a la página de finanzas del proyecto
+    window.location.href = `/proyectos/${proyectoId}/finanzas`;
+}
+
+function verEquipo(proyectoId) {
+    // Redirigir a la página de equipo del proyecto
+    window.location.href = `/proyectos/${proyectoId}/equipo`;
+}
+
+function editarProyecto() {
+    // Lógica para editar proyecto
+    alert('Funcionalidad de edición en desarrollo');
+}
+</script>
+
+<style>
+.card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+}
+
+.card-title {
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.progress {
+    border-radius: 10px;
+}
+
+.progress-bar {
+    border-radius: 10px;
+    transition: width 0.6s ease;
+}
+
+.btn-sm {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+}
+
+.badge {
+    font-size: 0.7rem;
+}
+
+.card-footer {
+    border-top: 1px solid #dee2e6;
+    padding: 0.75rem 1rem;
+}
+
+.text-truncate {
+    max-width: 100%;
+}
+
+@media (max-width: 768px) {
+    .col-4 {
+        margin-bottom: 1rem;
+    }
+    
+    .card-body .row .col-4:last-child {
+        margin-bottom: 0;
+    }
+}
+</style>
+{% endblock %}
