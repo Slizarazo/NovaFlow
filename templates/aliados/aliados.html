@@ -582,27 +582,65 @@ let selectedFormType = null;
 
 // Inicialización cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM cargado, inicializando...');
+    
+    // Inicializar Feather icons
     if (typeof feather !== 'undefined') {
         feather.replace();
+        console.log('Feather icons inicializados');
     }
 
+    // Inicializar filtros
     initializeFilters();
+    
+    // Inicializar eventos del modal
     initializeModalEvents();
+    
+    // Verificar que Bootstrap esté disponible
+    if (typeof bootstrap !== 'undefined') {
+        console.log('Bootstrap disponible');
+    } else {
+        console.warn('Bootstrap no disponible');
+    }
 });
 
 // Función para inicializar eventos del modal
 function initializeModalEvents() {
-    // Resetear el modal cuando se abre
     const modal = document.getElementById('addAliadoModal');
-    if (modal) {
-        modal.addEventListener('show.bs.modal', function() {
-            resetModalForm();
-        });
+    if (!modal) {
+        console.error('Modal addAliadoModal no encontrado');
+        return;
     }
+    
+    console.log('Inicializando eventos del modal');
+    
+    // Evento cuando se abre el modal
+    modal.addEventListener('show.bs.modal', function(e) {
+        console.log('Modal abriéndose...');
+        resetModalForm();
+    });
+    
+    // Evento cuando se cierra el modal
+    modal.addEventListener('hidden.bs.modal', function(e) {
+        console.log('Modal cerrado');
+        resetModalForm();
+    });
+    
+    // Inicializar opciones de formulario
+    const formOptions = modal.querySelectorAll('.form-option');
+    formOptions.forEach((option, index) => {
+        option.addEventListener('click', function(e) {
+            e.preventDefault();
+            const type = index === 0 ? 'organizacion' : 'sede';
+            console.log('Seleccionando tipo de formulario:', type);
+            selectFormType(type, this);
+        });
+    });
 }
 
 // Función para resetear el formulario del modal
 function resetModalForm() {
+    console.log('Reseteando formulario del modal');
     selectedFormType = null;
     
     // Remover clase active de todas las opciones
@@ -614,12 +652,24 @@ function resetModalForm() {
     const formOrg = document.getElementById('formOrganizacion');
     const formSede = document.getElementById('formSede');
     
-    if (formOrg) formOrg.style.display = 'none';
-    if (formSede) formSede.style.display = 'none';
+    if (formOrg) {
+        formOrg.style.display = 'none';
+        // Limpiar campos del formulario
+        const inputs = formOrg.querySelectorAll('input, select');
+        inputs.forEach(input => input.value = '');
+    }
+    
+    if (formSede) {
+        formSede.style.display = 'none';
+        // Limpiar campos del formulario
+        const inputs = formSede.querySelectorAll('input, select');
+        inputs.forEach(input => input.value = '');
+    }
 }
 
 // Función para seleccionar tipo de formulario
-function selectFormType(type) {
+function selectFormType(type, element) {
+    console.log('Seleccionando tipo:', type);
     selectedFormType = type;
 
     // Remover clase active de todas las opciones
@@ -628,7 +678,9 @@ function selectFormType(type) {
     });
 
     // Agregar clase active a la opción seleccionada
-    event.currentTarget.classList.add('active');
+    if (element) {
+        element.classList.add('active');
+    }
 
     // Obtener elementos del DOM
     const formOrganizacion = document.getElementById('formOrganizacion');
@@ -641,13 +693,17 @@ function selectFormType(type) {
     // Mostrar el formulario correspondiente
     if (type === 'organizacion' && formOrganizacion) {
         formOrganizacion.style.display = 'block';
+        console.log('Mostrando formulario de organización');
     } else if (type === 'sede' && formSede) {
         formSede.style.display = 'block';
+        console.log('Mostrando formulario de sede');
     }
 }
 
 // Función para enviar formulario
 function submitForm() {
+    console.log('Enviando formulario, tipo seleccionado:', selectedFormType);
+    
     if (!selectedFormType) {
         alert('Por favor selecciona un tipo de formulario');
         return;
@@ -657,66 +713,84 @@ function submitForm() {
         tipo: selectedFormType
     };
 
+    // Validar campos requeridos según el tipo
+    let isValid = true;
+
     if (selectedFormType === 'organizacion') {
         const orgNombre = document.getElementById('orgNombre');
-        const orgIndustria = document.getElementById('orgIndustria');
-        const orgEstado = document.getElementById('orgEstado');
-        const orgContacto = document.getElementById('orgContacto');
-        const orgTamano = document.getElementById('orgTamano');
-        const orgEmpleados = document.getElementById('orgEmpleados');
-        const orgRegion = document.getElementById('orgRegion');
-        const orgDireccion = document.getElementById('orgDireccion');
-        const orgCiudad = document.getElementById('orgCiudad');
-        const orgCodigoPostal = document.getElementById('orgCodigoPostal');
-        const orgPais = document.getElementById('orgPais');
+        
+        if (!orgNombre || !orgNombre.value.trim()) {
+            alert('El nombre de la organización es requerido');
+            isValid = false;
+        }
+        
+        if (isValid) {
+            const orgIndustria = document.getElementById('orgIndustria');
+            const orgEstado = document.getElementById('orgEstado');
+            const orgContacto = document.getElementById('orgContacto');
+            const orgTamano = document.getElementById('orgTamano');
+            const orgEmpleados = document.getElementById('orgEmpleados');
+            const orgRegion = document.getElementById('orgRegion');
+            const orgDireccion = document.getElementById('orgDireccion');
+            const orgCiudad = document.getElementById('orgCiudad');
+            const orgCodigoPostal = document.getElementById('orgCodigoPostal');
+            const orgPais = document.getElementById('orgPais');
 
-        formData = {
-            ...formData,
-            nombre: orgNombre ? orgNombre.value : '',
-            industria: orgIndustria ? orgIndustria.value : '',
-            estado: orgEstado ? orgEstado.value : '',
-            contacto: orgContacto ? orgContacto.value : '',
-            tamano: orgTamano ? orgTamano.value : '',
-            empleados: orgEmpleados ? orgEmpleados.value : '',
-            region: orgRegion ? orgRegion.value : '',
-            direccion: orgDireccion ? orgDireccion.value : '',
-            ciudad: orgCiudad ? orgCiudad.value : '',
-            codigo_postal: orgCodigoPostal ? orgCodigoPostal.value : '',
-            pais: orgPais ? orgPais.value : ''
-        };
+            formData = {
+                ...formData,
+                nombre: orgNombre.value,
+                industria: orgIndustria ? orgIndustria.value : '',
+                estado: orgEstado ? orgEstado.value : '',
+                contacto: orgContacto ? orgContacto.value : '',
+                tamano: orgTamano ? orgTamano.value : '',
+                empleados: orgEmpleados ? orgEmpleados.value : '',
+                region: orgRegion ? orgRegion.value : '',
+                direccion: orgDireccion ? orgDireccion.value : '',
+                ciudad: orgCiudad ? orgCiudad.value : '',
+                codigo_postal: orgCodigoPostal ? orgCodigoPostal.value : '',
+                pais: orgPais ? orgPais.value : ''
+            };
+        }
     } else if (selectedFormType === 'sede') {
         const sedeOrganizacion = document.getElementById('sedeOrganizacion');
-        const sedeRegion = document.getElementById('sedeRegion');
-        const sedeDireccion = document.getElementById('sedeDireccion');
-        const sedeCiudad = document.getElementById('sedeCiudad');
-        const sedeCodigoPostal = document.getElementById('sedeCodigoPostal');
-        const sedePais = document.getElementById('sedePais');
+        
+        if (!sedeOrganizacion || !sedeOrganizacion.value) {
+            alert('Debe seleccionar una organización');
+            isValid = false;
+        }
+        
+        if (isValid) {
+            const sedeRegion = document.getElementById('sedeRegion');
+            const sedeDireccion = document.getElementById('sedeDireccion');
+            const sedeCiudad = document.getElementById('sedeCiudad');
+            const sedeCodigoPostal = document.getElementById('sedeCodigoPostal');
+            const sedePais = document.getElementById('sedePais');
 
-        formData = {
-            ...formData,
-            organizacion: sedeOrganizacion ? sedeOrganizacion.value : '',
-            region: sedeRegion ? sedeRegion.value : '',
-            direccion: sedeDireccion ? sedeDireccion.value : '',
-            ciudad: sedeCiudad ? sedeCiudad.value : '',
-            codigo_postal: sedeCodigoPostal ? sedeCodigoPostal.value : '',
-            pais: sedePais ? sedePais.value : ''
-        };
+            formData = {
+                ...formData,
+                organizacion: sedeOrganizacion.value,
+                region: sedeRegion ? sedeRegion.value : '',
+                direccion: sedeDireccion ? sedeDireccion.value : '',
+                ciudad: sedeCiudad ? sedeCiudad.value : '',
+                codigo_postal: sedeCodigoPostal ? sedeCodigoPostal.value : '',
+                pais: sedePais ? sedePais.value : ''
+            };
+        }
     }
+
+    if (!isValid) return;
 
     console.log('Datos del formulario:', formData);
 
     // Simular envío exitoso
     alert('Datos guardados exitosamente');
     
-    // Cerrar modal
+    // Cerrar modal usando Bootstrap
     const modal = document.getElementById('addAliadoModal');
-    if (modal) {
+    if (modal && typeof bootstrap !== 'undefined') {
         const bootstrapModal = bootstrap.Modal.getInstance(modal) || new bootstrap.Modal(modal);
         bootstrapModal.hide();
     }
-    
-    // Resetear formulario
-    resetModalForm();
 }
 
 // Función para inicializar filtros
@@ -729,6 +803,7 @@ function initializeFilters() {
         return;
     }
     
+    console.log('Inicializando filtros');
     const tableRows = table.querySelectorAll('tbody tr');
     
     // Poblar dinámicamente las opciones del filtro de nombre
