@@ -473,8 +473,10 @@
             <h3 class="section-title">
                 <i data-feather="building" class="section-icon"></i>
                 Experiencia Profesional
+                <i data-feather="plus" class="edit-icon" onclick="openAddExperienceModal()" title="Agregar experiencia" style="margin-left: 8px;"></i>
             </h3>
             
+            <div id="experiencias-container">
             <div class="experience-item">
                 <div class="item-title">Gerente de Transformación Digital</div>
                 <div class="item-subtitle">Accenture México</div>
@@ -493,6 +495,7 @@
                     Especializada en optimización de procesos de negocio y implementación de tecnologías emergentes. Participé en más de 15 proyectos de automatización robótica de procesos (RPA).
                 </div>
                 <div class="item-date"><strong>Ubicación:</strong> Guadalajara, México</div>
+            </div>
             </div>
         </div>
 
@@ -734,6 +737,62 @@
         </div>
     </div>
 </div>
+
+<!-- Modal para Agregar Experiencia Profesional -->
+<div class="modal fade" id="addExperienceModal" tabindex="-1" aria-labelledby="addExperienceModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addExperienceModalLabel">Agregar Experiencia Profesional</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addExperienceForm">
+                    <div class="mb-3">
+                        <label for="expPuesto" class="form-label">Puesto</label>
+                        <input type="text" class="form-control" id="expPuesto" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="expEmpresa" class="form-label">Empresa</label>
+                        <input type="text" class="form-control" id="expEmpresa" required>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="expFechaInicio" class="form-label">Fecha de Inicio</label>
+                                <input type="month" class="form-control" id="expFechaInicio" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="expFechaFin" class="form-label">Fecha de Fin</label>
+                                <input type="month" class="form-control" id="expFechaFin">
+                                <div class="form-check mt-2">
+                                    <input class="form-check-input" type="checkbox" id="expActual">
+                                    <label class="form-check-label" for="expActual">
+                                        Trabajo actual
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="expUbicacion" class="form-label">Ubicación</label>
+                        <input type="text" class="form-control" id="expUbicacion" placeholder="Ciudad, País">
+                    </div>
+                    <div class="mb-3">
+                        <label for="expDescripcion" class="form-label">Descripción</label>
+                        <textarea class="form-control" id="expDescripcion" rows="4" placeholder="Describe tus responsabilidades y logros en este puesto..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="addExperience()">Agregar Experiencia</button>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block scripts %}
@@ -899,5 +958,81 @@ function saveEdit(sectionId) {
         alert('Error al enviar los datos');
     });
 }
+
+// Funciones para manejar experiencias profesionales
+function openAddExperienceModal() {
+    const modal = new bootstrap.Modal(document.getElementById('addExperienceModal'));
+    modal.show();
+}
+
+function addExperience() {
+    const puesto = document.getElementById('expPuesto').value;
+    const empresa = document.getElementById('expEmpresa').value;
+    const fechaInicio = document.getElementById('expFechaInicio').value;
+    const fechaFin = document.getElementById('expFechaFin').value;
+    const actual = document.getElementById('expActual').checked;
+    const ubicacion = document.getElementById('expUbicacion').value;
+    const descripcion = document.getElementById('expDescripcion').value;
+    
+    if (!puesto || !empresa || !fechaInicio || (!fechaFin && !actual)) {
+        alert('Por favor completa todos los campos obligatorios');
+        return;
+    }
+    
+    // Formatear fechas
+    const fechaInicioFormatted = formatDate(fechaInicio);
+    const fechaFinFormatted = actual ? 'Presente' : formatDate(fechaFin);
+    const periodoText = fechaInicioFormatted + ' - ' + fechaFinFormatted;
+    
+    // Crear nuevo elemento de experiencia
+    const experienciasContainer = document.getElementById('experiencias-container');
+    const newExperience = document.createElement('div');
+    newExperience.className = 'experience-item';
+    newExperience.innerHTML = `
+        <div class="item-title">${puesto}</div>
+        <div class="item-subtitle">${empresa}</div>
+        <div class="item-date">${periodoText}</div>
+        <div class="item-description">
+            ${descripcion}
+        </div>
+        ${ubicacion ? `<div class="item-date"><strong>Ubicación:</strong> ${ubicacion}</div>` : ''}
+    `;
+    
+    // Agregar al inicio del contenedor
+    experienciasContainer.insertBefore(newExperience, experienciasContainer.firstChild);
+    
+    // Cerrar modal y limpiar formulario
+    const modal = bootstrap.Modal.getInstance(document.getElementById('addExperienceModal'));
+    modal.hide();
+    document.getElementById('addExperienceForm').reset();
+    
+    // Mostrar mensaje de éxito
+    alert('Experiencia agregada correctamente');
+}
+
+function formatDate(dateString) {
+    if (!dateString) return '';
+    const [year, month] = dateString.split('-');
+    const months = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+                   'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+    return months[parseInt(month) - 1] + ' ' + year;
+}
+
+// Manejar checkbox de trabajo actual
+document.addEventListener('DOMContentLoaded', function() {
+    const actualCheckbox = document.getElementById('expActual');
+    const fechaFinInput = document.getElementById('expFechaFin');
+    
+    if (actualCheckbox && fechaFinInput) {
+        actualCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+                fechaFinInput.disabled = true;
+                fechaFinInput.value = '';
+            } else {
+                fechaFinInput.disabled = false;
+            }
+        });
+    }
+});
 </script>
 {% endblock %}
