@@ -100,7 +100,7 @@
 .modal-dialog {
     position: relative;
     width: auto;
-    max-width: 600px;
+    max-width: 900px;
     margin: 0;
     transform: none;
 }
@@ -314,6 +314,71 @@
 .modal.show .modal-content {
     animation: modalFadeIn 0.3s ease-out;
 }
+
+/* Action selector styles */
+.action-selector {
+    margin-bottom: 2rem;
+}
+
+.action-option {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: #f9fafb;
+    margin-bottom: 12px;
+}
+
+.action-option:hover {
+    border-color: #667eea;
+    background: #f0f4ff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+}
+
+.action-option.selected {
+    border-color: #667eea;
+    background: linear-gradient(135deg, #f0f4ff 0%, #e0e7ff 100%);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+}
+
+.action-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    background: white;
+    border-radius: 12px;
+    margin-right: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.action-icon i {
+    width: 24px;
+    height: 24px;
+}
+
+.action-content h6 {
+    margin: 0 0 4px 0;
+    font-weight: 600;
+    color: #1f2937;
+    font-size: 16px;
+}
+
+.action-content p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+.form-container {
+    max-height: 60vh;
+    overflow-y: auto;
+}
 </style>
 {% endblock %}
 
@@ -448,152 +513,251 @@
 
 <!-- Modal Añadir Aliado -->
 <div class="modal fade" id="addAliadoModal" tabindex="-1" aria-labelledby="addAliadoModalLabel" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="addAliadoModalLabel">Añadir Aliado</h5>
+                <h5 class="modal-title" id="addAliadoModalLabel">Gestión de Aliados</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="addAliadoForm">
-                    <!-- Información Básica -->
-                    <div class="form-section">
-                        <h6 class="section-title">Información Básica</h6>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="aliadoNombre" class="form-label">Nombre de la Empresa</label>
-                                    <input type="text" class="form-control" id="aliadoNombre" placeholder="Ej: TechCorp Solutions" required>
+                <!-- Selector de tipo de acción -->
+                <div class="action-selector mb-4">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="action-option" onclick="selectAction('crear-organizacion')">
+                                <div class="action-icon">
+                                    <i data-feather="building" style="color: #22d3ee;"></i>
                                 </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="aliadoCorreo" class="form-label">Correo Electrónico</label>
-                                    <input type="email" class="form-control" id="aliadoCorreo" placeholder="contacto@empresa.com" required>
+                                <div class="action-content">
+                                    <h6 class="action-title">Crear Organización</h6>
+                                    <p class="action-description">Crear una nueva organización aliada</p>
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="aliadoContactoPrincipal" class="form-label">Contacto Principal</label>
-                                    <input type="text" class="form-control" id="aliadoContactoPrincipal" placeholder="Nombre del representante" required>
+                        <div class="col-md-6">
+                            <div class="action-option" onclick="selectAction('agregar-sede')">
+                                <div class="action-icon">
+                                    <i data-feather="map-pin" style="color: #4b5563;"></i>
                                 </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="aliadoIndustria" class="form-label">Industria</label>
-                                    <select class="form-select" id="aliadoIndustria" required>
-                                        <option value="">Seleccionar industria...</option>
-                                        {% for i in industrias %}
-                                        <option value="{{ i[0] }}">{{ i[1] }}</option>
-                                        {% endfor %}
-                                    </select>
+                                <div class="action-content">
+                                    <h6 class="action-title">Agregar Sede</h6>
+                                    <p class="action-description">Añadir una nueva sede a organización existente</p>
                                 </div>
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <!-- Información de la Empresa -->
-                    <div class="form-section">
-                        <h6 class="section-title">Información de la Empresa</h6>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="aliadoTamano" class="form-label">Tamaño de la Empresa</label>
-                                    <select class="form-select" id="aliadoTamano" required>
-                                        <option value="">Seleccionar tamaño...</option>
-                                        <option value="Pequeña (1-50)">Pequeña (1-50 empleados)</option>
-                                        <option value="Mediana (51-250)">Mediana (51-250 empleados)</option>
-                                        <option value="Grande (251-1000)">Grande (251-1000 empleados)</option>
-                                        <option value="Empresa (1000+)">Empresa (1000+ empleados)</option>
-                                    </select>
+                <!-- Formulario Crear Organización -->
+                <div id="form-crear-organizacion" class="form-container" style="display: none;">
+                    <form id="createOrganizacionForm">
+                        <!-- Datos Organización -->
+                        <div class="form-section">
+                            <h6 class="section-title">Datos Organización</h6>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="orgNombre" class="form-label">Nombre</label>
+                                        <input type="text" class="form-control" id="orgNombre" placeholder="Ej: TechCorp Solutions" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="orgIndustria" class="form-label">Industria</label>
+                                        <select class="form-select" id="orgIndustria" required>
+                                            <option value="">Seleccionar industria...</option>
+                                            <option value="Tecnología">Tecnología</option>
+                                            <option value="Finanzas">Finanzas</option>
+                                            <option value="Manufactura">Manufactura</option>
+                                            <option value="Servicios">Servicios</option>
+                                            <option value="Salud">Salud</option>
+                                            <option value="Educación">Educación</option>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="aliadoEmpleados" class="form-label">Número Exacto de Empleados</label>
-                                    <input type="number" class="form-control" id="aliadoEmpleados" placeholder="150" min="1" required>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="orgEstado" class="form-label">Estado</label>
+                                        <select class="form-select" id="orgEstado" required>
+                                            <option value="">Seleccionar estado...</option>
+                                            <option value="activo">Activo</option>
+                                            <option value="inactivo">Inactivo</option>
+                                            <option value="pendiente">Pendiente</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="orgContactoPrincipal" class="form-label">Contacto Principal <small class="text-muted">(número de contacto principal)</small></label>
+                                        <input type="tel" class="form-control" id="orgContactoPrincipal" placeholder="+52 55 1234 5678" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="orgTamano" class="form-label">Tamaño</label>
+                                        <select class="form-select" id="orgTamano" required>
+                                            <option value="">Seleccionar tamaño...</option>
+                                            <option value="Pequeña">Pequeña</option>
+                                            <option value="Mediana">Mediana</option>
+                                            <option value="Grande">Grande</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="orgEmpleados" class="form-label">Empleados <small class="text-muted">(cantidad de empleados)</small></label>
+                                        <input type="number" class="form-control" id="orgEmpleados" placeholder="150" min="1" required>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="mb-3">
-                                    <label for="aliadoRegion" class="form-label">Región de Operación</label>
-                                    <select class="form-select" id="aliadoRegion" required>
-                                        <option value="">Seleccionar región...</option>
-                                        <option value="Norte">Norte</option>
-                                        <option value="Sur">Sur</option>
-                                        <option value="Este">Este</option>
-                                        <option value="Oeste">Oeste</option>
-                                        <option value="Centro">Centro</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
 
-                    <!-- Ubicación -->
-                    <div class="form-section">
-                        <h6 class="section-title">Ubicación</h6>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="mb-3">
-                                    <label for="aliadoDireccion" class="form-label">Dirección</label>
-                                    <input type="text" class="form-control" id="aliadoDireccion" placeholder="Av. Principal 123, Col. Centro" required>
+                        <!-- Datos Sede -->
+                        <div class="form-section">
+                            <h6 class="section-title">Datos Sede</h6>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="orgRegion" class="form-label">Región</label>
+                                        <select class="form-select" id="orgRegion" required>
+                                            <option value="">Seleccionar región...</option>
+                                            <option value="Norte">Norte</option>
+                                            <option value="Sur">Sur</option>
+                                            <option value="Este">Este</option>
+                                            <option value="Oeste">Oeste</option>
+                                            <option value="Centro">Centro</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="orgDireccion" class="form-label">Dirección</label>
+                                        <input type="text" class="form-control" id="orgDireccion" placeholder="Av. Principal 123, Col. Centro" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label for="orgCiudad" class="form-label">Ciudad</label>
+                                        <input type="text" class="form-control" id="orgCiudad" placeholder="Ciudad de México" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label for="orgCodigoPostal" class="form-label">Código Postal</label>
+                                        <input type="text" class="form-control" id="orgCodigoPostal" placeholder="12345" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label for="orgPais" class="form-label">País</label>
+                                        <select class="form-select" id="orgPais" required>
+                                            <option value="">Seleccionar país...</option>
+                                            <option value="México">México</option>
+                                            <option value="Estados Unidos">Estados Unidos</option>
+                                            <option value="Colombia">Colombia</option>
+                                            <option value="Perú">Perú</option>
+                                            <option value="Argentina">Argentina</option>
+                                            <option value="Chile">Chile</option>
+                                            <option value="Brasil">Brasil</option>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label for="aliadoCiudad" class="form-label">Ciudad</label>
-                                    <input type="text" class="form-control" id="aliadoCiudad" placeholder="Ciudad de México" required>
+                    </form>
+                </div>
+
+                <!-- Formulario Agregar Sede -->
+                <div id="form-agregar-sede" class="form-container" style="display: none;">
+                    <form id="addSedeForm">
+                        <div class="form-section">
+                            <h6 class="section-title">Datos de la Sede</h6>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="sedeOrganizacion" class="form-label">Organización</label>
+                                        <select class="form-select" id="sedeOrganizacion" required>
+                                            <option value="">Seleccionar organización...</option>
+                                            <option value="1">Aliado Tech</option>
+                                            <option value="2">Financiera Global</option>
+                                            <option value="3">Industrias Este</option>
+                                            <option value="4">Consultores Sur</option>
+                                            <option value="5">Servicios Oeste</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="sedeRegion" class="form-label">Región</label>
+                                        <select class="form-select" id="sedeRegion" required>
+                                            <option value="">Seleccionar región...</option>
+                                            <option value="Norte">Norte</option>
+                                            <option value="Sur">Sur</option>
+                                            <option value="Este">Este</option>
+                                            <option value="Oeste">Oeste</option>
+                                            <option value="Centro">Centro</option>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label for="aliadoEstado" class="form-label">Estado/Provincia</label>
-                                    <input type="text" class="form-control" id="aliadoEstado" placeholder="CDMX" required>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="mb-3">
+                                        <label for="sedeDireccion" class="form-label">Dirección</label>
+                                        <input type="text" class="form-control" id="sedeDireccion" placeholder="Av. Principal 123, Col. Centro" required>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label for="aliadoCodigoPostal" class="form-label">Código Postal</label>
-                                    <input type="text" class="form-control" id="aliadoCodigoPostal" placeholder="12345" required>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label for="sedeCiudad" class="form-label">Ciudad</label>
+                                        <input type="text" class="form-control" id="sedeCiudad" placeholder="Ciudad de México" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label for="sedeCodigoPostal" class="form-label">Código Postal</label>
+                                        <input type="text" class="form-control" id="sedeCodigoPostal" placeholder="12345" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label for="sedePais" class="form-label">País</label>
+                                        <select class="form-select" id="sedePais" required>
+                                            <option value="">Seleccionar país...</option>
+                                            <option value="México">México</option>
+                                            <option value="Estados Unidos">Estados Unidos</option>
+                                            <option value="Colombia">Colombia</option>
+                                            <option value="Perú">Perú</option>
+                                            <option value="Argentina">Argentina</option>
+                                            <option value="Chile">Chile</option>
+                                            <option value="Brasil">Brasil</option>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="mb-3">
-                                    <label for="aliadoPais" class="form-label">País</label>
-                                    <select class="form-select" id="aliadoPais" required>
-                                        <option value="">Seleccionar país...</option>
-                                        <option value="México">México</option>
-                                        <option value="Estados Unidos">Estados Unidos</option>
-                                        <option value="Colombia">Colombia</option>
-                                        <option value="Perú">Perú</option>
-                                        <option value="Argentina">Argentina</option>
-                                        <option value="Chile">Chile</option>
-                                        <option value="Brasil">Brasil</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary" onclick="submitAliadoForm()">Guardar Aliado</button>
+                <button type="button" class="btn btn-primary" id="submitButton" onclick="submitForm()" style="display: none;">Guardar</button>
             </div>
         </div>
     </div>
 </div>
 
 <script>
+let currentAction = null;
+
 // Inicializar el modal cuando se carga la página
 document.addEventListener('DOMContentLoaded', function() {
     // Manejar click del botón de añadir aliado
@@ -635,6 +799,9 @@ function showModal() {
         backdrop.className = 'modal-backdrop fade show';
         document.body.appendChild(backdrop);
     }
+    
+    // Resetear estado del modal
+    resetModal();
 }
 
 function hideModal() {
@@ -649,29 +816,83 @@ function hideModal() {
         backdrop.remove();
     }
     
-    // Limpiar formulario
-    document.getElementById('addAliadoForm').reset();
+    // Resetear modal
+    resetModal();
 }
 
-function submitAliadoForm() {
+function resetModal() {
+    // Ocultar todos los formularios
+    document.getElementById('form-crear-organizacion').style.display = 'none';
+    document.getElementById('form-agregar-sede').style.display = 'none';
+    document.getElementById('submitButton').style.display = 'none';
+    
+    // Remover selección de opciones
+    document.querySelectorAll('.action-option').forEach(option => {
+        option.classList.remove('selected');
+    });
+    
+    // Limpiar formularios
+    if (document.getElementById('createOrganizacionForm')) {
+        document.getElementById('createOrganizacionForm').reset();
+    }
+    if (document.getElementById('addSedeForm')) {
+        document.getElementById('addSedeForm').reset();
+    }
+    
+    currentAction = null;
+}
+
+function selectAction(action) {
+    // Remover selección anterior
+    document.querySelectorAll('.action-option').forEach(option => {
+        option.classList.remove('selected');
+    });
+    
+    // Ocultar todos los formularios
+    document.getElementById('form-crear-organizacion').style.display = 'none';
+    document.getElementById('form-agregar-sede').style.display = 'none';
+    
+    // Seleccionar nueva opción
+    event.currentTarget.classList.add('selected');
+    currentAction = action;
+    
+    // Mostrar formulario correspondiente
+    if (action === 'crear-organizacion') {
+        document.getElementById('form-crear-organizacion').style.display = 'block';
+    } else if (action === 'agregar-sede') {
+        document.getElementById('form-agregar-sede').style.display = 'block';
+    }
+    
+    // Mostrar botón de envío
+    document.getElementById('submitButton').style.display = 'inline-block';
+}
+
+function submitForm() {
+    if (currentAction === 'crear-organizacion') {
+        submitOrganizacionForm();
+    } else if (currentAction === 'agregar-sede') {
+        submitSedeForm();
+    }
+}
+
+function submitOrganizacionForm() {
     const formData = {
-        tipo: 'aliado',
-        nombre: document.getElementById('aliadoNombre').value,
-        correo: document.getElementById('aliadoCorreo').value,
-        region: document.getElementById('aliadoRegion').value,
-        industria: document.getElementById('aliadoIndustria').value,
-        contacto_principal: document.getElementById('aliadoContactoPrincipal').value,
-        tamano: document.getElementById('aliadoTamano').value,
-        empleados: document.getElementById('aliadoEmpleados').value,
-        direccion: document.getElementById('aliadoDireccion').value,
-        ciudad: document.getElementById('aliadoCiudad').value,
-        estado_dir: document.getElementById('aliadoEstado').value,
-        codigo_postal: document.getElementById('aliadoCodigoPostal').value,
-        pais: document.getElementById('aliadoPais').value
+        tipo: 'organizacion',
+        nombre: document.getElementById('orgNombre').value,
+        industria: document.getElementById('orgIndustria').value,
+        estado: document.getElementById('orgEstado').value,
+        contacto_principal: document.getElementById('orgContactoPrincipal').value,
+        tamano: document.getElementById('orgTamano').value,
+        empleados: document.getElementById('orgEmpleados').value,
+        region: document.getElementById('orgRegion').value,
+        direccion: document.getElementById('orgDireccion').value,
+        ciudad: document.getElementById('orgCiudad').value,
+        codigo_postal: document.getElementById('orgCodigoPostal').value,
+        pais: document.getElementById('orgPais').value
     };
 
     // Validación básica
-    const requiredFields = ['nombre', 'correo', 'region', 'industria', 'contacto_principal', 'tamano', 'empleados', 'direccion', 'ciudad', 'estado_dir', 'codigo_postal', 'pais'];
+    const requiredFields = ['nombre', 'industria', 'estado', 'contacto_principal', 'tamano', 'empleados', 'region', 'direccion', 'ciudad', 'codigo_postal', 'pais'];
     const missingFields = requiredFields.filter(field => !formData[field]);
     
     if (missingFields.length > 0) {
@@ -690,12 +911,55 @@ function submitAliadoForm() {
     .then(response => response.json())
     .then(data => {
         if (data.status === 'success') {
-            alert('Aliado creado exitosamente');
+            alert('Organización creada exitosamente');
             hideModal();
-            // Recargar página para mostrar el nuevo aliado
             window.location.reload();
         } else {
-            alert('Error al crear aliado: ' + (data.message || 'Error desconocido'));
+            alert('Error al crear organización: ' + (data.message || 'Error desconocido'));
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error al conectar con el servidor');
+    });
+}
+
+function submitSedeForm() {
+    const formData = {
+        tipo: 'sede',
+        organizacion: document.getElementById('sedeOrganizacion').value,
+        region: document.getElementById('sedeRegion').value,
+        direccion: document.getElementById('sedeDireccion').value,
+        ciudad: document.getElementById('sedeCiudad').value,
+        codigo_postal: document.getElementById('sedeCodigoPostal').value,
+        pais: document.getElementById('sedePais').value
+    };
+
+    // Validación básica
+    const requiredFields = ['organizacion', 'region', 'direccion', 'ciudad', 'codigo_postal', 'pais'];
+    const missingFields = requiredFields.filter(field => !formData[field]);
+    
+    if (missingFields.length > 0) {
+        alert('Por favor complete todos los campos requeridos: ' + missingFields.join(', '));
+        return;
+    }
+
+    // Enviar datos al servidor
+    fetch('/api/usuarios', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            alert('Sede agregada exitosamente');
+            hideModal();
+            window.location.reload();
+        } else {
+            alert('Error al agregar sede: ' + (data.message || 'Error desconocido'));
         }
     })
     .catch(error => {

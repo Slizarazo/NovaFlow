@@ -61,6 +61,7 @@ class Config:
             {'name': 'Dashboard', 'icon': 'home', 'url': '/dashboard'},
             {'name': 'Proyectos', 'icon': 'briefcase', 'url': '/proyectos',
              'submenu': [
+                 {'name': 'Gestión de proyectos', 'url': '/proyectos/gestion'},
                  {'name': 'Calculadora', 'url': '/proyectos/calculadora'},
                  {'name': 'Proyectos', 'url': '/proyectos/lista'},
                  {'name': 'Planificación', 'url': '/proyectos/planificacion'},
