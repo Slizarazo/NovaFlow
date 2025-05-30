@@ -1,0 +1,61 @@
+filters.js:76 Uncaught TypeError: Cannot read properties of null (reading 'addEventListener')
+    at HTMLDocument.<anonymous> (filters.js:76:44)
+(anonymous) @ filters.js:76Understand this error
+clientes:595 Uncaught TypeError: Cannot read properties of null (reading 'querySelectorAll')
+    at HTMLDocument.<anonymous> (clientes:595:36)
+(anonymous) @ clientes:595Understand this error
+clientes:690 Bootstrap está disponible
+modal.js:158 Uncaught TypeError: Cannot read properties of undefined (reading 'backdrop')
+    at Ni._initializeBackDrop (modal.js:158:39)
+    at new Ni (modal.js:69:27)
+    at Ni.getOrCreateInstance (base-component.js:65:41)
+    at HTMLButtonElement.<anonymous> (modal.js:363:22)
+    at HTMLDocument.n (event-handler.js:118:19)
+_initializeBackDrop @ modal.js:158
+Ni @ modal.js:69
+getOrCreateInstance @ base-component.js:65
+(anonymous) @ modal.js:363
+n @ event-handler.js:118Understand this error
+clientes:572 Botón de nuevo cliente clickeado
+modal.js:158 Uncaught TypeError: Cannot read properties of undefined (reading 'backdrop')
+    at Ni._initializeBackDrop (modal.js:158:39)
+    at new Ni (modal.js:69:27)
+    at HTMLButtonElement.<anonymous> (clientes:576:43)
+_initializeBackDrop @ modal.js:158
+Ni @ modal.js:69
+(anonymous) @ clientes:576Understand this error
+modal.js:158 Uncaught TypeError: Cannot read properties of undefined (reading 'backdrop')
+    at Ni._initializeBackDrop (modal.js:158:39)
+    at new Ni (modal.js:69:27)
+    at Ni.getOrCreateInstance (base-component.js:65:41)
+    at HTMLButtonElement.<anonymous> (modal.js:363:22)
+    at HTMLDocument.n (event-handler.js:118:19)
+_initializeBackDrop @ modal.js:158
+Ni @ modal.js:69
+getOrCreateInstance @ base-component.js:65
+(anonymous) @ modal.js:363
+n @ event-handler.js:118Understand this error
+clientes:572 Botón de nuevo cliente clickeado
+modal.js:158 Uncaught TypeError: Cannot read properties of undefined (reading 'backdrop')
+    at Ni._initializeBackDrop (modal.js:158:39)
+    at new Ni (modal.js:69:27)
+    at HTMLButtonElement.<anonymous> (clientes:576:43)
+_initializeBackDrop @ modal.js:158
+Ni @ modal.js:69
+(anonymous) @ clientes:576Understand this error
+modal.js:158 Uncaught TypeError: Cannot read properties of undefined (reading 'backdrop')
+    at Ni._initializeBackDrop (modal.js:158:39)
+    at new Ni (modal.js:69:27)
+    at Ni.getOrCreateInstance (base-component.js:65:41)
+    at HTMLButtonElement.<anonymous> (modal.js:363:22)
+    at HTMLDocument.n (event-handler.js:118:19)
+_initializeBackDrop @ modal.js:158
+Ni @ modal.js:69
+getOrCreateInstance @ base-component.js:65
+(anonymous) @ modal.js:363
+n @ event-handler.js:118Understand this error
+clientes:572 Botón de nuevo cliente clickeado
+modal.js:158 Uncaught TypeError: Cannot read properties of undefined (reading 'backdrop')
+    at Ni._initializeBackDrop (modal.js:158:39)
+    at new Ni (modal.js:69:27)
+    at HTMLButtonElement.<anonymous> (clientes:576:43)
