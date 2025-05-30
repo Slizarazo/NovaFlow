@@ -1,4 +1,3 @@
-
 {% extends "layout.html" %}
 
 {% block content %}
@@ -811,7 +810,8 @@
     background: none;
     border: none;
     color: white;
-    opacity: 0.8;
+    ```text
+opacity: 0.8;
     font-size: 1.5rem;
     cursor: pointer;
 }
@@ -882,36 +882,36 @@
 // Sistema completo de modales y filtros para usuarios
 (function() {
     'use strict';
-    
+
     let filtersInitialized = false;
     let selectedDataOperation = null;
-    
+
     // Inicialización cuando el DOM esté listo
     document.addEventListener('DOMContentLoaded', function() {
         console.log('🚀 Inicializando sistema de usuarios');
-        
+
         // Prevenir múltiples inicializaciones
         if (filtersInitialized) {
             console.log('⚠️ Ya inicializado, saltando...');
             return;
         }
-        
+
         // Inicializar iconos de Feather
         if (typeof feather !== 'undefined') {
             feather.replace();
         }
-        
+
         // Esperar un poco para asegurar que el DOM esté completamente cargado
         setTimeout(function() {
             initializeUserFilters();
             filtersInitialized = true;
         }, 100);
     });
-    
+
     // Funciones de filtros
     function initializeUserFilters() {
         console.log('🔧 Inicializando filtros de usuarios...');
-        
+
         try {
             // Verificar que la tabla existe
             const table = document.getElementById('usersTable');
@@ -919,68 +919,68 @@
                 console.error('❌ Tabla de usuarios no encontrada');
                 return;
             }
-            
+
             // Poblar filtros desde datos de la tabla
             populateFiltersFromTable();
-            
+
             // Configurar event listeners
             setupFilterListeners();
-            
+
             console.log('✅ Sistema de filtros inicializado correctamente');
-            
+
         } catch (error) {
             console.error('❌ Error al inicializar filtros:', error);
         }
     }
-    
+
     function populateFiltersFromTable() {
         console.log('📊 Poblando filtros desde datos de la tabla...');
-        
+
         const table = document.getElementById('usersTable');
         const rows = table.querySelectorAll('tbody tr');
-        
+
         // Sets para almacenar valores únicos
         const organizaciones = new Set();
         const roles = new Set();
         const estados = new Set();
-        
+
         // Extraer valores únicos de cada fila
         rows.forEach(function(row) {
             const org = row.getAttribute('data-organizacion');
             const rol = row.getAttribute('data-rol');
             const estado = row.getAttribute('data-estado');
-            
+
             if (org && org.trim()) organizaciones.add(org.trim());
             if (rol && rol.trim()) roles.add(rol.trim());
             if (estado && estado.trim()) estados.add(estado.trim());
         });
-        
+
         // Poblar select de organizaciones
         populateSelectOptions('filterOrganizacion', organizaciones, 'organizaciones');
-        
+
         // Poblar select de roles
         populateSelectOptions('filterRol', roles, 'roles');
-        
+
         // Poblar select de estados
         populateSelectOptions('filterEstado', estados, 'estados');
-        
+
         console.log('📋 Filtros poblados exitosamente');
     }
-    
+
     function populateSelectOptions(selectId, optionsSet, label) {
         const selectElement = document.getElementById(selectId);
         if (!selectElement) {
             console.error(`❌ Select ${selectId} no encontrado`);
             return;
         }
-        
+
         // Limpiar opciones existentes excepto la primera
         const firstOption = selectElement.firstElementChild;
         selectElement.innerHTML = '';
         if (firstOption) {
             selectElement.appendChild(firstOption);
         }
-        
+
         // Agregar nuevas opciones
         Array.from(optionsSet).sort().forEach(function(value) {
             const option = document.createElement('option');
@@ -988,15 +988,15 @@
             option.textContent = value;
             selectElement.appendChild(option);
         });
-        
+
         console.log(`✅ Filtro de ${label} poblado: ${optionsSet.size} opciones`);
     }
-    
+
     function setupFilterListeners() {
         console.log('🔧 Configurando event listeners para filtros...');
-        
+
         const filterIds = ['filterOrganizacion', 'filterRol', 'filterEstado'];
-        
+
         filterIds.forEach(function(filterId) {
             const filterElement = document.getElementById(filterId);
             if (filterElement) {
@@ -1007,60 +1007,60 @@
                     event.stopPropagation();
                     applyUserFilters();
                 });
-                
+
                 console.log('✅ Event listener agregado a', filterId);
             } else {
                 console.error('❌ Elemento de filtro no encontrado:', filterId);
             }
         });
     }
-    
+
     function applyUserFilters() {
         console.log('🎯 Aplicando filtros de usuarios...');
-        
+
         try {
             // Obtener elementos de filtros de forma segura
             const orgFilter = document.getElementById('filterOrganizacion');
             const rolFilter = document.getElementById('filterRol');
             const estadoFilter = document.getElementById('filterEstado');
-            
+
             if (!orgFilter || !rolFilter || !estadoFilter) {
                 console.error('❌ No se encontraron todos los elementos de filtro');
                 return;
             }
-            
+
             // Obtener valores de filtros
             const organizacionValue = orgFilter.value || '';
             const rolValue = rolFilter.value || '';
             const estadoValue = estadoFilter.value || '';
-            
+
             console.log('📊 Filtros aplicados:', {
                 organizacion: organizacionValue,
                 rol: rolValue,
                 estado: estadoValue
             });
-            
+
             // Obtener todas las filas de la tabla
             const table = document.getElementById('usersTable');
             if (!table) {
                 console.error('❌ Tabla no encontrada');
                 return;
             }
-            
+
             const rows = table.querySelectorAll('tbody tr');
             let visibleCount = 0;
-            
+
             rows.forEach(function(row) {
                 try {
                     const rowOrg = row.getAttribute('data-organizacion') || '';
                     const rowRol = row.getAttribute('data-rol') || '';
                     const rowEstado = row.getAttribute('data-estado') || '';
-                    
+
                     // Verificar coincidencias
                     const matchOrg = organizacionValue === '' || rowOrg === organizacionValue;
                     const matchRol = rolValue === '' || rowRol === rolValue;
                     const matchEstado = estadoValue === '' || rowEstado === estadoValue;
-                    
+
                     // Mostrar/ocultar fila
                     if (matchOrg && matchRol && matchEstado) {
                         row.style.display = '';
@@ -1075,25 +1075,25 @@
                     visibleCount++;
                 }
             });
-            
+
             console.log(`✅ Filtrado completado: ${visibleCount}/${rows.length} usuarios visibles`);
-            
+
         } catch (error) {
             console.error('❌ Error al aplicar filtros:', error);
         }
     }
-    
+
     // Funciones de modal globales
     window.showModal = function(modalId) {
         console.log('🔓 Mostrando modal:', modalId);
-        
+
         const modal = document.getElementById(modalId);
-        
+
         if (!modal) {
             console.error('❌ Modal no encontrado:', modalId);
             return;
         }
-        
+
         // Asegurar posicionamiento fijo y encima de todo
         modal.style.position = 'fixed';
         modal.style.top = '0';
@@ -1102,79 +1102,79 @@
         modal.style.height = '100vh';
         modal.style.zIndex = '1055';
         modal.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
-        
+
         // Mostrar modal
         modal.style.display = 'flex';
         modal.style.alignItems = 'center';
         modal.style.justifyContent = 'center';
-        
+
         // Añadir clase show después de un pequeño delay
         setTimeout(() => {
             modal.classList.add('show');
         }, 10);
-        
+
         // Prevenir scroll del body
         document.body.style.overflow = 'hidden';
-        
+
         // Actualizar iconos
         if (typeof feather !== 'undefined') {
             setTimeout(() => feather.replace(), 100);
         }
-        
+
         console.log('✅ Modal mostrado:', modalId);
     };
-    
+
     window.hideModal = function(modalId) {
         console.log('🔒 Ocultando modal:', modalId);
-        
+
         const modal = document.getElementById(modalId);
-        
+
         if (!modal) {
             console.error('❌ Modal no encontrado:', modalId);
             return;
         }
-        
+
         // Ocultar modal con animación
         modal.classList.remove('show');
-        
+
         // Esperar a que termine la animación antes de ocultar completamente
         setTimeout(() => {
             modal.style.display = 'none';
         }, 300);
-        
+
         // Restaurar scroll del body
         document.body.style.overflow = '';
-        
+
         // Resetear formularios si es necesario
         if (modalId === 'dataManagementModal') {
             resetDataModal();
         }
-        
+
         console.log('✅ Modal ocultado:', modalId);
     };
-    
+
     // Funciones específicas para usuarios
     window.showUserModal = function() {
         showModal('addUserModal');
     };
-    
+
     window.showDataModal = function() {
         showModal('dataManagementModal');
     };
-    
+
     window.selectUserType = function(userType) {
         console.log('🔄 Seleccionando tipo de usuario:', userType);
-        
+
         // Actualizar UI
         document.querySelectorAll('.user-type-option').forEach(option => {
             option.classList.remove('active');
         });
-        
+
         event.currentTarget.classList.add('active');
-        
+
         // Mostrar formulario correspondiente
         showUserForm(userType);
-        
+
         // Actualizar iconos feather
         if (typeof feather !== 'undefined') {
             feather.replace();
@@ -1205,16 +1205,16 @@
             console.error('❌ Error al mostrar formulario de usuario:', error);
         }
     };
-    
+
     window.submitUserForm = function() {
         try {
             const selectedOption = document.querySelector('.user-type-option.active');
-            
+
             if (!selectedOption) {
                 alert('Por favor seleccione un tipo de usuario');
                 return;
             }
-            
+
             // Obtener el tipo de usuario desde la función onclick
             const userType = selectedOption.getAttribute('onclick').match(/selectUserType\('(\w+)'\)/)[1];
 
@@ -1244,7 +1244,7 @@
             // Simular envío exitoso
             alert('Usuario creado exitosamente');
             hideModal('addUserModal');
-            
+
             // Aquí puedes agregar la lógica real para enviar al servidor
             /*
             fetch('/api/usuarios', {
@@ -1274,135 +1274,135 @@
             alert('Error al procesar el formulario');
         }
     };
-    
+
     // Funciones para gestión de datos
     window.selectDataOperation = function(operation) {
         console.log('🔄 Seleccionando operación:', operation);
         selectedDataOperation = operation;
-        
+
         // Ocultar selector de opciones
         const selector = document.getElementById('dataOperationSelector');
         if (selector) {
             selector.style.display = 'none';
         }
-        
+
         // Mostrar botón de volver
         const backBtn = document.getElementById('backToOptionsBtn');
         if (backBtn) {
             backBtn.style.display = 'block';
         }
-        
+
         // Mostrar formulario correspondiente
         document.querySelectorAll('.operation-form').forEach(form => {
             form.style.display = 'none';
         });
-        
+
         const formId = operation === 'import' ? 'importOperationForm' : 'exportOperationForm';
         const targetForm = document.getElementById(formId);
         if (targetForm) {
             targetForm.style.display = 'block';
         }
-        
+
         // Mostrar botón ejecutar
         const executeBtn = document.getElementById('executeDataBtn');
         if (executeBtn) {
             executeBtn.style.display = 'inline-block';
             executeBtn.textContent = operation === 'import' ? 'Importar' : 'Exportar';
         }
-        
+
         // Actualizar iconos feather
         if (typeof feather !== 'undefined') {
             feather.replace();
         }
     };
-    
+
     // Nueva función para volver a las opciones
     window.backToDataOptions = function() {
         console.log('🔄 Volviendo a opciones de datos');
-        
+
         // Mostrar selector de opciones
         const selector = document.getElementById('dataOperationSelector');
         if (selector) {
             selector.style.display = 'block';
         }
-        
+
         // Ocultar botón de volver
         const backBtn = document.getElementById('backToOptionsBtn');
         if (backBtn) {
             backBtn.style.display = 'none';
         }
-        
+
         // Ocultar todos los formularios
         document.querySelectorAll('.operation-form').forEach(form => {
             form.style.display = 'none';
         });
-        
+
         // Ocultar botón ejecutar
         const executeBtn = document.getElementById('executeDataBtn');
         if (executeBtn) {
             executeBtn.style.display = 'none';
         }
-        
+
         // Resetear selección
         selectedDataOperation = null;
         document.querySelectorAll('.data-option').forEach(option => {
             option.classList.remove('active');
         });
-        
+
         // Actualizar iconos feather
         if (typeof feather !== 'undefined') {
             feather.replace();
         }
     };
-    
+
     window.executeDataOperation = function() {
         console.log('🚀 Ejecutando operación:', selectedDataOperation);
-        
+
         if (!selectedDataOperation) {
             alert('Por favor selecciona una operación');
             return;
         }
-        
+
         if (selectedDataOperation === 'import') {
             executeUsersImport();
         } else if (selectedDataOperation === 'export') {
             executeUsersExport();
         }
     };
-    
+
     function executeUsersImport() {
         const fileInput = document.getElementById('usersImportFile');
         const overwriteData = document.getElementById('overwriteUsersData');
-        
+
         if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
             alert('Por favor selecciona un archivo para importar');
             return;
         }
-        
+
         const file = fileInput.files[0];
         const allowedExtensions = ['.xlsx', '.xls', '.csv'];
         const fileExtension = '.' + file.name.split('.').pop().toLowerCase();
-        
+
         if (!allowedExtensions.includes(fileExtension)) {
             alert('Formato de archivo no soportado. Use Excel (.xlsx, .xls) o CSV (.csv)');
             return;
         }
-        
+
         console.log('📤 Importando archivo:', file.name);
         console.log('🔄 Sobrescribir datos:', overwriteData ? overwriteData.checked : false);
-        
+
         // Simular importación
         alert(`Archivo "${file.name}" importado exitosamente.\n${Math.floor(Math.random() * 50) + 10} usuarios procesados.`);
-        
+
         // Cerrar modal
         hideModal('dataManagementModal');
     }
-    
+
     function executeUsersExport() {
         const format = document.getElementById('usersExportFormat')?.value || 'xlsx';
         const includeAll = document.getElementById('includeAllUsers')?.checked || false;
         const includeFiltered = document.getElementById('includeFilteredUsers')?.checked || false;
-        
+
         // Verificar columnas seleccionadas
         const selectedColumns = [];
         ['colNombre', 'colUsuario', 'colOrganizacion', 'colRol', 'colEstado'].forEach(colId => {
@@ -1411,62 +1411,62 @@
                 selectedColumns.push(colId.replace('col', ''));
             }
         });
-        
+
         if (selectedColumns.length === 0) {
             alert('Por favor selecciona al menos una columna para exportar');
             return;
         }
-        
+
         console.log('📥 Exportando usuarios:', {
             formato: format,
             incluirTodos: includeAll,
             incluirFiltrados: includeFiltered,
             columnas: selectedColumns
         });
-        
+
         // Simular exportación
         const fileName = `usuarios_export_${new Date().toISOString().split('T')[0]}.${format}`;
         alert(`Exportación completada.\nArchivo: ${fileName}\nColumnas: ${selectedColumns.join(', ')}`);
-        
+
         // Cerrar modal
         hideModal('dataManagementModal');
     }
-    
+
     function resetDataModal() {
         selectedDataOperation = null;
-        
+
         // Mostrar selector de opciones
         const selector = document.getElementById('dataOperationSelector');
         if (selector) {
             selector.style.display = 'block';
         }
-        
+
         // Ocultar botón de volver
         const backBtn = document.getElementById('backToOptionsBtn');
         if (backBtn) {
             backBtn.style.display = 'none';
         }
-        
+
         // Resetear selecciones
         document.querySelectorAll('.data-option').forEach(option => {
             option.classList.remove('active');
         });
-        
+
         // Ocultar formularios
         document.querySelectorAll('.operation-form').forEach(form => {
             form.style.display = 'none';
         });
-        
+
         // Ocultar botón ejecutar
         const executeBtn = document.getElementById('executeDataBtn');
         if (executeBtn) {
             executeBtn.style.display = 'none';
         }
-        
+
         // Resetear formularios
         const importForm = document.getElementById('importOperationForm');
         const exportForm = document.getElementById('exportOperationForm');
-        
+
         if (importForm) {
             const inputs = importForm.querySelectorAll('input');
             inputs.forEach(input => {
@@ -1477,7 +1477,7 @@
                 }
             });
         }
-        
+
         if (exportForm) {
             const inputs = exportForm.querySelectorAll('input, select');
             inputs.forEach(input => {
@@ -1494,18 +1494,82 @@
             });
         }
     }
-    
+
+    function resetUserModal() {
+        // Mostrar selección de tipo de usuario
+        const userTypeSelection = document.getElementById('userTypeSelection');
+        if (userTypeSelection) {
+            userTypeSelection.style.display = 'block';
+        }
+
+        // Ocultar botón de volver
+        const backBtn = document.getElementById('backToUserTypeBtn');
+        if (backBtn) {
+            backBtn.style.display = 'none';
+        }
+
+        // Ocultar todos los formularios
+        document.querySelectorAll('.user-form').forEach(form => {
+            form.style.display = 'none';
+        });
+
+        // Resetear selección
+        document.querySelectorAll('.user-type-option').forEach(option => {
+            option.classList.remove('active');
+        });
+
+        // Limpiar campos de formularios
+        document.querySelectorAll('.user-form input, .user-form select').forEach(field => {
+            field.value = '';
+        });
+    }
+
+    // Nueva función para volver a la selección de tipo de usuario
+    window.backToUserType = function() {
+        console.log('🔄 Volviendo a selección de tipo de usuario');
+
+        // Mostrar selección de tipo de usuario
+        const userTypeSelection = document.getElementById('userTypeSelection');
+        if (userTypeSelection) {
+            userTypeSelection.style.display = 'block';
+        }
+
+        // Ocultar botón de volver
+        const backBtn = document.getElementById('backToUserTypeBtn');
+        if (backBtn) {
+            backBtn.style.display = 'none';
+        }
+
+        // Ocultar todos los formularios
+        document.querySelectorAll('.user-form').forEach(form => {
+            form.style.display = 'none';
+        });
+
+        // Resetear selección
+        document.querySelectorAll('.user-type-option').forEach(option => {
+            option.classList.remove('active');
+        });
+
+        // Resetear formularios
+        resetUserModal();
+
+        // Actualizar iconos feather
+        if (typeof feather !== 'undefined') {
+            feather.replace();
+        }
+    };
+
     // Cerrar modales al hacer click en el backdrop
     document.addEventListener('click', function(e) {
         if (e.target.classList && e.target.classList.contains('modal') && e.target.classList.contains('show')) {
             hideModal(e.target.id);
         }
     });
-    
+
     // Exponer funciones para debugging
     window.applyUserFilters = applyUserFilters;
     window.resetDataModal = resetDataModal;
-    
+
 })();
 </script>
 {% endblock %}
