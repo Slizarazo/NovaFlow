@@ -398,15 +398,23 @@
 
 <!-- Modal Gestión de Datos Unificado -->
 <div class="modal fade" id="dataManagementModal" tabindex="-1" aria-labelledby="dataManagementModalLabel" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="dataManagementModalLabel">Gestión de Datos de Usuarios</h5>
                 <button type="button" class="btn-close" onclick="hideModal('dataManagementModal')" aria-label="Close"></button>
             </div>
             <div class="modal-body">
+                <!-- Botón de volver (oculto inicialmente) -->
+                <div id="backToOptionsBtn" style="display: none; margin-bottom: 20px;">
+                    <button type="button" class="btn btn-link p-0" onclick="backToDataOptions()" style="color: #667eea; text-decoration: none;">
+                        <i data-feather="arrow-left" style="width: 16px; height: 16px; margin-right: 5px;"></i>
+                        Volver a opciones
+                    </button>
+                </div>
+
                 <!-- Selección de operación unificada -->
-                <div class="data-operation-selector">
+                <div class="data-operation-selector" id="dataOperationSelector">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="data-option" onclick="selectDataOperation('import')">
@@ -1272,12 +1280,17 @@
         console.log('🔄 Seleccionando operación:', operation);
         selectedDataOperation = operation;
         
-        // Actualizar UI
-        document.querySelectorAll('.data-option').forEach(option => {
-            option.classList.remove('active');
-        });
+        // Ocultar selector de opciones
+        const selector = document.getElementById('dataOperationSelector');
+        if (selector) {
+            selector.style.display = 'none';
+        }
         
-        event.currentTarget.classList.add('active');
+        // Mostrar botón de volver
+        const backBtn = document.getElementById('backToOptionsBtn');
+        if (backBtn) {
+            backBtn.style.display = 'block';
+        }
         
         // Mostrar formulario correspondiente
         document.querySelectorAll('.operation-form').forEach(form => {
@@ -1296,6 +1309,45 @@
             executeBtn.style.display = 'inline-block';
             executeBtn.textContent = operation === 'import' ? 'Importar' : 'Exportar';
         }
+        
+        // Actualizar iconos feather
+        if (typeof feather !== 'undefined') {
+            feather.replace();
+        }
+    };
+    
+    // Nueva función para volver a las opciones
+    window.backToDataOptions = function() {
+        console.log('🔄 Volviendo a opciones de datos');
+        
+        // Mostrar selector de opciones
+        const selector = document.getElementById('dataOperationSelector');
+        if (selector) {
+            selector.style.display = 'block';
+        }
+        
+        // Ocultar botón de volver
+        const backBtn = document.getElementById('backToOptionsBtn');
+        if (backBtn) {
+            backBtn.style.display = 'none';
+        }
+        
+        // Ocultar todos los formularios
+        document.querySelectorAll('.operation-form').forEach(form => {
+            form.style.display = 'none';
+        });
+        
+        // Ocultar botón ejecutar
+        const executeBtn = document.getElementById('executeDataBtn');
+        if (executeBtn) {
+            executeBtn.style.display = 'none';
+        }
+        
+        // Resetear selección
+        selectedDataOperation = null;
+        document.querySelectorAll('.data-option').forEach(option => {
+            option.classList.remove('active');
+        });
         
         // Actualizar iconos feather
         if (typeof feather !== 'undefined') {
@@ -1383,6 +1435,18 @@
     function resetDataModal() {
         selectedDataOperation = null;
         
+        // Mostrar selector de opciones
+        const selector = document.getElementById('dataOperationSelector');
+        if (selector) {
+            selector.style.display = 'block';
+        }
+        
+        // Ocultar botón de volver
+        const backBtn = document.getElementById('backToOptionsBtn');
+        if (backBtn) {
+            backBtn.style.display = 'none';
+        }
+        
         // Resetear selecciones
         document.querySelectorAll('.data-option').forEach(option => {
             option.classList.remove('active');
@@ -1433,11 +1497,8 @@
     
     // Cerrar modales al hacer click en el backdrop
     document.addEventListener('click', function(e) {
-        if (e.target.id === 'modalBackdrop') {
-            const activeModal = document.querySelector('.modal.show');
-            if (activeModal) {
-                hideModal(activeModal.id);
-            }
+        if (e.target.classList && e.target.classList.contains('modal') && e.target.classList.contains('show')) {
+            hideModal(e.target.id);
         }
     });
     
