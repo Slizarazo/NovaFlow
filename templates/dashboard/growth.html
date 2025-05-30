@@ -167,7 +167,8 @@
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    min-width: 180px;
+    min-width: 240px;
+    justify-content: flex-end;
 }
 
 .skill-bar {
@@ -176,6 +177,7 @@
     background: #e2e8f0;
     border-radius: 4px;
     overflow: hidden;
+    flex-shrink: 0;
 }
 
 .skill-progress {
@@ -189,8 +191,9 @@
     font-size: 0.875rem;
     font-weight: 500;
     color: #64748b;
-    min-width: 80px;
+    min-width: 100px;
     text-align: left;
+    flex-shrink: 0;
 }
 
 .tech-tag {
