@@ -117,122 +117,37 @@
         </form>
     </div>
     
-    <!-- Projects Cards View -->
+    <!-- Projects Table -->
     <div class="row mb-4">
         <div class="col-12">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h5 class="mb-0">Proyectos Activos</h5>
-                <div>
-                    <button type="button" class="btn btn-sm btn-outline-secondary me-2 active" id="viewCards">
-                        <i data-feather="grid" style="width: 16px; height: 16px;"></i>
-                    </button>
-                    <button type="button" class="btn btn-sm btn-outline-secondary" id="viewTable">
-                        <i data-feather="list" style="width: 16px; height: 16px;"></i>
-                    </button>
-                </div>
-            </div>
+            <h5 class="mb-3">Proyectos Activos</h5>
         </div>
     </div>
     
-    <!-- Projects as Cards -->
-    <div class="row" id="projectsCards">
-        {% for proyecto in proyectos %}
-        <div class="col-md-6 col-lg-4 mb-4">
-            <div class="card h-100">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">{{ proyecto.nombre }}</h5>
-                    <span class="badge 
-                        {% if proyecto.etapa == 'propuesta' %}bg-info
-                        {% elif proyecto.etapa == 'planificacion' %}bg-primary
-                        {% elif proyecto.etapa == 'ejecucion' %}bg-warning
-                        {% elif proyecto.etapa == 'cierre' %}bg-success
-                        {% else %}bg-secondary{% endif %}">
-                        {{ proyecto.etapa|capitalize }}
-                    </span>
-                </div>
-                <div class="card-body">
-                    <div class="mb-3">
-                        <strong>Aliado:</strong> {{ aliados[proyecto.aliado_id].nombre }}
-                    </div>
-                    <div class="mb-3">
-                        <strong>Fechas:</strong> {{ proyecto.fecha_inicio }} - {{ proyecto.fecha_fin }}
-                    </div>
-                    <div class="mb-3">
-                        <strong>Monto:</strong> ${{ '{:,.0f}'.format(proyecto.monto) }}
-                    </div>
-                    <div class="mb-3">
-                        <strong>Consultores asignados:</strong> {{ proyecto.consultores_asignados }}
-                    </div>
-                    
-                    <!-- Project progress status -->
-                    <div class="mb-3">
-                        <div class="d-flex justify-content-between mb-1">
-                            <span>Progreso</span>
-                            <span>
-                            {% if proyecto.etapa == 'propuesta' %}15%
-                            {% elif proyecto.etapa == 'planificacion' %}35%
-                            {% elif proyecto.etapa == 'ejecucion' %}65%
-                            {% elif proyecto.etapa == 'cierre' %}90%
-                            {% else %}100%{% endif %}
-                            </span>
-                        </div>
-                        <div class="progress">
-                            <div class="progress-bar 
-                                {% if proyecto.etapa == 'propuesta' %}bg-info
-                                {% elif proyecto.etapa == 'planificacion' %}bg-primary
-                                {% elif proyecto.etapa == 'ejecucion' %}bg-warning
-                                {% elif proyecto.etapa == 'cierre' %}bg-success
-                                {% else %}bg-secondary{% endif %}" 
-                                role="progressbar" 
-                                style="width: {% if proyecto.etapa == 'propuesta' %}15%
-                                        {% elif proyecto.etapa == 'planificacion' %}35%
-                                        {% elif proyecto.etapa == 'ejecucion' %}65%
-                                        {% elif proyecto.etapa == 'cierre' %}90%
-                                        {% else %}100%{% endif %}">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-footer">
-                    <div class="d-flex justify-content-between">
-                        <button class="btn btn-sm btn-outline-primary">
-                            <i data-feather="eye" style="width: 14px; height: 14px; margin-right: 5px;"></i>
-                            Ver detalles
-                        </button>
-                        <button class="btn btn-sm btn-outline-secondary">
-                            <i data-feather="edit" style="width: 14px; height: 14px; margin-right: 5px;"></i>
-                            Editar
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        {% endfor %}
-    </div>
-    
-    <!-- Projects as Table (Hidden by default) -->
-    <div class="card d-none" id="projectsTable">
+    <div class="card" id="projectsTable">
         <div class="card-body p-0">
             <div class="table-responsive">
                 <table class="table table-hover table-striped mb-0">
                     <thead>
                         <tr>
-                            <th>ID</th>
                             <th>Nombre</th>
-                            <th>Aliado</th>
-                            <th>Etapa</th>
-                            <th>Fechas</th>
-                            <th>Monto</th>
-                            <th>Consultores</th>
+                            <th>Categoría</th>
+                            <th>Familia</th>
+                            <th>Descripción</th>
+                            <th>Tipo</th>
+                            <th>Estado</th>
+                            <th>Fecha Actualización</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for proyecto in proyectos %}
                         <tr>
-                            <td>{{ proyecto.id }}</td>
                             <td>{{ proyecto.nombre }}</td>
-                            <td>{{ aliados[proyecto.aliado_id].nombre }}</td>
+                            <td>{{ proyecto.categoria if proyecto.categoria else 'N/A' }}</td>
+                            <td>{{ proyecto.familia if proyecto.familia else 'N/A' }}</td>
+                            <td>{{ proyecto.descripcion if proyecto.descripcion else 'Sin descripción' }}</td>
+                            <td>{{ proyecto.tipo if proyecto.tipo else 'Estándar' }}</td>
                             <td>
                                 <span class="badge 
                                     {% if proyecto.etapa == 'propuesta' %}bg-info
@@ -243,9 +158,7 @@
                                     {{ proyecto.etapa|capitalize }}
                                 </span>
                             </td>
-                            <td>{{ proyecto.fecha_inicio }} <br> {{ proyecto.fecha_fin }}</td>
-                            <td>${{ '{:,.0f}'.format(proyecto.monto) }}</td>
-                            <td>{{ proyecto.consultores_asignados }}</td>
+                            <td>{{ proyecto.fecha_actualizacion if proyecto.fecha_actualizacion else proyecto.fecha_inicio }}</td>
                             <td>
                                 <div class="d-flex">
                                     <button class="btn btn-sm btn-outline-primary me-1">
@@ -414,27 +327,7 @@
             feather.replace();
         }
         
-        // Toggle between card and table view
-        const viewCardsBtn = document.getElementById('viewCards');
-        const viewTableBtn = document.getElementById('viewTable');
-        const projectsCards = document.getElementById('projectsCards');
-        const projectsTable = document.getElementById('projectsTable');
-        
-        if (viewCardsBtn && viewTableBtn && projectsCards && projectsTable) {
-            viewCardsBtn.addEventListener('click', function() {
-                projectsCards.classList.remove('d-none');
-                projectsTable.classList.add('d-none');
-                viewCardsBtn.classList.add('active');
-                viewTableBtn.classList.remove('active');
-            });
-            
-            viewTableBtn.addEventListener('click', function() {
-                projectsCards.classList.add('d-none');
-                projectsTable.classList.remove('d-none');
-                viewCardsBtn.classList.remove('active');
-                viewTableBtn.classList.add('active');
-            });
-        }
+        // Vista de tabla única - sin necesidad de toggle
         
         // Configurar eventos de botones por ID específicos
         setTimeout(function() {
