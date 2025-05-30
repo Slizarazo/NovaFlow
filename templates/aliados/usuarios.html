@@ -481,8 +481,7 @@
     </div>
 </div>
 
-<!-- Backdrop del modal -->
-<div class="modal-backdrop fade" id="modalBackdrop" style="display: none;"></div>
+
 
 <style>
 /* Data management modal styles */
@@ -617,21 +616,34 @@
 
 /* Modal styles */
 .modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 1055;
-    width: 100%;
-    height: 100%;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    z-index: 1055 !important;
+    width: 100vw !important;
+    height: 100vh !important;
     overflow-x: hidden;
     overflow-y: auto;
     outline: 0;
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    display: none !important;
 }
 
 .modal.show {
     display: flex !important;
-    align-items: center;
-    justify-content: center;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.modal-dialog {
+    position: relative;
+    margin: 1rem auto;
+    max-width: 90%;
+    z-index: 1056;
+}
+
+.modal-lg {
+    max-width: 800px;
 }
 
 .modal-backdrop {
@@ -653,17 +665,21 @@
     border: none;
     border-radius: 16px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+    background: white;
+    color: #333;
     overflow: hidden;
     position: relative;
     z-index: 1056;
+    max-height: 90vh;
+    overflow-y: auto;
 }
 
 .modal-header {
-    background: transparent;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-bottom: none;
     padding: 1.5rem 2rem;
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
 }
 
 .modal-title {
@@ -676,7 +692,7 @@
     background: white;
     color: #333;
     padding: 2rem;
-    max-height: 70vh;
+    max-height: 60vh;
     overflow-y: auto;
 }
 
@@ -687,6 +703,8 @@
     display: flex;
     justify-content: flex-end;
     gap: 1rem;
+    border-bottom-left-radius: 16px;
+    border-bottom-right-radius: 16px;
 }
 
 .user-form {
@@ -963,24 +981,30 @@
         console.log('🔓 Mostrando modal:', modalId);
         
         const modal = document.getElementById(modalId);
-        const backdrop = document.getElementById('modalBackdrop');
         
         if (!modal) {
             console.error('❌ Modal no encontrado:', modalId);
             return;
         }
         
-        // Mostrar backdrop
-        if (backdrop) {
-            backdrop.style.display = 'block';
-            setTimeout(() => backdrop.classList.add('show'), 10);
-        }
+        // Asegurar posicionamiento fijo y encima de todo
+        modal.style.position = 'fixed';
+        modal.style.top = '0';
+        modal.style.left = '0';
+        modal.style.width = '100vw';
+        modal.style.height = '100vh';
+        modal.style.zIndex = '1055';
+        modal.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
         
         // Mostrar modal
         modal.style.display = 'flex';
         modal.style.alignItems = 'center';
         modal.style.justifyContent = 'center';
-        setTimeout(() => modal.classList.add('show'), 10);
+        
+        // Añadir clase show después de un pequeño delay
+        setTimeout(() => {
+            modal.classList.add('show');
+        }, 10);
         
         // Prevenir scroll del body
         document.body.style.overflow = 'hidden';
@@ -997,22 +1021,19 @@
         console.log('🔒 Ocultando modal:', modalId);
         
         const modal = document.getElementById(modalId);
-        const backdrop = document.getElementById('modalBackdrop');
         
         if (!modal) {
             console.error('❌ Modal no encontrado:', modalId);
             return;
         }
         
-        // Ocultar modal
+        // Ocultar modal con animación
         modal.classList.remove('show');
-        setTimeout(() => modal.style.display = 'none', 300);
         
-        // Ocultar backdrop
-        if (backdrop) {
-            backdrop.classList.remove('show');
-            setTimeout(() => backdrop.style.display = 'none', 300);
-        }
+        // Esperar a que termine la animación antes de ocultar completamente
+        setTimeout(() => {
+            modal.style.display = 'none';
+        }, 300);
         
         // Restaurar scroll del body
         document.body.style.overflow = '';
