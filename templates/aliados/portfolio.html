@@ -341,42 +341,61 @@
         <div class="modal-dialog" style="max-width: 360px; margin: 1rem auto; max-height: calc(100vh - 2rem);">
             <div class="modal-content" style="border-radius: 12px; border: none; max-height: 100%; display: flex; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
                 <div class="modal-header" style="background: linear-gradient(135deg, #8b7bc8 0%, #7b68c7 100%); color: white; border-radius: 12px 12px 0 0; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; position: relative;">
-                    <h5 class="modal-title" id="addProductModalLabel" style="font-weight: 600; margin: 0; font-size: 16px; color: white;">Añadir Aliado</h5>
+                    <h5 class="modal-title" id="addProductModalLabel" style="font-weight: 600; margin: 0; font-size: 16px; color: white;">Añadir Proyecto</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background: rgba(255,255,255,0.2); border: none; color: white; font-size: 18px; opacity: 1; padding: 0; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-weight: bold; line-height: 1;">×</button>
                 </div>
                 
                 <div class="modal-body" style="padding: 24px 20px; background: white; flex: 1; overflow-y: auto; min-height: 0;">
                     <div class="form-section">
-                        <h6 style="color: #4a5568; font-weight: 600; margin-bottom: 20px; font-size: 14px; padding-bottom: 8px; border-bottom: 2px solid #e2e8f0;">Información Básica</h6>
+                        <h6 style="color: #4a5568; font-weight: 600; margin-bottom: 20px; font-size: 14px; padding-bottom: 8px; border-bottom: 2px solid #e2e8f0;">Información del Proyecto</h6>
                         
                         <form id="addProductForm">
                             <div class="mb-4">
-                                <label for="companyName" class="form-label" style="color: #2d3748; font-weight: 500; margin-bottom: 8px; display: block; font-size: 14px;">Nombre de la Empresa</label>
-                                <input type="text" class="form-control" id="companyName" placeholder="Ej: TechCorp Solutions" required style="border: 1px solid #d1d5db; border-radius: 8px; padding: 12px 14px; font-size: 14px; width: 100%; background-color: #f9fafb;">
+                                <label for="projectName" class="form-label" style="color: #2d3748; font-weight: 500; margin-bottom: 8px; display: block; font-size: 14px;">Nombre</label>
+                                <input type="text" class="form-control" id="projectName" placeholder="Ej: Sistema de Gestión de Inventarios" required style="border: 1px solid #d1d5db; border-radius: 8px; padding: 12px 14px; font-size: 14px; width: 100%; background-color: #f9fafb;">
                             </div>
                             
                             <div class="mb-4">
-                                <label for="email" class="form-label" style="color: #2d3748; font-weight: 500; margin-bottom: 8px; display: block; font-size: 14px;">Correo Electrónico</label>
-                                <input type="email" class="form-control" id="email" placeholder="contacto@empresa.com" required style="border: 1px solid #d1d5db; border-radius: 8px; padding: 12px 14px; font-size: 14px; width: 100%; background-color: #f9fafb;">
+                                <label for="projectCategoria" class="form-label" style="color: #2d3748; font-weight: 500; margin-bottom: 8px; display: block; font-size: 14px;">Categoría</label>
+                                <select class="form-select" id="projectCategoria" required style="border: 1px solid #d1d5db; border-radius: 8px; padding: 12px 14px; font-size: 14px; width: 100%; background-color: #f9fafb; appearance: none; background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"%23666\" stroke-width=\"2\"><polyline points=\"6,9 12,15 18,9\"></polyline></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px;">
+                                    <option value="">Seleccionar categoría...</option>
+                                    <option value="mpv">MPV</option>
+                                    <option value="desarrollo_completo">Desarrollo Completo</option>
+                                    <option value="consultoria">Consultoría</option>
+                                    <option value="prototipo">Prototipo</option>
+                                </select>
                             </div>
                             
                             <div class="mb-4">
-                                <label for="contact" class="form-label" style="color: #2d3748; font-weight: 500; margin-bottom: 8px; display: block; font-size: 14px;">Contacto Principal</label>
-                                <input type="text" class="form-control" id="contact" placeholder="Nombre del representante" required style="border: 1px solid #d1d5db; border-radius: 8px; padding: 12px 14px; font-size: 14px; width: 100%; background-color: #f9fafb;">
-                            </div>
-                            
-                            <div class="mb-4">
-                                <label for="industry" class="form-label" style="color: #2d3748; font-weight: 500; margin-bottom: 8px; display: block; font-size: 14px;">Industria</label>
-                                <select class="form-select" id="industry" required style="border: 1px solid #d1d5db; border-radius: 8px; padding: 12px 14px; font-size: 14px; width: 100%; background-color: #f9fafb; appearance: none; background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"%23666\" stroke-width=\"2\"><polyline points=\"6,9 12,15 18,9\"></polyline></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px;">
-                                    <option value="">Seleccionar industria...</option>
+                                <label for="projectFamilia" class="form-label" style="color: #2d3748; font-weight: 500; margin-bottom: 8px; display: block; font-size: 14px;">Familia</label>
+                                <select class="form-select" id="projectFamilia" required style="border: 1px solid #d1d5db; border-radius: 8px; padding: 12px 14px; font-size: 14px; width: 100%; background-color: #f9fafb; appearance: none; background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"%23666\" stroke-width=\"2\"><polyline points=\"6,9 12,15 18,9\"></polyline></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px;">
+                                    <option value="">Seleccionar familia...</option>
+                                    <option value="data_analytics">Data Analytics</option>
                                     <option value="tecnologia">Tecnología</option>
-                                    <option value="finanzas">Finanzas</option>
-                                    <option value="salud">Salud</option>
-                                    <option value="educacion">Educación</option>
-                                    <option value="manufactura">Manufactura</option>
-                                    <option value="retail">Retail</option>
-                                    <option value="servicios">Servicios</option>
-                                    <option value="gobierno">Gobierno</option>
+                                    <option value="marcos_agiles">Marcos Ágiles</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="projectDescripcion" class="form-label" style="color: #2d3748; font-weight: 500; margin-bottom: 8px; display: block; font-size: 14px;">Descripción</label>
+                                <textarea class="form-control" id="projectDescripcion" rows="3" placeholder="Descripción detallada del proyecto..." required style="border: 1px solid #d1d5db; border-radius: 8px; padding: 12px 14px; font-size: 14px; width: 100%; background-color: #f9fafb; resize: vertical;"></textarea>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="projectTipo" class="form-label" style="color: #2d3748; font-weight: 500; margin-bottom: 8px; display: block; font-size: 14px;">Tipo</label>
+                                <select class="form-select" id="projectTipo" required style="border: 1px solid #d1d5db; border-radius: 8px; padding: 12px 14px; font-size: 14px; width: 100%; background-color: #f9fafb; appearance: none; background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"%23666\" stroke-width=\"2\"><polyline points=\"6,9 12,15 18,9\"></polyline></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px;">
+                                    <option value="">Seleccionar tipo...</option>
+                                    <option value="producto">Producto</option>
+                                    <option value="servicio">Servicio</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="projectEstado" class="form-label" style="color: #2d3748; font-weight: 500; margin-bottom: 8px; display: block; font-size: 14px;">Estado</label>
+                                <select class="form-select" id="projectEstado" required style="border: 1px solid #d1d5db; border-radius: 8px; padding: 12px 14px; font-size: 14px; width: 100%; background-color: #f9fafb; appearance: none; background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"%23666\" stroke-width=\"2\"><polyline points=\"6,9 12,15 18,9\"></polyline></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px;">
+                                    <option value="">Seleccionar estado...</option>
+                                    <option value="activo">Activo</option>
+                                    <option value="en_revision">En Revisión</option>
                                 </select>
                             </div>
                         </form>
@@ -385,7 +404,7 @@
                 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" onclick="submitProductForm()">Guardar Aliado</button>
+                    <button type="button" class="btn btn-primary" onclick="submitProductForm()">Guardar Proyecto</button>
                 </div>
             </div>
         </div>
@@ -826,15 +845,17 @@
         }
         
         const formData = {
-            companyName: document.getElementById('companyName').value,
-            email: document.getElementById('email').value,
-            contact: document.getElementById('contact').value,
-            industry: document.getElementById('industry').value
+            nombre: document.getElementById('projectName').value,
+            categoria: document.getElementById('projectCategoria').value,
+            familia: document.getElementById('projectFamilia').value,
+            descripcion: document.getElementById('projectDescripcion').value,
+            tipo: document.getElementById('projectTipo').value,
+            estado: document.getElementById('projectEstado').value
         };
         
-        console.log('Enviando datos del aliado:', formData);
+        console.log('Enviando datos del proyecto:', formData);
         
-        fetch('/api/aliados', {
+        fetch('/api/proyectos', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -845,11 +866,11 @@
         .then(data => {
             console.log('Respuesta del servidor:', data);
             if (data.status === 'success') {
-                alert('Aliado creado exitosamente');
+                alert('Proyecto creado exitosamente');
                 hideModal('addProductModal');
                 location.reload();
             } else {
-                alert('Error al crear el aliado: ' + data.message);
+                alert('Error al crear el proyecto: ' + data.message);
             }
         })
         .catch(error => {
