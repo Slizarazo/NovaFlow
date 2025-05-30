@@ -5,10 +5,6 @@
     <!-- Header -->
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
         <h3 style="margin: 0; color: #333; font-weight: 600;">Gestión de Proyectos</h3>
-        <button onclick="openOportunidadModal()" style="background: #8B5A9D; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 0.5rem;">
-            <i data-feather="plus" style="width: 16px; height: 16px;"></i>
-            Nueva Oportunidad
-        </button>
     </div>
 
     <!-- Kanban Board Compacto -->
@@ -479,6 +475,15 @@ document.addEventListener('DOMContentLoaded', function() {
             submitNuevaOportunidad();
         });
     }
+
+    // Manejar el envío del formulario de detalles del proyecto
+    const proyectoDetallesForm = document.getElementById('proyectoDetallesForm');
+    if (proyectoDetallesForm) {
+        proyectoDetallesForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            submitProyectoDetalles();
+        });
+    }
 });
 
 function submitNuevaOportunidad() {
@@ -523,6 +528,62 @@ function submitNuevaOportunidad() {
     .catch(error => {
         console.error('Error:', error);
         alert('Error al crear oportunidad');
+    });
+}
+
+function submitProyectoDetalles() {
+    console.log('Enviando formulario de detalles del proyecto...');
+
+    // Obtener datos del formulario
+    const formData = {
+        cuenta: document.getElementById('proyecto_cuenta').value,
+        nombre: document.getElementById('proyecto_caso_uso').value,
+        descripcion: document.getElementById('proyecto_descripcion').value,
+        impacto: document.getElementById('proyecto_impacto').value,
+        puntuacion_impacto: document.getElementById('proyecto_puntuacion_impacto').value,
+        puntuacion_tecnica: document.getElementById('proyecto_puntuacion_tecnica').value,
+        palabras_clave: document.getElementById('proyecto_palabras_clave').value,
+        producto: document.getElementById('proyecto_producto').value,
+        fecha_inicio: document.getElementById('proyecto_fecha_inicio').value,
+        fecha_cierre: document.getElementById('proyecto_fecha_cierre').value,
+        monto_venta: document.getElementById('proyecto_monto_venta').value,
+        costos_proyecto: document.getElementById('proyecto_costos_proyecto').value,
+        margen_estimado_porcentaje: document.getElementById('proyecto_margen_estimado_porcentaje').value,
+        margen_estimado_bruto: document.getElementById('proyecto_margen_estimado_bruto').value,
+        feedback: document.getElementById('proyecto_feedback').value
+    };
+
+    console.log('Datos del formulario de proyecto:', formData);
+
+    // Validar campos requeridos básicos
+    if (!formData.cuenta || !formData.nombre) {
+        alert('Por favor complete al menos la cuenta y el caso de uso');
+        return;
+    }
+
+    // Enviar datos al servidor
+    fetch('/api/nueva-oportunidad', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Respuesta del servidor:', data);
+        if (data.status === 'success') {
+            alert('Datos del proyecto enviados exitosamente');
+            closeProyectoModal();
+            // Recargar página para mostrar cambios
+            location.reload();
+        } else {
+            alert('Error al enviar datos del proyecto: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error al enviar datos del proyecto');
     });
 }
 </script>
