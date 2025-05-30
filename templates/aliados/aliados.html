@@ -86,8 +86,6 @@
                         </select>
                     </div>
                 </div>
-
-                
             </form>
         </div>
     </div>
@@ -625,47 +623,91 @@ function submitForm() {
 // Función para inicializar filtros
 function initializeFilters() {
     const filterForm = document.getElementById('filterForm');
-    
-    if (!filterForm) {
-        console.error('Filter form not found');
-        return;
-    }
-    
     const table = document.getElementById('aliadosTable');
     
-    if (!table) {
-        console.error('Table not found');
+    if (!filterForm || !table) {
+        console.error('Filter form or table not found');
         return;
     }
     
     const tableRows = table.querySelectorAll('tbody tr');
-
+    
+    // Poblar dinámicamente las opciones del filtro de nombre
+    populateNameFilter();
+    
     // Agregar event listeners a todos los campos de filtro
     const filterInputs = filterForm.querySelectorAll('select');
     filterInputs.forEach(input => {
-        input.addEventListener('change', applyFilters);
+        if (input && typeof input.addEventListener === 'function') {
+            input.addEventListener('change', applyFilters);
+        }
     });
 
+    function populateNameFilter() {
+        const nameSelect = filterForm.querySelector('[name="nombre"]');
+        if (!nameSelect) return;
+        
+        // Limpiar opciones existentes excepto "Todos"
+        nameSelect.innerHTML = '<option value="">Todos</option>';
+        
+        // Extraer nombres únicos de las filas de la tabla
+        const uniqueNames = new Set();
+        tableRows.forEach(row => {
+            if (row.cells && row.cells[0]) {
+                const nameCell = row.cells[0].querySelector('div:last-child');
+                if (nameCell) {
+                    const name = nameCell.textContent.trim();
+                    if (name) uniqueNames.add(name);
+                }
+            }
+        });
+        
+        // Agregar opciones al select
+        Array.from(uniqueNames).sort().forEach(name => {
+            const option = document.createElement('option');
+            option.value = name;
+            option.textContent = name;
+            nameSelect.appendChild(option);
+        });
+    }
+
     function applyFilters() {
+        const nameFilter = filterForm.querySelector('[name="nombre"]');
+        const industriaFilter = filterForm.querySelector('[name="industria"]');
+        const estadoFilter = filterForm.querySelector('[name="estado"]');
+        const regionFilter = filterForm.querySelector('[name="region"]');
+        const subregionFilter = filterForm.querySelector('[name="subregion"]');
+        const paisFilter = filterForm.querySelector('[name="pais"]');
+        
         const filters = {
-            nombre: filterForm.querySelector('[name="nombre"]') ? filterForm.querySelector('[name="nombre"]').value.toLowerCase() : '',
-            industria: filterForm.querySelector('[name="industria"]') ? filterForm.querySelector('[name="industria"]').value.toLowerCase() : '',
-            estado: filterForm.querySelector('[name="estado"]') ? filterForm.querySelector('[name="estado"]').value.toLowerCase() : '',
-            region: filterForm.querySelector('[name="region"]') ? filterForm.querySelector('[name="region"]').value.toLowerCase() : '',
-            subregion: filterForm.querySelector('[name="subregion"]') ? filterForm.querySelector('[name="subregion"]').value.toLowerCase() : '',
-            pais: filterForm.querySelector('[name="pais"]') ? filterForm.querySelector('[name="pais"]').value.toLowerCase() : ''
+            nombre: nameFilter ? nameFilter.value.toLowerCase() : '',
+            industria: industriaFilter ? industriaFilter.value.toLowerCase() : '',
+            estado: estadoFilter ? estadoFilter.value.toLowerCase() : '',
+            region: regionFilter ? regionFilter.value.toLowerCase() : '',
+            subregion: subregionFilter ? subregionFilter.value.toLowerCase() : '',
+            pais: paisFilter ? paisFilter.value.toLowerCase() : ''
         };
 
+        let visibleCount = 0;
+        
         tableRows.forEach(row => {
-            if (row.cells.length < 7) return; // Skip if row doesn't have enough cells
+            if (!row.cells || row.cells.length < 7) return;
+            
+            // Extraer datos de la fila de manera más robusta
+            const nameCell = row.cells[0].querySelector('div:last-child');
+            const industriaCell = row.cells[1];
+            const estadoCell = row.cells[2].querySelector('.badge');
+            const regionCell = row.cells[3];
+            const subregionCell = row.cells[4];
+            const paisCell = row.cells[5];
             
             const rowData = {
-                nombre: row.cells[0].textContent.trim().toLowerCase(),
-                industria: row.cells[1].textContent.trim().toLowerCase(),
-                estado: row.cells[2].textContent.trim().toLowerCase(),
-                region: row.cells[3].textContent.trim().toLowerCase(),
-                subregion: row.cells[4].textContent.trim().toLowerCase(),
-                pais: row.cells[5].textContent.trim().toLowerCase()
+                nombre: nameCell ? nameCell.textContent.trim().toLowerCase() : '',
+                industria: industriaCell ? industriaCell.textContent.trim().toLowerCase() : '',
+                estado: estadoCell ? estadoCell.textContent.trim().toLowerCase() : '',
+                region: regionCell ? regionCell.textContent.trim().toLowerCase() : '',
+                subregion: subregionCell ? subregionCell.textContent.trim().toLowerCase() : '',
+                pais: paisCell ? paisCell.textContent.trim().toLowerCase() : ''
             };
 
             let showRow = true;
@@ -678,12 +720,15 @@ function initializeFilters() {
             });
 
             // Mostrar u ocultar la fila
-            row.style.display = showRow ? '' : 'none';
+            if (showRow) {
+                row.style.display = '';
+                visibleCount++;
+            } else {
+                row.style.display = 'none';
+            }
         });
 
-        // Actualizar contador de resultados
-        const visibleRows = Array.from(tableRows).filter(row => row.style.display !== 'none');
-        console.log(`Mostrando ${visibleRows.length} de ${tableRows.length} aliados`);
+        console.log(`Mostrando ${visibleCount} de ${tableRows.length} aliados`);
     }
 }
 </script>
