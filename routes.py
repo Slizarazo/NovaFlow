@@ -779,6 +779,35 @@ def create_cliente():
         app.logger.error(f"Error al crear cliente: {str(e)}")
         return jsonify({'status': 'error', 'message': str(e)}), 500
 
+@app.route('/api/usuarios-cuentas', methods=['POST'])
+@login_required
+def create_usuario_cuentas():
+    try:
+        data = request.get_json()
+
+        if not data:
+            return jsonify({'status': 'error', 'message': 'No se recibieron datos'}), 400
+
+        print("\n=== DATOS DEL USUARIO RECIBIDOS ===")
+        print(f"Nombre: {data.get('nombre')}")
+        print(f"Correo: {data.get('correo')}")
+        print(f"Cargo: {data.get('cargo')}")
+        print(f"Rol Laboral: {data.get('rol_laboral')}")
+        print("=" * 40)
+
+        # Aquí puedes agregar la lógica para guardar en base de datos
+        # Por ahora solo imprimimos los datos
+
+        return jsonify({
+            'status': 'success',
+            'message': 'Usuario creado exitosamente',
+            'data': data
+        })
+
+    except Exception as e:
+        app.logger.error(f"Error al crear usuario: {str(e)}")
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+
 @app.route('/api/oportunidades', methods=['POST'])
 @login_required
 def create_oportunidad():
