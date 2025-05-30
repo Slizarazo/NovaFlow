@@ -148,7 +148,6 @@
 .skill-item {
     display: flex;
     align-items: center;
-    justify-content: space-between;
     padding: 0.75rem 0;
     border-bottom: 1px solid #f1f5f9;
 }
@@ -160,16 +159,19 @@
 .skill-name {
     font-weight: 500;
     color: #1e293b;
+    flex: 1;
+    min-width: 0;
 }
 
 .skill-level {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.75rem;
+    min-width: 180px;
 }
 
 .skill-bar {
-    width: 100px;
+    width: 120px;
     height: 8px;
     background: #e2e8f0;
     border-radius: 4px;
@@ -181,6 +183,14 @@
     background: linear-gradient(90deg, #667eea, #764ba2);
     border-radius: 4px;
     transition: width 0.3s ease;
+}
+
+.skill-level-text {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #64748b;
+    min-width: 80px;
+    text-align: left;
 }
 
 .tech-tag {
@@ -499,7 +509,7 @@
                     <div class="skill-bar">
                         <div class="skill-progress" style="width: 95%"></div>
                     </div>
-                    <span>Experto</span>
+                    <span class="skill-level-text">Experto</span>
                 </div>
             </div>
             
@@ -509,7 +519,7 @@
                     <div class="skill-bar">
                         <div class="skill-progress" style="width: 90%"></div>
                     </div>
-                    <span>Experto</span>
+                    <span class="skill-level-text">Experto</span>
                 </div>
             </div>
             
@@ -519,7 +529,7 @@
                     <div class="skill-bar">
                         <div class="skill-progress" style="width: 85%"></div>
                     </div>
-                    <span>Avanzado</span>
+                    <span class="skill-level-text">Avanzado</span>
                 </div>
             </div>
             
@@ -529,7 +539,7 @@
                     <div class="skill-bar">
                         <div class="skill-progress" style="width: 80%"></div>
                     </div>
-                    <span>Avanzado</span>
+                    <span class="skill-level-text">Avanzado</span>
                 </div>
             </div>
             
@@ -539,7 +549,7 @@
                     <div class="skill-bar">
                         <div class="skill-progress" style="width: 70%"></div>
                     </div>
-                    <span>Intermedio</span>
+                    <span class="skill-level-text">Intermedio</span>
                 </div>
             </div>
             
@@ -549,7 +559,7 @@
                     <div class="skill-bar">
                         <div class="skill-progress" style="width: 95%"></div>
                     </div>
-                    <span>Experto</span>
+                    <span class="skill-level-text">Experto</span>
                 </div>
             </div>
         </div>
@@ -567,7 +577,7 @@
                     <div class="skill-bar">
                         <div class="skill-progress" style="width: 100%"></div>
                     </div>
-                    <span>Nativo</span>
+                    <span class="skill-level-text">Nativo</span>
                 </div>
             </div>
             
@@ -577,7 +587,7 @@
                     <div class="skill-bar">
                         <div class="skill-progress" style="width: 90%"></div>
                     </div>
-                    <span>Avanzado (C1)</span>
+                    <span class="skill-level-text">Avanzado (C1)</span>
                 </div>
             </div>
             
@@ -587,7 +597,7 @@
                     <div class="skill-bar">
                         <div class="skill-progress" style="width: 60%"></div>
                     </div>
-                    <span>Intermedio (B2)</span>
+                    <span class="skill-level-text">Intermedio (B2)</span>
                 </div>
             </div>
             
@@ -597,7 +607,7 @@
                     <div class="skill-bar">
                         <div class="skill-progress" style="width: 45%"></div>
                     </div>
-                    <span>Básico (A2)</span>
+                    <span class="skill-level-text">Básico (A2)</span>
                 </div>
             </div>
         </div>
