@@ -1,3 +1,4 @@
+
 {% extends "layout.html" %}
 
 {% block content %}
@@ -21,57 +22,38 @@
     <!-- Filters -->
     <div class="card mb-4">
         <div class="card-body">
-            <form class="filters-form">
-                <div class="filters-container" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 1rem;">
-                    <div class="filter-group">
-                        <label class="form-label">Usuario</label>
-                        <input type="text" class="form-control" name="usuario" placeholder="Buscar usuario...">
-                    </div>
-                    <div class="filter-group">
-                        <label class="form-label">Tipo</label>
-                        <select class="form-select" name="tipo">
-                            <option value="">Todos</option>
-                            <option value="Gestor">Gestor</option>
-                            <option value="Aliado">Aliado</option>
-                            <option value="Cuenta">Cuenta</option>
-                            <option value="Freelance">Freelance</option>
-                        </select>
-                    </div>
-                    <div class="filter-group">
-                        <label class="form-label">Rol</label>
-                        <select class="form-select" name="rol">
-                            <option value="">Todos</option>
-                            <option value="Superadministrador">Superadministrador</option>
-                            <option value="Organización">Organización</option>
-                            <option value="Cliente">Cliente</option>
-                            <option value="Supervisor">Supervisor</option>
-                            <option value="Consultor">Consultor</option>
-                        </select>
-                    </div>
-                    <div class="filter-group">
-                        <label class="form-label">Organización</label>
-                        <select class="form-select" name="organizacion">
-                            <option value="">Todas</option>
-                            <option value="DeepNova">DeepNova</option>
-                            <option value="Tech Solutions SA">Tech Solutions SA</option>
-                        </select>
-                    </div>
-                    <div class="filter-group">
-                        <label class="form-label">Estado</label>
-                        <select class="form-select" name="estado">
-                            <option value="">Todos</option>
-                            <option value="activo">Activo</option>
-                            <option value="inactivo">Inactivo</option>
-                            <option value="pendiente">Pendiente</option>
-                        </select>
-                    </div>
+            <div class="filters-container" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;">
+                <div class="filter-group">
+                    <label class="form-label">Organización</label>
+                    <select class="form-select" name="organizacion" id="filterOrganizacion">
+                        <option value="">Todas</option>
+                        <option value="DeepNova">DeepNova</option>
+                        <option value="Tech Solutions SA">Tech Solutions SA</option>
+                        <option value="Global Corp">Global Corp</option>
+                        <option value="Freelance">Freelance</option>
+                    </select>
                 </div>
-
-                <div class="filter-actions">
-                    <button type="reset" class="btn btn-secondary">Limpiar</button>
-                    <button type="submit" class="btn btn-primary">Aplicar Filtros</button>
+                <div class="filter-group">
+                    <label class="form-label">Rol</label>
+                    <select class="form-select" name="rol" id="filterRol">
+                        <option value="">Todos</option>
+                        <option value="Superadministrador">Superadministrador</option>
+                        <option value="Organización">Organización</option>
+                        <option value="Cliente">Cliente</option>
+                        <option value="Supervisor">Supervisor</option>
+                        <option value="Consultor">Consultor</option>
+                    </select>
                 </div>
-            </form>
+                <div class="filter-group">
+                    <label class="form-label">Estado</label>
+                    <select class="form-select" name="estado" id="filterEstado">
+                        <option value="">Todos</option>
+                        <option value="activo">Activo</option>
+                        <option value="inactivo">Inactivo</option>
+                        <option value="pendiente">Pendiente</option>
+                    </select>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -79,26 +61,24 @@
     <div class="card">
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-hover">
+                <table class="table table-hover" id="usersTable">
                     <thead>
                         <tr>
+                            <th>Nombre</th>
                             <th>Usuario</th>
-                            <th>Email</th>
-                            <th>Tipo</th>
-                            <th>Rol</th>
                             <th>Organización</th>
+                            <th>Rol</th>
                             <th>Estado</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
                         <!-- Example users -->
-                        <tr>
+                        <tr data-organizacion="DeepNova" data-rol="Superadministrador" data-estado="activo">
                             <td>Admin Principal</td>
                             <td>admin@deepnova.com</td>
-                            <td>Gestor</td>
-                            <td>Superadministrador</td>
                             <td>DeepNova</td>
+                            <td>Superadministrador</td>
                             <td><span class="badge bg-success">Activo</span></td>
                             <td>
                                 <div class="btn-group">
@@ -114,12 +94,11 @@
                                 </div>
                             </td>
                         </tr>
-                        <tr>
+                        <tr data-organizacion="Tech Solutions SA" data-rol="Organización" data-estado="activo">
                             <td>Tech Solutions</td>
                             <td>contact@techsolutions.com</td>
-                            <td>Aliado</td>
-                            <td>Organización</td>
                             <td>Tech Solutions SA</td>
+                            <td>Organización</td>
                             <td><span class="badge bg-success">Activo</span></td>
                             <td>
                                 <div class="btn-group">
@@ -135,12 +114,11 @@
                                 </div>
                             </td>
                         </tr>
-                        <tr>
+                        <tr data-organizacion="Global Corp" data-rol="Cliente" data-estado="activo">
                             <td>Global Corp</td>
                             <td>info@globalcorp.com</td>
-                            <td>Cuenta</td>
+                            <td>Global Corp</td>
                             <td>Cliente</td>
-                            <td>Tech Solutions SA</td>
                             <td><span class="badge bg-success">Activo</span></td>
                             <td>
                                 <div class="btn-group">
@@ -156,12 +134,11 @@
                                 </div>
                             </td>
                         </tr>
-                        <tr>
+                        <tr data-organizacion="Freelance" data-rol="Supervisor" data-estado="activo">
                             <td>Ana Martínez</td>
                             <td>ana.martinez@freelance.com</td>
                             <td>Freelance</td>
                             <td>Supervisor</td>
-                            <td>-</td>
                             <td><span class="badge bg-success">Activo</span></td>
                             <td>
                                 <div class="btn-group">
@@ -177,13 +154,32 @@
                                 </div>
                             </td>
                         </tr>
-                        <tr>
+                        <tr data-organizacion="Freelance" data-rol="Consultor" data-estado="pendiente">
                             <td>Carlos Ruiz</td>
                             <td>carlos.ruiz@freelance.com</td>
                             <td>Freelance</td>
                             <td>Consultor</td>
-                            <td>-</td>
                             <td><span class="badge bg-warning">Pendiente</span></td>
+                            <td>
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-sm btn-icon" title="Editar">
+                                        <i data-feather="edit-2"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-icon" title="Ver detalles">
+                                        <i data-feather="eye"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-icon text-danger" title="Eliminar">
+                                        <i data-feather="trash-2"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr data-organizacion="Tech Solutions SA" data-rol="Supervisor" data-estado="inactivo">
+                            <td>María López</td>
+                            <td>maria.lopez@techsolutions.com</td>
+                            <td>Tech Solutions SA</td>
+                            <td>Supervisor</td>
+                            <td><span class="badge bg-danger">Inactivo</span></td>
                             <td>
                                 <div class="btn-group">
                                     <button type="button" class="btn btn-sm btn-icon" title="Editar">
@@ -396,6 +392,45 @@
 
 .modal-body::-webkit-scrollbar-thumb:hover {
     background: #5a6fd8;
+}
+
+/* Filtros styles */
+.filters-container {
+    margin-bottom: 1rem;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.filter-group .form-label {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.filter-group .form-select {
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 0.75rem;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m1 6 7 7 7-7'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 16px 12px;
+}
+
+.filter-group .form-select:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    outline: 0;
+}
+
+.filter-group .form-select:hover {
+    border-color: #aaa;
 }
 </style>
 
@@ -662,6 +697,9 @@ document.addEventListener('DOMContentLoaded', function() {
         feather.replace();
     }
     
+    // Configurar filtros
+    setupFilters();
+    
     // Manejar click del botón de añadir usuario
     const addButton = document.querySelector('[data-bs-target="#addUserModal"]');
     const modal = document.getElementById('addUserModal');
@@ -674,23 +712,65 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Manejar cierre del modal
-    const closeButtons = modal.querySelectorAll('[data-bs-dismiss="modal"]');
-    closeButtons.forEach(button => {
+    const closeButtons = modal?.querySelectorAll('[data-bs-dismiss="modal"]');
+    closeButtons?.forEach(button => {
         button.addEventListener('click', function() {
             hideUserModal();
         });
     });
     
     // Cerrar modal al hacer click fuera de él
-    modal.addEventListener('click', function(e) {
+    modal?.addEventListener('click', function(e) {
         if (e.target === modal) {
             hideUserModal();
         }
     });
 });
 
+function setupFilters() {
+    const filterOrganizacion = document.getElementById('filterOrganizacion');
+    const filterRol = document.getElementById('filterRol');
+    const filterEstado = document.getElementById('filterEstado');
+    
+    if (filterOrganizacion) {
+        filterOrganizacion.addEventListener('change', applyFilters);
+    }
+    if (filterRol) {
+        filterRol.addEventListener('change', applyFilters);
+    }
+    if (filterEstado) {
+        filterEstado.addEventListener('change', applyFilters);
+    }
+}
+
+function applyFilters() {
+    const organizacionValue = document.getElementById('filterOrganizacion')?.value.toLowerCase() || '';
+    const rolValue = document.getElementById('filterRol')?.value.toLowerCase() || '';
+    const estadoValue = document.getElementById('filterEstado')?.value.toLowerCase() || '';
+    
+    const tableRows = document.querySelectorAll('#usersTable tbody tr');
+    
+    tableRows.forEach(row => {
+        const organizacion = row.getAttribute('data-organizacion')?.toLowerCase() || '';
+        const rol = row.getAttribute('data-rol')?.toLowerCase() || '';
+        const estado = row.getAttribute('data-estado')?.toLowerCase() || '';
+        
+        const matchOrganizacion = organizacionValue === '' || organizacion.includes(organizacionValue);
+        const matchRol = rolValue === '' || rol.includes(rolValue);
+        const matchEstado = estadoValue === '' || estado.includes(estadoValue);
+        
+        if (matchOrganizacion && matchRol && matchEstado) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+}
+
 function showUserModal() {
     const modal = document.getElementById('addUserModal');
+    if (!modal) return;
+    
     modal.style.display = 'block';
     modal.classList.add('show');
     document.body.style.overflow = 'hidden';
@@ -705,6 +785,8 @@ function showUserModal() {
 
 function hideUserModal() {
     const modal = document.getElementById('addUserModal');
+    if (!modal) return;
+    
     modal.style.display = 'none';
     modal.classList.remove('show');
     document.body.style.overflow = '';
@@ -716,8 +798,15 @@ function hideUserModal() {
     }
     
     // Limpiar formulario
-    document.getElementById('addUserForm').reset();
-    document.getElementById('userType').value = '';
+    const form = document.getElementById('addUserForm');
+    if (form) {
+        form.reset();
+    }
+    
+    const userTypeSelect = document.getElementById('userType');
+    if (userTypeSelect) {
+        userTypeSelect.value = '';
+    }
     
     // Ocultar todos los formularios
     const userForms = document.querySelectorAll('.user-form');
@@ -812,14 +901,7 @@ function submitUserForm() {
     .then(data => {
         if (data.status === 'success') {
             alert('Usuario creado exitosamente');
-            // Cerrar modal
-            const modalElement = document.getElementById('addUserModal');
-            if (modalElement && window.bootstrap) {
-                const modal = window.bootstrap.Modal.getInstance(modalElement);
-                if (modal) {
-                    modal.hide();
-                }
-            }
+            hideUserModal();
             // Recargar página
             window.location.reload();
         } else {
