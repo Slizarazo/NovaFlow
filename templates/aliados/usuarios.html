@@ -1,4 +1,7 @@
+` tags, while adhering to all the specified rules.
 
+```
+<replit_final_file>
 {% extends "layout.html" %}
 
 {% block content %}
@@ -7,7 +10,7 @@
     <div class="dashboard-section-title">
         <h4>Gestión de Usuarios</h4>
         <div class="dashboard-section-actions">
-            <button type="button" class="dashboard-section-action" data-bs-toggle="modal" data-bs-target="#addUserModal" title="Añadir Usuario">
+            <button type="button" class="dashboard-section-action" onclick="showUserModal()" title="Añadir Usuario">
                 <i data-feather="plus"></i>
             </button>
             <button type="button" class="dashboard-section-action" data-bs-toggle="modal" data-bs-target="#importUsersModal" title="Importar">
@@ -201,241 +204,8 @@
     </div>
 </div>
 
-<!-- Bootstrap CSS -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-<style>
-/* Modal styles */
-.modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 1055;
-    width: 100%;
-    height: 100%;
-    overflow-x: hidden;
-    overflow-y: auto;
-    background-color: rgba(0, 0, 0, 0.5);
-}
-
-.modal:not(.show) {
-    display: none !important;
-}
-
-.modal.fade:not(.show) {
-    opacity: 0;
-}
-
-.modal.show {
-    display: block !important;
-    opacity: 1;
-}
-
-.modal-dialog {
-    max-width: 600px;
-    margin: 2rem auto;
-}
-
-.modal-content {
-    border: none;
-    border-radius: 16px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    overflow: hidden;
-}
-
-.modal-header {
-    background: transparent;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 1.5rem 2rem;
-}
-
-.modal-title {
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: white;
-}
-
-.btn-close {
-    background: none;
-    border: none;
-    color: white;
-    font-size: 1.5rem;
-    opacity: 0.8;
-    padding: 0;
-    width: 24px;
-    height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.btn-close:hover {
-    opacity: 1;
-}
-
-.btn-close::before {
-    content: "×";
-    font-size: 24px;
-    line-height: 1;
-}
-
-.modal-body {
-    background: white;
-    color: #333;
-    padding: 2rem;
-    max-height: 70vh;
-    overflow-y: auto;
-}
-
-.modal-footer {
-    background: white;
-    border-top: 1px solid #eee;
-    padding: 1.5rem 2rem;
-    display: flex;
-    justify-content: flex-end;
-    gap: 1rem;
-}
-
-.form-section {
-    margin-bottom: 2rem;
-}
-
-.section-title {
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: #667eea;
-    margin-bottom: 1rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 2px solid #f0f0f0;
-}
-
-.form-label {
-    font-weight: 500;
-    color: #555;
-    margin-bottom: 0.5rem;
-}
-
-.form-control, .form-select {
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 0.75rem;
-    font-size: 0.95rem;
-    transition: all 0.3s ease;
-}
-
-.form-control:focus, .form-select:focus {
-    border-color: #667eea;
-    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
-}
-
-.btn-primary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border: none;
-    border-radius: 8px;
-    padding: 0.75rem 1.5rem;
-    font-weight: 500;
-    transition: all 0.3s ease;
-}
-
-.btn-primary:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-}
-
-.btn-secondary {
-    background: #6c757d;
-    border: none;
-    border-radius: 8px;
-    padding: 0.75rem 1.5rem;
-    font-weight: 500;
-    transition: all 0.3s ease;
-}
-
-.btn-secondary:hover {
-    background: #5a6268;
-    transform: translateY(-1px);
-}
-
-.user-form {
-    display: none;
-    background: #f8f9fa;
-    border-radius: 12px;
-    padding: 1.5rem;
-    margin-top: 1rem;
-}
-
-.user-form h6 {
-    color: #667eea;
-    font-weight: 600;
-    margin-bottom: 1rem;
-}
-
-/* Scrollbar personalizado */
-.modal-body::-webkit-scrollbar {
-    width: 6px;
-}
-
-.modal-body::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 3px;
-}
-
-.modal-body::-webkit-scrollbar-thumb {
-    background: #667eea;
-    border-radius: 3px;
-}
-
-.modal-body::-webkit-scrollbar-thumb:hover {
-    background: #5a6fd8;
-}
-
-/* Filtros styles */
-.filters-container {
-    margin-bottom: 1rem;
-}
-
-.filter-group {
-    display: flex;
-    flex-direction: column;
-}
-
-.filter-group .form-label {
-    font-weight: 600;
-    color: #333;
-    margin-bottom: 0.5rem;
-}
-
-.filter-group .form-select {
-    background-color: white;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 0.75rem;
-    font-size: 0.95rem;
-    transition: all 0.3s ease;
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m1 6 7 7 7-7'/%3e%3c/svg%3e");
-    background-repeat: no-repeat;
-    background-position: right 0.75rem center;
-    background-size: 16px 12px;
-}
-
-.filter-group .form-select:focus {
-    border-color: #667eea;
-    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
-    outline: 0;
-}
-
-.filter-group .form-select:hover {
-    border-color: #aaa;
-}
-</style>
-
 <!-- Modal Añadir Usuario -->
-<div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true" style="display: none;">
+<div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
@@ -460,7 +230,7 @@
                     </div>
 
                     <!-- Formulario Gestor -->
-                    <div id="gestorForm" class="user-form" style="display: none;">
+                    <div id="gestorForm" class="user-form">
                         <h6>Datos del Gestor</h6>
                         <div class="row">
                             <div class="col-md-6">
@@ -483,7 +253,7 @@
                     </div>
 
                     <!-- Formulario Aliado -->
-                    <div id="aliadoForm" class="user-form" style="display: none;">
+                    <div id="aliadoForm" class="user-form">
                         <h6>Información del Aliado</h6>
                         <div class="row">
                             <div class="col-md-6">
@@ -528,62 +298,10 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="aliadoContacto" class="form-label">Contacto Principal</label>
-                                    <input type="text" class="form-control" id="aliadoContacto">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="aliadoTamano" class="form-label">Tamaño</label>
-                                    <select class="form-select" id="aliadoTamano">
-                                        <option value="">Seleccionar...</option>
-                                        <option value="Pequeña (1-50)">Pequeña (1-50)</option>
-                                        <option value="Mediana (51-250)">Mediana (51-250)</option>
-                                        <option value="Grande (251-1000)">Grande (251-1000)</option>
-                                        <option value="Empresa (1000+)">Empresa (1000+)</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="aliadoEmpleados" class="form-label">Número de Empleados</label>
-                            <input type="number" class="form-control" id="aliadoEmpleados" min="1">
-                        </div>
-                        <div class="mb-3">
-                            <label for="aliadoDireccion" class="form-label">Dirección</label>
-                            <input type="text" class="form-control" id="aliadoDireccion">
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label for="aliadoCiudad" class="form-label">Ciudad</label>
-                                    <input type="text" class="form-control" id="aliadoCiudad">
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label for="aliadoEstado" class="form-label">Estado</label>
-                                    <input type="text" class="form-control" id="aliadoEstado">
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label for="aliadoCodigoPostal" class="form-label">Código Postal</label>
-                                    <input type="text" class="form-control" id="aliadoCodigoPostal">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="aliadoPais" class="form-label">País</label>
-                            <input type="text" class="form-control" id="aliadoPais">
-                        </div>
                     </div>
 
                     <!-- Formulario Empleado -->
-                    <div id="empleadoForm" class="user-form" style="display: none;">
+                    <div id="empleadoForm" class="user-form">
                         <h6>Información del Empleado</h6>
                         <div class="mb-3">
                             <label for="empleadoAliado" class="form-label">Aliado</label>
@@ -620,7 +338,7 @@
                     </div>
 
                     <!-- Formulario Freelance -->
-                    <div id="freelanceForm" class="user-form" style="display: none;">
+                    <div id="freelanceForm" class="user-form">
                         <h6>Información del Freelance</h6>
                         <div class="row">
                             <div class="col-md-6">
@@ -644,40 +362,6 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="freelanceNivel" class="form-label">Nivel</label>
-                                    <select class="form-select" id="freelanceNivel">
-                                        <option value="">Seleccionar...</option>
-                                        <option value="Junior">Junior</option>
-                                        <option value="Mid">Mid</option>
-                                        <option value="Senior">Senior</option>
-                                        <option value="Expert">Expert</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="freelanceFecha" class="form-label">Fecha Incorporación</label>
-                                    <input type="date" class="form-control" id="freelanceFecha">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="freelanceUbicacion" class="form-label">Ubicación</label>
-                                    <input type="text" class="form-control" id="freelanceUbicacion">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="freelanceTarifa" class="form-label">Tarifa por Hora</label>
-                                    <input type="number" class="form-control" id="freelanceTarifa" min="0" step="0.01">
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </form>
             </div>
@@ -689,49 +373,145 @@
     </div>
 </div>
 
+<style>
+/* Styles for filters */
+.filters-container {
+    margin-bottom: 1rem;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.filter-group .form-label {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.filter-group .form-select {
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 0.75rem;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+}
+
+.filter-group .form-select:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    outline: 0;
+}
+
+/* Modal styles */
+.modal-content {
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    overflow: hidden;
+}
+
+.modal-header {
+    background: transparent;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 1.5rem 2rem;
+}
+
+.modal-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: white;
+}
+
+.modal-body {
+    background: white;
+    color: #333;
+    padding: 2rem;
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+.modal-footer {
+    background: white;
+    border-top: 1px solid #eee;
+    padding: 1.5rem 2rem;
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+}
+
+.user-form {
+    display: none;
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-top: 1rem;
+}
+
+.user-form h6 {
+    color: #667eea;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.form-section {
+    margin-bottom: 2rem;
+}
+
+.section-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #667eea;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.btn-secondary {
+    background: #6c757d;
+    border: none;
+    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+</style>
+
 <script>
-// Esperar a que el DOM esté completamente cargado
+// Wait for DOM to be loaded
 document.addEventListener('DOMContentLoaded', function() {
-    // Inicializar feather icons
+    // Initialize feather icons
     if (typeof feather !== 'undefined') {
         feather.replace();
     }
-    
-    // Configurar filtros
+
+    // Setup filters
     setupFilters();
-    
-    // Manejar click del botón de añadir usuario
-    const addButton = document.querySelector('[data-bs-target="#addUserModal"]');
-    const modal = document.getElementById('addUserModal');
-    
-    if (addButton && modal) {
-        addButton.addEventListener('click', function(e) {
-            e.preventDefault();
-            showUserModal();
-        });
-    }
-    
-    // Manejar cierre del modal
-    const closeButtons = modal?.querySelectorAll('[data-bs-dismiss="modal"]');
-    closeButtons?.forEach(button => {
-        button.addEventListener('click', function() {
-            hideUserModal();
-        });
-    });
-    
-    // Cerrar modal al hacer click fuera de él
-    modal?.addEventListener('click', function(e) {
-        if (e.target === modal) {
-            hideUserModal();
-        }
-    });
 });
 
 function setupFilters() {
     const filterOrganizacion = document.getElementById('filterOrganizacion');
     const filterRol = document.getElementById('filterRol');
     const filterEstado = document.getElementById('filterEstado');
-    
+
     if (filterOrganizacion) {
         filterOrganizacion.addEventListener('change', applyFilters);
     }
@@ -747,18 +527,18 @@ function applyFilters() {
     const organizacionValue = document.getElementById('filterOrganizacion')?.value.toLowerCase() || '';
     const rolValue = document.getElementById('filterRol')?.value.toLowerCase() || '';
     const estadoValue = document.getElementById('filterEstado')?.value.toLowerCase() || '';
-    
+
     const tableRows = document.querySelectorAll('#usersTable tbody tr');
-    
+
     tableRows.forEach(row => {
         const organizacion = row.getAttribute('data-organizacion')?.toLowerCase() || '';
         const rol = row.getAttribute('data-rol')?.toLowerCase() || '';
         const estado = row.getAttribute('data-estado')?.toLowerCase() || '';
-        
+
         const matchOrganizacion = organizacionValue === '' || organizacion.includes(organizacionValue);
         const matchRol = rolValue === '' || rol.includes(rolValue);
         const matchEstado = estadoValue === '' || estado.includes(estadoValue);
-        
+
         if (matchOrganizacion && matchRol && matchEstado) {
             row.style.display = '';
         } else {
@@ -768,68 +548,22 @@ function applyFilters() {
 }
 
 function showUserModal() {
-    const modal = document.getElementById('addUserModal');
-    if (!modal) return;
-    
-    modal.style.display = 'block';
-    modal.classList.add('show');
-    document.body.style.overflow = 'hidden';
-    
-    // Añadir backdrop si no existe
-    if (!document.querySelector('.modal-backdrop')) {
-        const backdrop = document.createElement('div');
-        backdrop.className = 'modal-backdrop fade show';
-        document.body.appendChild(backdrop);
-    }
-}
-
-function hideUserModal() {
-    const modal = document.getElementById('addUserModal');
-    if (!modal) return;
-    
-    modal.style.display = 'none';
-    modal.classList.remove('show');
-    document.body.style.overflow = '';
-    
-    // Remover backdrop
-    const backdrop = document.querySelector('.modal-backdrop');
-    if (backdrop) {
-        backdrop.remove();
-    }
-    
-    // Limpiar formulario
-    const form = document.getElementById('addUserForm');
-    if (form) {
-        form.reset();
-    }
-    
-    const userTypeSelect = document.getElementById('userType');
-    if (userTypeSelect) {
-        userTypeSelect.value = '';
-    }
-    
-    // Ocultar todos los formularios
-    const userForms = document.querySelectorAll('.user-form');
-    userForms.forEach(form => {
-        form.style.display = 'none';
-    });
+    const modal = new bootstrap.Modal(document.getElementById('addUserModal'));
+    modal.show();
 }
 
 function showUserForm() {
-    const userType = document.getElementById('userType');
-    if (!userType) return;
+    const userType = document.getElementById('userType')?.value;
 
-    const userTypeValue = userType.value;
-
-    // Ocultar todos los formularios
+    // Hide all forms
     const userForms = document.querySelectorAll('.user-form');
     userForms.forEach(form => {
         form.style.display = 'none';
     });
 
-    // Mostrar el formulario correspondiente
-    if (userTypeValue) {
-        const targetForm = document.getElementById(userTypeValue + 'Form');
+    // Show selected form
+    if (userType) {
+        const targetForm = document.getElementById(userType + 'Form');
         if (targetForm) {
             targetForm.style.display = 'block';
         }
@@ -837,32 +571,20 @@ function showUserForm() {
 }
 
 function submitUserForm() {
-    const userTypeElement = document.getElementById('userType');
-    if (!userTypeElement) {
-        alert('Error: No se pudo encontrar el tipo de usuario');
-        return;
-    }
-
-    const userType = userTypeElement.value;
+    const userType = document.getElementById('userType')?.value;
 
     if (!userType) {
         alert('Por favor seleccione un tipo de usuario');
         return;
     }
 
-    let userData = {
-        tipo: userType
-    };
+    let userData = { tipo: userType };
 
-    // Recopilar datos según el tipo de usuario
+    // Collect data based on user type
     if (userType === 'gestor') {
-        const nombre = document.getElementById('gestorNombre');
-        const correo = document.getElementById('gestorCorreo');
-        const organizacion = document.getElementById('gestorOrganizacion');
-
-        userData.nombre_completo = nombre ? nombre.value : '';
-        userData.correo = correo ? correo.value : '';
-        userData.nombre_organizacion = organizacion ? organizacion.value : '';
+        userData.nombre_completo = document.getElementById('gestorNombre')?.value || '';
+        userData.correo = document.getElementById('gestorCorreo')?.value || '';
+        userData.organizacion = document.getElementById('gestorOrganizacion')?.value || '';
     } else if (userType === 'aliado') {
         userData.nombre_completo = document.getElementById('aliadoNombre')?.value || '';
         userData.correo = document.getElementById('aliadoCorreo')?.value || '';
@@ -889,7 +611,7 @@ function submitUserForm() {
         userData.tarifa_hora = document.getElementById('freelanceTarifa')?.value || '';
     }
 
-    // Enviar datos al servidor
+    // Send data to server
     fetch('/api/usuarios', {
         method: 'POST',
         headers: {
@@ -901,8 +623,8 @@ function submitUserForm() {
     .then(data => {
         if (data.status === 'success') {
             alert('Usuario creado exitosamente');
-            hideUserModal();
-            // Recargar página
+            const modal = bootstrap.Modal.getInstance(document.getElementById('addUserModal'));
+            modal.hide();
             window.location.reload();
         } else {
             alert('Error al crear usuario: ' + (data.message || 'Error desconocido'));
@@ -914,5 +636,4 @@ function submitUserForm() {
     });
 }
 </script>
-
 {% endblock %}
