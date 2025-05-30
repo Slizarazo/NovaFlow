@@ -229,10 +229,12 @@
                 'icon': 'user-check', 'url': '/consultores', 'submenu': [
                 {'name': 'Propuestas', 'url': '/consultores/propuestas'},
                 {'name': 'Activos', 'url': '/consultores/activos'} ]} ] %} {%
-                elif role == 'consultor' %} {% set navigation = [ {'name':
-                'Dashboard', 'icon': 'home', 'url': '/dashboard'}, {'name': 'Mis
-                Proyectos', 'icon': 'briefcase', 'url': '/mis-proyectos'},
-                {'name': 'Tareas', 'icon': 'check-square', 'url': '/tareas'} ]
+                elif role == 'consultor' %} {% set navigation = [
+            {'name': 'Perfil', 'icon': 'user', 'url': '/perfil'},
+            {'name': 'Mis Proyectos', 'icon': 'briefcase', 'url': '/mis-proyectos'},
+            {'name': 'Actividades', 'icon': 'activity', 'url': '/actividades'},
+            {'name': 'Propuestas', 'icon': 'file-text', 'url': '/propuestas'}
+        ]
                 %} {% else %} {% set navigation = [] %} {% endif %}
 
                 <!-- Loop through main menu items -->
