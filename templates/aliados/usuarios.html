@@ -190,7 +190,7 @@
 
 <!-- Modal Añadir Usuario -->
 <div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog modal-xl">
+    <div class="modal-dialog modal-xl" style="max-width: 1200px;">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="addUserModalLabel">Añadir Usuario</h5>
@@ -198,8 +198,16 @@
             </div>
             <div class="modal-body">
                 <form id="addUserForm">
+                    <!-- Botón de volver (oculto inicialmente) -->
+                    <div id="backToUserTypeBtn" style="display: none; margin-bottom: 20px;">
+                        <button type="button" class="btn btn-link p-0" onclick="backToUserType()" style="color: #667eea; text-decoration: none;">
+                            <i data-feather="arrow-left" style="width: 16px; height: 16px; margin-right: 5px;"></i>
+                            Volver a opciones
+                        </button>
+                    </div>
+
                     <!-- Selección de Tipo -->
-                    <div class="form-section">
+                    <div class="form-section" id="userTypeSelection">
                         <h6 class="section-title">Tipo de Usuario</h6>
                         <div class="user-type-selector">
                             <div class="row">
@@ -1148,6 +1156,8 @@ opacity: 0.8;
         // Resetear formularios si es necesario
         if (modalId === 'dataManagementModal') {
             resetDataModal();
+        } else if (modalId === 'addUserModal') {
+            resetUserModal();
         }
 
         console.log('✅ Modal ocultado:', modalId);
@@ -1165,12 +1175,17 @@ opacity: 0.8;
     window.selectUserType = function(userType) {
         console.log('🔄 Seleccionando tipo de usuario:', userType);
 
-        // Actualizar UI
-        document.querySelectorAll('.user-type-option').forEach(option => {
-            option.classList.remove('active');
-        });
+        // Ocultar selector de opciones
+        const userTypeSelection = document.getElementById('userTypeSelection');
+        if (userTypeSelection) {
+            userTypeSelection.style.display = 'none';
+        }
 
-        event.currentTarget.classList.add('active');
+        // Mostrar botón de volver
+        const backBtn = document.getElementById('backToUserTypeBtn');
+        if (backBtn) {
+            backBtn.style.display = 'block';
+        }
 
         // Mostrar formulario correspondiente
         showUserForm(userType);
@@ -1520,7 +1535,11 @@ opacity: 0.8;
 
         // Limpiar campos de formularios
         document.querySelectorAll('.user-form input, .user-form select').forEach(field => {
-            field.value = '';
+            if (field.type === 'checkbox') {
+                field.checked = false;
+            } else {
+                field.value = '';
+            }
         });
     }
 
@@ -1550,8 +1569,14 @@ opacity: 0.8;
             option.classList.remove('active');
         });
 
-        // Resetear formularios
-        resetUserModal();
+        // Limpiar campos de formularios
+        document.querySelectorAll('.user-form input, .user-form select').forEach(field => {
+            if (field.type === 'checkbox') {
+                field.checked = false;
+            } else {
+                field.value = '';
+            }
+        });
 
         // Actualizar iconos feather
         if (typeof feather !== 'undefined') {
