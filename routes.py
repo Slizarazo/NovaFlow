@@ -747,6 +747,76 @@ def update_informacion_personal():
         app.logger.error(f"Error al actualizar información personal: {str(e)}")
         return jsonify({'status': 'error', 'message': str(e)}), 500
 
+@app.route('/api/experiencia-laboral', methods=['POST'])
+@login_required
+def create_experiencia_laboral():
+    try:
+        data = request.get_json()
+        print(f"Datos recibidos para experiencia laboral: {data}")
+
+        if not data:
+            return jsonify({'status': 'error', 'message': 'No se recibieron datos'}), 400
+
+        # Extraer los datos del formulario de experiencia laboral
+        puesto = data.get('puesto')
+        empresa = data.get('empresa')
+        fecha_inicio = data.get('fecha_inicio')
+        fecha_fin = data.get('fecha_fin')
+        trabajo_actual = data.get('trabajo_actual', False)
+        ubicacion = data.get('ubicacion')
+        descripcion = data.get('descripcion')
+        tipo_empleo = data.get('tipo_empleo')  # tiempo_completo, medio_tiempo, freelance, contrato
+        sector = data.get('sector')
+        logros = data.get('logros', [])  # Lista de logros específicos
+
+        print("Datos de experiencia laboral:")
+        print(f"  - Puesto: {puesto}")
+        print(f"  - Empresa: {empresa}")
+        print(f"  - Fecha Inicio: {fecha_inicio}")
+        print(f"  - Fecha Fin: {fecha_fin}")
+        print(f"  - Trabajo Actual: {trabajo_actual}")
+        print(f"  - Ubicación: {ubicacion}")
+        print(f"  - Descripción: {descripcion}")
+        print(f"  - Tipo de Empleo: {tipo_empleo}")
+        print(f"  - Sector: {sector}")
+        print(f"  - Logros: {logros}")
+
+        # Validaciones básicas
+        if not puesto or not empresa or not fecha_inicio:
+            return jsonify({'status': 'error', 'message': 'Puesto, empresa y fecha de inicio son campos obligatorios'}), 400
+
+        # Validar que si no es trabajo actual, debe tener fecha de fin
+        if not trabajo_actual and not fecha_fin:
+            return jsonify({'status': 'error', 'message': 'Debe especificar fecha de fin o marcar como trabajo actual'}), 400
+
+        # Aquí podrías agregar la lógica para guardar en la base de datos
+        # Por ejemplo: current_user.add_work_experience(data)
+        
+        # Preparar datos de respuesta
+        experiencia_data = {
+            'puesto': puesto,
+            'empresa': empresa,
+            'fecha_inicio': fecha_inicio,
+            'fecha_fin': fecha_fin if not trabajo_actual else None,
+            'trabajo_actual': trabajo_actual,
+            'ubicacion': ubicacion,
+            'descripcion': descripcion,
+            'tipo_empleo': tipo_empleo,
+            'sector': sector,
+            'logros': logros,
+            'periodo_formateado': f"{fecha_inicio} - {'Presente' if trabajo_actual else fecha_fin}"
+        }
+
+        return jsonify({
+            'status': 'success', 
+            'message': 'Experiencia laboral agregada exitosamente',
+            'data': experiencia_data
+        })
+
+    except Exception as e:
+        app.logger.error(f"Error al crear experiencia laboral: {str(e)}")
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+
 @app.route('/proyectos/gestion')
 @login_required  
 def proyectos_gestion():

@@ -1186,13 +1186,37 @@ function addExperience() {
         return;
     }
     
-    // Formatear fechas
-    const fechaInicioFormatted = formatDate(fechaInicio);
-    const fechaFinFormatted = actual ? 'Presente' : formatDate(fechaFin);
-    const periodoText = fechaInicioFormatted + ' - ' + fechaFinFormatted;
+    // Preparar datos para enviar al backend
+    const formData = {
+        puesto: puesto,
+        empresa: empresa,
+        fecha_inicio: fechaInicio,
+        fecha_fin: actual ? null : fechaFin,
+        trabajo_actual: actual,
+        ubicacion: ubicacion,
+        descripcion: descripcion,
+        tipo_empleo: 'freelance', // Valor por defecto
+        sector: 'tecnologia' // Valor por defecto
+    };
     
-    // Crear nuevo elemento de experiencia
-    const experienciasContainer = document.getElementById('experiencias-container');
+    // Enviar datos al backend
+    fetch('/api/experiencia-laboral', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            // Formatear fechas para mostrar
+            const fechaInicioFormatted = formatDate(fechaInicio);
+            const fechaFinFormatted = actual ? 'Presente' : formatDate(fechaFin);
+            const periodoText = fechaInicioFormatted + ' - ' + fechaFinFormatted;
+            
+            // Crear nuevo elemento de experiencia en el DOM
+            const experienciasContainer = document.getElementById('experiencias-container');
     const newExperience = document.createElement('div');
     newExperience.className = 'experience-item';
     newExperience.innerHTML = `
@@ -1206,13 +1230,21 @@ function addExperience() {
     `;
     
     // Agregar al inicio del contenedor
-    experienciasContainer.insertBefore(newExperience, experienciasContainer.firstChild);
-    
-    // Cerrar modal y limpiar formulario
-    closeAddExperienceModal();
-    
-    // Mostrar mensaje de éxito
-    alert('Experiencia agregada correctamente');
+            experienciasContainer.insertBefore(newExperience, experienciasContainer.firstChild);
+            
+            // Cerrar modal y limpiar formulario
+            closeAddExperienceModal();
+            
+            // Mostrar mensaje de éxito
+            alert('Experiencia agregada correctamente');
+        } else {
+            alert('Error al agregar experiencia: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error al enviar los datos de experiencia laboral');
+    });
 }
 
 function formatDate(dateString) {
