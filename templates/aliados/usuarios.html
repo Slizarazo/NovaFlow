@@ -535,9 +535,9 @@ function applyFilters() {
         const rol = row.getAttribute('data-rol')?.toLowerCase() || '';
         const estado = row.getAttribute('data-estado')?.toLowerCase() || '';
 
-        const matchOrganizacion = organizacionValue === '' || organizacion.includes(organizacionValue);
-        const matchRol = rolValue === '' || rol.includes(rolValue);
-        const matchEstado = estadoValue === '' || estado.includes(estadoValue);
+        const matchOrganizacion = organizacionValue === '' || organizacion === organizacionValue;
+        const matchRol = rolValue === '' || rol === rolValue;
+        const matchEstado = estadoValue === '' || estado === estadoValue;
 
         if (matchOrganizacion && matchRol && matchEstado) {
             row.style.display = '';
