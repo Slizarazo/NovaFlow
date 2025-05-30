@@ -1,386 +1,4 @@
-
 {% extends "layout.html" %}
-
-{% block head %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
-<style>
-.action-buttons {
-    display: flex;
-    gap: 8px;
-}
-
-.action-button {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    border: 1px solid #e0e0e0;
-    background: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    padding: 0;
-    transition: all 0.2s ease;
-}
-
-.action-button:hover {
-    background: #f5f5f5;
-    border-color: #d0d0d0;
-}
-
-.action-button i {
-    width: 16px;
-    height: 16px;
-    color: #666;
-}
-
-.filter-form {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-.filter-row {
-    display: flex;
-    gap: 1rem;
-    align-items: flex-end;
-}
-.filter-group {
-    flex: 1;
-}
-.form-label {
-    display: block;
-    margin-bottom: 0.5rem;
-    color: var(--dark-purple);
-    font-weight: 500;
-}
-.form-select {
-    width: 100%;
-    padding: 0.75rem;
-    border: 1px solid var(--medium-gray);
-    border-radius: var(--border-radius-md);
-    background-color: white;
-}
-.filter-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 1rem;
-}
-
-/* Modal styles */
-.modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 1055;
-    width: 100%;
-    height: 100%;
-    overflow-x: hidden;
-    overflow-y: auto;
-    background-color: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(2px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-}
-
-.modal:not(.show) {
-    display: none !important;
-}
-
-.modal.fade:not(.show) {
-    opacity: 0;
-}
-
-.modal.show {
-    display: flex !important;
-    opacity: 1;
-}
-
-.modal-dialog {
-    position: relative;
-    width: auto;
-    max-width: 900px;
-    margin: 0;
-    transform: none;
-}
-
-.modal-content {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    pointer-events: auto;
-    background-color: #fff;
-    background-clip: padding-box;
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    border-radius: 12px;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-    outline: 0;
-    max-height: 90vh;
-    overflow-y: auto;
-}
-
-.modal-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 20px 24px 16px;
-    border-bottom: 1px solid #e5e7eb;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    border-radius: 12px 12px 0 0;
-}
-
-.modal-title {
-    margin: 0;
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: white;
-}
-
-.btn-close {
-    background: rgba(255, 255, 255, 0.2);
-    border: none;
-    border-radius: 50%;
-    width: 32px;
-    height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    opacity: 0.8;
-    transition: all 0.2s ease;
-}
-
-.btn-close:hover {
-    background: rgba(255, 255, 255, 0.3);
-    opacity: 1;
-}
-
-.btn-close::before {
-    content: "×";
-    font-size: 24px;
-    line-height: 1;
-}
-
-.modal-body {
-    padding: 24px;
-    max-height: 60vh;
-    overflow-y: auto;
-}
-
-.modal-footer {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 12px;
-    padding: 16px 24px;
-    border-top: 1px solid #e5e7eb;
-    background-color: #f9fafb;
-    border-radius: 0 0 12px 12px;
-}
-
-.form-label {
-    display: block;
-    margin-bottom: 6px;
-    font-weight: 500;
-    color: #374151;
-    font-size: 0.875rem;
-}
-
-.form-control, .form-select {
-    display: block;
-    width: 100%;
-    padding: 10px 12px;
-    font-size: 0.875rem;
-    font-weight: 400;
-    line-height: 1.5;
-    color: #374151;
-    background-color: #fff;
-    background-image: none;
-    border: 2px solid #e5e7eb;
-    border-radius: 8px;
-    transition: all 0.2s ease;
-}
-
-.form-control:focus, .form-select:focus {
-    color: #374151;
-    background-color: #fff;
-    border-color: #667eea;
-    outline: 0;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-}
-
-.btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 10px 20px;
-    font-size: 0.875rem;
-    font-weight: 500;
-    line-height: 1.5;
-    border-radius: 8px;
-    border: 2px solid transparent;
-    transition: all 0.2s ease;
-    cursor: pointer;
-    text-decoration: none;
-}
-
-.btn-primary {
-    color: #fff;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border-color: transparent;
-}
-
-.btn-primary:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-}
-
-.btn-secondary {
-    color: #6b7280;
-    background-color: #fff;
-    border-color: #d1d5db;
-}
-
-.btn-secondary:hover {
-    color: #374151;
-    background-color: #f9fafb;
-    border-color: #9ca3af;
-}
-
-.modal-backdrop {
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 1050;
-    width: 100vw;
-    height: 100vh;
-    background-color: #000;
-}
-
-.modal-backdrop.fade {
-    opacity: 0;
-}
-
-.modal-backdrop.show {
-    opacity: 0.5;
-}
-
-/* Form sections */
-.form-section {
-    margin-bottom: 24px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid #f3f4f6;
-}
-
-.form-section:last-child {
-    border-bottom: none;
-    margin-bottom: 0;
-}
-
-.section-title {
-    font-size: 1rem;
-    font-weight: 600;
-    color: #374151;
-    margin-bottom: 16px;
-    padding-bottom: 8px;
-    border-bottom: 2px solid #667eea;
-    display: inline-block;
-}
-
-.mb-3 {
-    margin-bottom: 16px;
-}
-
-/* Form animations */
-.form-control:focus, .form-select:focus {
-    transform: translateY(-1px);
-}
-
-/* Modal animations */
-@keyframes modalFadeIn {
-    from {
-        opacity: 0;
-        transform: scale(0.95);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-
-.modal.show .modal-content {
-    animation: modalFadeIn 0.3s ease-out;
-}
-
-/* Action selector styles */
-.action-selector {
-    margin-bottom: 2rem;
-}
-
-.action-option {
-    display: flex;
-    align-items: center;
-    padding: 20px;
-    border: 2px solid #e5e7eb;
-    border-radius: 12px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    background: #f9fafb;
-    margin-bottom: 12px;
-}
-
-.action-option:hover {
-    border-color: #667eea;
-    background: #f0f4ff;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
-}
-
-.action-option.selected {
-    border-color: #667eea;
-    background: linear-gradient(135deg, #f0f4ff 0%, #e0e7ff 100%);
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
-}
-
-.action-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 48px;
-    height: 48px;
-    background: white;
-    border-radius: 12px;
-    margin-right: 16px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.action-icon i {
-    width: 24px;
-    height: 24px;
-}
-
-.action-content h6 {
-    margin: 0 0 4px 0;
-    font-weight: 600;
-    color: #1f2937;
-    font-size: 16px;
-}
-
-.action-content p {
-    margin: 0;
-    color: #6b7280;
-    font-size: 14px;
-}
-
-.form-container {
-    max-height: 60vh;
-    overflow-y: auto;
-}
-</style>
-{% endblock %}
 
 {% block content %}
 <div class="container-fluid">
@@ -406,13 +24,8 @@
             <form id="filterForm" class="filter-form">
                 <div class="filter-row">
                     <div class="filter-group">
-                        <label class="form-label">Aliado</label>
-                        <select class="form-select" name="aliado">
-                            <option value="">Todos</option>
-                            {% for aliado in aliados %}
-                            <option value="{{ aliado.id }}">{{ aliado.nombre }}</option>
-                            {% endfor %}
-                        </select>
+                        <label class="form-label">Nombre</label>
+                        <input type="text" class="form-control" name="nombre" placeholder="Buscar por nombre...">
                     </div>
                     <div class="filter-group">
                         <label class="form-label">Industria</label>
@@ -425,15 +38,6 @@
                         </select>
                     </div>
                     <div class="filter-group">
-                        <label class="form-label">País</label>
-                        <select class="form-select" name="pais">
-                            <option value="">Todos</option>
-                            <option value="México">México</option>
-                            <option value="Colombia">Colombia</option>
-                            <option value="Perú">Perú</option>
-                        </select>
-                    </div>
-                    <div class="filter-group">
                         <label class="form-label">Estado</label>
                         <select class="form-select" name="estado">
                             <option value="">Todos</option>
@@ -442,8 +46,42 @@
                             <option value="pendiente">Pendiente</option>
                         </select>
                     </div>
+                    <div class="filter-group">
+                        <label class="form-label">Región</label>
+                        <select class="form-select" name="region">
+                            <option value="">Todas</option>
+                            <option value="Norte">Norte</option>
+                            <option value="Sur">Sur</option>
+                            <option value="Este">Este</option>
+                            <option value="Oeste">Oeste</option>
+                            <option value="Centro">Centro</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="form-label">Subregión</label>
+                        <select class="form-select" name="subregion">
+                            <option value="">Todas</option>
+                            <option value="Noreste">Noreste</option>
+                            <option value="Noroeste">Noroeste</option>
+                            <option value="Sureste">Sureste</option>
+                            <option value="Suroeste">Suroeste</option>
+                            <option value="Centro-Norte">Centro-Norte</option>
+                            <option value="Centro-Sur">Centro-Sur</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="form-label">País</label>
+                        <select class="form-select" name="pais">
+                            <option value="">Todos</option>
+                            <option value="México">México</option>
+                            <option value="Estados Unidos">Estados Unidos</option>
+                            <option value="Colombia">Colombia</option>
+                            <option value="Argentina">Argentina</option>
+                            <option value="Chile">Chile</option>
+                        </select>
+                    </div>
                 </div>
-                
+
                 <div class="filter-actions">
                     <button type="reset" class="btn btn-secondary">Limpiar</button>
                     <button type="submit" class="btn btn-primary">Aplicar Filtros</button>
@@ -454,41 +92,60 @@
 
     <!-- Aliados Table -->
     <div class="card">
-        <div class="card-body p-0">
+        <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
+                <table class="table table-hover align-middle mb-0" id="aliadosTable">
                     <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>Aliado</th>
-                            <th>Región</th>
+                            <th>Nombre</th>
                             <th>Industria</th>
-                            <th>Ventas Trimestre</th>
-                            <th>Ventas Acumuladas</th>
                             <th>Estado</th>
+                            <th>Región</th>
+                            <th>Subregión</th>
+                            <th>País</th>
+                            <th>Sede</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for aliado in aliados %}
-                        <tr>
-                            <td>{{ aliado.id }}</td>
+                        <tr data-nombre="{{ aliado.nombre }}" data-industria="{{ aliado.industria }}" data-region="{{ aliado.region }}">
                             <td>
                                 <div class="d-flex align-items-center">
                                     <div class="avatar-circle me-2">{{ aliado.nombre[0] }}</div>
                                     <div>{{ aliado.nombre }}</div>
                                 </div>
                             </td>
-                            <td>{{ aliado.region }}</td>
                             <td>{{ aliado.industria }}</td>
-                            <td>${{ '{:,.0f}'.format(aliado.ventas_trimestre) }}</td>
-                            <td>${{ '{:,.0f}'.format(aliado.ventas_acumuladas) }}</td>
                             <td>
                                 <span class="badge {% if aliado.id % 3 == 0 %}bg-warning{% elif aliado.id % 2 == 0 %}bg-success{% else %}bg-primary{% endif %}">
                                     {% if aliado.id % 3 == 0 %}Pendiente
                                     {% elif aliado.id % 2 == 0 %}Activo
                                     {% else %}Nuevo{% endif %}
                                 </span>
+                            </td>
+                            <td>{{ aliado.region }}</td>
+                            <td>
+                                {% if aliado.region == 'Norte' %}
+                                    {% if aliado.id % 2 == 0 %}Noreste{% else %}Noroeste{% endif %}
+                                {% elif aliado.region == 'Sur' %}
+                                    {% if aliado.id % 2 == 0 %}Sureste{% else %}Suroeste{% endif %}
+                                {% else %}
+                                    Centro-Norte
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if aliado.industria == 'Tecnología' %}México
+                                {% elif aliado.industria == 'Finanzas' %}Estados Unidos
+                                {% elif aliado.industria == 'Manufactura' %}Colombia
+                                {% else %}México{% endif %}
+                            </td>
+                            <td>
+                                {% if aliado.region == 'Norte' %}Sede Norte
+                                {% elif aliado.region == 'Sur' %}Sede Sur
+                                {% elif aliado.region == 'Este' %}Sede Este
+                                {% elif aliado.region == 'Oeste' %}Sede Oeste
+                                {% else %}Sede Central{% endif %}
                             </td>
                             <td>
                                 <div class="btn-group">
@@ -521,28 +178,28 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <!-- Selector de tipo de acción -->
-                <div class="action-selector mb-4">
-                    <div class="row g-3">
+                <!-- Selector de tipo de formulario -->
+                <div class="form-type-selector mb-4">
+                    <div class="row">
                         <div class="col-md-6">
-                            <div class="action-option" onclick="selectAction('crear-organizacion')">
-                                <div class="action-icon">
-                                    <i data-feather="building" style="color: #22d3ee;"></i>
+                            <div class="form-option" onclick="selectFormType('organizacion')">
+                                <div class="form-option-icon">
+                                    <i data-feather="building-2" class="text-primary"></i>
                                 </div>
-                                <div class="action-content">
-                                    <h6 class="action-title">Crear Organización</h6>
-                                    <p class="action-description">Crear una nueva organización aliada</p>
+                                <div class="form-option-content">
+                                    <h5 class="form-option-title">Crear Organización</h5>
+                                    <p class="form-option-desc">Registrar una nueva organización aliada</p>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <div class="action-option" onclick="selectAction('agregar-sede')">
-                                <div class="action-icon">
-                                    <i data-feather="map-pin" style="color: #4b5563;"></i>
+                            <div class="form-option" onclick="selectFormType('sede')">
+                                <div class="form-option-icon">
+                                    <i data-feather="map-pin" class="text-success"></i>
                                 </div>
-                                <div class="action-content">
-                                    <h6 class="action-title">Agregar Sede</h6>
-                                    <p class="action-description">Añadir una nueva sede a organización existente</p>
+                                <div class="form-option-content">
+                                    <h5 class="form-option-title">Agregar Sede</h5>
+                                    <p class="form-option-desc">Añadir una nueva sede a organización existente</p>
                                 </div>
                             </div>
                         </div>
@@ -550,359 +207,395 @@
                 </div>
 
                 <!-- Formulario Crear Organización -->
-                <div id="form-crear-organizacion" class="form-container" style="display: none;">
-                    <form id="createOrganizacionForm">
-                        <!-- Datos Organización -->
-                        <div class="form-section">
-                            <h6 class="section-title">Datos Organización</h6>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="orgNombre" class="form-label">Nombre</label>
-                                        <input type="text" class="form-control" id="orgNombre" placeholder="Ej: TechCorp Solutions" required>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="orgIndustria" class="form-label">Industria</label>
-                                        <select class="form-select" id="orgIndustria" required>
-                                            <option value="">Seleccionar industria...</option>
-                                            <option value="Tecnología">Tecnología</option>
-                                            <option value="Finanzas">Finanzas</option>
-                                            <option value="Manufactura">Manufactura</option>
-                                            <option value="Servicios">Servicios</option>
-                                            <option value="Salud">Salud</option>
-                                            <option value="Educación">Educación</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="orgEstado" class="form-label">Estado</label>
-                                        <select class="form-select" id="orgEstado" required>
-                                            <option value="">Seleccionar estado...</option>
-                                            <option value="activo">Activo</option>
-                                            <option value="inactivo">Inactivo</option>
-                                            <option value="pendiente">Pendiente</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="orgContactoPrincipal" class="form-label">Contacto Principal <small class="text-muted">(número de contacto principal)</small></label>
-                                        <input type="tel" class="form-control" id="orgContactoPrincipal" placeholder="+52 55 1234 5678" required>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="orgTamano" class="form-label">Tamaño</label>
-                                        <select class="form-select" id="orgTamano" required>
-                                            <option value="">Seleccionar tamaño...</option>
-                                            <option value="Pequeña">Pequeña</option>
-                                            <option value="Mediana">Mediana</option>
-                                            <option value="Grande">Grande</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="orgEmpleados" class="form-label">Empleados <small class="text-muted">(cantidad de empleados)</small></label>
-                                        <input type="number" class="form-control" id="orgEmpleados" placeholder="150" min="1" required>
-                                    </div>
-                                </div>
+                <div id="formOrganizacion" class="form-container" style="display: none;">
+                    <h6 class="form-section-title">Datos de la Organización</h6>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="orgNombre" class="form-label">Nombre</label>
+                                <input type="text" class="form-control" id="orgNombre" placeholder="Nombre de la organización">
                             </div>
                         </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="orgIndustria" class="form-label">Industria</label>
+                                <select class="form-select" id="orgIndustria">
+                                    <option value="">Seleccionar industria...</option>
+                                    <option value="Tecnología">Tecnología</option>
+                                    <option value="Finanzas">Finanzas</option>
+                                    <option value="Manufactura">Manufactura</option>
+                                    <option value="Servicios">Servicios</option>
+                                    <option value="Salud">Salud</option>
+                                    <option value="Educación">Educación</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="orgEstado" class="form-label">Estado</label>
+                                <select class="form-select" id="orgEstado">
+                                    <option value="">Seleccionar estado...</option>
+                                    <option value="activo">Activo</option>
+                                    <option value="inactivo">Inactivo</option>
+                                    <option value="pendiente">Pendiente</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="orgContacto" class="form-label">Contacto Principal</label>
+                                <input type="text" class="form-control" id="orgContacto" placeholder="Número de contacto principal">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="orgTamano" class="form-label">Tamaño</label>
+                                <select class="form-select" id="orgTamano">
+                                    <option value="">Seleccionar tamaño...</option>
+                                    <option value="pequeña">Pequeña</option>
+                                    <option value="mediana">Mediana</option>
+                                    <option value="grande">Grande</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="orgEmpleados" class="form-label">Empleados</label>
+                                <input type="number" class="form-control" id="orgEmpleados" placeholder="Cantidad de empleados" min="1">
+                            </div>
+                        </div>
+                    </div>
 
-                        <!-- Datos Sede -->
-                        <div class="form-section">
-                            <h6 class="section-title">Datos Sede</h6>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="orgRegion" class="form-label">Región</label>
-                                        <select class="form-select" id="orgRegion" required>
-                                            <option value="">Seleccionar región...</option>
-                                            <option value="Norte">Norte</option>
-                                            <option value="Sur">Sur</option>
-                                            <option value="Este">Este</option>
-                                            <option value="Oeste">Oeste</option>
-                                            <option value="Centro">Centro</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="orgDireccion" class="form-label">Dirección</label>
-                                        <input type="text" class="form-control" id="orgDireccion" placeholder="Av. Principal 123, Col. Centro" required>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="mb-3">
-                                        <label for="orgCiudad" class="form-label">Ciudad</label>
-                                        <input type="text" class="form-control" id="orgCiudad" placeholder="Ciudad de México" required>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="mb-3">
-                                        <label for="orgCodigoPostal" class="form-label">Código Postal</label>
-                                        <input type="text" class="form-control" id="orgCodigoPostal" placeholder="12345" required>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="mb-3">
-                                        <label for="orgPais" class="form-label">País</label>
-                                        <select class="form-select" id="orgPais" required>
-                                            <option value="">Seleccionar país...</option>
-                                            <option value="México">México</option>
-                                            <option value="Estados Unidos">Estados Unidos</option>
-                                            <option value="Colombia">Colombia</option>
-                                            <option value="Perú">Perú</option>
-                                            <option value="Argentina">Argentina</option>
-                                            <option value="Chile">Chile</option>
-                                            <option value="Brasil">Brasil</option>
-                                        </select>
-                                    </div>
-                                </div>
+                    <h6 class="form-section-title">Datos de la Sede</h6>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="orgRegion" class="form-label">Región</label>
+                                <select class="form-select" id="orgRegion">
+                                    <option value="">Seleccionar región...</option>
+                                    <option value="Norte">Norte</option>
+                                    <option value="Sur">Sur</option>
+                                    <option value="Este">Este</option>
+                                    <option value="Oeste">Oeste</option>
+                                    <option value="Centro">Centro</option>
+                                </select>
                             </div>
                         </div>
-                    </form>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="orgDireccion" class="form-label">Dirección</label>
+                                <input type="text" class="form-control" id="orgDireccion" placeholder="Dirección completa">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="orgCiudad" class="form-label">Ciudad</label>
+                                <input type="text" class="form-control" id="orgCiudad" placeholder="Ciudad">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="orgCodigoPostal" class="form-label">Código Postal</label>
+                                <input type="text" class="form-control" id="orgCodigoPostal" placeholder="Código postal">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="orgPais" class="form-label">País</label>
+                                <input type="text" class="form-control" id="orgPais" placeholder="País">
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Formulario Agregar Sede -->
-                <div id="form-agregar-sede" class="form-container" style="display: none;">
-                    <form id="addSedeForm">
-                        <div class="form-section">
-                            <h6 class="section-title">Datos de la Sede</h6>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="sedeOrganizacion" class="form-label">Organización</label>
-                                        <select class="form-select" id="sedeOrganizacion" required>
-                                            <option value="">Seleccionar organización...</option>
-                                            <option value="1">Aliado Tech</option>
-                                            <option value="2">Financiera Global</option>
-                                            <option value="3">Industrias Este</option>
-                                            <option value="4">Consultores Sur</option>
-                                            <option value="5">Servicios Oeste</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="sedeRegion" class="form-label">Región</label>
-                                        <select class="form-select" id="sedeRegion" required>
-                                            <option value="">Seleccionar región...</option>
-                                            <option value="Norte">Norte</option>
-                                            <option value="Sur">Sur</option>
-                                            <option value="Este">Este</option>
-                                            <option value="Oeste">Oeste</option>
-                                            <option value="Centro">Centro</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="mb-3">
-                                        <label for="sedeDireccion" class="form-label">Dirección</label>
-                                        <input type="text" class="form-control" id="sedeDireccion" placeholder="Av. Principal 123, Col. Centro" required>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="mb-3">
-                                        <label for="sedeCiudad" class="form-label">Ciudad</label>
-                                        <input type="text" class="form-control" id="sedeCiudad" placeholder="Ciudad de México" required>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="mb-3">
-                                        <label for="sedeCodigoPostal" class="form-label">Código Postal</label>
-                                        <input type="text" class="form-control" id="sedeCodigoPostal" placeholder="12345" required>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="mb-3">
-                                        <label for="sedePais" class="form-label">País</label>
-                                        <select class="form-select" id="sedePais" required>
-                                            <option value="">Seleccionar país...</option>
-                                            <option value="México">México</option>
-                                            <option value="Estados Unidos">Estados Unidos</option>
-                                            <option value="Colombia">Colombia</option>
-                                            <option value="Perú">Perú</option>
-                                            <option value="Argentina">Argentina</option>
-                                            <option value="Chile">Chile</option>
-                                            <option value="Brasil">Brasil</option>
-                                        </select>
-                                    </div>
-                                </div>
+                <div id="formSede" class="form-container" style="display: none;">
+                    <h6 class="form-section-title">Información de la Sede</h6>
+                    <div class="mb-3">
+                        <label for="sedeOrganizacion" class="form-label">Organización</label>
+                        <select class="form-select" id="sedeOrganizacion">
+                            <option value="">Seleccionar organización...</option>
+                            {% for aliado in aliados %}
+                            <option value="{{ aliado.id }}">{{ aliado.nombre }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="sedeRegion" class="form-label">Región</label>
+                                <select class="form-select" id="sedeRegion">
+                                    <option value="">Seleccionar región...</option>
+                                    <option value="Norte">Norte</option>
+                                    <option value="Sur">Sur</option>
+                                    <option value="Este">Este</option>
+                                    <option value="Oeste">Oeste</option>
+                                    <option value="Centro">Centro</option>
+                                </select>
                             </div>
                         </div>
-                    </form>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="sedeDireccion" class="form-label">Dirección</label>
+                                <input type="text" class="form-control" id="sedeDireccion" placeholder="Dirección completa">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="sedeCiudad" class="form-label">Ciudad</label>
+                                <input type="text" class="form-control" id="sedeCiudad" placeholder="Ciudad">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="sedeCodigoPostal" class="form-label">Código Postal</label>
+                                <input type="text" class="form-control" id="sedeCodigoPostal" placeholder="Código postal">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="sedePais" class="form-label">País</label>
+                                <input type="text" class="form-control" id="sedePais" placeholder="País">
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary" id="submitButton" onclick="submitForm()" style="display: none;">Guardar</button>
+                <button type="button" class="btn btn-primary" onclick="submitForm()">Guardar</button>
             </div>
         </div>
     </div>
 </div>
 
-<script>
-let currentAction = null;
+<style>
+.dashboard-section-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
 
-// Inicializar el modal cuando se carga la página
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.action-button {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    border-radius: 8px;
+    padding: 8px 12px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.action-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.filter-form {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 1.5rem;
+}
+
+.filter-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.filter-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #dee2e6;
+}
+
+.avatar-circle {
+    width: 32px;
+    height: 32px;
+    background-color: var(--primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+}
+
+.btn-icon {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #dee2e6;
+    background: white;
+    border-radius: 6px;
+}
+
+.btn-icon:hover {
+    background: #f8f9fa;
+}
+
+.form-type-selector {
+    margin-bottom: 2rem;
+}
+
+.form-option {
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    padding: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.form-option:hover {
+    border-color: #667eea;
+    background: #f8f9ff;
+}
+
+.form-option.active {
+    border-color: #667eea;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.form-option-icon {
+    margin-right: 1rem;
+    font-size: 1.5rem;
+}
+
+.form-option-title {
+    margin: 0 0 0.25rem 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.form-option-desc {
+    margin: 0;
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+.form-container {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 1.5rem;
+}
+
+.form-section-title {
+    color: #667eea;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #e9ecef;
+}
+</style>
+
+<script>
+// Variables globales
+let selectedFormType = null;
+
+// Inicialización cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', function() {
-    // Manejar click del botón de añadir aliado
-    const addButton = document.querySelector('[data-bs-target="#addAliadoModal"]');
-    const modal = document.getElementById('addAliadoModal');
-    
-    if (addButton && modal) {
-        addButton.addEventListener('click', function(e) {
-            e.preventDefault();
-            showModal();
-        });
+    if (typeof feather !== 'undefined') {
+        feather.replace();
     }
-    
-    // Manejar cierre del modal
-    const closeButtons = modal.querySelectorAll('[data-bs-dismiss="modal"]');
-    closeButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            hideModal();
-        });
-    });
-    
-    // Cerrar modal al hacer click fuera de él
-    modal.addEventListener('click', function(e) {
-        if (e.target === modal) {
-            hideModal();
-        }
-    });
+
+    initializeFilters();
 });
 
-function showModal() {
-    const modal = document.getElementById('addAliadoModal');
-    modal.style.display = 'block';
-    modal.classList.add('show');
-    document.body.style.overflow = 'hidden';
-    
-    // Añadir backdrop si no existe
-    if (!document.querySelector('.modal-backdrop')) {
-        const backdrop = document.createElement('div');
-        backdrop.className = 'modal-backdrop fade show';
-        document.body.appendChild(backdrop);
-    }
-    
-    // Resetear estado del modal
-    resetModal();
-}
+// Función para seleccionar tipo de formulario
+function selectFormType(type) {
+    selectedFormType = type;
 
-function hideModal() {
-    const modal = document.getElementById('addAliadoModal');
-    modal.style.display = 'none';
-    modal.classList.remove('show');
-    document.body.style.overflow = 'auto';
-    
-    // Remover backdrop
-    const backdrop = document.querySelector('.modal-backdrop');
-    if (backdrop) {
-        backdrop.remove();
-    }
-    
-    // Resetear modal
-    resetModal();
-}
-
-function resetModal() {
-    // Ocultar todos los formularios
-    document.getElementById('form-crear-organizacion').style.display = 'none';
-    document.getElementById('form-agregar-sede').style.display = 'none';
-    document.getElementById('submitButton').style.display = 'none';
-    
-    // Remover selección de opciones
-    document.querySelectorAll('.action-option').forEach(option => {
-        option.classList.remove('selected');
+    // Remover clase active de todas las opciones
+    document.querySelectorAll('.form-option').forEach(option => {
+        option.classList.remove('active');
     });
-    
-    // Limpiar formularios
-    if (document.getElementById('createOrganizacionForm')) {
-        document.getElementById('createOrganizacionForm').reset();
-    }
-    if (document.getElementById('addSedeForm')) {
-        document.getElementById('addSedeForm').reset();
-    }
-    
-    currentAction = null;
-}
 
-function selectAction(action) {
-    // Remover selección anterior
-    document.querySelectorAll('.action-option').forEach(option => {
-        option.classList.remove('selected');
-    });
-    
+    // Agregar clase active a la opción seleccionada
+    event.currentTarget.classList.add('active');
+
     // Ocultar todos los formularios
-    document.getElementById('form-crear-organizacion').style.display = 'none';
-    document.getElementById('form-agregar-sede').style.display = 'none';
-    
-    // Seleccionar nueva opción
-    event.currentTarget.classList.add('selected');
-    currentAction = action;
-    
-    // Mostrar formulario correspondiente
-    if (action === 'crear-organizacion') {
-        document.getElementById('form-crear-organizacion').style.display = 'block';
-    } else if (action === 'agregar-sede') {
-        document.getElementById('form-agregar-sede').style.display = 'block';
+    document.getElementById('formOrganizacion').style.display = 'none';
+    document.getElementById('formSede').style.display = 'none';
+
+    // Mostrar el formulario correspondiente
+    if (type === 'organizacion') {
+        document.getElementById('formOrganizacion').style.display = 'block';
+    } else if (type === 'sede') {
+        document.getElementById('formSede').style.display = 'block';
     }
-    
-    // Mostrar botón de envío
-    document.getElementById('submitButton').style.display = 'inline-block';
 }
 
+// Función para enviar formulario
 function submitForm() {
-    if (currentAction === 'crear-organizacion') {
-        submitOrganizacionForm();
-    } else if (currentAction === 'agregar-sede') {
-        submitSedeForm();
-    }
-}
-
-function submitOrganizacionForm() {
-    const formData = {
-        tipo: 'organizacion',
-        nombre: document.getElementById('orgNombre').value,
-        industria: document.getElementById('orgIndustria').value,
-        estado: document.getElementById('orgEstado').value,
-        contacto_principal: document.getElementById('orgContactoPrincipal').value,
-        tamano: document.getElementById('orgTamano').value,
-        empleados: document.getElementById('orgEmpleados').value,
-        region: document.getElementById('orgRegion').value,
-        direccion: document.getElementById('orgDireccion').value,
-        ciudad: document.getElementById('orgCiudad').value,
-        codigo_postal: document.getElementById('orgCodigoPostal').value,
-        pais: document.getElementById('orgPais').value
-    };
-
-    // Validación básica
-    const requiredFields = ['nombre', 'industria', 'estado', 'contacto_principal', 'tamano', 'empleados', 'region', 'direccion', 'ciudad', 'codigo_postal', 'pais'];
-    const missingFields = requiredFields.filter(field => !formData[field]);
-    
-    if (missingFields.length > 0) {
-        alert('Por favor complete todos los campos requeridos: ' + missingFields.join(', '));
+    if (!selectedFormType) {
+        alert('Por favor selecciona un tipo de formulario');
         return;
     }
 
-    // Enviar datos al servidor
-    fetch('/api/usuarios', {
+    let formData = {
+        tipo: selectedFormType
+    };
+
+    if (selectedFormType === 'organizacion') {
+        formData = {
+            ...formData,
+            nombre: document.getElementById('orgNombre').value,
+            industria: document.getElementById('orgIndustria').value,
+            estado: document.getElementById('orgEstado').value,
+            contacto: document.getElementById('orgContacto').value,
+            tamano: document.getElementById('orgTamano').value,
+            empleados: document.getElementById('orgEmpleados').value,
+            region: document.getElementById('orgRegion').value,
+            direccion: document.getElementById('orgDireccion').value,
+            ciudad: document.getElementById('orgCiudad').value,
+            codigo_postal: document.getElementById('orgCodigoPostal').value,
+            pais: document.getElementById('orgPais').value
+        };
+    } else if (selectedFormType === 'sede') {
+        formData = {
+            ...formData,
+            organizacion: document.getElementById('sedeOrganizacion').value,
+            region: document.getElementById('sedeRegion').value,
+            direccion: document.getElementById('sedeDireccion').value,
+            ciudad: document.getElementById('sedeCiudad').value,
+            codigo_postal: document.getElementById('sedeCodigoPostal').value,
+            pais: document.getElementById('sedePais').value
+        };
+    }
+
+    console.log('Datos del formulario:', formData);
+
+    // Enviar datos al servidor (simulado)
+    fetch('/api/aliados', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -912,61 +605,83 @@ function submitOrganizacionForm() {
     .then(response => response.json())
     .then(data => {
         if (data.status === 'success') {
-            alert('Organización creada exitosamente');
-            hideModal();
-            window.location.reload();
+            alert('Datos guardados exitosamente');
+            // Cerrar modal y recargar página
+            const modal = bootstrap.Modal.getInstance(document.getElementById('addAliadoModal'));
+            modal.hide();
+            location.reload();
         } else {
-            alert('Error al crear organización: ' + (data.message || 'Error desconocido'));
+            alert('Error al guardar: ' + data.message);
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('Error al conectar con el servidor');
+        alert('Error al enviar los datos');
     });
 }
 
-function submitSedeForm() {
-    const formData = {
-        tipo: 'sede',
-        organizacion: document.getElementById('sedeOrganizacion').value,
-        region: document.getElementById('sedeRegion').value,
-        direccion: document.getElementById('sedeDireccion').value,
-        ciudad: document.getElementById('sedeCiudad').value,
-        codigo_postal: document.getElementById('sedeCodigoPostal').value,
-        pais: document.getElementById('sedePais').value
-    };
+// Función para inicializar filtros
+function initializeFilters() {
+    const filterForm = document.getElementById('filterForm');
+    const table = document.getElementById('aliadosTable');
+    const tableRows = table.querySelectorAll('tbody tr');
 
-    // Validación básica
-    const requiredFields = ['organizacion', 'region', 'direccion', 'ciudad', 'codigo_postal', 'pais'];
-    const missingFields = requiredFields.filter(field => !formData[field]);
-    
-    if (missingFields.length > 0) {
-        alert('Por favor complete todos los campos requeridos: ' + missingFields.join(', '));
-        return;
-    }
-
-    // Enviar datos al servidor
-    fetch('/api/usuarios', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData)
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.status === 'success') {
-            alert('Sede agregada exitosamente');
-            hideModal();
-            window.location.reload();
-        } else {
-            alert('Error al agregar sede: ' + (data.message || 'Error desconocido'));
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('Error al conectar con el servidor');
+    // Agregar event listeners a todos los campos de filtro
+    const filterInputs = filterForm.querySelectorAll('input, select');
+    filterInputs.forEach(input => {
+        input.addEventListener('input', applyFilters);
+        input.addEventListener('change', applyFilters);
     });
+
+    // Event listener para el botón de limpiar
+    filterForm.addEventListener('reset', function() {
+        setTimeout(applyFilters, 10); // Pequeño delay para que se limpien los campos
+    });
+
+    // Event listener para el formulario
+    filterForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        applyFilters();
+    });
+
+    function applyFilters() {
+        const filters = {
+            nombre: filterForm.querySelector('[name="nombre"]').value.toLowerCase(),
+            industria: filterForm.querySelector('[name="industria"]').value.toLowerCase(),
+            estado: filterForm.querySelector('[name="estado"]').value.toLowerCase(),
+            region: filterForm.querySelector('[name="region"]').value.toLowerCase(),
+            subregion: filterForm.querySelector('[name="subregion"]').value.toLowerCase(),
+            pais: filterForm.querySelector('[name="pais"]').value.toLowerCase()
+        };
+
+        tableRows.forEach(row => {
+            const rowData = {
+                nombre: row.cells[0].textContent.toLowerCase(),
+                industria: row.cells[1].textContent.toLowerCase(),
+                estado: row.cells[2].textContent.toLowerCase(),
+                region: row.cells[3].textContent.toLowerCase(),
+                subregion: row.cells[4].textContent.toLowerCase(),
+                pais: row.cells[5].textContent.toLowerCase()
+            };
+
+            let showRow = true;
+
+            // Aplicar cada filtro
+            Object.keys(filters).forEach(key => {
+                if (filters[key] && !rowData[key].includes(filters[key])) {
+                    showRow = false;
+                }
+            });
+
+            // Mostrar u ocultar la fila
+            row.style.display = showRow ? '' : 'none';
+        });
+
+        // Actualizar contador de resultados
+        const visibleRows = Array.from(tableRows).filter(row => row.style.display !== 'none');
+        console.log(`Mostrando ${visibleRows.length} de ${tableRows.length} aliados`);
+    }
 }
 </script>
+
 {% endblock %}
