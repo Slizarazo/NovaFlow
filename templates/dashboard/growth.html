@@ -384,8 +384,20 @@
                 <span class="info-value">María Carmen Rodríguez</span>
             </div>
             <div class="info-row">
+                <span class="info-label">Email:</span>
+                <span class="info-value">maria.rodriguez@consultant.com</span>
+            </div>
+            <div class="info-row">
                 <span class="info-label">Especialidad:</span>
                 <span class="info-value">Transformación Digital</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Teléfono:</span>
+                <span class="info-value">+52 55 1234 5678</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">LinkedIn:</span>
+                <span class="info-value">linkedin.com/in/mariacarmen-rodriguez</span>
             </div>
             <div class="info-row">
                 <span class="info-label">Nivel:</span>
@@ -821,8 +833,23 @@ function saveEdit(sectionId) {
                 case 'LinkedIn':
                     formData.linkedin = value;
                     break;
-                case 'Ubicación':
-                    formData.ubicacion = value;
+                case 'Especialidad':
+                    formData.especialidad = value;
+                    break;
+                case 'Nivel':
+                    formData.nivel = value;
+                    break;
+                case 'Dirección':
+                    formData.direccion = value;
+                    break;
+                case 'Ciudad':
+                    formData.ciudad = value;
+                    break;
+                case 'Código Postal':
+                    formData.codigo_postal = value;
+                    break;
+                case 'País':
+                    formData.pais = value;
                     break;
             }
         }
