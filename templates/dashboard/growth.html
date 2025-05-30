@@ -385,6 +385,7 @@
     gap: 1rem;
     border-bottom-left-radius: 16px;
     border-bottom-right-radius: 16px;
+    flex-shrink: 0;
 }
 
 .modal-footer .btn {
@@ -854,12 +855,12 @@
 <!-- Modal para Agregar Experiencia Profesional -->
 <div class="modal fade" id="addExperienceModal" tabindex="-1" aria-labelledby="addExperienceModalLabel" aria-hidden="true" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(0, 0, 0, 0.5); z-index: 1055; display: none; align-items: center; justify-content: center;">
     <div class="modal-dialog" style="max-width: 40vw; width: 40vw; margin: 0; position: relative;">
-        <div class="modal-content" style="border: none; border-radius: 16px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); background: white; overflow: hidden; max-height: 85vh; overflow-y: auto;"
+        <div class="modal-content" style="border: none; border-radius: 16px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); background: white; overflow: hidden; max-height: 65vh; display: flex; flex-direction: column;"
             <div class="modal-header">
                 <h5 class="modal-title" id="addExperienceModalLabel">Agregar Experiencia Profesional</h5>
                 <button type="button" class="btn-close" onclick="closeAddExperienceModal()" aria-label="Close">×</button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body" style="overflow-y: auto; flex: 1; max-height: calc(65vh - 140px);">
                 <form id="addExperienceForm">
                     <div class="mb-3">
                         <label for="expPuesto" class="form-label">Puesto</label>
