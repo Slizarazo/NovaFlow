@@ -353,10 +353,9 @@
                         <label class="form-label">Industria</label>
                         <select class="form-select" name="industria">
                             <option value="">Todas</option>
-                            <option value="Tecnología">Tecnología</option>
-                            <option value="Finanzas">Finanzas</option>
-                            <option value="Manufactura">Manufactura</option>
-                            <option value="Servicios">Servicios</option>
+                            {% for i in industrias %}
+                            <option value="{{ i[0] }}">{{ i[1] }}</option>
+                            {% endfor %}
                         </select>
                     </div>
                     <div class="filter-group">
@@ -486,12 +485,9 @@
                                     <label for="aliadoIndustria" class="form-label">Industria</label>
                                     <select class="form-select" id="aliadoIndustria" required>
                                         <option value="">Seleccionar industria...</option>
-                                        <option value="Tecnología">Tecnología</option>
-                                        <option value="Finanzas">Finanzas</option>
-                                        <option value="Manufactura">Manufactura</option>
-                                        <option value="Servicios">Servicios</option>
-                                        <option value="Salud">Salud</option>
-                                        <option value="Educación">Educación</option>
+                                        {% for i in industrias %}
+                                        <option value="{{ i[0] }}">{{ i[1] }}</option>
+                                        {% endfor %}
                                     </select>
                                 </div>
                             </div>

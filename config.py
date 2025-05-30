@@ -1,4 +1,15 @@
 import os
+import mysql.connector
+
+def workbench_db(table='nova_flow'):
+    mydb = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        passwd="",
+        database=table
+    )
+
+    return mydb
 
 class Config:
     SECRET_KEY = os.environ.get('SESSION_SECRET', 'dev-secret-key')
@@ -82,3 +93,5 @@ class Config:
         'white': '#ffffff',
         'black': '#000000'
     }
+
+

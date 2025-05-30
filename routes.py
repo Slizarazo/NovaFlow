@@ -4,8 +4,10 @@ from functools import reduce
 from flask_login import login_user, logout_user, login_required, current_user
 from app import app
 from models import User, Aliado, Proyecto, Consultor, DatosDashboard
+from models import Usuario, Organizaciones, Industria, Colaborador
 from config import Config
 from graphs import *
+from datetime import datetime
 import logging, json
 
 # Importamos los datos de demostración extendidos
@@ -580,8 +582,12 @@ def dashboard_community():
 @login_required
 def aliados_usuarios():
     users = User.get_all_users() if hasattr(User, 'get_all_users') else []
+    industrias = Industria.get_all()
+    organizaciones = Usuario.get_organizaciones()
     return render_template('aliados/usuarios.html',
                          title='Gestión de Usuarios',
+                         industrias=industrias,
+                         organizaciones=organizaciones,
                          users=users,
                          config=app.config,
                          role=current_user.role)
@@ -600,35 +606,29 @@ def create_user():
         print(f"Tipo de usuario: {tipo}")
 
         if tipo == 'gestor':
-            print("Datos del gestor:")
-            print(f"  - Nombre: {data.get('nombre')}")
-            print(f"  - Email: {data.get('email')}")
-            print(f"  - Teléfono: {data.get('telefono')}")
-            print(f"  - Departamento: {data.get('departamento')}")
-            print(f"  - Cargo: {data.get('cargo')}")
+            nuevo_usuario = Usuario(data.get('nombre_completo'), data.get('nombre_organizacion'),  data.get('correo'), "Dnova%2025", 2, "activo", None)
+            id_usuario = nuevo_usuario.create()
 
         elif tipo == 'aliado':
-            print("Datos del aliado:")
-            print(f"  - Nombre Empresa: {data.get('nombreEmpresa')}")
-            print(f"  - Email: {data.get('email')}")
-            print(f"  - Teléfono: {data.get('telefono')}")
-            print(f"  - Contacto Principal: {data.get('contactoPrincipal')}")
-            print(f"  - Industria: {data.get('industria')}")
-            print(f"  - Dirección: {data.get('direccion')}")
-            print(f"  - Ciudad: {data.get('ciudad')}")
-            print(f"  - País: {data.get('pais')}")
+            fecha_registro = datetime.now().strftime('%y/%m/%d %H:%M:%S')
+            correo = data.get('correo')
+            
+            nuevo_usuario = Usuario(data.get('nombre_completo'), data.get('nombre_organizacion'), correo, "Dnova%2025", 1, "activo", None)
+            id_usuario = nuevo_usuario.create()
+
+            nuevo_aliado = Organizaciones(id_usuario, data.get('region'), data.get('industria'), fecha_registro, "activo", data.get('contacto_principal'), data.get('tamano'), data.get('empleados'), data.get('direccion'), data.get('ciudad'), data.get('estado_dir'), data.get('codigo_postal'), data.get('pais'))
+            nuevo_aliado.create()
 
         elif tipo == 'empleado':
-            print("Datos del empleado:")
-            print(f"  - Nombre: {data.get('nombre')}")
-            print(f"  - Email: {data.get('email')}")
-            print(f"  - Teléfono: {data.get('telefono')}")
-            print(f"  - Puesto: {data.get('puesto')}")
-            print(f"  - Departamento: {data.get('departamento')}")
-            print(f"  - Salario: {data.get('salario')}")
-            print(f"  - Fecha Ingreso: {data.get('fechaIngreso')}")
+            organizacion = Usuario.get_by_id(data.get('nombreOrganizacion'))
+            nuevo_usuario = Usuario(data.get('nombre'), organizacion[2],  data.get('correo'), "Dnova%2025", 5, "activo", None)
+            id_usuario = nuevo_usuario.create()
+
+            nuevo_colaborador = Colaborador(id_usuario, organizacion[0], data.get('cargo'), data.get('rol_laboral'))
+            nuevo_colaborador.create()
 
         elif tipo == 'freelance':
+            
             print("Datos del freelance:")
             print(f"  - Nombre: {data.get('nombre')}")
             print(f"  - Email: {data.get('email')}")
@@ -667,6 +667,7 @@ def create_proyecto():
     except Exception as e:
         app.logger.error(f"Error al crear proyecto: {str(e)}")
         return jsonify({'status': 'error', 'message': str(e)}), 500
+
 @app.route('/api/productos', methods=['POST'])
 @login_required
 def create_product():
@@ -830,9 +831,12 @@ def aliados_aliados():
         ventas_por_region = None
         app.logger.info("Usando datos estándar para cuentas de aliados")
 
+    industrias = Industria.get_all()
+
     return render_template(
         'aliados/aliados.html',
         title='Cuentas de Aliados',
+        industrias=industrias,
         aliados=aliados,
         config=app.config,
         role=current_user.role,
@@ -1029,6 +1033,7 @@ def internal_server_error(e):
                            title='Error interno del servidor',
                            config=app.config,
                            role=None), 500
+
 @app.route('/proyectos/calculadora', methods=['GET', 'POST'])
 @login_required
 def proyectos_calculadora():

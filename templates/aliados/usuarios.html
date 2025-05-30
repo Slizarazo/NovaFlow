@@ -1,6 +1,7 @@
 {% extends "layout.html" %}
 
 {% block content %}
+
 <div class="container-fluid">
     <!-- Header with action buttons -->
     <div class="dashboard-section-title">
@@ -459,38 +460,35 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="aliadoCorreo" class="form-label">Correo</label>
-                                    <input type="email" class="form-control" id="aliadoCorreo">
+                                    <label for="aliadoNombreOrganizacion" class="form-label">Nombre Organización</label>
+                                    <input type="text" class="form-control" id="aliadoNombreOrganizacion">
                                 </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="aliadoCorreo" class="form-label">Correo</label>
+                                <input type="email" class="form-control" id="aliadoCorreo">
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="aliadoRegion" class="form-label">Región</label>
-                                    <select class="form-select" id="aliadoRegion">
-                                        <option value="">Seleccionar...</option>
-                                        <option value="Norte">Norte</option>
-                                        <option value="Sur">Sur</option>
-                                        <option value="Este">Este</option>
-                                        <option value="Oeste">Oeste</option>
-                                        <option value="Centro">Centro</option>
-                                    </select>
-                                </div>
+                            <div class="mb-3">
+                                <label for="aliadoRegion" class="form-label">Región</label>
+                                <select class="form-select" id="aliadoRegion">
+                                    <option value="">Seleccionar...</option>
+                                    <option value="Norte">Norte</option>
+                                    <option value="Sur">Sur</option>
+                                    <option value="Este">Este</option>
+                                    <option value="Oeste">Oeste</option>
+                                    <option value="Centro">Centro</option>
+                                </select>
                             </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="aliadoIndustria" class="form-label">Industria</label>
-                                    <select class="form-select" id="aliadoIndustria">
-                                        <option value="">Seleccionar...</option>
-                                        <option value="Tecnología">Tecnología</option>
-                                        <option value="Finanzas">Finanzas</option>
-                                        <option value="Manufactura">Manufactura</option>
-                                        <option value="Servicios">Servicios</option>
-                                        <option value="Salud">Salud</option>
-                                        <option value="Educación">Educación</option>
-                                    </select>
-                                </div>
+                            <div class="mb-3">
+                                <label for="aliadoIndustria" class="form-label">Industria</label>
+                                <select id="aliadoIndustria" placeholder="Seleccionar...">
+                                <option value="">Seleccionar...</option>
+                                {% for i in industrias %}
+                                    <option value="{{ i[0] }}">{{ i[1] }} ({{ i[2] }})</option>
+                                {% endfor %}
+                                </select>
                             </div>
                         </div>
                         <div class="row">
@@ -550,16 +548,30 @@
                     <!-- Formulario Empleado -->
                     <div id="empleadoForm" class="user-form" style="display: none;">
                         <h6>Información del Empleado</h6>
-                        <div class="mb-3">
-                            <label for="empleadoAliado" class="form-label">Aliado</label>
-                            <select class="form-select" id="empleadoAliado">
-                                <option value="">Seleccionar...</option>
-                                <option value="1">Aliado Tech</option>
-                                <option value="2">Financiera Global</option>
-                                <option value="3">Industrias Este</option>
-                                <option value="4">Consultores Sur</option>
-                                <option value="5">Servicios Oeste</option>
-                            </select>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="empleadoNombre" class="form-label">Nombre Completo</label>
+                                    <input type="text" class="form-control" id="empleadoNombre">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="empleadoNombreOrganizacion" class="form-label">Nombre Organización</label>
+                                    <select class="form-select" id="empleadoNombreOrganizacion">
+                                        <option value="">Seleccionar...</option>
+                                        {% for org in organizaciones %}
+                                        {% if org[1] != "Deepnova" %}
+                                        <option value="{{ org[0] }}">{{ org[1] }}</option>
+                                        {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="empleadoCorreo" class="form-label">Correo</label>
+                                <input type="email" class="form-control" id="empleadoCorreo">
+                            </div>
                         </div>
                         <div class="row">
                             <div class="col-md-6">
@@ -571,14 +583,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="empleadoRol" class="form-label">Rol Laboral</label>
-                                    <select class="form-select" id="empleadoRol">
-                                        <option value="">Seleccionar...</option>
-                                        <option value="Supervisor">Supervisor</option>
-                                        <option value="Consultor">Consultor</option>
-                                        <option value="Analista">Analista</option>
-                                        <option value="Gerente">Gerente</option>
-                                        <option value="Coordinador">Coordinador</option>
-                                    </select>
+                                   <input type="text" class="form-control" id="empleadoRol">
                                 </div>
                             </div>
                         </div>
@@ -653,6 +658,20 @@
         </div>
     </div>
 </div>
+
+<link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
+
+<!-- Inicialización -->
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    new TomSelect("#aliadoIndustria", {
+      create: false,
+      allowEmptyOption: true,
+      placeholder: 'Buscar industria...'
+    });
+  });
+</script>
 
 <script>
 // Esperar a que el DOM esté completamente cargado
@@ -776,6 +795,7 @@ function submitUserForm() {
         userData.nombre_organizacion = organizacion ? organizacion.value : '';
     } else if (userType === 'aliado') {
         userData.nombre_completo = document.getElementById('aliadoNombre')?.value || '';
+        userData.nombre_organizacion = document.getElementById('aliadoNombreOrganizacion')?.value || '';
         userData.correo = document.getElementById('aliadoCorreo')?.value || '';
         userData.region = document.getElementById('aliadoRegion')?.value || '';
         userData.industria = document.getElementById('aliadoIndustria')?.value || '';
@@ -788,7 +808,9 @@ function submitUserForm() {
         userData.codigo_postal = document.getElementById('aliadoCodigoPostal')?.value || '';
         userData.pais = document.getElementById('aliadoPais')?.value || '';
     } else if (userType === 'empleado') {
-        userData.aliado = document.getElementById('empleadoAliado')?.value || '';
+        userData.nombre = document.getElementById('empleadoNombre')?.value || '';
+        userData.nombreOrganizacion = document.getElementById('empleadoNombreOrganizacion')?.value || '';
+        userData.correo = document.getElementById('empleadoCorreo')?.value || '';
         userData.cargo = document.getElementById('empleadoCargo')?.value || '';
         userData.rol_laboral = document.getElementById('empleadoRol')?.value || '';
     } else if (userType === 'freelance') {

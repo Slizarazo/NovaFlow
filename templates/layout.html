@@ -30,6 +30,9 @@
         <!-- Feather Icons -->
         <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
 
+        <!-- Select2 CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
         <!-- Page specific head content -->
         {% block head %}{% endblock %}
     </head>
@@ -196,43 +199,49 @@
                 <div class="text-center mb-4 d-none d-lg-block"></div>
 
                 <!-- Navegación dinámica basada en roles (definida directamente en la plantilla) -->
-                {% if role == 'gestor' %} {% set navigation = [ {'name':
-                'Dashboard', 'icon': 'home', 'url': '/dashboard', 'submenu': [
-                {'name': 'Crecimiento', 'url': '/dashboard/growth'}, {'name':
-                'Desempeño', 'url': '/dashboard/performance'}, {'name':
-                'Comunidad', 'url': '/dashboard/community'} ]}, {'name':
-                'Aliados', 'icon': 'users', 'url': '/aliados', 'submenu': [
-                {'name': 'Usuarios', 'url': '/aliados/usuarios'}, {'name':
-                'Aliados', 'url': '/aliados/aliados'}, {'name': 'Portafolio',
-                'url': '/aliados/portfolio'}, {'name': 'Asignaciones', 'url':
-                '/aliados/asignaciones'} ]} ] %} {% elif role == 'aliado' %} {%
-                set navigation = [ {'name': 'Inicio', 'icon': 'home', 'url':
-                '/dashboard/growth', 'submenu': []}, {'name': 'Dashboards',
-                'icon': 'activity', 'url': '/dashboard', 'submenu': [ {'name':
-                'Crecimiento', 'url': '/dashboard/crecimiento'}, {'name':
-                'Proyectos', 'url': '/dashboard/proyectos'}, {'name': 'Cuentas',
-                'url': '/dashboard/cuentas'}, {'name': 'Productividad', 'url':
-                '/dashboard/productividad'}, {'name': 'Facturación', 'url':
-                '/dashboard/facturacion'}, {'name': 'Riesgos', 'url':
-                '/dashboard/riesgos'} ]}, {'name': 'Proyectos', 'icon':
-                'briefcase', 'url': '/proyectos', 'submenu': [ {'name':
-                'General', 'url': '/proyectos/general'}]}, {'name': 'Cuentas',
-                'icon': 'users', 'url': '/cuentas', 'submenu': [ {'name':
-                'Clientes', 'url': '/cuentas/clientes'}, {'name': 'Usuarios',
-                'url': '/cuentas/usuarios'} ]} ] %} {% elif role == 'supervisor'
-                %} {% set navigation = [ {'name': 'Inicio', 'icon': 'home',
-                'url': '/dashboard'}, {'name': 'Proyectos', 'icon': 'briefcase',
-                'url': '/proyectos', 'submenu': [ {'name': 'Planificación',
-                'url': '/proyectos/calculadora'}, {'name': 'Estimaciones',
-                'url': '/proyectos/estimaciones'} ]}, {'name': 'Consultores',
-                'icon': 'user-check', 'url': '/consultores', 'submenu': [
-                {'name': 'Propuestas', 'url': '/consultores/propuestas'},
-                {'name': 'Activos', 'url': '/consultores/activos'} ]} ] %} {%
-                elif role == 'consultor' %} {% set navigation = [ {'name':
-                'Dashboard', 'icon': 'home', 'url': '/dashboard'}, {'name': 'Mis
-                Proyectos', 'icon': 'briefcase', 'url': '/mis-proyectos'},
-                {'name': 'Tareas', 'icon': 'check-square', 'url': '/tareas'} ]
-                %} {% else %} {% set navigation = [] %} {% endif %}
+                {% if role == 'gestor' %} 
+                {% set navigation = [ 
+                    {'name': 'Dashboard', 'icon': 'home', 'url': '/dashboard', 'submenu': [
+                        {'name': 'Crecimiento', 'url': '/dashboard/growth'}, 
+                        {'name': 'Desempeño', 'url': '/dashboard/performance'}, 
+                        {'name': 'Comunidad', 'url': '/dashboard/community'} ]}, 
+                    {'name': 'Aliados', 'icon': 'users', 'url': '/aliados', 'submenu': [
+                        {'name': 'Usuarios', 'url': '/aliados/usuarios'}, 
+                        {'name': 'Aliados', 'url': '/aliados/aliados'}, 
+                        {'name': 'Portafolio', 'url': '/aliados/portfolio'},
+                        {'name': 'Asignaciones', 'url': '/aliados/asignaciones'} ]} ] %} 
+                
+                {% elif role == 'aliado' %} 
+                {% set navigation = [ 
+                    {'name': 'Inicio', 'icon': 'home', 'url': '/dashboard/growth', 'submenu': []},
+                    {'name': 'Dashboards', 'icon': 'activity', 'url': '/dashboard', 'submenu': [ 
+                        {'name': 'Crecimiento', 'url': '/dashboard/crecimiento'}, 
+                        {'name': 'Proyectos', 'url': '/dashboard/proyectos'},
+                        {'name': 'Cuentas', 'url': '/dashboard/cuentas'},
+                        {'name': 'Productividad', 'url': '/dashboard/productividad'},
+                        {'name': 'Facturación', 'url': '/dashboard/facturacion'}, 
+                        {'name': 'Riesgos', 'url': '/dashboard/riesgos'} ]}, 
+                    {'name': 'Proyectos', 'icon': 'briefcase', 'url': '/proyectos', 'submenu': [ 
+                        {'name': 'General', 'url': '/proyectos/general'}]},
+                    {'name': 'Cuentas', 'icon': 'users', 'url': '/cuentas', 'submenu': [ 
+                        {'name': 'Clientes', 'url': '/cuentas/clientes'},
+                        {'name': 'Usuarios', 'url': '/cuentas/usuarios'} ]} ] %} 
+                {% elif role == 'supervisor' %} 
+                {% set navigation = [ 
+                    {'name': 'Inicio', 'icon': 'home', 'url': '/dashboard'},
+                    {'name': 'Proyectos', 'icon': 'briefcase', 'url': '/proyectos', 'submenu': [ 
+                        {'name': 'Planificación', 'url': '/proyectos/calculadora'},
+                        {'name': 'Estimaciones', 'url': '/proyectos/estimaciones'} ]},
+                    {'name': 'Consultores', 'icon': 'user-check', 'url': '/consultores', 'submenu': [
+                        {'name': 'Propuestas', 'url': '/consultores/propuestas'},
+                        {'name': 'Activos', 'url': '/consultores/activos'} ]} ] %} 
+                {% elif role == 'consultor' %} 
+                {% set navigation = [ 
+                    {'name': 'Dashboard', 'icon': 'home', 'url': '/dashboard'},
+                    {'name': 'Mis Proyectos', 'icon': 'briefcase', 'url': '/mis-proyectos'},
+                    {'name': 'Tareas', 'icon': 'check-square', 'url': '/tareas'} ] %} 
+                {% else %} {% set navigation = [] %}
+                {% endif %}
 
                 <!-- Loop through main menu items -->
                 {% for item in navigation %} {% if item.submenu %}
