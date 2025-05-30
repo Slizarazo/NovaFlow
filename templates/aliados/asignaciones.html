@@ -52,6 +52,34 @@
     max-height: 90vh;
     overflow-y: auto;
 }
+
+/* Modern action buttons matching aliados.html */
+.dashboard-section-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.action-button {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    border-radius: 8px;
+    padding: 8px 12px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.action-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
 </style>
 {% endblock %}
 
@@ -59,14 +87,14 @@
 <div class="dashboard-container">
     <div class="dashboard-section-title">
         <h4>Asignaciones de Consultores</h4>
-        <div class="dashboard-section-actions">
-            <button type="button" class="dashboard-section-action" data-bs-toggle="modal" data-bs-target="#addAssignmentModal" title="Nueva Asignación">
+        <div class="action-buttons">
+            <button type="button" class="action-button" data-bs-toggle="modal" data-bs-target="#addAssignmentModal" title="Nueva Asignación">
                 <i data-feather="plus"></i>
             </button>
-            <button type="button" class="dashboard-section-action" data-bs-toggle="modal" data-bs-target="#importAssignmentModal" title="Importar">
+            <button type="button" class="action-button" data-bs-toggle="modal" data-bs-target="#importAssignmentModal" title="Importar">
                 <i data-feather="upload"></i>
             </button>
-            <button type="button" class="dashboard-section-action" data-bs-toggle="modal" data-bs-target="#exportAssignmentModal" title="Exportar">
+            <button type="button" class="action-button" data-bs-toggle="modal" data-bs-target="#exportAssignmentModal" title="Exportar">
                 <i data-feather="download"></i>
             </button>
         </div>
@@ -419,7 +447,7 @@
             // Buscar por múltiples selectores
             const addAssignmentBtn = document.querySelector('[data-bs-target="#addAssignmentModal"]') || 
                                    document.querySelector('button[title="Nueva Asignación"]') ||
-                                   document.querySelector('.dashboard-section-action[title="Nueva Asignación"]');
+                                   document.querySelector('.action-button[title="Nueva Asignación"]');
             
             console.log('Botón encontrado:', addAssignmentBtn);
             
