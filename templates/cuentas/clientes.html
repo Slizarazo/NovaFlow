@@ -242,13 +242,157 @@
     border-color: #dee2e6;
     transform: translateY(-1px);
 }
+
+/* Estilos adicionales para el modal */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1055;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.modal.show {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-dialog {
+    position: relative;
+    margin: 1.75rem auto;
+    pointer-events: none;
+}
+
+.modal-content {
+    position: relative;
+    pointer-events: auto;
+    background-color: #fff;
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    outline: 0;
+}
+
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1050;
+    width: 100vw;
+    height: 100vh;
+    background-color: #000;
+}
+
+.modal-backdrop.fade {
+    opacity: 0;
+}
+
+.modal-backdrop.show {
+    opacity: 0.5;
+}
+
+.modal-open {
+    overflow: hidden;
+}
 </style>
 
 {% block scripts %}
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         feather.replace();
+        
+        // Inicializar modal de Bootstrap
+        const modal = document.getElementById('addClienteModal');
+        if (modal) {
+            // Asegurar que el modal funcione correctamente
+            modal.addEventListener('show.bs.modal', function () {
+                console.log('Modal se está abriendo');
+            });
+            
+            modal.addEventListener('shown.bs.modal', function () {
+                console.log('Modal abierto completamente');
+                // Enfocar el primer campo
+                const firstInput = modal.querySelector('input[type="text"]');
+                if (firstInput) {
+                    firstInput.focus();
+                }
+            });
+        }
+        
+        // Configurar botón de nuevo cliente
+        const newClientButton = document.querySelector('[data-bs-toggle="modal"][data-bs-target="#addClienteModal"]');
+        if (newClientButton) {
+            newClientButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                console.log('Botón de nuevo cliente clickeado');
+                
+                // Asegurar que Bootstrap esté disponible
+                if (typeof bootstrap !== 'undefined') {
+                    const modalInstance = new bootstrap.Modal(modal);
+                    modalInstance.show();
+                } else {
+                    console.error('Bootstrap no está disponible');
+                    // Fallback manual
+                    modal.style.display = 'block';
+                    modal.classList.add('show');
+                    modal.setAttribute('aria-hidden', 'false');
+                    document.body.classList.add('modal-open');
+                    
+                    // Crear backdrop
+                    const backdrop = document.createElement('div');
+                    backdrop.className = 'modal-backdrop fade show';
+                    document.body.appendChild(backdrop);
+                }
+            });
+        }
+        
+        // Configurar botones de cerrar modal
+        const closeButtons = modal.querySelectorAll('[data-bs-dismiss="modal"], .btn-close');
+        closeButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                closeModal();
+            });
+        });
+        
+        // Cerrar modal al hacer click en el backdrop
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
     });
+    
+    function closeModal() {
+        const modal = document.getElementById('addClienteModal');
+        
+        if (typeof bootstrap !== 'undefined') {
+            const modalInstance = bootstrap.Modal.getInstance(modal);
+            if (modalInstance) {
+                modalInstance.hide();
+            }
+        } else {
+            // Fallback manual
+            modal.style.display = 'none';
+            modal.classList.remove('show');
+            modal.setAttribute('aria-hidden', 'true');
+            document.body.classList.remove('modal-open');
+            
+            // Remover backdrop
+            const backdrop = document.querySelector('.modal-backdrop');
+            if (backdrop) {
+                backdrop.remove();
+            }
+        }
+        
+        // Limpiar formulario
+        document.getElementById('addClienteForm').reset();
+    }
 
     function submitClienteForm() {
         // Obtener datos del formulario
@@ -279,11 +423,7 @@
         .then(data => {
             if (data.status === 'success') {
                 alert('Cliente creado exitosamente');
-                // Cerrar modal
-                const modal = bootstrap.Modal.getInstance(document.getElementById('addClienteModal'));
-                modal.hide();
-                // Limpiar formulario
-                document.getElementById('addClienteForm').reset();
+                closeModal();
                 // Recargar página para mostrar nuevo cliente
                 location.reload();
             } else {
