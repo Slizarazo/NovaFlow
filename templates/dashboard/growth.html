@@ -378,8 +378,43 @@
 
 .btn-close:hover {
     opacity: 0.8;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+}
+
+/* Estilos para los campos del formulario del modal */
+#addExperienceModal .form-control:focus {
+    border-color: #8B5A9D !important;
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(139, 90, 157, 0.15) !important;
+    transform: translateY(-1px);
+}
+
+#addExperienceModal .form-control:hover {
+    border-color: #8B5A9D !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+}
+
+#addExperienceModal .form-check-input:checked {
+    background-color: #8B5A9D;
+    border-color: #8B5A9D;
+}
+
+/* Efectos hover para botones del modal */
+#addExperienceModal button[onclick="closeAddExperienceModal()"]:first-of-type:hover {
+    background: rgba(255, 255, 255, 0.25) !important;
+    transform: translateY(-1px);
+}
+
+#addExperienceModal button[onclick="closeAddExperienceModal()"]:last-of-type:hover {
+    background: #E5E7EB !important;
+    border-color: #D1D5DB !important;
+    transform: translateY(-1px);
+}
+
+#addExperienceModal button[onclick="addExperience()"]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(139, 90, 157, 0.4) !important;
 }
 
 .modal-body {
@@ -866,55 +901,65 @@
 
 <!-- Modal para Agregar Experiencia Profesional -->
 <div class="modal fade" id="addExperienceModal" tabindex="-1" aria-labelledby="addExperienceModalLabel" aria-hidden="true" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(0, 0, 0, 0.5); z-index: 1055; display: none; align-items: center; justify-content: center;">
-    <div class="modal-dialog" style="max-width: 40vw; width: 40vw; margin: 0; position: relative;">
-        <div class="modal-content" style="border: none; border-radius: 16px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); background: white; overflow: hidden; max-height: 65vh; display: flex; flex-direction: column;"
-            <div class="modal-header">
-                <h5 class="modal-title" id="addExperienceModalLabel">Agregar Experiencia Profesional</h5>
-                <button type="button" class="btn-close" onclick="closeAddExperienceModal()" aria-label="Close">×</button>
+    <div class="modal-dialog" style="max-width: 500px; width: 500px; margin: 0; position: relative;">
+        <div class="modal-content" style="border: none; border-radius: 20px; box-shadow: 0 25px 80px rgba(0, 0, 0, 0.4); background: white; overflow: hidden; max-height: 85vh; display: flex; flex-direction: column;">
+            <div class="modal-header" style="background: linear-gradient(135deg, #8B5A9D 0%, #667eea 50%, #764ba2 100%); border-bottom: none; padding: 2rem 2rem 1.5rem 2rem; position: relative;">
+                <div style="display: flex; align-items: center; width: 100%;">
+                    <button type="button" onclick="closeAddExperienceModal()" style="background: rgba(255, 255, 255, 0.15); border: none; border-radius: 8px; padding: 8px 12px; color: white; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; font-weight: 500; transition: all 0.3s ease; margin-right: auto;">
+                        <i data-feather="arrow-left" style="width: 16px; height: 16px;"></i>
+                        Volver a opciones
+                    </button>
+                    <button type="button" class="btn-close" onclick="closeAddExperienceModal()" aria-label="Close" style="background: rgba(255, 255, 255, 0.15); border: none; color: white; font-size: 1.2rem; width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s ease;">×</button>
+                </div>
+                <h5 class="modal-title" id="addExperienceModalLabel" style="color: white; font-size: 1.5rem; font-weight: 600; margin: 1rem 0 0 0; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);">Añadir Usuario</h5>
             </div>
-            <div class="modal-body" style="overflow-y: auto; flex: 1; max-height: calc(65vh - 140px);">
-                <form id="addExperienceForm">
-                    <div class="mb-3">
-                        <label for="expPuesto" class="form-label">Puesto</label>
-                        <input type="text" class="form-control" id="expPuesto" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="expEmpresa" class="form-label">Empresa</label>
-                        <input type="text" class="form-control" id="expEmpresa" required>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="expFechaInicio" class="form-label">Fecha de Inicio</label>
-                                <input type="month" class="form-control" id="expFechaInicio" required>
-                            </div>
+            <div class="modal-body" style="padding: 2rem; overflow-y: auto; flex: 1; max-height: calc(85vh - 180px);">
+                <div style="margin-bottom: 2rem;">
+                    <h6 style="color: #8B5A9D; font-weight: 600; font-size: 1.1rem; margin-bottom: 1.5rem; padding-bottom: 0.5rem; border-bottom: 2px solid #E5E7EB;">Datos de la Experiencia</h6>
+                    
+                    <form id="addExperienceForm">
+                        <div class="mb-3">
+                            <label for="expPuesto" class="form-label" style="font-weight: 600; color: #6B7280; margin-bottom: 0.5rem; font-size: 0.9rem;">Puesto</label>
+                            <input type="text" class="form-control" id="expPuesto" placeholder="Ej. Gerente de Proyectos" required style="padding: 12px 16px; border: 2px solid #E5E7EB; border-radius: 12px; background: white; color: #374151; font-size: 0.95rem; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);">
                         </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="expFechaFin" class="form-label">Fecha de Fin</label>
-                                <input type="month" class="form-control" id="expFechaFin">
-                                <div class="form-check mt-2">
-                                    <input class="form-check-input" type="checkbox" id="expActual">
-                                    <label class="form-check-label" for="expActual">
-                                        Trabajo actual
-                                    </label>
+                        <div class="mb-3">
+                            <label for="expEmpresa" class="form-label" style="font-weight: 600; color: #6B7280; margin-bottom: 0.5rem; font-size: 0.9rem;">Empresa</label>
+                            <input type="text" class="form-control" id="expEmpresa" placeholder="Ej. DeepNova Solutions" required style="padding: 12px 16px; border: 2px solid #E5E7EB; border-radius: 12px; background: white; color: #374151; font-size: 0.95rem; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);">
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="expFechaInicio" class="form-label" style="font-weight: 600; color: #6B7280; margin-bottom: 0.5rem; font-size: 0.9rem;">Fecha de Inicio</label>
+                                    <input type="month" class="form-control" id="expFechaInicio" required style="padding: 12px 16px; border: 2px solid #E5E7EB; border-radius: 12px; background: white; color: #374151; font-size: 0.95rem; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="expFechaFin" class="form-label" style="font-weight: 600; color: #6B7280; margin-bottom: 0.5rem; font-size: 0.9rem;">Fecha de Fin</label>
+                                    <input type="month" class="form-control" id="expFechaFin" style="padding: 12px 16px; border: 2px solid #E5E7EB; border-radius: 12px; background: white; color: #374151; font-size: 0.95rem; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);">
+                                    <div class="form-check mt-2">
+                                        <input class="form-check-input" type="checkbox" id="expActual" style="border-radius: 4px; border: 2px solid #8B5A9D;">
+                                        <label class="form-check-label" for="expActual" style="color: #6B7280; font-size: 0.9rem;">
+                                            Trabajo actual
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="expUbicacion" class="form-label">Ubicación</label>
-                        <input type="text" class="form-control" id="expUbicacion" placeholder="Ciudad, País">
-                    </div>
-                    <div class="mb-3">
-                        <label for="expDescripcion" class="form-label">Descripción</label>
-                        <textarea class="form-control" id="expDescripcion" rows="4" placeholder="Describe tus responsabilidades y logros en este puesto..."></textarea>
-                    </div>
-                </form>
+                        <div class="mb-3">
+                            <label for="expUbicacion" class="form-label" style="font-weight: 600; color: #6B7280; margin-bottom: 0.5rem; font-size: 0.9rem;">Ubicación</label>
+                            <input type="text" class="form-control" id="expUbicacion" placeholder="Ciudad, País" style="padding: 12px 16px; border: 2px solid #E5E7EB; border-radius: 12px; background: white; color: #374151; font-size: 0.95rem; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);">
+                        </div>
+                        <div class="mb-3">
+                            <label for="expDescripcion" class="form-label" style="font-weight: 600; color: #6B7280; margin-bottom: 0.5rem; font-size: 0.9rem;">Descripción</label>
+                            <textarea class="form-control" id="expDescripcion" rows="4" placeholder="Describe tus responsabilidades y logros en este puesto..." style="padding: 12px 16px; border: 2px solid #E5E7EB; border-radius: 12px; background: white; color: #374151; font-size: 0.95rem; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); resize: vertical; min-height: 100px;"></textarea>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" onclick="closeAddExperienceModal()">Cancelar</button>
-                <button type="button" class="btn btn-primary" onclick="addExperience()">Agregar Experiencia</button>
+            <div class="modal-footer" style="background: white; border-top: 1px solid #E5E7EB; padding: 1.5rem 2rem; display: flex; justify-content: flex-end; gap: 1rem; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;">
+                <button type="button" onclick="closeAddExperienceModal()" style="background: #F3F4F6; color: #6B7280; border: 2px solid #E5E7EB; padding: 12px 24px; border-radius: 12px; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: all 0.3s ease;">Cancelar</button>
+                <button type="button" onclick="addExperience()" style="background: linear-gradient(135deg, #8B5A9D 0%, #667eea 100%); color: white; border: none; padding: 12px 24px; border-radius: 12px; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(139, 90, 157, 0.3);">Guardar Usuario</button>
             </div>
         </div>
     </div>
