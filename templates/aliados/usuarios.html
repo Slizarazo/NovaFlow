@@ -1,7 +1,4 @@
-` tags, while adhering to all the specified rules.
 
-```
-<replit_final_file>
 {% extends "layout.html" %}
 
 {% block content %}
@@ -496,171 +493,268 @@
 </style>
 
 <script>
-// Wait for DOM to be loaded
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOM loaded, inicializando página de usuarios');
+    console.log('🚀 Iniciando página de usuarios - versión corregida');
     
-    // Initialize feather icons
+    // Verificar que Bootstrap está disponible
+    if (typeof bootstrap !== 'undefined') {
+        console.log('✅ Bootstrap está disponible');
+    } else {
+        console.error('❌ Bootstrap no está disponible');
+    }
+    
+    // Inicializar iconos de Feather
     if (typeof feather !== 'undefined') {
         feather.replace();
+        console.log('✅ Iconos Feather inicializados');
+    } else {
+        console.warn('⚠️ Feather icons no disponible');
     }
 
-    // Setup filters with direct event listeners
-    setupFilters();
+    // Configurar filtros con verificación robusta
+    initializeFilters();
 });
 
-function setupFilters() {
-    console.log('Configurando filtros');
+function initializeFilters() {
+    console.log('🔧 Inicializando sistema de filtros');
     
-    // Buscar todos los selects de filtro
-    const filterSelects = document.querySelectorAll('#filterOrganizacion, #filterRol, #filterEstado');
-    
-    console.log('Elementos de filtro encontrados:', filterSelects.length);
-    
-    // Agregar event listener a cada filtro
-    filterSelects.forEach(function(select) {
-        if (select) {
-            select.addEventListener('change', function() {
-                console.log('Cambio detectado en filtro:', select.id, 'valor:', this.value);
-                applyFilters();
+    // Esperar un poco más para asegurar que todo esté cargado
+    setTimeout(function() {
+        try {
+            // Buscar elementos de filtro con verificación de existencia
+            const filterElements = {
+                organizacion: document.getElementById('filterOrganizacion'),
+                rol: document.getElementById('filterRol'),
+                estado: document.getElementById('filterEstado')
+            };
+            
+            // Verificar que todos los elementos existen
+            const missingElements = [];
+            Object.keys(filterElements).forEach(key => {
+                if (!filterElements[key]) {
+                    missingElements.push(key);
+                }
             });
-            console.log('Event listener agregado a:', select.id);
+            
+            if (missingElements.length > 0) {
+                console.error('❌ Elementos de filtro no encontrados:', missingElements);
+                return;
+            }
+            
+            console.log('✅ Todos los elementos de filtro encontrados:', Object.keys(filterElements));
+            
+            // Agregar event listeners con manejo de errores
+            Object.keys(filterElements).forEach(key => {
+                const element = filterElements[key];
+                if (element && typeof element.addEventListener === 'function') {
+                    element.addEventListener('change', function() {
+                        console.log(`🔄 Filtro ${key} cambió a:`, this.value);
+                        applyFilters();
+                    });
+                    console.log(`✅ Event listener agregado a filtro: ${key}`);
+                } else {
+                    console.error(`❌ No se pudo agregar event listener a: ${key}`);
+                }
+            });
+            
+            console.log('✅ Sistema de filtros inicializado correctamente');
+            
+        } catch (error) {
+            console.error('❌ Error al inicializar filtros:', error);
         }
-    });
+    }, 500); // Aumentamos el tiempo de espera
 }
 
 function applyFilters() {
-    console.log('Aplicando filtros');
+    console.log('🎯 Aplicando filtros...');
     
-    // Obtener valores de filtros
-    const filterOrganizacion = document.getElementById('filterOrganizacion');
-    const filterRol = document.getElementById('filterRol');
-    const filterEstado = document.getElementById('filterEstado');
-    
-    const organizacionValue = filterOrganizacion ? filterOrganizacion.value : '';
-    const rolValue = filterRol ? filterRol.value : '';
-    const estadoValue = filterEstado ? filterEstado.value : '';
-
-    console.log('Valores de filtros:', {
-        organizacion: organizacionValue,
-        rol: rolValue,
-        estado: estadoValue
-    });
-
-    // Obtener todas las filas de la tabla
-    const tableRows = document.querySelectorAll('#usersTable tbody tr');
-    let visibleCount = 0;
-
-    // Aplicar filtros a cada fila
-    tableRows.forEach(function(row) {
-        const organizacion = row.getAttribute('data-organizacion') || '';
-        const rol = row.getAttribute('data-rol') || '';
-        const estado = row.getAttribute('data-estado') || '';
-
-        // Verificar si la fila coincide con los filtros
-        const matchOrganizacion = organizacionValue === '' || organizacion === organizacionValue;
-        const matchRol = rolValue === '' || rol === rolValue;
-        const matchEstado = estadoValue === '' || estado === estadoValue;
-
-        // Mostrar u ocultar fila según los filtros
-        if (matchOrganizacion && matchRol && matchEstado) {
-            row.style.display = '';
-            visibleCount++;
-        } else {
-            row.style.display = 'none';
+    try {
+        // Obtener valores de filtros con verificación de existencia
+        const getFilterValue = (id) => {
+            const element = document.getElementById(id);
+            return element ? element.value.toLowerCase() : '';
+        };
+        
+        const filterValues = {
+            organizacion: getFilterValue('filterOrganizacion'),
+            rol: getFilterValue('filterRol'),
+            estado: getFilterValue('filterEstado')
+        };
+        
+        console.log('📊 Valores de filtros:', filterValues);
+        
+        // Obtener tabla y filas
+        const table = document.getElementById('usersTable');
+        if (!table) {
+            console.error('❌ Tabla de usuarios no encontrada');
+            return;
         }
-    });
-
-    console.log(`Mostrando ${visibleCount} de ${tableRows.length} usuarios`);
+        
+        const tableRows = table.querySelectorAll('tbody tr');
+        if (tableRows.length === 0) {
+            console.warn('⚠️ No se encontraron filas en la tabla');
+            return;
+        }
+        
+        let visibleCount = 0;
+        let totalRows = tableRows.length;
+        
+        // Procesar cada fila
+        tableRows.forEach((row, index) => {
+            try {
+                // Obtener datos de la fila desde los atributos data-*
+                const rowData = {
+                    organizacion: (row.getAttribute('data-organizacion') || '').toLowerCase(),
+                    rol: (row.getAttribute('data-rol') || '').toLowerCase(),
+                    estado: (row.getAttribute('data-estado') || '').toLowerCase()
+                };
+                
+                // Verificar si la fila coincide con todos los filtros
+                const matches = {
+                    organizacion: filterValues.organizacion === '' || rowData.organizacion === filterValues.organizacion,
+                    rol: filterValues.rol === '' || rowData.rol === filterValues.rol,
+                    estado: filterValues.estado === '' || rowData.estado === filterValues.estado
+                };
+                
+                const showRow = matches.organizacion && matches.rol && matches.estado;
+                
+                // Mostrar u ocultar fila
+                if (showRow) {
+                    row.style.display = '';
+                    visibleCount++;
+                } else {
+                    row.style.display = 'none';
+                }
+                
+                // Log detallado para debugging
+                if (index < 3) { // Solo log las primeras 3 filas para evitar spam
+                    console.log(`📋 Fila ${index + 1}:`, {
+                        data: rowData,
+                        matches: matches,
+                        visible: showRow
+                    });
+                }
+                
+            } catch (rowError) {
+                console.error(`❌ Error procesando fila ${index + 1}:`, rowError);
+                // En caso de error, mostrar la fila
+                row.style.display = '';
+                visibleCount++;
+            }
+        });
+        
+        console.log(`✅ Filtros aplicados: Mostrando ${visibleCount} de ${totalRows} usuarios`);
+        
+        // Mostrar mensaje si no hay resultados
+        if (visibleCount === 0 && (filterValues.organizacion || filterValues.rol || filterValues.estado)) {
+            console.log('🔍 No se encontraron usuarios que coincidan con los filtros');
+        }
+        
+    } catch (error) {
+        console.error('❌ Error al aplicar filtros:', error);
+    }
 }
 
 function showUserModal() {
-    const modal = new bootstrap.Modal(document.getElementById('addUserModal'));
-    modal.show();
+    try {
+        const modal = document.getElementById('addUserModal');
+        if (modal) {
+            const bootstrapModal = new bootstrap.Modal(modal);
+            bootstrapModal.show();
+            console.log('✅ Modal de usuario mostrado');
+        } else {
+            console.error('❌ Modal addUserModal no encontrado');
+        }
+    } catch (error) {
+        console.error('❌ Error al mostrar modal:', error);
+    }
 }
 
 function showUserForm() {
-    const userType = document.getElementById('userType')?.value;
+    try {
+        const userType = document.getElementById('userType')?.value;
+        console.log('🔄 Cambiando tipo de usuario a:', userType);
 
-    // Hide all forms
-    const userForms = document.querySelectorAll('.user-form');
-    userForms.forEach(form => {
-        form.style.display = 'none';
-    });
+        // Ocultar todos los formularios
+        const userForms = document.querySelectorAll('.user-form');
+        userForms.forEach(form => {
+            form.style.display = 'none';
+        });
 
-    // Show selected form
-    if (userType) {
-        const targetForm = document.getElementById(userType + 'Form');
-        if (targetForm) {
-            targetForm.style.display = 'block';
+        // Mostrar formulario seleccionado
+        if (userType) {
+            const targetForm = document.getElementById(userType + 'Form');
+            if (targetForm) {
+                targetForm.style.display = 'block';
+                console.log(`✅ Formulario ${userType} mostrado`);
+            } else {
+                console.error(`❌ Formulario ${userType}Form no encontrado`);
+            }
         }
+    } catch (error) {
+        console.error('❌ Error al mostrar formulario de usuario:', error);
     }
 }
 
 function submitUserForm() {
-    const userType = document.getElementById('userType')?.value;
+    try {
+        const userType = document.getElementById('userType')?.value;
 
-    if (!userType) {
-        alert('Por favor seleccione un tipo de usuario');
-        return;
-    }
-
-    let userData = { tipo: userType };
-
-    // Collect data based on user type
-    if (userType === 'gestor') {
-        userData.nombre_completo = document.getElementById('gestorNombre')?.value || '';
-        userData.correo = document.getElementById('gestorCorreo')?.value || '';
-        userData.organizacion = document.getElementById('gestorOrganizacion')?.value || '';
-    } else if (userType === 'aliado') {
-        userData.nombre_completo = document.getElementById('aliadoNombre')?.value || '';
-        userData.correo = document.getElementById('aliadoCorreo')?.value || '';
-        userData.region = document.getElementById('aliadoRegion')?.value || '';
-        userData.industria = document.getElementById('aliadoIndustria')?.value || '';
-        userData.contacto_principal = document.getElementById('aliadoContacto')?.value || '';
-        userData.tamano = document.getElementById('aliadoTamano')?.value || '';
-        userData.empleados = document.getElementById('aliadoEmpleados')?.value || '';
-        userData.direccion = document.getElementById('aliadoDireccion')?.value || '';
-        userData.ciudad = document.getElementById('aliadoCiudad')?.value || '';
-        userData.estado_dir = document.getElementById('aliadoEstado')?.value || '';
-        userData.codigo_postal = document.getElementById('aliadoCodigoPostal')?.value || '';
-        userData.pais = document.getElementById('aliadoPais')?.value || '';
-    } else if (userType === 'empleado') {
-        userData.aliado = document.getElementById('empleadoAliado')?.value || '';
-        userData.cargo = document.getElementById('empleadoCargo')?.value || '';
-        userData.rol_laboral = document.getElementById('empleadoRol')?.value || '';
-    } else if (userType === 'freelance') {
-        userData.especialidad = document.getElementById('freelanceEspecialidad')?.value || '';
-        userData.disponibilidad = document.getElementById('freelanceDisponibilidad')?.value || '';
-        userData.nivel = document.getElementById('freelanceNivel')?.value || '';
-        userData.fecha_incorporacion = document.getElementById('freelanceFecha')?.value || '';
-        userData.ubicacion = document.getElementById('freelanceUbicacion')?.value || '';
-        userData.tarifa_hora = document.getElementById('freelanceTarifa')?.value || '';
-    }
-
-    // Send data to server
-    fetch('/api/usuarios', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(userData)
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.status === 'success') {
-            alert('Usuario creado exitosamente');
-            const modal = bootstrap.Modal.getInstance(document.getElementById('addUserModal'));
-            modal.hide();
-            window.location.reload();
-        } else {
-            alert('Error al crear usuario: ' + (data.message || 'Error desconocido'));
+        if (!userType) {
+            alert('Por favor seleccione un tipo de usuario');
+            return;
         }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('Error al enviar los datos');
-    });
+
+        let userData = { tipo: userType };
+
+        // Recopilar datos según el tipo de usuario
+        if (userType === 'gestor') {
+            userData.nombre_completo = document.getElementById('gestorNombre')?.value || '';
+            userData.correo = document.getElementById('gestorCorreo')?.value || '';
+            userData.organizacion = document.getElementById('gestorOrganizacion')?.value || '';
+        } else if (userType === 'aliado') {
+            userData.nombre_completo = document.getElementById('aliadoNombre')?.value || '';
+            userData.correo = document.getElementById('aliadoCorreo')?.value || '';
+            userData.region = document.getElementById('aliadoRegion')?.value || '';
+            userData.industria = document.getElementById('aliadoIndustria')?.value || '';
+        } else if (userType === 'empleado') {
+            userData.aliado = document.getElementById('empleadoAliado')?.value || '';
+            userData.cargo = document.getElementById('empleadoCargo')?.value || '';
+            userData.rol_laboral = document.getElementById('empleadoRol')?.value || '';
+        } else if (userType === 'freelance') {
+            userData.especialidad = document.getElementById('freelanceEspecialidad')?.value || '';
+            userData.disponibilidad = document.getElementById('freelanceDisponibilidad')?.value || '';
+        }
+
+        console.log('📤 Enviando datos de usuario:', userData);
+
+        // Enviar datos al servidor
+        fetch('/api/usuarios', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(userData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                alert('Usuario creado exitosamente');
+                const modal = bootstrap.Modal.getInstance(document.getElementById('addUserModal'));
+                modal.hide();
+                window.location.reload();
+            } else {
+                alert('Error al crear usuario: ' + (data.message || 'Error desconocido'));
+            }
+        })
+        .catch(error => {
+            console.error('❌ Error:', error);
+            alert('Error al enviar los datos');
+        });
+    } catch (error) {
+        console.error('❌ Error al enviar formulario:', error);
+        alert('Error al procesar el formulario');
+    }
 }
 </script>
 {% endblock %}
