@@ -84,6 +84,72 @@
     color: #667eea;
 }
 
+.edit-icon {
+    width: 16px;
+    height: 16px;
+    color: #64748b;
+    cursor: pointer;
+    margin-left: auto;
+    transition: color 0.2s ease;
+}
+
+.edit-icon:hover {
+    color: #667eea;
+}
+
+.info-value.editable {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    padding: 4px 8px;
+    cursor: text;
+    min-height: 22px;
+}
+
+.info-value.editable:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
+}
+
+.edit-buttons {
+    display: none;
+    gap: 8px;
+    margin-top: 12px;
+    justify-content: flex-end;
+}
+
+.edit-buttons.show {
+    display: flex;
+}
+
+.btn-save, .btn-cancel {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.btn-save {
+    background: #667eea;
+    color: white;
+}
+
+.btn-save:hover {
+    background: #5a67d8;
+}
+
+.btn-cancel {
+    background: #e2e8f0;
+    color: #64748b;
+}
+
+.btn-cancel:hover {
+    background: #cbd5e0;
+}
+
 .info-row {
     display: flex;
     justify-content: space-between;
@@ -309,8 +375,10 @@
             <h3 class="section-title">
                 <i data-feather="user" class="section-icon"></i>
                 Información Personal
+                <i data-feather="edit-2" class="edit-icon" onclick="toggleEditMode('info-personal')" title="Editar información"></i>
             </h3>
             
+            <div id="info-personal">
             <div class="info-row">
                 <span class="info-label">Nombre:</span>
                 <span class="info-value">María Carmen Rodríguez</span>
@@ -347,7 +415,13 @@
             
             <div class="contact-info">
                 <strong>Resumen del Perfil:</strong><br>
-                Consultora senior con más de 8 años de experiencia en transformación digital, especializada en implementación de soluciones tecnológicas empresariales. Experta en metodologías ágiles, gestión de cambio organizacional y adopción de tecnologías emergentes.
+                <span class="info-value">Consultora senior con más de 8 años de experiencia en transformación digital, especializada en implementación de soluciones tecnológicas empresariales. Experta en metodologías ágiles, gestión de cambio organizacional y adopción de tecnologías emergentes.</span>
+            </div>
+            
+            <div class="edit-buttons" id="edit-buttons-info-personal">
+                <button class="btn-cancel" onclick="cancelEdit('info-personal')">Cancelar</button>
+                <button class="btn-save" onclick="saveEdit('info-personal')">Guardar</button>
+            </div>
             </div>
         </div>
 
@@ -683,5 +757,61 @@ document.addEventListener('DOMContentLoaded', function() {
         observer.observe(skillsSection);
     }
 });
+
+// Funcionalidad de edición
+let originalData = {};
+
+function toggleEditMode(sectionId) {
+    const section = document.getElementById(sectionId);
+    const editButtons = document.getElementById(`edit-buttons-${sectionId}`);
+    const infoValues = section.querySelectorAll('.info-value');
+    
+    // Guardar datos originales
+    originalData[sectionId] = {};
+    
+    infoValues.forEach((element, index) => {
+        originalData[sectionId][index] = element.textContent;
+        element.contentEditable = true;
+        element.classList.add('editable');
+    });
+    
+    editButtons.classList.add('show');
+}
+
+function cancelEdit(sectionId) {
+    const section = document.getElementById(sectionId);
+    const editButtons = document.getElementById(`edit-buttons-${sectionId}`);
+    const infoValues = section.querySelectorAll('.info-value');
+    
+    // Restaurar datos originales
+    infoValues.forEach((element, index) => {
+        element.textContent = originalData[sectionId][index];
+        element.contentEditable = false;
+        element.classList.remove('editable');
+    });
+    
+    editButtons.classList.remove('show');
+}
+
+function saveEdit(sectionId) {
+    const section = document.getElementById(sectionId);
+    const editButtons = document.getElementById(`edit-buttons-${sectionId}`);
+    const infoValues = section.querySelectorAll('.info-value');
+    
+    // Aquí podrías enviar los datos al servidor
+    const updatedData = {};
+    infoValues.forEach((element, index) => {
+        updatedData[index] = element.textContent;
+        element.contentEditable = false;
+        element.classList.remove('editable');
+    });
+    
+    console.log('Datos actualizados:', updatedData);
+    
+    // Mostrar mensaje de confirmación
+    alert('Información actualizada correctamente');
+    
+    editButtons.classList.remove('show');
+}
 </script>
 {% endblock %}
