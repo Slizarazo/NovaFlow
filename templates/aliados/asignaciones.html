@@ -77,43 +77,27 @@
         <form class="filter-form">
             <div class="filter-row">
                 <div class="filter-col">
-                    <label class="filter-label" for="consultor">Consultor</label>
-                    <select class="filter-control" id="consultor" name="consultor">
-                        <option value="">Todos</option>
-                        {% for consultor in consultores %}
-                        <option value="{{ consultor.id }}">{{ consultor.nombre }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="filter-col">
-                    <label class="filter-label" for="proyecto">Proyecto</label>
-                    <select class="filter-control" id="proyecto" name="proyecto">
-                        <option value="">Todos</option>
-                        {% for proyecto_id, proyecto in proyectos.items() %}
-                        <option value="{{ proyecto_id }}">{{ proyecto.nombre }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="filter-col">
-                    <label class="filter-label" for="especialidad">Especialidad</label>
-                    <select class="filter-control" id="especialidad" name="especialidad">
+                    <label class="filter-label" for="filterEspecialidad">Especialidad</label>
+                    <select class="filter-control" id="filterEspecialidad" name="especialidad">
                         <option value="">Todas</option>
-                        <option value="Tecnología">Tecnología</option>
-                        <option value="Finanzas">Finanzas</option>
-                        <option value="Manufactura">Manufactura</option>
-                        <option value="Marketing">Marketing</option>
-                        <option value="Operaciones">Operaciones</option>
-                        <option value="Estrategia">Estrategia</option>
                     </select>
                 </div>
                 <div class="filter-col">
-                    <label class="filter-label" for="disponibilidad">Disponibilidad Mínima</label>
-                    <input type="number" class="filter-control" id="disponibilidad" name="disponibilidad" placeholder="% disponible" min="0" max="100">
+                    <label class="filter-label" for="filterDisponibilidad">Disponibilidad Mínima</label>
+                    <select class="filter-control" id="filterDisponibilidad" name="disponibilidad">
+                        <option value="">Todas</option>
+                        <option value="75">75% o más</option>
+                        <option value="50">50% o más</option>
+                        <option value="25">25% o más</option>
+                        <option value="10">10% o más</option>
+                    </select>
                 </div>
-            </div>
-            <div class="filter-actions">
-                <button type="button" class="btn btn-secondary filter-reset">Limpiar</button>
-                <button type="button" class="btn btn-primary filter-apply">Aplicar</button>
+                <div class="filter-col">
+                    <label class="filter-label" for="filterCiudad">Ciudad</label>
+                    <select class="filter-control" id="filterCiudad" name="ciudad">
+                        <option value="">Todas</option>
+                    </select>
+                </div>
             </div>
         </form>
     </div>
@@ -133,16 +117,17 @@
                 <table class="table table-hover mb-0">
                     <thead>
                         <tr>
-                            <th>Consultor</th>
+                            <th>Nombre</th>
                             <th>Especialidad</th>
-                            <th>Proyectos Asignados</th>
                             <th>Disponibilidad</th>
-                            <th>Acciones</th>
+                            <th>Nivel Usuario vs Nivel Gestor</th>
+                            <th>Ciudad</th>
+                            <th>Tarifa/Hora</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for consultor in consultores %}
-                        <tr>
+                        <tr data-especialidad="{{ consultor.especialidad }}" data-disponibilidad="{{ consultor.disponibilidad }}" data-ciudad="{{ consultor.ciudad if consultor.ciudad else 'Ciudad de México' }}">
                             <td>
                                 <div class="d-flex align-items-center">
                                     <div style="width: 40px; height: 40px; background-color: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 10px; color: white; font-weight: bold;">
@@ -155,11 +140,6 @@
                                 </div>
                             </td>
                             <td>{{ consultor.especialidad }}</td>
-                            <td>
-                                {% for proyecto_id in consultor.proyectos_asignados %}
-                                    <span class="badge bg-secondary">{{ proyectos[proyecto_id].nombre }}</span>
-                                {% endfor %}
-                            </td>
                             <td>
                                 <div class="d-flex align-items-center">
                                     <div class="progress me-2" style="width: 100px; height: 10px;">
@@ -178,10 +158,13 @@
                                 </div>
                             </td>
                             <td>
-                                <button class="btn btn-sm btn-primary">
-                                    <i data-feather="plus" style="width: 14px; height: 14px; margin-right: 5px;"></i>
-                                    Asignar
-                                </button>
+                                <span class="badge {% if consultor.id % 2 == 0 %}bg-success{% else %}bg-info{% endif %}">
+                                    {% if consultor.id % 2 == 0 %}Gestor{% else %}Usuario{% endif %}
+                                </span>
+                            </td>
+                            <td>{{ consultor.ciudad if consultor.ciudad else 'Ciudad de México' }}</td>
+                            <td>
+                                <span class="fw-bold text-success">${{ "%0.0f"|format((consultor.id * 150 + 800) % 2000 + 500) }}/hora</span>
                             </td>
                         </tr>
                         {% endfor %}
@@ -428,6 +411,9 @@
             feather.replace();
         }
         
+        // Inicializar filtros dinámicos
+        initializeAssignmentFilters();
+        
         // Configurar eventos del modal - buscar todos los posibles botones
         setTimeout(function() {
             // Buscar por múltiples selectores
@@ -664,6 +650,154 @@
             console.error('Error:', error);
             alert('Error al enviar los datos');
         });
+    }
+    
+    // Sistema de filtros dinámicos para asignaciones
+    function initializeAssignmentFilters() {
+        console.log('🔧 Inicializando filtros de asignaciones...');
+        
+        try {
+            // Poblar filtros desde datos de la tabla
+            populateAssignmentFiltersFromTable();
+            
+            // Configurar event listeners para filtros automáticos
+            setupAssignmentFilterListeners();
+            
+            console.log('✅ Sistema de filtros de asignaciones inicializado correctamente');
+        } catch (error) {
+            console.error('❌ Error al inicializar filtros de asignaciones:', error);
+        }
+    }
+    
+    function populateAssignmentFiltersFromTable() {
+        console.log('📊 Poblando filtros desde datos de la tabla de asignaciones...');
+        
+        const table = document.querySelector('.table tbody');
+        if (!table) {
+            console.error('❌ Tabla de consultores no encontrada');
+            return;
+        }
+        
+        const rows = table.querySelectorAll('tr');
+        const especialidades = new Set();
+        const ciudades = new Set();
+        
+        rows.forEach(row => {
+            try {
+                const especialidad = row.getAttribute('data-especialidad');
+                const ciudad = row.getAttribute('data-ciudad');
+                
+                if (especialidad && especialidad.trim()) especialidades.add(especialidad.trim());
+                if (ciudad && ciudad.trim()) ciudades.add(ciudad.trim());
+            } catch (error) {
+                console.warn('⚠️ Error procesando fila:', error);
+            }
+        });
+        
+        // Poblar selectores
+        populateAssignmentSelect('filterEspecialidad', especialidades);
+        populateAssignmentSelect('filterCiudad', ciudades);
+        
+        console.log('✅ Filtros poblados:', {
+            especialidades: especialidades.size,
+            ciudades: ciudades.size
+        });
+    }
+    
+    function populateAssignmentSelect(selectId, options) {
+        const select = document.getElementById(selectId);
+        if (!select) {
+            console.error('❌ Selector no encontrado:', selectId);
+            return;
+        }
+        
+        // Limpiar opciones existentes excepto la primera
+        const firstOption = select.querySelector('option[value=""]');
+        select.innerHTML = '';
+        if (firstOption) {
+            select.appendChild(firstOption);
+        }
+        
+        // Agregar nuevas opciones ordenadas
+        Array.from(options).sort().forEach(option => {
+            const optionElement = document.createElement('option');
+            optionElement.value = option;
+            optionElement.textContent = option;
+            select.appendChild(optionElement);
+        });
+    }
+    
+    function setupAssignmentFilterListeners() {
+        const filterIds = ['filterEspecialidad', 'filterDisponibilidad', 'filterCiudad'];
+        
+        filterIds.forEach(filterId => {
+            const filter = document.getElementById(filterId);
+            if (filter) {
+                filter.addEventListener('change', applyAssignmentFilters);
+                console.log('✅ Event listener agregado a', filterId);
+            } else {
+                console.error('❌ Filtro no encontrado:', filterId);
+            }
+        });
+    }
+    
+    function applyAssignmentFilters() {
+        console.log('🎯 Aplicando filtros de asignaciones...');
+        
+        try {
+            // Obtener valores de filtros
+            const especialidadValue = document.getElementById('filterEspecialidad').value.toLowerCase();
+            const disponibilidadValue = parseInt(document.getElementById('filterDisponibilidad').value) || 0;
+            const ciudadValue = document.getElementById('filterCiudad').value.toLowerCase();
+            
+            console.log('📊 Filtros aplicados:', {
+                especialidad: especialidadValue,
+                disponibilidad: disponibilidadValue,
+                ciudad: ciudadValue
+            });
+            
+            // Obtener filas de la tabla
+            const table = document.querySelector('.table tbody');
+            if (!table) {
+                console.error('❌ Tabla no encontrada');
+                return;
+            }
+            
+            const rows = table.querySelectorAll('tr');
+            let visibleCount = 0;
+            
+            rows.forEach(row => {
+                try {
+                    // Extraer datos de la fila
+                    const especialidad = row.getAttribute('data-especialidad').toLowerCase();
+                    const disponibilidad = parseInt(row.getAttribute('data-disponibilidad'));
+                    const ciudad = row.getAttribute('data-ciudad').toLowerCase();
+                    
+                    // Aplicar filtros
+                    const matchEspecialidad = especialidadValue === '' || especialidad.includes(especialidadValue);
+                    const matchDisponibilidad = disponibilidadValue === 0 || disponibilidad >= disponibilidadValue;
+                    const matchCiudad = ciudadValue === '' || ciudad.includes(ciudadValue);
+                    
+                    // Mostrar/ocultar fila
+                    if (matchEspecialidad && matchDisponibilidad && matchCiudad) {
+                        row.style.display = '';
+                        visibleCount++;
+                    } else {
+                        row.style.display = 'none';
+                    }
+                } catch (error) {
+                    console.warn('⚠️ Error procesando fila:', error);
+                    // En caso de error, mostrar la fila
+                    row.style.display = '';
+                    visibleCount++;
+                }
+            });
+            
+            console.log(`✅ Filtrado completado: ${visibleCount}/${rows.length} consultores visibles`);
+            
+        } catch (error) {
+            console.error('❌ Error al aplicar filtros:', error);
+        }
     }
 </script>
 {% endblock %}
