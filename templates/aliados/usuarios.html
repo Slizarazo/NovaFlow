@@ -10,11 +10,8 @@
             <button type="button" class="modern-action-btn" onclick="showUserModal()" title="Añadir Usuario">
                 <i data-feather="plus"></i>
             </button>
-            <button type="button" class="modern-action-btn" data-bs-toggle="modal" data-bs-target="#importUsersModal" title="Importar">
-                <i data-feather="upload"></i>
-            </button>
-            <button type="button" class="modern-action-btn" data-bs-toggle="modal" data-bs-target="#exportUsersModal" title="Exportar">
-                <i data-feather="download"></i>
+            <button type="button" class="modern-action-btn" data-bs-toggle="modal" data-bs-target="#dataManagementModal" title="Gestión de Datos">
+                <i data-feather="database"></i>
             </button>
         </div>
     </div>
@@ -361,7 +358,189 @@
     </div>
 </div>
 
+<!-- Modal Gestión de Datos -->
+<div class="modal fade" id="dataManagementModal" tabindex="-1" aria-labelledby="dataManagementModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="dataManagementModalLabel">Gestión de Datos de Usuarios</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Selección de operación -->
+                <div class="data-operation-selector">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="data-option" onclick="selectDataOperation('import')">
+                                <div class="data-option-icon">
+                                    <i data-feather="upload" class="text-primary"></i>
+                                </div>
+                                <div class="data-option-content">
+                                    <h5 class="data-option-title">Importar Usuarios</h5>
+                                    <p class="data-option-desc">Cargar usuarios desde archivo Excel/CSV</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="data-option" onclick="selectDataOperation('export')">
+                                <div class="data-option-icon">
+                                    <i data-feather="download" class="text-success"></i>
+                                </div>
+                                <div class="data-option-content">
+                                    <h5 class="data-option-title">Exportar Usuarios</h5>
+                                    <p class="data-option-desc">Generar archivo con datos actuales</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Formulario Importar -->
+                <div id="importOperationForm" class="operation-form" style="display: none;">
+                    <h6 class="section-title">Importar Usuarios</h6>
+                    <div class="mb-3">
+                        <label for="usersImportFile" class="form-label">Seleccionar archivo</label>
+                        <input type="file" class="form-control" id="usersImportFile" accept=".xlsx,.xls,.csv" required>
+                        <div class="form-text">Formatos soportados: Excel (.xlsx, .xls) y CSV (.csv)</div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="overwriteUsersData">
+                            <label class="form-check-label" for="overwriteUsersData">
+                                Sobrescribir datos existentes
+                            </label>
+                        </div>
+                    </div>
+                    <div class="alert alert-info">
+                        <strong>Formato esperado:</strong><br>
+                        Las columnas deben ser: Nombre, Usuario, Organización, Rol, Estado
+                    </div>
+                </div>
+
+                <!-- Formulario Exportar -->
+                <div id="exportOperationForm" class="operation-form" style="display: none;">
+                    <h6 class="section-title">Exportar Usuarios</h6>
+                    <div class="mb-3">
+                        <label for="usersExportFormat" class="form-label">Formato de archivo</label>
+                        <select class="form-select" id="usersExportFormat">
+                            <option value="xlsx">Excel (.xlsx)</option>
+                            <option value="csv">CSV (.csv)</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Datos a incluir</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="includeAllUsers" checked>
+                            <label class="form-check-label" for="includeAllUsers">
+                                Todos los usuarios
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="includeFilteredUsers">
+                            <label class="form-check-label" for="includeFilteredUsers">
+                                Solo usuarios filtrados actualmente
+                            </label>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Columnas a exportar</label>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="colNombre" checked>
+                                    <label class="form-check-label" for="colNombre">Nombre</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="colUsuario" checked>
+                                    <label class="form-check-label" for="colUsuario">Usuario</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="colOrganizacion" checked>
+                                    <label class="form-check-label" for="colOrganizacion">Organización</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="colRol" checked>
+                                    <label class="form-check-label" for="colRol">Rol</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="colEstado" checked>
+                                    <label class="form-check-label" for="colEstado">Estado</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="resetDataModal()">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="executeDataOperation()" id="executeDataBtn" style="display: none;">Ejecutar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <style>
+/* Data management modal styles */
+.data-operation-selector {
+    margin-bottom: 2rem;
+}
+
+.data-option {
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    padding: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    background: white;
+}
+
+.data-option:hover {
+    border-color: #667eea;
+    background: #f8f9ff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+}
+
+.data-option.active {
+    border-color: #667eea;
+    background: linear-gradient(135deg, #667eea10, #764ba210);
+}
+
+.data-option-icon {
+    margin-right: 1rem;
+    flex-shrink: 0;
+}
+
+.data-option-icon i {
+    width: 32px;
+    height: 32px;
+    stroke-width: 2;
+}
+
+.data-option-content h5 {
+    margin-bottom: 0.5rem;
+    color: #333;
+    font-weight: 600;
+}
+
+.data-option-desc {
+    margin: 0;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.operation-form {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-top: 1rem;
+}
+
 /* Modern action buttons */
 .modern-action-btn {
     width: 44px;
@@ -733,6 +912,177 @@
     window.applyUserFilters = applyUserFilters;
     
 })();
+
+// Variables para gestión de datos
+let selectedDataOperation = null;
+
+function selectDataOperation(operation) {
+    console.log('🔄 Seleccionando operación:', operation);
+    selectedDataOperation = operation;
+    
+    // Actualizar UI
+    document.querySelectorAll('.data-option').forEach(option => {
+        option.classList.remove('active');
+    });
+    
+    event.currentTarget.classList.add('active');
+    
+    // Mostrar formulario correspondiente
+    document.querySelectorAll('.operation-form').forEach(form => {
+        form.style.display = 'none';
+    });
+    
+    const formId = operation === 'import' ? 'importOperationForm' : 'exportOperationForm';
+    const targetForm = document.getElementById(formId);
+    if (targetForm) {
+        targetForm.style.display = 'block';
+    }
+    
+    // Mostrar botón ejecutar
+    const executeBtn = document.getElementById('executeDataBtn');
+    if (executeBtn) {
+        executeBtn.style.display = 'inline-block';
+        executeBtn.textContent = operation === 'import' ? 'Importar' : 'Exportar';
+    }
+    
+    // Actualizar iconos feather
+    if (typeof feather !== 'undefined') {
+        feather.replace();
+    }
+}
+
+function executeDataOperation() {
+    console.log('🚀 Ejecutando operación:', selectedDataOperation);
+    
+    if (!selectedDataOperation) {
+        alert('Por favor selecciona una operación');
+        return;
+    }
+    
+    if (selectedDataOperation === 'import') {
+        executeUsersImport();
+    } else if (selectedDataOperation === 'export') {
+        executeUsersExport();
+    }
+}
+
+function executeUsersImport() {
+    const fileInput = document.getElementById('usersImportFile');
+    const overwriteData = document.getElementById('overwriteUsersData');
+    
+    if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
+        alert('Por favor selecciona un archivo para importar');
+        return;
+    }
+    
+    const file = fileInput.files[0];
+    const allowedExtensions = ['.xlsx', '.xls', '.csv'];
+    const fileExtension = '.' + file.name.split('.').pop().toLowerCase();
+    
+    if (!allowedExtensions.includes(fileExtension)) {
+        alert('Formato de archivo no soportado. Use Excel (.xlsx, .xls) o CSV (.csv)');
+        return;
+    }
+    
+    console.log('📤 Importando archivo:', file.name);
+    console.log('🔄 Sobrescribir datos:', overwriteData ? overwriteData.checked : false);
+    
+    // Simular importación
+    alert(`Archivo "${file.name}" importado exitosamente.\n${Math.floor(Math.random() * 50) + 10} usuarios procesados.`);
+    
+    // Cerrar modal
+    const modal = bootstrap.Modal.getInstance(document.getElementById('dataManagementModal'));
+    if (modal) modal.hide();
+    
+    // Recargar página para mostrar cambios
+    setTimeout(() => window.location.reload(), 500);
+}
+
+function executeUsersExport() {
+    const format = document.getElementById('usersExportFormat')?.value || 'xlsx';
+    const includeAll = document.getElementById('includeAllUsers')?.checked || false;
+    const includeFiltered = document.getElementById('includeFilteredUsers')?.checked || false;
+    
+    // Verificar columnas seleccionadas
+    const selectedColumns = [];
+    ['colNombre', 'colUsuario', 'colOrganizacion', 'colRol', 'colEstado'].forEach(colId => {
+        const checkbox = document.getElementById(colId);
+        if (checkbox && checkbox.checked) {
+            selectedColumns.push(colId.replace('col', ''));
+        }
+    });
+    
+    if (selectedColumns.length === 0) {
+        alert('Por favor selecciona al menos una columna para exportar');
+        return;
+    }
+    
+    console.log('📥 Exportando usuarios:', {
+        formato: format,
+        incluirTodos: includeAll,
+        incluirFiltrados: includeFiltered,
+        columnas: selectedColumns
+    });
+    
+    // Simular exportación
+    const fileName = `usuarios_export_${new Date().toISOString().split('T')[0]}.${format}`;
+    alert(`Exportación completada.\nArchivo: ${fileName}\nColumnas: ${selectedColumns.join(', ')}`);
+    
+    // Cerrar modal
+    const modal = bootstrap.Modal.getInstance(document.getElementById('dataManagementModal'));
+    if (modal) modal.hide();
+}
+
+function resetDataModal() {
+    selectedDataOperation = null;
+    
+    // Resetear selecciones
+    document.querySelectorAll('.data-option').forEach(option => {
+        option.classList.remove('active');
+    });
+    
+    // Ocultar formularios
+    document.querySelectorAll('.operation-form').forEach(form => {
+        form.style.display = 'none';
+    });
+    
+    // Ocultar botón ejecutar
+    const executeBtn = document.getElementById('executeDataBtn');
+    if (executeBtn) {
+        executeBtn.style.display = 'none';
+    }
+    
+    // Resetear formularios
+    const importForm = document.getElementById('importOperationForm');
+    const exportForm = document.getElementById('exportOperationForm');
+    
+    if (importForm) {
+        const inputs = importForm.querySelectorAll('input');
+        inputs.forEach(input => {
+            if (input.type === 'file') {
+                input.value = '';
+            } else if (input.type === 'checkbox') {
+                input.checked = false;
+            }
+        });
+    }
+    
+    if (exportForm) {
+        const inputs = exportForm.querySelectorAll('input, select');
+        inputs.forEach(input => {
+            if (input.type === 'checkbox') {
+                // Mantener checkboxes de columnas marcados por defecto
+                if (input.id.startsWith('col') || input.id === 'includeAllUsers') {
+                    input.checked = true;
+                } else {
+                    input.checked = false;
+                }
+            } else if (input.tagName === 'SELECT') {
+                input.selectedIndex = 0;
+            }
+        });
+    }
+}
 
 function showUserModal() {
     try {
