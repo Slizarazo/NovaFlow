@@ -798,20 +798,71 @@ function saveEdit(sectionId) {
     const editButtons = document.getElementById(`edit-buttons-${sectionId}`);
     const infoValues = section.querySelectorAll('.info-value');
     
-    // Aquí podrías enviar los datos al servidor
-    const updatedData = {};
-    infoValues.forEach((element, index) => {
-        updatedData[index] = element.textContent;
-        element.contentEditable = false;
-        element.classList.remove('editable');
+    // Recopilar los datos del formulario
+    const formData = {};
+    const infoRows = section.querySelectorAll('.info-row');
+    
+    infoRows.forEach(row => {
+        const label = row.querySelector('.info-label')?.textContent.replace(':', '').trim();
+        const value = row.querySelector('.info-value')?.textContent.trim();
+        
+        if (label && value) {
+            // Mapear las etiquetas a nombres de campos apropiados
+            switch(label) {
+                case 'Nombre':
+                    formData.nombre = value;
+                    break;
+                case 'Email':
+                    formData.email = value;
+                    break;
+                case 'Teléfono':
+                    formData.telefono = value;
+                    break;
+                case 'LinkedIn':
+                    formData.linkedin = value;
+                    break;
+                case 'Ubicación':
+                    formData.ubicacion = value;
+                    break;
+            }
+        }
     });
     
-    console.log('Datos actualizados:', updatedData);
+    // Obtener el resumen del perfil
+    const resumenElement = section.querySelector('.contact-info .info-value');
+    if (resumenElement) {
+        formData.resumen = resumenElement.textContent.trim();
+    }
     
-    // Mostrar mensaje de confirmación
-    alert('Información actualizada correctamente');
+    console.log('Datos a enviar:', formData);
     
-    editButtons.classList.remove('show');
+    // Enviar datos al servidor
+    fetch('/api/informacion-personal', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            // Desactivar modo de edición
+            infoValues.forEach((element) => {
+                element.contentEditable = false;
+                element.classList.remove('editable');
+            });
+            
+            editButtons.classList.remove('show');
+            alert('Información actualizada correctamente');
+        } else {
+            alert('Error al actualizar: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error al enviar los datos');
+    });
 }
 </script>
 {% endblock %}

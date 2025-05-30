@@ -679,6 +679,56 @@ def create_cliente():
         app.logger.error(f"Error al crear cliente: {str(e)}")
         return jsonify({'status': 'error', 'message': str(e)}), 500
 
+@app.route('/api/informacion-personal', methods=['POST'])
+@login_required
+def update_informacion_personal():
+    try:
+        data = request.get_json()
+        print(f"Datos recibidos para información personal: {data}")
+
+        if not data:
+            return jsonify({'status': 'error', 'message': 'No se recibieron datos'}), 400
+
+        # Extraer los datos del formulario
+        nombre = data.get('nombre')
+        email = data.get('email')
+        telefono = data.get('telefono')
+        linkedin = data.get('linkedin')
+        ubicacion = data.get('ubicacion')
+        resumen = data.get('resumen')
+
+        print("Datos de información personal:")
+        print(f"  - Nombre: {nombre}")
+        print(f"  - Email: {email}")
+        print(f"  - Teléfono: {telefono}")
+        print(f"  - LinkedIn: {linkedin}")
+        print(f"  - Ubicación: {ubicacion}")
+        print(f"  - Resumen: {resumen}")
+
+        # Validaciones básicas
+        if not nombre or not email:
+            return jsonify({'status': 'error', 'message': 'Nombre y email son campos obligatorios'}), 400
+
+        # Aquí podrías agregar la lógica para actualizar la base de datos
+        # Por ejemplo: current_user.update_profile(data)
+
+        return jsonify({
+            'status': 'success', 
+            'message': 'Información personal actualizada exitosamente',
+            'data': {
+                'nombre': nombre,
+                'email': email,
+                'telefono': telefono,
+                'linkedin': linkedin,
+                'ubicacion': ubicacion,
+                'resumen': resumen
+            }
+        })
+
+    except Exception as e:
+        app.logger.error(f"Error al actualizar información personal: {str(e)}")
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+
 @app.route('/proyectos/gestion')
 @login_required  
 def proyectos_gestion():
