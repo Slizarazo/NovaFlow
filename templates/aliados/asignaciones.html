@@ -114,6 +114,22 @@
 }
 
 /* Assignment option buttons */
+.assignment-option-btn {
+    height: auto !important;
+    min-height: 80px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    padding: 15px !important;
+    text-align: left !important;
+    border: 2px solid #667eea !important;
+    border-radius: 8px !important;
+    background: white !important;
+    color: #333 !important;
+    transition: all 0.3s ease !important;
+    width: 100% !important;
+}
+
 .assignment-option-btn:hover {
     border-color: #5a67d8 !important;
     background: #f7fafc !important;
@@ -431,21 +447,21 @@
                     <div id="assignmentTypeSelection">
                         <h6 style="color: #4a5568; font-weight: 600; margin-bottom: 20px;">Tipo de Asignación</h6>
                         <div class="d-grid gap-3">
-                            <button type="button" class="btn btn-outline-primary btn-lg assignment-option-btn" onclick="selectAssignmentType('comunidad')" style="padding: 15px; text-align: left; border: 2px solid #667eea; border-radius: 8px; background: white; color: #333; transition: all 0.3s ease;">
-                                <div class="d-flex align-items-center">
-                                    <i data-feather="users" style="width: 24px; height: 24px; margin-right: 15px; color: #667eea;"></i>
-                                    <div>
-                                        <div style="font-weight: 600; color: #333;">Asignar Comunidad</div>
-                                        <small style="color: #666;">Asignar un grupo de consultores especializados</small>
+                            <button type="button" class="btn btn-outline-primary btn-lg assignment-option-btn" onclick="selectAssignmentType('comunidad')">
+                                <div class="d-flex align-items-center w-100">
+                                    <i data-feather="users" style="width: 24px; height: 24px; margin-right: 15px; color: #667eea; flex-shrink: 0;"></i>
+                                    <div class="flex-grow-1">
+                                        <div style="font-weight: 600; color: #333; margin-bottom: 4px;">Asignar Comunidad</div>
+                                        <small style="color: #666; line-height: 1.3;">Asignar un grupo de consultores especializados</small>
                                     </div>
                                 </div>
                             </button>
-                            <button type="button" class="btn btn-outline-primary btn-lg assignment-option-btn" onclick="selectAssignmentType('freelance')" style="padding: 15px; text-align: left; border: 2px solid #667eea; border-radius: 8px; background: white; color: #333; transition: all 0.3s ease;">
-                                <div class="d-flex align-items-center">
-                                    <i data-feather="user" style="width: 24px; height: 24px; margin-right: 15px; color: #667eea;"></i>
-                                    <div>
-                                        <div style="font-weight: 600; color: #333;">Asignar Freelance</div>
-                                        <small style="color: #666;">Asignar un consultor independiente específico</small>
+                            <button type="button" class="btn btn-outline-primary btn-lg assignment-option-btn" onclick="selectAssignmentType('freelance')">
+                                <div class="d-flex align-items-center w-100">
+                                    <i data-feather="user" style="width: 24px; height: 24px; margin-right: 15px; color: #667eea; flex-shrink: 0;"></i>
+                                    <div class="flex-grow-1">
+                                        <div style="font-weight: 600; color: #333; margin-bottom: 4px;">Asignar Freelance</div>
+                                        <small style="color: #666; line-height: 1.3;">Asignar un consultor independiente específico</small>
                                     </div>
                                 </div>
                             </button>
