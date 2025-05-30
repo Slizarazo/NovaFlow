@@ -25,7 +25,12 @@
                 <div class="filter-row">
                     <div class="filter-group">
                         <label class="form-label">Nombre</label>
-                        <input type="text" class="form-control" name="nombre" placeholder="Buscar por nombre...">
+                        <select class="form-select" name="nombre">
+                            <option value="">Todos</option>
+                            {% for aliado in aliados %}
+                            <option value="{{ aliado.nombre }}">{{ aliado.nombre }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
                     <div class="filter-group">
                         <label class="form-label">Industria</label>
@@ -82,10 +87,7 @@
                     </div>
                 </div>
 
-                <div class="filter-actions">
-                    <button type="reset" class="btn btn-secondary">Limpiar</button>
-                    <button type="submit" class="btn btn-primary">Aplicar Filtros</button>
-                </div>
+                
             </form>
         </div>
     </div>
@@ -623,45 +625,47 @@ function submitForm() {
 // Función para inicializar filtros
 function initializeFilters() {
     const filterForm = document.getElementById('filterForm');
+    
+    if (!filterForm) {
+        console.error('Filter form not found');
+        return;
+    }
+    
     const table = document.getElementById('aliadosTable');
+    
+    if (!table) {
+        console.error('Table not found');
+        return;
+    }
+    
     const tableRows = table.querySelectorAll('tbody tr');
 
     // Agregar event listeners a todos los campos de filtro
-    const filterInputs = filterForm.querySelectorAll('input, select');
+    const filterInputs = filterForm.querySelectorAll('select');
     filterInputs.forEach(input => {
-        input.addEventListener('input', applyFilters);
         input.addEventListener('change', applyFilters);
-    });
-
-    // Event listener para el botón de limpiar
-    filterForm.addEventListener('reset', function() {
-        setTimeout(applyFilters, 10); // Pequeño delay para que se limpien los campos
-    });
-
-    // Event listener para el formulario
-    filterForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        applyFilters();
     });
 
     function applyFilters() {
         const filters = {
-            nombre: filterForm.querySelector('[name="nombre"]').value.toLowerCase(),
-            industria: filterForm.querySelector('[name="industria"]').value.toLowerCase(),
-            estado: filterForm.querySelector('[name="estado"]').value.toLowerCase(),
-            region: filterForm.querySelector('[name="region"]').value.toLowerCase(),
-            subregion: filterForm.querySelector('[name="subregion"]').value.toLowerCase(),
-            pais: filterForm.querySelector('[name="pais"]').value.toLowerCase()
+            nombre: filterForm.querySelector('[name="nombre"]') ? filterForm.querySelector('[name="nombre"]').value.toLowerCase() : '',
+            industria: filterForm.querySelector('[name="industria"]') ? filterForm.querySelector('[name="industria"]').value.toLowerCase() : '',
+            estado: filterForm.querySelector('[name="estado"]') ? filterForm.querySelector('[name="estado"]').value.toLowerCase() : '',
+            region: filterForm.querySelector('[name="region"]') ? filterForm.querySelector('[name="region"]').value.toLowerCase() : '',
+            subregion: filterForm.querySelector('[name="subregion"]') ? filterForm.querySelector('[name="subregion"]').value.toLowerCase() : '',
+            pais: filterForm.querySelector('[name="pais"]') ? filterForm.querySelector('[name="pais"]').value.toLowerCase() : ''
         };
 
         tableRows.forEach(row => {
+            if (row.cells.length < 7) return; // Skip if row doesn't have enough cells
+            
             const rowData = {
-                nombre: row.cells[0].textContent.toLowerCase(),
-                industria: row.cells[1].textContent.toLowerCase(),
-                estado: row.cells[2].textContent.toLowerCase(),
-                region: row.cells[3].textContent.toLowerCase(),
-                subregion: row.cells[4].textContent.toLowerCase(),
-                pais: row.cells[5].textContent.toLowerCase()
+                nombre: row.cells[0].textContent.trim().toLowerCase(),
+                industria: row.cells[1].textContent.trim().toLowerCase(),
+                estado: row.cells[2].textContent.trim().toLowerCase(),
+                region: row.cells[3].textContent.trim().toLowerCase(),
+                subregion: row.cells[4].textContent.trim().toLowerCase(),
+                pais: row.cells[5].textContent.trim().toLowerCase()
             };
 
             let showRow = true;
