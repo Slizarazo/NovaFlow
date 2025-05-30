@@ -440,14 +440,7 @@
                         </div>
                     </div>
                     
-                    <div id="comunidadMessage" style="display: none;">
-                        <div class="text-center" style="padding: 40px 20px;">
-                            <i data-feather="tool" style="width: 48px; height: 48px; color: #f59e0b; margin-bottom: 20px;"></i>
-                            <h5 style="color: #4a5568; margin-bottom: 15px;">Funcionalidad en Construcción</h5>
-                            <p class="text-muted">La asignación de comunidades está actualmente en desarrollo. Esta funcionalidad estará disponible próximamente.</p>
-                            <button type="button" class="btn btn-secondary mt-3" onclick="backToTypeSelection()">Volver</button>
-                        </div>
-                    </div>
+                    
                     
                     <div id="freelanceForm" style="display: none;">
                         <button type="button" class="btn btn-link p-0 mb-3" onclick="backToTypeSelection()" style="color: #667eea; text-decoration: none;">
@@ -459,21 +452,21 @@
                         
                         <form id="assignmentForm">
                             <div class="mb-4">
-                                <label for="aliadoSelect" class="form-label" style="color: #2d3748; font-weight: 500; margin-bottom: 8px; display: block; font-size: 14px;">Aliado</label>
-                                <select class="form-select" id="aliadoSelect" required style="border: 1px solid #d1d5db; border-radius: 8px; padding: 12px 14px; font-size: 14px; width: 100%; background-color: #f9fafb; appearance: none; background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"%23666\" stroke-width=\"2\"><polyline points=\"6,9 12,15 18,9\"></polyline></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px;">
-                                    <option value="">Seleccionar aliado...</option>
-                                    <option value="1">TechCorp Solutions</option>
-                                    <option value="2">Innovation Labs</option>
-                                    <option value="3">DataFlow Systems</option>
-                                    <option value="4">CloudTech Partners</option>
-                                    <option value="5">Digital Innovations</option>
+                                <label for="casoUsoSelect" class="form-label" style="color: #2d3748; font-weight: 500; margin-bottom: 8px; display: block; font-size: 14px;">Caso de Uso</label>
+                                <select class="form-select" id="casoUsoSelect" required style="border: 1px solid #d1d5db; border-radius: 8px; padding: 12px 14px; font-size: 14px; width: 100%; background-color: #f9fafb; appearance: none; background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"%23666\" stroke-width=\"2\"><polyline points=\"6,9 12,15 18,9\"></polyline></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px;">
+                                    <option value="">Seleccionar caso de uso...</option>
+                                    {% for proyecto_id, proyecto in proyectos.items() %}
+                                        {% if proyecto.etapa not in ['testing', 'cierre', 'evaluacion', 'finalizado'] %}
+                                        <option value="{{ proyecto_id }}">{{ proyecto.nombre }} ({{ proyecto.etapa|capitalize }})</option>
+                                        {% endif %}
+                                    {% endfor %}
                                 </select>
                             </div>
                             
                             <div class="mb-4">
-                                <label for="freelanceSelect" class="form-label" style="color: #2d3748; font-weight: 500; margin-bottom: 8px; display: block; font-size: 14px;">Freelance</label>
-                                <select class="form-select" id="freelanceSelect" required style="border: 1px solid #d1d5db; border-radius: 8px; padding: 12px 14px; font-size: 14px; width: 100%; background-color: #f9fafb; appearance: none; background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"%23666\" stroke-width=\"2\"><polyline points=\"6,9 12,15 18,9\"></polyline></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px;">
-                                    <option value="">Seleccionar freelance...</option>
+                                <label for="usuarioSelect" class="form-label" style="color: #2d3748; font-weight: 500; margin-bottom: 8px; display: block; font-size: 14px;">Usuario</label>
+                                <select class="form-select" id="usuarioSelect" required style="border: 1px solid #d1d5db; border-radius: 8px; padding: 12px 14px; font-size: 14px; width: 100%; background-color: #f9fafb; appearance: none; background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"%23666\" stroke-width=\"2\"><polyline points=\"6,9 12,15 18,9\"></polyline></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px;">
+                                    <option value="">Seleccionar freelancer/consultor...</option>
                                     {% for consultor in consultores %}
                                     <option value="{{ consultor.id }}">{{ consultor.nombre }} - {{ consultor.especialidad }} ({{ consultor.disponibilidad }}% disponible)</option>
                                     {% endfor %}
@@ -481,13 +474,53 @@
                             </div>
                             
                             <div class="mb-4">
-                                <label for="fechaInicio" class="form-label" style="color: #2d3748; font-weight: 500; margin-bottom: 8px; display: block; font-size: 14px;">Fecha de Inicio</label>
-                                <input type="date" class="form-control" id="fechaInicio" required style="border: 1px solid #d1d5db; border-radius: 8px; padding: 12px 14px; font-size: 14px; width: 100%; background-color: #f9fafb;">
+                                <label for="rolProyecto" class="form-label" style="color: #2d3748; font-weight: 500; margin-bottom: 8px; display: block; font-size: 14px;">Rol del Proyecto</label>
+                                <select class="form-select" id="rolProyecto" required style="border: 1px solid #d1d5db; border-radius: 8px; padding: 12px 14px; font-size: 14px; width: 100%; background-color: #f9fafb; appearance: none; background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"%23666\" stroke-width=\"2\"><polyline points=\"6,9 12,15 18,9\"></polyline></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px;">
+                                    <option value="">Seleccionar rol...</option>
+                                    <option value="lider">Líder de Proyecto</option>
+                                    <option value="desarrollador">Desarrollador</option>
+                                    <option value="analista">Analista de Datos</option>
+                                    <option value="consultor">Consultor</option>
+                                    <option value="diseñador">Diseñador UX/UI</option>
+                                    <option value="qa">QA/Testing</option>
+                                    <option value="devops">DevOps</option>
+                                    <option value="arquitecto">Arquitecto de Software</option>
+                                </select>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <div id="comunidadForm" style="display: none;">
+                        <button type="button" class="btn btn-link p-0 mb-3" onclick="backToTypeSelection()" style="color: #667eea; text-decoration: none;">
+                            <i data-feather="arrow-left" style="width: 16px; height: 16px; margin-right: 5px;"></i>
+                            Volver
+                        </button>
+                        
+                        <h6 style="color: #4a5568; font-weight: 600; margin-bottom: 20px;">Asignación de Comunidad</h6>
+                        
+                        <form id="comunidadAssignmentForm">
+                            <div class="mb-4">
+                                <label for="casoUsoComunidadSelect" class="form-label" style="color: #2d3748; font-weight: 500; margin-bottom: 8px; display: block; font-size: 14px;">Caso de Uso</label>
+                                <select class="form-select" id="casoUsoComunidadSelect" required style="border: 1px solid #d1d5db; border-radius: 8px; padding: 12px 14px; font-size: 14px; width: 100%; background-color: #f9fafb; appearance: none; background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"%23666\" stroke-width=\"2\"><polyline points=\"6,9 12,15 18,9\"></polyline></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px;">
+                                    <option value="">Seleccionar caso de uso...</option>
+                                    {% for proyecto_id, proyecto in proyectos.items() %}
+                                    <option value="{{ proyecto_id }}">{{ proyecto.nombre }} ({{ proyecto.etapa|capitalize }})</option>
+                                    {% endfor %}
+                                </select>
                             </div>
                             
                             <div class="mb-4">
-                                <label for="fechaFin" class="form-label" style="color: #2d3748; font-weight: 500; margin-bottom: 8px; display: block; font-size: 14px;">Fecha de Fin</label>
-                                <input type="date" class="form-control" id="fechaFin" required style="border: 1px solid #d1d5db; border-radius: 8px; padding: 12px 14px; font-size: 14px; width: 100%; background-color: #f9fafb;">
+                                <label for="comunidadSelect" class="form-label" style="color: #2d3748; font-weight: 500; margin-bottom: 8px; display: block; font-size: 14px;">Comunidad</label>
+                                <select class="form-select" id="comunidadSelect" required style="border: 1px solid #d1d5db; border-radius: 8px; padding: 12px 14px; font-size: 14px; width: 100%; background-color: #f9fafb; appearance: none; background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"%23666\" stroke-width=\"2\"><polyline points=\"6,9 12,15 18,9\"></polyline></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px;">
+                                    <option value="">Seleccionar comunidad...</option>
+                                    <option value="tecnologia">Comunidad de Tecnología</option>
+                                    <option value="datos">Comunidad de Ciencia de Datos</option>
+                                    <option value="ux">Comunidad de UX/UI</option>
+                                    <option value="devops">Comunidad DevOps</option>
+                                    <option value="consultoria">Comunidad de Consultoría</option>
+                                    <option value="finanzas">Comunidad de Finanzas</option>
+                                    <option value="marketing">Comunidad de Marketing Digital</option>
+                                </select>
                             </div>
                         </form>
                     </div>
@@ -770,14 +803,18 @@
     
     function resetModal() {
         document.getElementById('assignmentTypeSelection').style.display = 'block';
-        document.getElementById('comunidadMessage').style.display = 'none';
+        document.getElementById('comunidadForm').style.display = 'none';
         document.getElementById('freelanceForm').style.display = 'none';
         document.getElementById('submitAssignmentBtn').style.display = 'none';
         
-        // Limpiar formulario
-        const form = document.getElementById('assignmentForm');
-        if (form) {
-            form.reset();
+        // Limpiar formularios
+        const freelanceForm = document.getElementById('assignmentForm');
+        const comunidadForm = document.getElementById('comunidadAssignmentForm');
+        if (freelanceForm) {
+            freelanceForm.reset();
+        }
+        if (comunidadForm) {
+            comunidadForm.reset();
         }
     }
     
@@ -785,11 +822,13 @@
         document.getElementById('assignmentTypeSelection').style.display = 'none';
         
         if (type === 'comunidad') {
-            document.getElementById('comunidadMessage').style.display = 'block';
-            document.getElementById('submitAssignmentBtn').style.display = 'none';
+            document.getElementById('comunidadForm').style.display = 'block';
+            document.getElementById('submitAssignmentBtn').style.display = 'inline-block';
+            document.getElementById('submitAssignmentBtn').textContent = 'Crear Asignación de Comunidad';
         } else if (type === 'freelance') {
             document.getElementById('freelanceForm').style.display = 'block';
             document.getElementById('submitAssignmentBtn').style.display = 'inline-block';
+            document.getElementById('submitAssignmentBtn').textContent = 'Crear Asignación de Freelance';
         }
         
         // Reinicializar iconos de Feather
@@ -800,7 +839,7 @@
     
     function backToTypeSelection() {
         document.getElementById('assignmentTypeSelection').style.display = 'block';
-        document.getElementById('comunidadMessage').style.display = 'none';
+        document.getElementById('comunidadForm').style.display = 'none';
         document.getElementById('freelanceForm').style.display = 'none';
         document.getElementById('submitAssignmentBtn').style.display = 'none';
         
@@ -830,35 +869,66 @@
     }
     
     function submitAssignment() {
-        const form = document.getElementById('assignmentForm');
+        // Determinar qué formulario está visible
+        const freelanceForm = document.getElementById('freelanceForm');
+        const comunidadForm = document.getElementById('comunidadForm');
         
-        if (!form || !form.checkValidity()) {
-            if (form) form.reportValidity();
+        let formData = {};
+        let tipoAsignacion = '';
+        
+        if (freelanceForm && freelanceForm.style.display !== 'none') {
+            // Formulario de freelance
+            const form = document.getElementById('assignmentForm');
+            
+            if (!form || !form.checkValidity()) {
+                if (form) form.reportValidity();
+                return;
+            }
+            
+            const casoUso = document.getElementById('casoUsoSelect');
+            const usuario = document.getElementById('usuarioSelect');
+            const rol = document.getElementById('rolProyecto');
+            
+            if (!casoUso || !usuario || !rol) {
+                alert('Error: No se pudieron encontrar todos los campos del formulario');
+                return;
+            }
+            
+            formData = {
+                tipo: 'freelance',
+                caso_uso: casoUso.value,
+                usuario: usuario.value,
+                rol_proyecto: rol.value
+            };
+            tipoAsignacion = 'freelance';
+            
+        } else if (comunidadForm && comunidadForm.style.display !== 'none') {
+            // Formulario de comunidad
+            const form = document.getElementById('comunidadAssignmentForm');
+            
+            if (!form || !form.checkValidity()) {
+                if (form) form.reportValidity();
+                return;
+            }
+            
+            const casoUso = document.getElementById('casoUsoComunidadSelect');
+            const comunidad = document.getElementById('comunidadSelect');
+            
+            if (!casoUso || !comunidad) {
+                alert('Error: No se pudieron encontrar todos los campos del formulario');
+                return;
+            }
+            
+            formData = {
+                tipo: 'comunidad',
+                caso_uso: casoUso.value,
+                comunidad: comunidad.value
+            };
+            tipoAsignacion = 'comunidad';
+        } else {
+            alert('Error: No se pudo determinar el tipo de asignación');
             return;
         }
-        
-        const aliadoSelect = document.getElementById('aliadoSelect');
-        const freelanceSelect = document.getElementById('freelanceSelect');
-        const fechaInicio = document.getElementById('fechaInicio');
-        const fechaFin = document.getElementById('fechaFin');
-        
-        if (!aliadoSelect || !freelanceSelect || !fechaInicio || !fechaFin) {
-            alert('Error: No se pudieron encontrar todos los campos del formulario');
-            return;
-        }
-        
-        // Validar que la fecha de fin sea posterior a la fecha de inicio
-        if (fechaFin.value && fechaInicio.value && fechaFin.value <= fechaInicio.value) {
-            alert('La fecha de fin debe ser posterior a la fecha de inicio');
-            return;
-        }
-        
-        const formData = {
-            aliado: aliadoSelect.value,
-            freelance: freelanceSelect.value,
-            fecha_inicio: fechaInicio.value,
-            fecha_fin: fechaFin.value
-        };
         
         console.log('Enviando datos de asignación:', formData);
         
@@ -873,7 +943,7 @@
         .then(data => {
             console.log('Respuesta del servidor:', data);
             if (data.status === 'success') {
-                alert('Asignación creada exitosamente');
+                alert(`Asignación de ${tipoAsignacion} creada exitosamente`);
                 hideModal('addAssignmentModal');
                 location.reload();
             } else {
