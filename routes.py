@@ -694,7 +694,13 @@ def update_informacion_personal():
         email = data.get('email')
         telefono = data.get('telefono')
         linkedin = data.get('linkedin')
-        ubicacion = data.get('ubicacion')
+        especialidad = data.get('especialidad')
+        nivel = data.get('nivel')
+        direccion = data.get('direccion')
+        ciudad = data.get('ciudad')
+        codigo_postal = data.get('codigo_postal')
+        pais = data.get('pais')
+        tarifa_hora = data.get('tarifa_hora')
         resumen = data.get('resumen')
 
         print("Datos de información personal:")
@@ -702,7 +708,13 @@ def update_informacion_personal():
         print(f"  - Email: {email}")
         print(f"  - Teléfono: {telefono}")
         print(f"  - LinkedIn: {linkedin}")
-        print(f"  - Ubicación: {ubicacion}")
+        print(f"  - Especialidad: {especialidad}")
+        print(f"  - Nivel: {nivel}")
+        print(f"  - Dirección: {direccion}")
+        print(f"  - Ciudad: {ciudad}")
+        print(f"  - Código Postal: {codigo_postal}")
+        print(f"  - País: {pais}")
+        print(f"  - Tarifa por hora: {tarifa_hora}")
         print(f"  - Resumen: {resumen}")
 
         # Validaciones básicas
@@ -720,7 +732,13 @@ def update_informacion_personal():
                 'email': email,
                 'telefono': telefono,
                 'linkedin': linkedin,
-                'ubicacion': ubicacion,
+                'especialidad': especialidad,
+                'nivel': nivel,
+                'direccion': direccion,
+                'ciudad': ciudad,
+                'codigo_postal': codigo_postal,
+                'pais': pais,
+                'tarifa_hora': tarifa_hora,
                 'resumen': resumen
             }
         })

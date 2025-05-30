@@ -420,9 +420,14 @@
                 <span class="info-value">México</span>
             </div>
             
+            <div class="info-row">
+                <span class="info-label">Tarifa por hora:</span>
+                <span class="info-value">$85 USD</span>
+            </div>
+            
             <div class="rate-display">
                 <div class="rate-amount">$85 USD</div>
-                <div class="rate-label">Tarifa por hora</div>
+                <div class="rate-label">Tarifa de referencia</div>
             </div>
             
             <div class="contact-info">
@@ -850,6 +855,9 @@ function saveEdit(sectionId) {
                     break;
                 case 'País':
                     formData.pais = value;
+                    break;
+                case 'Tarifa por hora':
+                    formData.tarifa_hora = value;
                     break;
             }
         }
