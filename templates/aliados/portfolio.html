@@ -58,20 +58,25 @@
     transition: all 0.2s ease;
 }
 
-/* Dashboard section actions */
-.dashboard-section-actions {
+/* Action buttons styles */
+.action-buttons {
     display: flex;
     gap: 0.5rem;
-    align-items: center;
 }
 
-.dashboard-section-actions .btn {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 1rem;
-    font-size: 0.875rem;
-    font-weight: 500;
+.action-button {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    border-radius: 8px;
+    padding: 8px 12px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.action-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
 }
 
 /* Modal footer */
@@ -177,14 +182,12 @@
 <div class="dashboard-container">
     <div class="dashboard-section-title">
         <h4>Portafolio de Proyectos</h4>
-        <div class="dashboard-section-actions">
-            <button type="button" class="btn btn-primary" id="addProjectBtn" title="Añadir Proyecto">
-                <i data-feather="plus" style="width: 16px; height: 16px;"></i>
-                Añadir Proyecto
+        <div class="action-buttons">
+            <button type="button" class="action-button" id="addProjectBtn" title="Añadir Proyecto">
+                <i data-feather="plus"></i>
             </button>
-            <button type="button" class="btn btn-secondary" id="dataManagementBtn" title="Gestión de Datos">
-                <i data-feather="database" style="width: 16px; height: 16px;"></i>
-                Gestión de Datos
+            <button type="button" class="action-button" id="dataManagementBtn" title="Gestión de Datos">
+                <i data-feather="database"></i>
             </button>
         </div>
     </div>
