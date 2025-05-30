@@ -5,6 +5,10 @@
     <!-- Header -->
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
         <h3 style="margin: 0; color: #333; font-weight: 600;">Gestión de Proyectos</h3>
+        <button onclick="openOportunidadModal()" style="background: #8B5A9D; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 0.5rem;">
+            <i data-feather="plus" style="width: 16px; height: 16px;"></i>
+            Nueva Oportunidad
+        </button>
     </div>
 
     <!-- Kanban Board Compacto -->
@@ -466,6 +470,60 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+
+    // Manejar el envío del formulario de nueva oportunidad
+    const nuevaOportunidadForm = document.getElementById('nuevaOportunidadForm');
+    if (nuevaOportunidadForm) {
+        nuevaOportunidadForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            submitNuevaOportunidad();
+        });
+    }
 });
+
+function submitNuevaOportunidad() {
+    console.log('Enviando formulario de nueva oportunidad...');
+
+    // Obtener datos del formulario
+    const formData = {
+        cuenta: document.getElementById('cuenta').value,
+        nombre: document.getElementById('nombre').value,
+        descripcion: document.getElementById('descripcion').value,
+        impacto: document.getElementById('impacto').value
+    };
+
+    console.log('Datos del formulario:', formData);
+
+    // Validar campos requeridos
+    if (!formData.cuenta || !formData.nombre || !formData.descripcion || !formData.impacto) {
+        alert('Por favor complete todos los campos requeridos');
+        return;
+    }
+
+    // Enviar datos al servidor
+    fetch('/api/nueva-oportunidad', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Respuesta del servidor:', data);
+        if (data.status === 'success') {
+            alert('Nueva oportunidad creada exitosamente');
+            closeOportunidadModal();
+            // Recargar página para mostrar nueva oportunidad
+            location.reload();
+        } else {
+            alert('Error al crear oportunidad: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error al crear oportunidad');
+    });
+}
 </script>
 {% endblock %}

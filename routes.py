@@ -808,6 +808,35 @@ def create_usuario_cuentas():
         app.logger.error(f"Error al crear usuario: {str(e)}")
         return jsonify({'status': 'error', 'message': str(e)}), 500
 
+@app.route('/api/nueva-oportunidad', methods=['POST'])
+@login_required
+def create_nueva_oportunidad():
+    try:
+        data = request.get_json()
+
+        if not data:
+            return jsonify({'status': 'error', 'message': 'No se recibieron datos'}), 400
+
+        print("\n=== DATOS DE NUEVA OPORTUNIDAD RECIBIDOS ===")
+        print(f"Cuenta: {data.get('cuenta')}")
+        print(f"Caso de Uso (Business Problem): {data.get('nombre')}")
+        print(f"Descripción (Iniciativa Analítica): {data.get('descripcion')}")
+        print(f"Impacto (Impacto de negocio esperado): {data.get('impacto')}")
+        print("=" * 50)
+
+        # Aquí puedes agregar la lógica para guardar en base de datos
+        # Por ahora solo imprimimos los datos
+
+        return jsonify({
+            'status': 'success',
+            'message': 'Nueva oportunidad creada exitosamente',
+            'data': data
+        })
+
+    except Exception as e:
+        app.logger.error(f"Error al crear nueva oportunidad: {str(e)}")
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+
 @app.route('/api/oportunidades', methods=['POST'])
 @login_required
 def create_oportunidad():
