@@ -27,30 +27,21 @@
                     <label class="form-label">Organización</label>
                     <select class="form-select" name="organizacion" id="filterOrganizacion">
                         <option value="">Todas</option>
-                        <option value="DeepNova">DeepNova</option>
-                        <option value="Tech Solutions SA">Tech Solutions SA</option>
-                        <option value="Global Corp">Global Corp</option>
-                        <option value="Freelance">Freelance</option>
+                        <!-- Se poblará dinámicamente -->
                     </select>
                 </div>
                 <div class="filter-group">
                     <label class="form-label">Rol</label>
                     <select class="form-select" name="rol" id="filterRol">
                         <option value="">Todos</option>
-                        <option value="Superadministrador">Superadministrador</option>
-                        <option value="Organización">Organización</option>
-                        <option value="Cliente">Cliente</option>
-                        <option value="Supervisor">Supervisor</option>
-                        <option value="Consultor">Consultor</option>
+                        <!-- Se poblará dinámicamente -->
                     </select>
                 </div>
                 <div class="filter-group">
                     <label class="form-label">Estado</label>
                     <select class="form-select" name="estado" id="filterEstado">
                         <option value="">Todos</option>
-                        <option value="activo">Activo</option>
-                        <option value="inactivo">Inactivo</option>
-                        <option value="pendiente">Pendiente</option>
+                        <!-- Se poblará dinámicamente -->
                     </select>
                 </div>
             </div>
@@ -493,57 +484,133 @@
 </style>
 
 <script>
-// Sistema de filtros simplificado con event delegation
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🚀 Sistema de filtros iniciado');
+    console.log('🚀 Inicializando sistema de filtros de usuarios');
     
     // Inicializar iconos de Feather
     if (typeof feather !== 'undefined') {
         feather.replace();
     }
     
-    // Usar event delegation en lugar de buscar elementos específicos
-    document.body.addEventListener('change', function(event) {
-        // Verificar si el evento viene de un filtro
-        if (event.target && event.target.id && event.target.id.startsWith('filter')) {
-            console.log('🔄 Filtro detectado:', event.target.id, 'valor:', event.target.value);
-            applyFiltersImmediate();
-        }
-    });
+    // Poblar filtros dinámicamente desde los datos de la tabla
+    populateFiltersFromTable();
     
-    console.log('✅ Event delegation configurado');
+    // Configurar event listeners para los filtros
+    setupFilterListeners();
 });
 
-function applyFiltersImmediate() {
-    console.log('🎯 Aplicando filtros inmediatamente...');
+function populateFiltersFromTable() {
+    console.log('📊 Poblando filtros desde datos de la tabla...');
     
-    // Obtener valores directamente del DOM sin verificaciones complejas
-    const organizacionSelect = document.querySelector('#filterOrganizacion');
-    const rolSelect = document.querySelector('#filterRol');
-    const estadoSelect = document.querySelector('#filterEstado');
+    const table = document.getElementById('usersTable');
+    if (!table) {
+        console.error('❌ Tabla de usuarios no encontrada');
+        return;
+    }
     
-    const filters = {
-        organizacion: organizacionSelect ? organizacionSelect.value : '',
-        rol: rolSelect ? rolSelect.value : '',
-        estado: estadoSelect ? estadoSelect.value : ''
-    };
+    const rows = table.querySelectorAll('tbody tr');
     
-    console.log('📊 Filtros activos:', filters);
+    // Sets para almacenar valores únicos
+    const organizaciones = new Set();
+    const roles = new Set();
+    const estados = new Set();
+    
+    // Extraer valores únicos de cada fila
+    rows.forEach(function(row) {
+        const org = row.getAttribute('data-organizacion');
+        const rol = row.getAttribute('data-rol');
+        const estado = row.getAttribute('data-estado');
+        
+        if (org) organizaciones.add(org);
+        if (rol) roles.add(rol);
+        if (estado) estados.add(estado);
+    });
+    
+    // Poblar select de organizaciones
+    const orgSelect = document.getElementById('filterOrganizacion');
+    if (orgSelect) {
+        Array.from(organizaciones).sort().forEach(function(org) {
+            const option = document.createElement('option');
+            option.value = org;
+            option.textContent = org;
+            orgSelect.appendChild(option);
+        });
+        console.log('✅ Filtro de organizaciones poblado:', organizaciones.size, 'opciones');
+    }
+    
+    // Poblar select de roles
+    const rolSelect = document.getElementById('filterRol');
+    if (rolSelect) {
+        Array.from(roles).sort().forEach(function(rol) {
+            const option = document.createElement('option');
+            option.value = rol;
+            option.textContent = rol;
+            rolSelect.appendChild(option);
+        });
+        console.log('✅ Filtro de roles poblado:', roles.size, 'opciones');
+    }
+    
+    // Poblar select de estados
+    const estadoSelect = document.getElementById('filterEstado');
+    if (estadoSelect) {
+        Array.from(estados).sort().forEach(function(estado) {
+            const option = document.createElement('option');
+            option.value = estado;
+            option.textContent = estado.charAt(0).toUpperCase() + estado.slice(1);
+            estadoSelect.appendChild(option);
+        });
+        console.log('✅ Filtro de estados poblado:', estados.size, 'opciones');
+    }
+    
+    console.log('📋 Filtros poblados exitosamente');
+}
+
+function setupFilterListeners() {
+    console.log('🔧 Configurando event listeners para filtros...');
+    
+    const filterIds = ['filterOrganizacion', 'filterRol', 'filterEstado'];
+    
+    filterIds.forEach(function(filterId) {
+        const filterElement = document.getElementById(filterId);
+        if (filterElement) {
+            filterElement.addEventListener('change', function() {
+                console.log('🔄 Cambio detectado en', filterId, ':', this.value);
+                applyFilters();
+            });
+            console.log('✅ Event listener agregado a', filterId);
+        } else {
+            console.error('❌ Elemento de filtro no encontrado:', filterId);
+        }
+    });
+}
+
+function applyFilters() {
+    console.log('🎯 Aplicando filtros...');
+    
+    // Obtener valores de filtros
+    const organizacionValue = document.getElementById('filterOrganizacion').value;
+    const rolValue = document.getElementById('filterRol').value;
+    const estadoValue = document.getElementById('filterEstado').value;
+    
+    console.log('📊 Filtros aplicados:', {
+        organizacion: organizacionValue,
+        rol: rolValue,
+        estado: estadoValue
+    });
     
     // Obtener todas las filas de la tabla
     const rows = document.querySelectorAll('#usersTable tbody tr');
     let visibleCount = 0;
     
     rows.forEach(function(row) {
-        // Obtener datos de cada fila
         const rowOrg = row.getAttribute('data-organizacion') || '';
         const rowRol = row.getAttribute('data-rol') || '';
         const rowEstado = row.getAttribute('data-estado') || '';
         
-        // Verificar coincidencias (comparación exacta)
-        const matchOrg = !filters.organizacion || rowOrg === filters.organizacion;
-        const matchRol = !filters.rol || rowRol === filters.rol;
-        const matchEstado = !filters.estado || rowEstado === filters.estado;
+        // Verificar coincidencias
+        const matchOrg = organizacionValue === '' || rowOrg === organizacionValue;
+        const matchRol = rolValue === '' || rowRol === rolValue;
+        const matchEstado = estadoValue === '' || rowEstado === estadoValue;
         
         // Mostrar/ocultar fila
         if (matchOrg && matchRol && matchEstado) {
@@ -554,7 +621,7 @@ function applyFiltersImmediate() {
         }
     });
     
-    console.log(`✅ Mostrando ${visibleCount} de ${rows.length} usuarios`);
+    console.log(`✅ Filtrado completado: ${visibleCount}/${rows.length} usuarios visibles`);
 }
 
 function showUserModal() {
