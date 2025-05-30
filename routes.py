@@ -748,6 +748,37 @@ def create_asignacion():
         app.logger.error(f"Error al crear asignación: {str(e)}")
         return jsonify({'status': 'error', 'message': str(e)}), 500
 
+@app.route('/api/clientes', methods=['POST'])
+@login_required
+def create_cliente():
+    try:
+        data = request.get_json()
+
+        if not data:
+            return jsonify({'status': 'error', 'message': 'No se recibieron datos'}), 400
+
+        print("\n=== DATOS DEL CLIENTE RECIBIDOS ===")
+        print(f"Nombre: {data.get('nombre')}")
+        print(f"Industria: {data.get('industria')}")
+        print(f"Región: {data.get('region')}")
+        print(f"Código: {data.get('codigo')}")
+        print(f"Sector: {data.get('sector')}")
+        print(f"Segmentación: {data.get('segmentacion')}")
+        print("=" * 40)
+
+        # Aquí puedes agregar la lógica para guardar en base de datos
+        # Por ahora solo imprimimos los datos
+
+        return jsonify({
+            'status': 'success',
+            'message': 'Cliente creado exitosamente',
+            'data': data
+        })
+
+    except Exception as e:
+        app.logger.error(f"Error al crear cliente: {str(e)}")
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+
 @app.route('/api/oportunidades', methods=['POST'])
 @login_required
 def create_oportunidad():
