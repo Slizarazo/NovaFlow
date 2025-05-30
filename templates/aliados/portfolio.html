@@ -82,37 +82,33 @@
         <form class="filter-form">
             <div class="filter-row">
                 <div class="filter-col">
-                    <label class="filter-label" for="aliado">Aliado</label>
-                    <select class="filter-control" id="aliado" name="aliado">
-                        <option value="">Todos</option>
-                        {% for aliado_id, aliado in aliados.items() %}
-                        <option value="{{ aliado_id }}">{{ aliado.nombre }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="filter-col">
-                    <label class="filter-label" for="etapa">Etapa</label>
-                    <select class="filter-control" id="etapa" name="etapa">
+                    <label class="filter-label" for="filterCategoria">Categoría</label>
+                    <select class="filter-control" id="filterCategoria" name="categoria">
                         <option value="">Todas</option>
-                        <option value="propuesta">Propuesta</option>
-                        <option value="planificacion">Planificación</option>
-                        <option value="ejecucion">Ejecución</option>
-                        <option value="cierre">Cierre</option>
-                        <option value="post-evaluacion">Post-evaluación</option>
+                        <!-- Se poblará dinámicamente -->
                     </select>
                 </div>
                 <div class="filter-col">
-                    <label class="filter-label" for="fechaInicio">Fecha Inicio</label>
-                    <input type="date" class="filter-control" id="fechaInicio" name="fechaInicio">
+                    <label class="filter-label" for="filterFamilia">Familia</label>
+                    <select class="filter-control" id="filterFamilia" name="familia">
+                        <option value="">Todas</option>
+                        <!-- Se poblará dinámicamente -->
+                    </select>
                 </div>
                 <div class="filter-col">
-                    <label class="filter-label" for="monto">Monto Mínimo</label>
-                    <input type="number" class="filter-control" id="monto" name="monto" placeholder="$ Monto mínimo">
+                    <label class="filter-label" for="filterTipo">Tipo</label>
+                    <select class="filter-control" id="filterTipo" name="tipo">
+                        <option value="">Todos</option>
+                        <!-- Se poblará dinámicamente -->
+                    </select>
                 </div>
-            </div>
-            <div class="filter-actions">
-                <button type="button" class="btn btn-secondary filter-reset">Limpiar</button>
-                <button type="button" class="btn btn-primary filter-apply">Aplicar</button>
+                <div class="filter-col">
+                    <label class="filter-label" for="filterEstado">Estado</label>
+                    <select class="filter-control" id="filterEstado" name="estado">
+                        <option value="">Todos</option>
+                        <!-- Se poblará dinámicamente -->
+                    </select>
+                </div>
             </div>
         </form>
     </div>
@@ -320,14 +316,15 @@
 {% block scripts %}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        console.log('DOM cargado, inicializando eventos...');
+        console.log('🚀 Inicializando sistema de filtros de portfolio...');
         
         // Initialize Feather icons first
         if (typeof feather !== 'undefined') {
             feather.replace();
         }
         
-        // Vista de tabla única - sin necesidad de toggle
+        // Inicializar filtros
+        initializePortfolioFilters();
         
         // Configurar eventos de botones por ID específicos
         setTimeout(function() {
@@ -384,6 +381,175 @@
             }
         });
     });
+    
+    // Sistema de filtros para portfolio
+    function initializePortfolioFilters() {
+        console.log('📊 Poblando filtros desde datos de la tabla...');
+        
+        try {
+            // Poblar filtros desde datos de la tabla
+            populateFiltersFromTable();
+            
+            // Configurar event listeners para filtros automáticos
+            setupFilterListeners();
+            
+            console.log('✅ Sistema de filtros inicializado correctamente');
+        } catch (error) {
+            console.error('❌ Error al inicializar filtros:', error);
+        }
+    }
+    
+    function populateFiltersFromTable() {
+        const table = document.querySelector('#projectsTable table tbody');
+        if (!table) {
+            console.error('❌ Tabla de proyectos no encontrada');
+            return;
+        }
+        
+        const rows = table.querySelectorAll('tr');
+        const categorias = new Set();
+        const familias = new Set();
+        const tipos = new Set();
+        const estados = new Set();
+        
+        rows.forEach(row => {
+            try {
+                const cells = row.querySelectorAll('td');
+                if (cells.length >= 7) {
+                    // Extraer datos (columnas: nombre, categoría, familia, descripción, tipo, estado, fecha)
+                    const categoria = cells[1].textContent.trim();
+                    const familia = cells[2].textContent.trim();
+                    const tipo = cells[4].textContent.trim();
+                    const estadoBadge = cells[5].querySelector('.badge');
+                    const estado = estadoBadge ? estadoBadge.textContent.trim() : '';
+                    
+                    if (categoria && categoria !== 'N/A') categorias.add(categoria);
+                    if (familia && familia !== 'N/A') familias.add(familia);
+                    if (tipo && tipo !== 'Estándar') tipos.add(tipo);
+                    if (estado) estados.add(estado);
+                }
+            } catch (error) {
+                console.warn('⚠️ Error procesando fila:', error);
+            }
+        });
+        
+        // Poblar selectores
+        populateSelect('filterCategoria', categorias);
+        populateSelect('filterFamilia', familias);
+        populateSelect('filterTipo', tipos);
+        populateSelect('filterEstado', estados);
+        
+        console.log('✅ Filtros poblados:', {
+            categorias: categorias.size,
+            familias: familias.size,
+            tipos: tipos.size,
+            estados: estados.size
+        });
+    }
+    
+    function populateSelect(selectId, options) {
+        const select = document.getElementById(selectId);
+        if (!select) {
+            console.error('❌ Selector no encontrado:', selectId);
+            return;
+        }
+        
+        // Limpiar opciones existentes excepto la primera
+        const firstOption = select.querySelector('option[value=""]');
+        select.innerHTML = '';
+        if (firstOption) {
+            select.appendChild(firstOption);
+        }
+        
+        // Agregar nuevas opciones ordenadas
+        Array.from(options).sort().forEach(option => {
+            const optionElement = document.createElement('option');
+            optionElement.value = option;
+            optionElement.textContent = option;
+            select.appendChild(optionElement);
+        });
+    }
+    
+    function setupFilterListeners() {
+        const filterIds = ['filterCategoria', 'filterFamilia', 'filterTipo', 'filterEstado'];
+        
+        filterIds.forEach(filterId => {
+            const filter = document.getElementById(filterId);
+            if (filter) {
+                filter.addEventListener('change', applyPortfolioFilters);
+                console.log('✅ Event listener agregado a', filterId);
+            } else {
+                console.error('❌ Filtro no encontrado:', filterId);
+            }
+        });
+    }
+    
+    function applyPortfolioFilters() {
+        console.log('🎯 Aplicando filtros de portfolio...');
+        
+        try {
+            // Obtener valores de filtros
+            const categoriaValue = document.getElementById('filterCategoria').value.toLowerCase();
+            const familiaValue = document.getElementById('filterFamilia').value.toLowerCase();
+            const tipoValue = document.getElementById('filterTipo').value.toLowerCase();
+            const estadoValue = document.getElementById('filterEstado').value.toLowerCase();
+            
+            console.log('📊 Filtros aplicados:', {
+                categoria: categoriaValue,
+                familia: familiaValue,
+                tipo: tipoValue,
+                estado: estadoValue
+            });
+            
+            // Obtener filas de la tabla
+            const table = document.querySelector('#projectsTable table tbody');
+            if (!table) {
+                console.error('❌ Tabla no encontrada');
+                return;
+            }
+            
+            const rows = table.querySelectorAll('tr');
+            let visibleCount = 0;
+            
+            rows.forEach(row => {
+                try {
+                    const cells = row.querySelectorAll('td');
+                    if (cells.length >= 7) {
+                        // Extraer datos de la fila
+                        const categoria = cells[1].textContent.trim().toLowerCase();
+                        const familia = cells[2].textContent.trim().toLowerCase();
+                        const tipo = cells[4].textContent.trim().toLowerCase();
+                        const estadoBadge = cells[5].querySelector('.badge');
+                        const estado = estadoBadge ? estadoBadge.textContent.trim().toLowerCase() : '';
+                        
+                        // Aplicar filtros
+                        const matchCategoria = categoriaValue === '' || categoria.includes(categoriaValue);
+                        const matchFamilia = familiaValue === '' || familia.includes(familiaValue);
+                        const matchTipo = tipoValue === '' || tipo.includes(tipoValue);
+                        const matchEstado = estadoValue === '' || estado.includes(estadoValue);
+                        
+                        // Mostrar/ocultar fila
+                        if (matchCategoria && matchFamilia && matchTipo && matchEstado) {
+                            row.style.display = '';
+                            visibleCount++;
+                        } else {
+                            row.style.display = 'none';
+                        }
+                    }
+                } catch (error) {
+                    console.warn('⚠️ Error procesando fila:', error);
+                    // En caso de error, mostrar la fila
+                    row.style.display = '';
+                    visibleCount++;
+                }
+            });
+            
+            console.log(`✅ Filtrado completado: ${visibleCount}/${rows.length} proyectos visibles`);
+            
+        } catch (error) {
+            console.error('❌ Error al aplicar filtros:', error);
+        }
+    }
     
     function showModal(modalId) {
         console.log('Mostrando modal:', modalId);
