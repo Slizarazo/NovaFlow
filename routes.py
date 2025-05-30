@@ -688,41 +688,57 @@ def proyectos_gestion():
             'id': 1,
             'nombre': 'Transformación Digital Bancaria',
             'estado': 'En Desarrollo',
-            'tiempo_estimado': '6 meses',
-            'costos_estimados': '$150,000',
-            'presupuesto': '$180,000',
+            'etapa': 'desarrollo',
+            'tiempo_estimado': 960,
+            'costos_estimados': 150000,
+            'monto': 180000,
             'consultores_asignados': 5,
-            'avance': 65
+            'progreso': 65,
+            'aliado_id': 'Banco Nacional',
+            'fecha_inicio': '2024-01-15',
+            'fecha_fin': '2024-07-15'
         },
         {
             'id': 2,
             'nombre': 'Sistema de Gestión Hospitalaria',
             'estado': 'Planificación',
-            'tiempo_estimado': '8 meses',
-            'costos_estimados': '$200,000',
-            'presupuesto': '$250,000',
+            'etapa': 'planificacion',
+            'tiempo_estimado': 1280,
+            'costos_estimados': 200000,
+            'monto': 250000,
             'consultores_asignados': 7,
-            'avance': 25
+            'progreso': 25,
+            'aliado_id': 'Hospital Central',
+            'fecha_inicio': '2024-02-01',
+            'fecha_fin': '2024-10-01'
         },
         {
             'id': 3,
             'nombre': 'E-commerce para Retail',
             'estado': 'Testing',
-            'tiempo_estimado': '4 meses',
-            'costos_estimados': '$80,000',
-            'presupuesto': '$100,000',
+            'etapa': 'testing',
+            'tiempo_estimado': 640,
+            'costos_estimados': 80000,
+            'monto': 100000,
             'consultores_asignados': 3,
-            'avance': 85
+            'progreso': 85,
+            'aliado_id': 'Retail Plus',
+            'fecha_inicio': '2024-03-01',
+            'fecha_fin': '2024-07-01'
         },
         {
             'id': 4,
             'nombre': 'Plataforma de Logística',
             'estado': 'Finalizado',
-            'tiempo_estimado': '5 meses',
-            'costos_estimados': '$120,000',
-            'presupuesto': '$140,000',
+            'etapa': 'finalizado',
+            'tiempo_estimado': 800,
+            'costos_estimados': 120000,
+            'monto': 140000,
             'consultores_asignados': 4,
-            'avance': 100
+            'progreso': 100,
+            'aliado_id': 'LogiTech',
+            'fecha_inicio': '2023-10-01',
+            'fecha_fin': '2024-03-01'
         }
     ]
 

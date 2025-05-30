@@ -74,15 +74,33 @@
                         <div class="col-4">
                             <div class="mb-1">
                                 <small class="text-muted">Tiempo Est.</small>
-                                <div class="fw-semibold">{{ proyecto.tiempo_estimado or 'N/A' }} hrs</div>
+                                <div class="fw-semibold">
+                                    {% if proyecto.tiempo_estimado %}
+                                        {{ proyecto.tiempo_estimado }} hrs
+                                    {% else %}
+                                        N/A
+                                    {% endif %}
+                                </div>
                             </div>
                             <div class="mb-1">
                                 <small class="text-muted">Costos Est.</small>
-                                <div class="fw-semibold">${{ "{:,.0f}".format(proyecto.costos_estimados or 0) }}</div>
+                                <div class="fw-semibold">
+                                    {% if proyecto.costos_estimados %}
+                                        ${{ "{:,.0f}".format(proyecto.costos_estimados) }}
+                                    {% else %}
+                                        N/A
+                                    {% endif %}
+                                </div>
                             </div>
                             <div class="mb-2">
                                 <small class="text-muted">Presupuesto</small>
-                                <div class="fw-semibold">${{ "{:,.0f}".format(proyecto.monto or 0) }}</div>
+                                <div class="fw-semibold">
+                                    {% if proyecto.monto %}
+                                        ${{ "{:,.0f}".format(proyecto.monto) }}
+                                    {% else %}
+                                        N/A
+                                    {% endif %}
+                                </div>
                             </div>
                             <button class="btn btn-sm btn-outline-success" onclick="verFinanzas({{ proyecto.id }})">
                                 <i data-feather="dollar-sign" style="width: 12px; height: 12px;"></i>
