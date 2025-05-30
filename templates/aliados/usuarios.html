@@ -505,63 +505,41 @@ document.addEventListener('DOMContentLoaded', function() {
         feather.replace();
     }
 
-    // Setup filters
+    // Setup filters with direct event listeners
     setupFilters();
 });
 
 function setupFilters() {
     console.log('Configurando filtros');
     
-    // Esperar un poco más para asegurar que el DOM esté completamente cargado
-    setTimeout(() => {
-        const filterOrganizacion = document.getElementById('filterOrganizacion');
-        const filterRol = document.getElementById('filterRol');
-        const filterEstado = document.getElementById('filterEstado');
-
-        console.log('Elementos de filtro encontrados:', {
-            organizacion: !!filterOrganizacion,
-            rol: !!filterRol,
-            estado: !!filterEstado
-        });
-
-        if (filterOrganizacion) {
-            filterOrganizacion.addEventListener('change', function() {
-                console.log('Cambio en filtro organización:', this.value);
+    // Buscar todos los selects de filtro
+    const filterSelects = document.querySelectorAll('#filterOrganizacion, #filterRol, #filterEstado');
+    
+    console.log('Elementos de filtro encontrados:', filterSelects.length);
+    
+    // Agregar event listener a cada filtro
+    filterSelects.forEach(function(select) {
+        if (select) {
+            select.addEventListener('change', function() {
+                console.log('Cambio detectado en filtro:', select.id, 'valor:', this.value);
                 applyFilters();
             });
+            console.log('Event listener agregado a:', select.id);
         }
-        
-        if (filterRol) {
-            filterRol.addEventListener('change', function() {
-                console.log('Cambio en filtro rol:', this.value);
-                applyFilters();
-            });
-        }
-        
-        if (filterEstado) {
-            filterEstado.addEventListener('change', function() {
-                console.log('Cambio en filtro estado:', this.value);
-                applyFilters();
-            });
-        }
-    }, 100);
+    });
 }
 
 function applyFilters() {
     console.log('Aplicando filtros');
     
+    // Obtener valores de filtros
     const filterOrganizacion = document.getElementById('filterOrganizacion');
     const filterRol = document.getElementById('filterRol');
     const filterEstado = document.getElementById('filterEstado');
     
-    if (!filterOrganizacion || !filterRol || !filterEstado) {
-        console.error('No se pudieron encontrar los elementos de filtro');
-        return;
-    }
-
-    const organizacionValue = filterOrganizacion.value;
-    const rolValue = filterRol.value;
-    const estadoValue = filterEstado.value;
+    const organizacionValue = filterOrganizacion ? filterOrganizacion.value : '';
+    const rolValue = filterRol ? filterRol.value : '';
+    const estadoValue = filterEstado ? filterEstado.value : '';
 
     console.log('Valores de filtros:', {
         organizacion: organizacionValue,
@@ -569,18 +547,22 @@ function applyFilters() {
         estado: estadoValue
     });
 
+    // Obtener todas las filas de la tabla
     const tableRows = document.querySelectorAll('#usersTable tbody tr');
     let visibleCount = 0;
 
-    tableRows.forEach(row => {
+    // Aplicar filtros a cada fila
+    tableRows.forEach(function(row) {
         const organizacion = row.getAttribute('data-organizacion') || '';
         const rol = row.getAttribute('data-rol') || '';
         const estado = row.getAttribute('data-estado') || '';
 
+        // Verificar si la fila coincide con los filtros
         const matchOrganizacion = organizacionValue === '' || organizacion === organizacionValue;
         const matchRol = rolValue === '' || rol === rolValue;
         const matchEstado = estadoValue === '' || estado === estadoValue;
 
+        // Mostrar u ocultar fila según los filtros
         if (matchOrganizacion && matchRol && matchEstado) {
             row.style.display = '';
             visibleCount++;
