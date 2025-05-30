@@ -67,13 +67,13 @@
                         
                         <div class="mb-3">
                             <label for="clienteNombre" class="form-label">Nombre</label>
-                            <input type="text" class="form-control" id="clienteNombre" placeholder="Ej: Sistema de Gestión de Inventarios" required>
+                            <input type="text" class="form-control" id="clienteNombre" placeholder="Nombre del cliente o empresa" required>
                         </div>
 
                         <div class="mb-3">
-                            <label for="clienteIndustria" class="form-label">Categoría</label>
+                            <label for="clienteIndustria" class="form-label">Industria</label>
                             <select class="form-select" id="clienteIndustria" required>
-                                <option value="">Seleccionar categoría...</option>
+                                <option value="">Seleccionar industria...</option>
                                 <option value="Tecnología">Tecnología</option>
                                 <option value="Finanzas">Finanzas</option>
                                 <option value="Manufactura">Manufactura</option>
@@ -84,24 +84,48 @@
                                 <option value="Telecomunicaciones">Telecomunicaciones</option>
                                 <option value="Energía">Energía</option>
                                 <option value="Automotriz">Automotriz</option>
+                                <option value="Agricultura">Agricultura</option>
+                                <option value="Construcción">Construcción</option>
+                                <option value="Turismo">Turismo</option>
+                                <option value="Medios">Medios</option>
+                                <option value="Logística">Logística</option>
                             </select>
                         </div>
 
                         <div class="mb-3">
-                            <label for="clienteSector" class="form-label">Familia</label>
+                            <label for="clienteRegion" class="form-label">Región</label>
+                            <select class="form-select" id="clienteRegion" required>
+                                <option value="">Seleccionar región...</option>
+                                <option value="Norte">Norte</option>
+                                <option value="Sur">Sur</option>
+                                <option value="Este">Este</option>
+                                <option value="Oeste">Oeste</option>
+                                <option value="Centro">Centro</option>
+                                <option value="Noreste">Noreste</option>
+                                <option value="Noroeste">Noroeste</option>
+                                <option value="Sureste">Sureste</option>
+                                <option value="Suroeste">Suroeste</option>
+                                <option value="Internacional">Internacional</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="clienteCodigo" class="form-label">Código</label>
+                            <input type="text" class="form-control" id="clienteCodigo" placeholder="Código del cliente" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="clienteSector" class="form-label">Sector</label>
                             <select class="form-select" id="clienteSector" required>
-                                <option value="">Seleccionar familia...</option>
-                                <option value="Corporativo">Corporativo</option>
-                                <option value="PYME">PYME</option>
-                                <option value="Startup">Startup</option>
-                                <option value="Gobierno">Gobierno</option>
+                                <option value="">Seleccionar sector...</option>
+                                <option value="Público">Público</option>
+                                <option value="Privado">Privado</option>
+                                <option value="Mixto">Mixto</option>
                                 <option value="ONG">ONG</option>
+                                <option value="Cooperativo">Cooperativo</option>
+                                <option value="Startup">Startup</option>
+                                <option value="Multinacional">Multinacional</option>
                             </select>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="clienteDescripcion" class="form-label">Descripción</label>
-                            <textarea class="form-control" id="clienteDescripcion" rows="3" placeholder="Descripción del proyecto..."></textarea>
                         </div>
                     </div>
                 </form>
@@ -202,15 +226,16 @@
         // Obtener datos del formulario
         const formData = {
             nombre: document.getElementById('clienteNombre').value,
-            categoria: document.getElementById('clienteIndustria').value,
-            familia: document.getElementById('clienteSector').value,
-            descripcion: document.getElementById('clienteDescripcion').value
+            industria: document.getElementById('clienteIndustria').value,
+            region: document.getElementById('clienteRegion').value,
+            codigo: document.getElementById('clienteCodigo').value,
+            sector: document.getElementById('clienteSector').value
         };
 
         console.log('Datos del formulario:', formData);
 
         // Validar campos requeridos
-        if (!formData.nombre || !formData.categoria || !formData.familia) {
+        if (!formData.nombre || !formData.industria || !formData.region || !formData.codigo || !formData.sector) {
             alert('Por favor complete todos los campos requeridos');
             return;
         }
