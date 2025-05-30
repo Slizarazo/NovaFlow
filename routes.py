@@ -625,5 +625,36 @@ def create_user():
             print(f"  - Email: {data.get('email')}")
             print(f"  - Teléfono: {data.get('telefono')}")
             print(f"  - Puesto: {data.get('puesto')}")
-            print(f"  - Departamento: {data.get('departamento')}")
-            print(f"  - Salario: {data.get('salario')}")
+            print(f"  - Departamento: {data.get('salario')}")
+
+        # Enviar datos al servidor
+        fetch('/api/usuarios-cuentas', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Respuesta del servidor:', data);
+            if (data.status === 'success') {
+                alert('Usuario creado exitosamente');
+                hideUsuarioModal();
+                // Recargar página para mostrar nuevo usuario
+                location.reload();
+            } else {
+                alert('Error al crear usuario: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error al crear usuario');
+        });
+    }
+
+        return jsonify({'status': 'success', 'message': 'Usuario creado exitosamente'})
+
+    except Exception as e:
+        app.logger.error(f"Error al crear usuario: {str(e)}")
+        return jsonify({'status': 'error', 'message': str(e)}), 500
