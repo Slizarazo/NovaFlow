@@ -10,7 +10,7 @@
             <button type="button" class="modern-action-btn" onclick="showUserModal()" title="Añadir Usuario">
                 <i data-feather="plus"></i>
             </button>
-            <button type="button" class="modern-action-btn" data-bs-toggle="modal" data-bs-target="#dataManagementModal" title="Gestión de Datos">
+            <button type="button" class="modern-action-btn" onclick="showDataModal()" title="Gestión de Datos">
                 <i data-feather="database"></i>
             </button>
         </div>
@@ -190,12 +190,12 @@
 </div>
 
 <!-- Modal Añadir Usuario -->
-<div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
+<div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true" style="display: none;">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="addUserModalLabel">Añadir Usuario</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" onclick="hideModal('addUserModal')" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form id="addUserForm">
@@ -351,23 +351,23 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-secondary" onclick="hideModal('addUserModal')">Cancelar</button>
                 <button type="button" class="btn btn-primary" onclick="submitUserForm()">Guardar Usuario</button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Modal Gestión de Datos -->
-<div class="modal fade" id="dataManagementModal" tabindex="-1" aria-labelledby="dataManagementModalLabel" aria-hidden="true">
+<!-- Modal Gestión de Datos Unificado -->
+<div class="modal fade" id="dataManagementModal" tabindex="-1" aria-labelledby="dataManagementModalLabel" aria-hidden="true" style="display: none;">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="dataManagementModalLabel">Gestión de Datos de Usuarios</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" onclick="hideModal('dataManagementModal')" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <!-- Selección de operación -->
+                <!-- Selección de operación unificada -->
                 <div class="data-operation-selector">
                     <div class="row">
                         <div class="col-md-6">
@@ -474,12 +474,15 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="resetDataModal()">Cancelar</button>
+                <button type="button" class="btn btn-secondary" onclick="hideModal('dataManagementModal')">Cancelar</button>
                 <button type="button" class="btn btn-primary" onclick="executeDataOperation()" id="executeDataBtn" style="display: none;">Ejecutar</button>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Backdrop del modal -->
+<div class="modal-backdrop fade" id="modalBackdrop" style="display: none;"></div>
 
 <style>
 /* Data management modal styles */
@@ -613,6 +616,39 @@
 }
 
 /* Modal styles */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1055;
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    outline: 0;
+}
+
+.modal.show {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1050;
+    width: 100vw;
+    height: 100vh;
+    background-color: #000;
+    opacity: 0.5;
+}
+
+.modal-backdrop.show {
+    opacity: 0.5;
+}
+
 .modal-content {
     border: none;
     border-radius: 16px;
@@ -620,6 +656,8 @@
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     overflow: hidden;
+    position: relative;
+    z-index: 1056;
 }
 
 .modal-header {
@@ -700,21 +738,36 @@
     font-weight: 500;
     transition: all 0.3s ease;
 }
+
+.btn-close {
+    background: none;
+    border: none;
+    color: white;
+    opacity: 0.8;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.btn-close:hover {
+    opacity: 1;
+}
 </style>
 
 <script>
-// Sistema de filtros independiente para usuarios - evita conflictos con otros archivos JS
+// Sistema completo de modales y filtros para usuarios
 (function() {
     'use strict';
     
     let filtersInitialized = false;
+    let selectedDataOperation = null;
     
+    // Inicialización cuando el DOM esté listo
     document.addEventListener('DOMContentLoaded', function() {
-        console.log('🚀 Inicializando sistema de filtros de usuarios');
+        console.log('🚀 Inicializando sistema de usuarios');
         
         // Prevenir múltiples inicializaciones
         if (filtersInitialized) {
-            console.log('⚠️ Filtros ya inicializados, saltando...');
+            console.log('⚠️ Ya inicializado, saltando...');
             return;
         }
         
@@ -730,6 +783,7 @@
         }, 100);
     });
     
+    // Funciones de filtros
     function initializeUserFilters() {
         console.log('🔧 Inicializando filtros de usuarios...');
         
@@ -821,12 +875,8 @@
         filterIds.forEach(function(filterId) {
             const filterElement = document.getElementById(filterId);
             if (filterElement) {
-                // Remover event listeners existentes
-                const newElement = filterElement.cloneNode(true);
-                filterElement.parentNode.replaceChild(newElement, filterElement);
-                
-                // Agregar nuevo event listener
-                newElement.addEventListener('change', function(event) {
+                // Agregar event listener
+                filterElement.addEventListener('change', function(event) {
                     console.log('🔄 Cambio detectado en', filterId, ':', this.value);
                     event.preventDefault();
                     event.stopPropagation();
@@ -908,282 +958,352 @@
         }
     }
     
-    // Exponer la función de aplicar filtros globalmente para debugging
-    window.applyUserFilters = applyUserFilters;
-    
-})();
-
-// Variables para gestión de datos
-let selectedDataOperation = null;
-
-function selectDataOperation(operation) {
-    console.log('🔄 Seleccionando operación:', operation);
-    selectedDataOperation = operation;
-    
-    // Actualizar UI
-    document.querySelectorAll('.data-option').forEach(option => {
-        option.classList.remove('active');
-    });
-    
-    event.currentTarget.classList.add('active');
-    
-    // Mostrar formulario correspondiente
-    document.querySelectorAll('.operation-form').forEach(form => {
-        form.style.display = 'none';
-    });
-    
-    const formId = operation === 'import' ? 'importOperationForm' : 'exportOperationForm';
-    const targetForm = document.getElementById(formId);
-    if (targetForm) {
-        targetForm.style.display = 'block';
-    }
-    
-    // Mostrar botón ejecutar
-    const executeBtn = document.getElementById('executeDataBtn');
-    if (executeBtn) {
-        executeBtn.style.display = 'inline-block';
-        executeBtn.textContent = operation === 'import' ? 'Importar' : 'Exportar';
-    }
-    
-    // Actualizar iconos feather
-    if (typeof feather !== 'undefined') {
-        feather.replace();
-    }
-}
-
-function executeDataOperation() {
-    console.log('🚀 Ejecutando operación:', selectedDataOperation);
-    
-    if (!selectedDataOperation) {
-        alert('Por favor selecciona una operación');
-        return;
-    }
-    
-    if (selectedDataOperation === 'import') {
-        executeUsersImport();
-    } else if (selectedDataOperation === 'export') {
-        executeUsersExport();
-    }
-}
-
-function executeUsersImport() {
-    const fileInput = document.getElementById('usersImportFile');
-    const overwriteData = document.getElementById('overwriteUsersData');
-    
-    if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
-        alert('Por favor selecciona un archivo para importar');
-        return;
-    }
-    
-    const file = fileInput.files[0];
-    const allowedExtensions = ['.xlsx', '.xls', '.csv'];
-    const fileExtension = '.' + file.name.split('.').pop().toLowerCase();
-    
-    if (!allowedExtensions.includes(fileExtension)) {
-        alert('Formato de archivo no soportado. Use Excel (.xlsx, .xls) o CSV (.csv)');
-        return;
-    }
-    
-    console.log('📤 Importando archivo:', file.name);
-    console.log('🔄 Sobrescribir datos:', overwriteData ? overwriteData.checked : false);
-    
-    // Simular importación
-    alert(`Archivo "${file.name}" importado exitosamente.\n${Math.floor(Math.random() * 50) + 10} usuarios procesados.`);
-    
-    // Cerrar modal
-    const modal = bootstrap.Modal.getInstance(document.getElementById('dataManagementModal'));
-    if (modal) modal.hide();
-    
-    // Recargar página para mostrar cambios
-    setTimeout(() => window.location.reload(), 500);
-}
-
-function executeUsersExport() {
-    const format = document.getElementById('usersExportFormat')?.value || 'xlsx';
-    const includeAll = document.getElementById('includeAllUsers')?.checked || false;
-    const includeFiltered = document.getElementById('includeFilteredUsers')?.checked || false;
-    
-    // Verificar columnas seleccionadas
-    const selectedColumns = [];
-    ['colNombre', 'colUsuario', 'colOrganizacion', 'colRol', 'colEstado'].forEach(colId => {
-        const checkbox = document.getElementById(colId);
-        if (checkbox && checkbox.checked) {
-            selectedColumns.push(colId.replace('col', ''));
-        }
-    });
-    
-    if (selectedColumns.length === 0) {
-        alert('Por favor selecciona al menos una columna para exportar');
-        return;
-    }
-    
-    console.log('📥 Exportando usuarios:', {
-        formato: format,
-        incluirTodos: includeAll,
-        incluirFiltrados: includeFiltered,
-        columnas: selectedColumns
-    });
-    
-    // Simular exportación
-    const fileName = `usuarios_export_${new Date().toISOString().split('T')[0]}.${format}`;
-    alert(`Exportación completada.\nArchivo: ${fileName}\nColumnas: ${selectedColumns.join(', ')}`);
-    
-    // Cerrar modal
-    const modal = bootstrap.Modal.getInstance(document.getElementById('dataManagementModal'));
-    if (modal) modal.hide();
-}
-
-function resetDataModal() {
-    selectedDataOperation = null;
-    
-    // Resetear selecciones
-    document.querySelectorAll('.data-option').forEach(option => {
-        option.classList.remove('active');
-    });
-    
-    // Ocultar formularios
-    document.querySelectorAll('.operation-form').forEach(form => {
-        form.style.display = 'none';
-    });
-    
-    // Ocultar botón ejecutar
-    const executeBtn = document.getElementById('executeDataBtn');
-    if (executeBtn) {
-        executeBtn.style.display = 'none';
-    }
-    
-    // Resetear formularios
-    const importForm = document.getElementById('importOperationForm');
-    const exportForm = document.getElementById('exportOperationForm');
-    
-    if (importForm) {
-        const inputs = importForm.querySelectorAll('input');
-        inputs.forEach(input => {
-            if (input.type === 'file') {
-                input.value = '';
-            } else if (input.type === 'checkbox') {
-                input.checked = false;
-            }
-        });
-    }
-    
-    if (exportForm) {
-        const inputs = exportForm.querySelectorAll('input, select');
-        inputs.forEach(input => {
-            if (input.type === 'checkbox') {
-                // Mantener checkboxes de columnas marcados por defecto
-                if (input.id.startsWith('col') || input.id === 'includeAllUsers') {
-                    input.checked = true;
-                } else {
-                    input.checked = false;
-                }
-            } else if (input.tagName === 'SELECT') {
-                input.selectedIndex = 0;
-            }
-        });
-    }
-}
-
-function showUserModal() {
-    try {
-        const modal = document.getElementById('addUserModal');
-        if (modal) {
-            const bootstrapModal = new bootstrap.Modal(modal);
-            bootstrapModal.show();
-            console.log('✅ Modal de usuario mostrado');
-        } else {
-            console.error('❌ Modal addUserModal no encontrado');
-        }
-    } catch (error) {
-        console.error('❌ Error al mostrar modal:', error);
-    }
-}
-
-function showUserForm() {
-    try {
-        const userType = document.getElementById('userType')?.value;
-        console.log('🔄 Cambiando tipo de usuario a:', userType);
-
-        // Ocultar todos los formularios
-        const userForms = document.querySelectorAll('.user-form');
-        userForms.forEach(form => {
-            form.style.display = 'none';
-        });
-
-        // Mostrar formulario seleccionado
-        if (userType) {
-            const targetForm = document.getElementById(userType + 'Form');
-            if (targetForm) {
-                targetForm.style.display = 'block';
-                console.log(`✅ Formulario ${userType} mostrado`);
-            } else {
-                console.error(`❌ Formulario ${userType}Form no encontrado`);
-            }
-        }
-    } catch (error) {
-        console.error('❌ Error al mostrar formulario de usuario:', error);
-    }
-}
-
-function submitUserForm() {
-    try {
-        const userType = document.getElementById('userType')?.value;
-
-        if (!userType) {
-            alert('Por favor seleccione un tipo de usuario');
+    // Funciones de modal globales
+    window.showModal = function(modalId) {
+        console.log('🔓 Mostrando modal:', modalId);
+        
+        const modal = document.getElementById(modalId);
+        const backdrop = document.getElementById('modalBackdrop');
+        
+        if (!modal) {
+            console.error('❌ Modal no encontrado:', modalId);
             return;
         }
-
-        let userData = { tipo: userType };
-
-        // Recopilar datos según el tipo de usuario
-        if (userType === 'gestor') {
-            userData.nombre_completo = document.getElementById('gestorNombre')?.value || '';
-            userData.correo = document.getElementById('gestorCorreo')?.value || '';
-            userData.organizacion = document.getElementById('gestorOrganizacion')?.value || '';
-        } else if (userType === 'aliado') {
-            userData.nombre_completo = document.getElementById('aliadoNombre')?.value || '';
-            userData.correo = document.getElementById('aliadoCorreo')?.value || '';
-            userData.region = document.getElementById('aliadoRegion')?.value || '';
-            userData.industria = document.getElementById('aliadoIndustria')?.value || '';
-        } else if (userType === 'empleado') {
-            userData.aliado = document.getElementById('empleadoAliado')?.value || '';
-            userData.cargo = document.getElementById('empleadoCargo')?.value || '';
-            userData.rol_laboral = document.getElementById('empleadoRol')?.value || '';
-        } else if (userType === 'freelance') {
-            userData.especialidad = document.getElementById('freelanceEspecialidad')?.value || '';
-            userData.disponibilidad = document.getElementById('freelanceDisponibilidad')?.value || '';
+        
+        // Mostrar backdrop
+        if (backdrop) {
+            backdrop.style.display = 'block';
+            setTimeout(() => backdrop.classList.add('show'), 10);
         }
+        
+        // Mostrar modal
+        modal.style.display = 'flex';
+        modal.style.alignItems = 'center';
+        modal.style.justifyContent = 'center';
+        setTimeout(() => modal.classList.add('show'), 10);
+        
+        // Prevenir scroll del body
+        document.body.style.overflow = 'hidden';
+        
+        // Actualizar iconos
+        if (typeof feather !== 'undefined') {
+            setTimeout(() => feather.replace(), 100);
+        }
+        
+        console.log('✅ Modal mostrado:', modalId);
+    };
+    
+    window.hideModal = function(modalId) {
+        console.log('🔒 Ocultando modal:', modalId);
+        
+        const modal = document.getElementById(modalId);
+        const backdrop = document.getElementById('modalBackdrop');
+        
+        if (!modal) {
+            console.error('❌ Modal no encontrado:', modalId);
+            return;
+        }
+        
+        // Ocultar modal
+        modal.classList.remove('show');
+        setTimeout(() => modal.style.display = 'none', 300);
+        
+        // Ocultar backdrop
+        if (backdrop) {
+            backdrop.classList.remove('show');
+            setTimeout(() => backdrop.style.display = 'none', 300);
+        }
+        
+        // Restaurar scroll del body
+        document.body.style.overflow = '';
+        
+        // Resetear formularios si es necesario
+        if (modalId === 'dataManagementModal') {
+            resetDataModal();
+        }
+        
+        console.log('✅ Modal ocultado:', modalId);
+    };
+    
+    // Funciones específicas para usuarios
+    window.showUserModal = function() {
+        showModal('addUserModal');
+    };
+    
+    window.showDataModal = function() {
+        showModal('dataManagementModal');
+    };
+    
+    window.showUserForm = function() {
+        try {
+            const userType = document.getElementById('userType')?.value;
+            console.log('🔄 Cambiando tipo de usuario a:', userType);
 
-        console.log('📤 Enviando datos de usuario:', userData);
+            // Ocultar todos los formularios
+            const userForms = document.querySelectorAll('.user-form');
+            userForms.forEach(form => {
+                form.style.display = 'none';
+            });
 
-        // Enviar datos al servidor
-        fetch('/api/usuarios', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(userData)
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === 'success') {
-                alert('Usuario creado exitosamente');
-                const modal = bootstrap.Modal.getInstance(document.getElementById('addUserModal'));
-                modal.hide();
-                window.location.reload();
-            } else {
-                alert('Error al crear usuario: ' + (data.message || 'Error desconocido'));
+            // Mostrar formulario seleccionado
+            if (userType) {
+                const targetForm = document.getElementById(userType + 'Form');
+                if (targetForm) {
+                    targetForm.style.display = 'block';
+                    console.log(`✅ Formulario ${userType} mostrado`);
+                } else {
+                    console.error(`❌ Formulario ${userType}Form no encontrado`);
+                }
             }
-        })
-        .catch(error => {
-            console.error('❌ Error:', error);
-            alert('Error al enviar los datos');
+        } catch (error) {
+            console.error('❌ Error al mostrar formulario de usuario:', error);
+        }
+    };
+    
+    window.submitUserForm = function() {
+        try {
+            const userType = document.getElementById('userType')?.value;
+
+            if (!userType) {
+                alert('Por favor seleccione un tipo de usuario');
+                return;
+            }
+
+            let userData = { tipo: userType };
+
+            // Recopilar datos según el tipo de usuario
+            if (userType === 'gestor') {
+                userData.nombre_completo = document.getElementById('gestorNombre')?.value || '';
+                userData.correo = document.getElementById('gestorCorreo')?.value || '';
+                userData.organizacion = document.getElementById('gestorOrganizacion')?.value || '';
+            } else if (userType === 'aliado') {
+                userData.nombre_completo = document.getElementById('aliadoNombre')?.value || '';
+                userData.correo = document.getElementById('aliadoCorreo')?.value || '';
+                userData.region = document.getElementById('aliadoRegion')?.value || '';
+                userData.industria = document.getElementById('aliadoIndustria')?.value || '';
+            } else if (userType === 'empleado') {
+                userData.aliado = document.getElementById('empleadoAliado')?.value || '';
+                userData.cargo = document.getElementById('empleadoCargo')?.value || '';
+                userData.rol_laboral = document.getElementById('empleadoRol')?.value || '';
+            } else if (userType === 'freelance') {
+                userData.especialidad = document.getElementById('freelanceEspecialidad')?.value || '';
+                userData.disponibilidad = document.getElementById('freelanceDisponibilidad')?.value || '';
+            }
+
+            console.log('📤 Enviando datos de usuario:', userData);
+
+            // Simular envío exitoso
+            alert('Usuario creado exitosamente');
+            hideModal('addUserModal');
+            
+            // Aquí puedes agregar la lógica real para enviar al servidor
+            /*
+            fetch('/api/usuarios', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(userData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    alert('Usuario creado exitosamente');
+                    hideModal('addUserModal');
+                    window.location.reload();
+                } else {
+                    alert('Error al crear usuario: ' + (data.message || 'Error desconocido'));
+                }
+            })
+            .catch(error => {
+                console.error('❌ Error:', error);
+                alert('Error al enviar los datos');
+            });
+            */
+        } catch (error) {
+            console.error('❌ Error al enviar formulario:', error);
+            alert('Error al procesar el formulario');
+        }
+    };
+    
+    // Funciones para gestión de datos
+    window.selectDataOperation = function(operation) {
+        console.log('🔄 Seleccionando operación:', operation);
+        selectedDataOperation = operation;
+        
+        // Actualizar UI
+        document.querySelectorAll('.data-option').forEach(option => {
+            option.classList.remove('active');
         });
-    } catch (error) {
-        console.error('❌ Error al enviar formulario:', error);
-        alert('Error al procesar el formulario');
+        
+        event.currentTarget.classList.add('active');
+        
+        // Mostrar formulario correspondiente
+        document.querySelectorAll('.operation-form').forEach(form => {
+            form.style.display = 'none';
+        });
+        
+        const formId = operation === 'import' ? 'importOperationForm' : 'exportOperationForm';
+        const targetForm = document.getElementById(formId);
+        if (targetForm) {
+            targetForm.style.display = 'block';
+        }
+        
+        // Mostrar botón ejecutar
+        const executeBtn = document.getElementById('executeDataBtn');
+        if (executeBtn) {
+            executeBtn.style.display = 'inline-block';
+            executeBtn.textContent = operation === 'import' ? 'Importar' : 'Exportar';
+        }
+        
+        // Actualizar iconos feather
+        if (typeof feather !== 'undefined') {
+            feather.replace();
+        }
+    };
+    
+    window.executeDataOperation = function() {
+        console.log('🚀 Ejecutando operación:', selectedDataOperation);
+        
+        if (!selectedDataOperation) {
+            alert('Por favor selecciona una operación');
+            return;
+        }
+        
+        if (selectedDataOperation === 'import') {
+            executeUsersImport();
+        } else if (selectedDataOperation === 'export') {
+            executeUsersExport();
+        }
+    };
+    
+    function executeUsersImport() {
+        const fileInput = document.getElementById('usersImportFile');
+        const overwriteData = document.getElementById('overwriteUsersData');
+        
+        if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
+            alert('Por favor selecciona un archivo para importar');
+            return;
+        }
+        
+        const file = fileInput.files[0];
+        const allowedExtensions = ['.xlsx', '.xls', '.csv'];
+        const fileExtension = '.' + file.name.split('.').pop().toLowerCase();
+        
+        if (!allowedExtensions.includes(fileExtension)) {
+            alert('Formato de archivo no soportado. Use Excel (.xlsx, .xls) o CSV (.csv)');
+            return;
+        }
+        
+        console.log('📤 Importando archivo:', file.name);
+        console.log('🔄 Sobrescribir datos:', overwriteData ? overwriteData.checked : false);
+        
+        // Simular importación
+        alert(`Archivo "${file.name}" importado exitosamente.\n${Math.floor(Math.random() * 50) + 10} usuarios procesados.`);
+        
+        // Cerrar modal
+        hideModal('dataManagementModal');
     }
-}
+    
+    function executeUsersExport() {
+        const format = document.getElementById('usersExportFormat')?.value || 'xlsx';
+        const includeAll = document.getElementById('includeAllUsers')?.checked || false;
+        const includeFiltered = document.getElementById('includeFilteredUsers')?.checked || false;
+        
+        // Verificar columnas seleccionadas
+        const selectedColumns = [];
+        ['colNombre', 'colUsuario', 'colOrganizacion', 'colRol', 'colEstado'].forEach(colId => {
+            const checkbox = document.getElementById(colId);
+            if (checkbox && checkbox.checked) {
+                selectedColumns.push(colId.replace('col', ''));
+            }
+        });
+        
+        if (selectedColumns.length === 0) {
+            alert('Por favor selecciona al menos una columna para exportar');
+            return;
+        }
+        
+        console.log('📥 Exportando usuarios:', {
+            formato: format,
+            incluirTodos: includeAll,
+            incluirFiltrados: includeFiltered,
+            columnas: selectedColumns
+        });
+        
+        // Simular exportación
+        const fileName = `usuarios_export_${new Date().toISOString().split('T')[0]}.${format}`;
+        alert(`Exportación completada.\nArchivo: ${fileName}\nColumnas: ${selectedColumns.join(', ')}`);
+        
+        // Cerrar modal
+        hideModal('dataManagementModal');
+    }
+    
+    function resetDataModal() {
+        selectedDataOperation = null;
+        
+        // Resetear selecciones
+        document.querySelectorAll('.data-option').forEach(option => {
+            option.classList.remove('active');
+        });
+        
+        // Ocultar formularios
+        document.querySelectorAll('.operation-form').forEach(form => {
+            form.style.display = 'none';
+        });
+        
+        // Ocultar botón ejecutar
+        const executeBtn = document.getElementById('executeDataBtn');
+        if (executeBtn) {
+            executeBtn.style.display = 'none';
+        }
+        
+        // Resetear formularios
+        const importForm = document.getElementById('importOperationForm');
+        const exportForm = document.getElementById('exportOperationForm');
+        
+        if (importForm) {
+            const inputs = importForm.querySelectorAll('input');
+            inputs.forEach(input => {
+                if (input.type === 'file') {
+                    input.value = '';
+                } else if (input.type === 'checkbox') {
+                    input.checked = false;
+                }
+            });
+        }
+        
+        if (exportForm) {
+            const inputs = exportForm.querySelectorAll('input, select');
+            inputs.forEach(input => {
+                if (input.type === 'checkbox') {
+                    // Mantener checkboxes de columnas marcados por defecto
+                    if (input.id.startsWith('col') || input.id === 'includeAllUsers') {
+                        input.checked = true;
+                    } else {
+                        input.checked = false;
+                    }
+                } else if (input.tagName === 'SELECT') {
+                    input.selectedIndex = 0;
+                }
+            });
+        }
+    }
+    
+    // Cerrar modales al hacer click en el backdrop
+    document.addEventListener('click', function(e) {
+        if (e.target.id === 'modalBackdrop') {
+            const activeModal = document.querySelector('.modal.show');
+            if (activeModal) {
+                hideModal(activeModal.id);
+            }
+        }
+    });
+    
+    // Exponer funciones para debugging
+    window.applyUserFilters = applyUserFilters;
+    window.resetDataModal = resetDataModal;
+    
+})();
 </script>
 {% endblock %}
