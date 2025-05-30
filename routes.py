@@ -684,7 +684,13 @@ def create_cliente():
 def update_informacion_personal():
     try:
         data = request.get_json()
-        print(f"Datos recibidos para información personal: {data}")
+        
+        # Imprimir el JSON completo recibido
+        print("=" * 60)
+        print("📥 DATOS JSON RECIBIDOS EN /api/informacion-personal")
+        print("=" * 60)
+        print(json.dumps(data, indent=2, ensure_ascii=False))
+        print("=" * 60)
 
         if not data:
             return jsonify({'status': 'error', 'message': 'No se recibieron datos'}), 400
@@ -752,7 +758,13 @@ def update_informacion_personal():
 def create_experiencia_laboral():
     try:
         data = request.get_json()
-        print(f"Datos recibidos para experiencia laboral: {data}")
+        
+        # Imprimir el JSON completo recibido
+        print("=" * 60)
+        print("📥 DATOS JSON RECIBIDOS EN /api/experiencia-laboral")
+        print("=" * 60)
+        print(json.dumps(data, indent=2, ensure_ascii=False))
+        print("=" * 60)
 
         if not data:
             return jsonify({'status': 'error', 'message': 'No se recibieron datos'}), 400
@@ -769,7 +781,7 @@ def create_experiencia_laboral():
         sector = data.get('sector')
         logros = data.get('logros', [])  # Lista de logros específicos
 
-        print("Datos de experiencia laboral:")
+        print("📋 DATOS PROCESADOS:")
         print(f"  - Puesto: {puesto}")
         print(f"  - Empresa: {empresa}")
         print(f"  - Fecha Inicio: {fecha_inicio}")
