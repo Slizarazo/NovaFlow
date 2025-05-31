@@ -405,7 +405,7 @@ def dashboard_facturacion():
     return render_template(
         'dashboard/facturacion.html',
         title='Dashboard de Facturación',
-        config=app.config,
+        config=app.app.config,
         role=current_user.role,
         facturacion_mensual=generar_grafico_facturacion(datos_facturacion),
         deudas_cobros=generar_grafico_deudas(datos_deudas),
@@ -954,21 +954,30 @@ def api_educacion():
 
 @app.route('/api/certificaciones', methods=['POST'])
 def api_certificaciones():
-    """Endpoint para recibir e imprimir datos de certificaciones"""
     try:
         data = request.get_json()
         print("=== DATOS DE CERTIFICACIONES RECIBIDOS ===")
         print(json.dumps(data, indent=2, ensure_ascii=False))
-        print("============================================")
+        print("=" * 45)
 
-        return jsonify({
-            'status': 'success',
-            'message': 'Datos de certificación recibidos correctamente',
-            'data': data
-        })
+        # Aquí normalmente guardarías en la base de datos
+        # Por ahora solo retornamos éxito
+        return jsonify({"status": "success", "message": "Certificación guardada correctamente"})
     except Exception as e:
-        print(f"Error al procesar certificaciones: {str(e)}")
-        return jsonify({
-            'status': 'error',
-            'message': f'Error al procesar los datos: {str(e)}'
-        }), 400
+        print(f"Error en /api/certificaciones: {e}")
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+@app.route('/api/proyectos-destacados', methods=['POST'])
+def api_proyectos_destacados():
+    try:
+        data = request.get_json()
+        print("=== DATOS DE PROYECTOS DESTACADOS RECIBIDOS ===")
+        print(json.dumps(data, indent=2, ensure_ascii=False))
+        print("=" * 49)
+
+        # Aquí normalmente guardarías en la base de datos
+        # Por ahora solo retornamos éxito
+        return jsonify({"status": "success", "message": "Proyecto destacado guardado correctamente"})
+    except Exception as e:
+        print(f"Error en /api/proyectos-destacados: {e}")
+        return jsonify({"status": "error", "message": str(e)}), 500

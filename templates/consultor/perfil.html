@@ -735,8 +735,10 @@
             <h3 class="section-title">
                 <i data-feather="star" class="section-icon"></i>
                 Proyectos Destacados
+                <i data-feather="plus" class="edit-icon" onclick="openAddProjectModal()" title="Agregar proyecto" style="margin-left: 8px;"></i>
             </h3>
             
+            <div id="proyectos-container">
             <div class="project-item">
                 <div class="item-title">Plataforma de E-commerce Omnicanal</div>
                 <div class="item-date">Enero 2023 - Junio 2023</div>
@@ -775,6 +777,7 @@
                         Ver en portfolio
                     </a>
                 </div>
+            </div>
             </div>
         </div>
 
@@ -1085,6 +1088,67 @@
             <div class="modal-footer" style="background: white; border-top: 1px solid #E5E7EB; padding: 1.5rem 2rem; display: flex; justify-content: flex-end; gap: 1rem; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;">
                 <button type="button" onclick="closeAddCertificationModal()" style="background: #F3F4F6; color: #6B7280; border: 2px solid #E5E7EB; padding: 12px 24px; border-radius: 12px; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: all 0.3s ease;">Cancelar</button>
                 <button type="button" onclick="addCertification()" style="background: linear-gradient(135deg, #8B5A9D 0%, #667eea 100%); color: white; border: none; padding: 12px 24px; border-radius: 12px; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(139, 90, 157, 0.3);">Guardar Certificación</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para Agregar Proyecto Destacado -->
+<div class="modal fade" id="addProjectModal" tabindex="-1" aria-labelledby="addProjectModalLabel" aria-hidden="true" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(0, 0, 0, 0.5); z-index: 1055; display: none; align-items: center; justify-content: center;">
+    <div class="modal-dialog" style="max-width: 500px; width: 500px; margin: 0; position: relative;">
+        <div class="modal-content" style="border: none; border-radius: 20px; box-shadow: 0 25px 80px rgba(0, 0, 0, 0.4); background: white; overflow: hidden; max-height: 85vh; display: flex; flex-direction: column;">
+            <div class="modal-header" style="background: linear-gradient(135deg, #8B5A9D 0%, #667eea 50%, #764ba2 100%); border-bottom: none; padding: 2rem; position: relative; display: flex; align-items: center; justify-content: space-between;">
+                <h5 class="modal-title" id="addProjectModalLabel" style="color: white; font-size: 1.5rem; font-weight: 600; margin: 0; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); flex: 1;">Añadir Proyecto Destacado</h5>
+                <button type="button" class="btn-close" onclick="closeAddProjectModal()" aria-label="Close" style="background: rgba(255, 255, 255, 0.15); border: none; color: white; font-size: 1.2rem; width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s ease; margin-left: 1rem;">×</button>
+            </div>
+            <div class="modal-body" style="padding: 2rem; overflow-y: auto; flex: 1; max-height: calc(85vh - 180px);">
+                <div style="margin-bottom: 2rem;">
+                    <h6 style="color: #8B5A9D; font-weight: 600; font-size: 1.1rem; margin-bottom: 1.5rem; padding-bottom: 0.5rem; border-bottom: 2px solid #E5E7EB;">Datos del Proyecto</h6>
+                    
+                    <form id="addProjectForm">
+                        <div class="mb-3">
+                            <label for="projTitulo" class="form-label" style="font-weight: 600; color: #6B7280; margin-bottom: 0.5rem; font-size: 0.9rem;">Título del Proyecto</label>
+                            <input type="text" class="form-control" id="projTitulo" placeholder="Ej. Plataforma de E-commerce Avanzada" required style="padding: 12px 16px; border: 2px solid #E5E7EB; border-radius: 12px; background: white; color: #374151; font-size: 0.95rem; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);">
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="projFechaInicio" class="form-label" style="font-weight: 600; color: #6B7280; margin-bottom: 0.5rem; font-size: 0.9rem;">Fecha de Inicio</label>
+                                    <input type="month" class="form-control" id="projFechaInicio" required style="padding: 12px 16px; border: 2px solid #E5E7EB; border-radius: 12px; background: white; color: #374151; font-size: 0.95rem; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="projFechaFin" class="form-label" style="font-weight: 600; color: #6B7280; margin-bottom: 0.5rem; font-size: 0.9rem;">Fecha de Fin</label>
+                                    <input type="month" class="form-control" id="projFechaFin" style="padding: 12px 16px; border: 2px solid #E5E7EB; border-radius: 12px; background: white; color: #374151; font-size: 0.95rem; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);">
+                                    <div class="form-check mt-2">
+                                        <input class="form-check-input" type="checkbox" id="projEnCurso" style="border-radius: 4px; border: 2px solid #8B5A9D;">
+                                        <label class="form-check-label" for="projEnCurso" style="color: #6B7280; font-size: 0.9rem;">
+                                            En curso
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="projDescripcion" class="form-label" style="font-weight: 600; color: #6B7280; margin-bottom: 0.5rem; font-size: 0.9rem;">Descripción</label>
+                            <textarea class="form-control" id="projDescripcion" rows="4" placeholder="Describe el proyecto, sus objetivos y resultados obtenidos..." required style="padding: 12px 16px; border: 2px solid #E5E7EB; border-radius: 12px; background: white; color: #374151; font-size: 0.95rem; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); resize: vertical; min-height: 100px;"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="projTecnologias" class="form-label" style="font-weight: 600; color: #6B7280; margin-bottom: 0.5rem; font-size: 0.9rem;">Tecnologías Utilizadas</label>
+                            <input type="text" class="form-control" id="projTecnologias" placeholder="React.js, Node.js, AWS, MongoDB (separadas por comas)" style="padding: 12px 16px; border: 2px solid #E5E7EB; border-radius: 12px; background: white; color: #374151; font-size: 0.95rem; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);">
+                            <div class="form-text" style="color: #6B7280; font-size: 0.8rem; margin-top: 0.25rem;">Separa las tecnologías con comas</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="projUrl" class="form-label" style="font-weight: 600; color: #6B7280; margin-bottom: 0.5rem; font-size: 0.9rem;">URL del Proyecto (Opcional)</label>
+                            <input type="url" class="form-control" id="projUrl" placeholder="https://portfolio.ejemplo.com/proyecto" style="padding: 12px 16px; border: 2px solid #E5E7EB; border-radius: 12px; background: white; color: #374151; font-size: 0.95rem; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);">
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer" style="background: white; border-top: 1px solid #E5E7EB; padding: 1.5rem 2rem; display: flex; justify-content: flex-end; gap: 1rem; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;">
+                <button type="button" onclick="closeAddProjectModal()" style="background: #F3F4F6; color: #6B7280; border: 2px solid #E5E7EB; padding: 12px 24px; border-radius: 12px; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: all 0.3s ease;">Cancelar</button>
+                <button type="button" onclick="addProject()" style="background: linear-gradient(135deg, #8B5A9D 0%, #667eea 100%); color: white; border: none; padding: 12px 24px; border-radius: 12px; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(139, 90, 157, 0.3);">Guardar Proyecto</button>
             </div>
         </div>
     </div>
@@ -1425,6 +1489,21 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+    
+    // Manejar checkbox de proyecto en curso
+    const projEnCursoCheckbox = document.getElementById('projEnCurso');
+    const projFechaFinInput = document.getElementById('projFechaFin');
+    
+    if (projEnCursoCheckbox && projFechaFinInput) {
+        projEnCursoCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+                projFechaFinInput.disabled = true;
+                projFechaFinInput.value = '';
+            } else {
+                projFechaFinInput.disabled = false;
+            }
+        });
+    }
 });
 
 // Funciones para manejar educación
@@ -1660,6 +1739,141 @@ function addCertification() {
     .catch(error => {
         console.error('Error:', error);
         alert('Error al enviar los datos de certificación');
+    });
+}
+
+// Funciones para manejar proyectos destacados
+function openAddProjectModal() {
+    const modal = document.getElementById('addProjectModal');
+    
+    // Mostrar modal como ventana emergente
+    modal.style.display = 'flex';
+    modal.classList.add('show');
+    modal.setAttribute('aria-hidden', 'false');
+    
+    // Prevenir scroll del body
+    document.body.style.overflow = 'hidden';
+    
+    // Agregar event listener para cerrar con Escape
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeAddProjectModal();
+        }
+    });
+    
+    // Cerrar al hacer clic fuera del modal
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            closeAddProjectModal();
+        }
+    });
+}
+
+function closeAddProjectModal() {
+    const modal = document.getElementById('addProjectModal');
+    
+    // Ocultar modal
+    modal.style.display = 'none';
+    modal.classList.remove('show');
+    modal.setAttribute('aria-hidden', 'true');
+    
+    // Restaurar scroll del body
+    document.body.style.overflow = '';
+    
+    // Limpiar formulario
+    document.getElementById('addProjectForm').reset();
+    
+    // Rehabilitar el campo de fecha de fin en caso de que esté deshabilitado
+    const projFechaFinInput = document.getElementById('projFechaFin');
+    if (projFechaFinInput) {
+        projFechaFinInput.disabled = false;
+    }
+}
+
+function addProject() {
+    const titulo = document.getElementById('projTitulo').value;
+    const fechaInicio = document.getElementById('projFechaInicio').value;
+    const fechaFin = document.getElementById('projFechaFin').value;
+    const enCurso = document.getElementById('projEnCurso').checked;
+    const descripcion = document.getElementById('projDescripcion').value;
+    const tecnologias = document.getElementById('projTecnologias').value;
+    const url = document.getElementById('projUrl').value;
+    
+    if (!titulo || !fechaInicio || !descripcion || (!fechaFin && !enCurso)) {
+        alert('Por favor completa todos los campos obligatorios');
+        return;
+    }
+    
+    // Preparar datos para enviar al backend
+    const formData = {
+        titulo: titulo,
+        fecha_inicio: fechaInicio,
+        fecha_fin: enCurso ? null : fechaFin,
+        en_curso: enCurso,
+        descripcion: descripcion,
+        tecnologias: tecnologias,
+        url_proyecto: url
+    };
+    
+    // Enviar datos al backend
+    fetch('/api/proyectos-destacados', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            // Formatear fechas para mostrar
+            const fechaInicioFormatted = formatDate(fechaInicio);
+            const fechaFinFormatted = enCurso ? 'En curso' : formatDate(fechaFin);
+            const periodoText = fechaInicioFormatted + ' - ' + fechaFinFormatted;
+            
+            // Procesar tecnologías
+            const tecnologiasArray = tecnologias ? tecnologias.split(',').map(tech => tech.trim()).filter(tech => tech) : [];
+            const tecnologiasHtml = tecnologiasArray.map(tech => `<div class="tech-tag">${tech}</div>`).join('');
+            
+            // Crear nuevo elemento de proyecto en el DOM
+            const proyectosContainer = document.getElementById('proyectos-container');
+            const newProject = document.createElement('div');
+            newProject.className = 'project-item';
+            newProject.innerHTML = `
+                <div class="item-title">${titulo}</div>
+                <div class="item-date">${periodoText}</div>
+                <div class="item-description">
+                    ${descripcion}
+                </div>
+                ${tecnologiasArray.length > 0 ? `
+                    <div style="margin-top: 0.75rem;">
+                        ${tecnologiasHtml}
+                    </div>
+                ` : ''}
+                ${url ? `
+                    <div style="margin-top: 0.75rem;">
+                        <a href="${url}" class="certification-link" target="_blank">
+                            Ver en portfolio
+                        </a>
+                    </div>
+                ` : ''}
+            `;
+            
+            // Agregar al inicio del contenedor
+            proyectosContainer.insertBefore(newProject, proyectosContainer.firstChild);
+            
+            // Cerrar modal y limpiar formulario
+            closeAddProjectModal();
+            
+            // Mostrar mensaje de éxito
+            alert('Proyecto agregado correctamente');
+        } else {
+            alert('Error al agregar proyecto: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error al enviar los datos del proyecto');
     });
 }
 </script>
