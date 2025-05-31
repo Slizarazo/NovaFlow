@@ -1050,3 +1050,42 @@ def aliados_portfolio():
                          proyectos=proyectos,
                          config=app.config,
                          role=current_user.role)
+
+@app.route('/aliados/asignaciones')
+@login_required
+def aliados_asignaciones():
+    consultores = Consultor.CONSULTORES
+    proyectos = {p.id: p for p in Proyecto.PROYECTOS}
+    return render_template('aliados/asignaciones.html',
+                         title='Asignaciones de Consultores',
+                         consultores=consultores,
+                         proyectos=proyectos,
+                         config=app.config,
+                         role=current_user.role)
+
+@app.route('/api/asignaciones', methods=['POST'])
+@login_required
+def create_asignacion():
+    try:
+        data = request.get_json()
+        print(f"Datos de asignación recibidos: {data}")
+
+        if not data:
+            return jsonify({'status': 'error', 'message': 'No se recibieron datos'}), 400
+
+        tipo = data.get('tipo')
+        caso_uso = data.get('caso_uso')
+
+        if tipo == 'freelance':
+            usuario = data.get('usuario')
+            rol_proyecto = data.get('rol_proyecto')
+            print(f"Asignación freelance - Usuario: {usuario}, Proyecto: {caso_uso}, Rol: {rol_proyecto}")
+        elif tipo == 'comunidad':
+            comunidad = data.get('comunidad')
+            print(f"Asignación comunidad - Comunidad: {comunidad}, Proyecto: {caso_uso}")
+
+        return jsonify({'status': 'success', 'message': 'Asignación creada exitosamente'})
+
+    except Exception as e:
+        app.logger.error(f"Error al crear asignación: {str(e)}")
+        return jsonify({'status': 'error', 'message': str(e)}), 500
