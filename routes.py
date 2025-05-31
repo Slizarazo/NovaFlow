@@ -696,7 +696,7 @@ def create_cliente():
 def update_informacion_personal():
     try:
         data = request.get_json()
-        
+
         # Imprimir el JSON completo recibido
         print("=" * 60)
         print("📥 DATOS JSON RECIBIDOS EN /api/informacion-personal")
@@ -770,7 +770,7 @@ def update_informacion_personal():
 def create_experiencia_laboral():
     try:
         data = request.get_json()
-        
+
         # Imprimir el JSON completo recibido
         print("=" * 60)
         print("📥 DATOS JSON RECIBIDOS EN /api/experiencia-laboral")
@@ -815,7 +815,7 @@ def create_experiencia_laboral():
 
         # Aquí podrías agregar la lógica para guardar en la base de datos
         # Por ejemplo: current_user.add_work_experience(data)
-        
+
         # Preparar datos de respuesta
         experiencia_data = {
             'puesto': puesto,
@@ -909,3 +909,45 @@ def proyectos_gestion():
                          proyectos=proyectos,
                          config=app.config,
                          role=current_user.role)
+
+@app.route('/api/idiomas', methods=['POST'])
+def api_idiomas():
+    """Endpoint para recibir e imprimir datos de idiomas"""
+    try:
+        data = request.get_json()
+        print("=== DATOS DE IDIOMAS RECIBIDOS ===")
+        print(json.dumps(data, indent=2, ensure_ascii=False))
+        print("=====================================")
+
+        return jsonify({
+            'status': 'success',
+            'message': 'Datos de idiomas recibidos correctamente',
+            'data': data
+        })
+    except Exception as e:
+        print(f"Error al procesar idiomas: {str(e)}")
+        return jsonify({
+            'status': 'error',
+            'message': f'Error al procesar los datos: {str(e)}'
+        }), 400
+
+@app.route('/api/educacion', methods=['POST'])
+def api_educacion():
+    """Endpoint para recibir e imprimir datos de educación"""
+    try:
+        data = request.get_json()
+        print("=== DATOS DE EDUCACIÓN RECIBIDOS ===")
+        print(json.dumps(data, indent=2, ensure_ascii=False))
+        print("=====================================")
+
+        return jsonify({
+            'status': 'success',
+            'message': 'Datos de educación recibidos correctamente',
+            'data': data
+        })
+    except Exception as e:
+        print(f"Error al procesar educación: {str(e)}")
+        return jsonify({
+            'status': 'error',
+            'message': f'Error al procesar los datos: {str(e)}'
+        }), 400

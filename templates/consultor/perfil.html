@@ -666,8 +666,10 @@
             <h3 class="section-title">
                 <i data-feather="book" class="section-icon"></i>
                 Educación
+                <i data-feather="plus" class="edit-icon" onclick="openAddEducationModal()" title="Agregar educación" style="margin-left: 8px;"></i>
             </h3>
             
+            <div id="educacion-container">
             <div class="education-item">
                 <div class="item-title">Maestría en Administración de Empresas (MBA)</div>
                 <div class="item-subtitle">Instituto Tecnológico de Monterrey</div>
@@ -686,6 +688,7 @@
                     <strong>Área de estudio:</strong> Desarrollo de Software y Sistemas de Información<br>
                     Proyecto de titulación: Sistema de gestión empresarial basado en la nube. Mención honorífica.
                 </div>
+            </div>
             </div>
         </div>
 
@@ -955,6 +958,66 @@
             <div class="modal-footer" style="background: white; border-top: 1px solid #E5E7EB; padding: 1.5rem 2rem; display: flex; justify-content: flex-end; gap: 1rem; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;">
                 <button type="button" onclick="closeAddExperienceModal()" style="background: #F3F4F6; color: #6B7280; border: 2px solid #E5E7EB; padding: 12px 24px; border-radius: 12px; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: all 0.3s ease;">Cancelar</button>
                 <button type="button" onclick="addExperience()" style="background: linear-gradient(135deg, #8B5A9D 0%, #667eea 100%); color: white; border: none; padding: 12px 24px; border-radius: 12px; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(139, 90, 157, 0.3);">Guardar Experiencia</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para Agregar Educación -->
+<div class="modal fade" id="addEducationModal" tabindex="-1" aria-labelledby="addEducationModalLabel" aria-hidden="true" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(0, 0, 0, 0.5); z-index: 1055; display: none; align-items: center; justify-content: center;">
+    <div class="modal-dialog" style="max-width: 500px; width: 500px; margin: 0; position: relative;">
+        <div class="modal-content" style="border: none; border-radius: 20px; box-shadow: 0 25px 80px rgba(0, 0, 0, 0.4); background: white; overflow: hidden; max-height: 85vh; display: flex; flex-direction: column;">
+            <div class="modal-header" style="background: linear-gradient(135deg, #8B5A9D 0%, #667eea 50%, #764ba2 100%); border-bottom: none; padding: 2rem; position: relative; display: flex; align-items: center; justify-content: space-between;">
+                <h5 class="modal-title" id="addEducationModalLabel" style="color: white; font-size: 1.5rem; font-weight: 600; margin: 0; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); flex: 1;">Añadir Educación</h5>
+                <button type="button" class="btn-close" onclick="closeAddEducationModal()" aria-label="Close" style="background: rgba(255, 255, 255, 0.15); border: none; color: white; font-size: 1.2rem; width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s ease; margin-left: 1rem;">×</button>
+            </div>
+            <div class="modal-body" style="padding: 2rem; overflow-y: auto; flex: 1; max-height: calc(85vh - 180px);">
+                <div style="margin-bottom: 2rem;">
+                    <h6 style="color: #8B5A9D; font-weight: 600; font-size: 1.1rem; margin-bottom: 1.5rem; padding-bottom: 0.5rem; border-bottom: 2px solid #E5E7EB;">Datos de la Educación</h6>
+                    
+                    <form id="addEducationForm">
+                        <div class="mb-3">
+                            <label for="eduTitulo" class="form-label" style="font-weight: 600; color: #6B7280; margin-bottom: 0.5rem; font-size: 0.9rem;">Título/Grado</label>
+                            <input type="text" class="form-control" id="eduTitulo" placeholder="Ej. Licenciatura en Informática" required style="padding: 12px 16px; border: 2px solid #E5E7EB; border-radius: 12px; background: white; color: #374151; font-size: 0.95rem; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);">
+                        </div>
+                        <div class="mb-3">
+                            <label for="eduInstitucion" class="form-label" style="font-weight: 600; color: #6B7280; margin-bottom: 0.5rem; font-size: 0.9rem;">Institución</label>
+                            <input type="text" class="form-control" id="eduInstitucion" placeholder="Ej. Universidad Nacional" required style="padding: 12px 16px; border: 2px solid #E5E7EB; border-radius: 12px; background: white; color: #374151; font-size: 0.95rem; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);">
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="eduFechaInicio" class="form-label" style="font-weight: 600; color: #6B7280; margin-bottom: 0.5rem; font-size: 0.9rem;">Fecha de Inicio</label>
+                                    <input type="month" class="form-control" id="eduFechaInicio" required style="padding: 12px 16px; border: 2px solid #E5E7EB; border-radius: 12px; background: white; color: #374151; font-size: 0.95rem; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="eduFechaFin" class="form-label" style="font-weight: 600; color: #6B7280; margin-bottom: 0.5rem; font-size: 0.9rem;">Fecha de Fin</label>
+                                    <input type="month" class="form-control" id="eduFechaFin" style="padding: 12px 16px; border: 2px solid #E5E7EB; border-radius: 12px; background: white; color: #374151; font-size: 0.95rem; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);">
+                                    <div class="form-check mt-2">
+                                        <input class="form-check-input" type="checkbox" id="eduActual" style="border-radius: 4px; border: 2px solid #8B5A9D;">
+                                        <label class="form-check-label" for="eduActual" style="color: #6B7280; font-size: 0.9rem;">
+                                            Estudio actual
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="eduAreaEstudio" class="form-label" style="font-weight: 600; color: #6B7280; margin-bottom: 0.5rem; font-size: 0.9rem;">Área de Estudio</label>
+                            <input type="text" class="form-control" id="eduAreaEstudio" placeholder="Ej. Ciencias de la Computación" style="padding: 12px 16px; border: 2px solid #E5E7EB; border-radius: 12px; background: white; color: #374151; font-size: 0.95rem; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);">
+                        </div>
+                        <div class="mb-3">
+                            <label for="eduDescripcion" class="form-label" style="font-weight: 600; color: #6B7280; margin-bottom: 0.5rem; font-size: 0.9rem;">Descripción (Opcional)</label>
+                            <textarea class="form-control" id="eduDescripcion" rows="3" placeholder="Ej. Tesis, proyectos destacados, calificaciones..." style="padding: 12px 16px; border: 2px solid #E5E7EB; border-radius: 12px; background: white; color: #374151; font-size: 0.95rem; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); resize: vertical; min-height: 80px;"></textarea>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer" style="background: white; border-top: 1px solid #E5E7EB; padding: 1.5rem 2rem; display: flex; justify-content: flex-end; gap: 1rem; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;">
+                <button type="button" onclick="closeAddEducationModal()" style="background: #F3F4F6; color: #6B7280; border: 2px solid #E5E7EB; padding: 12px 24px; border-radius: 12px; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: all 0.3s ease;">Cancelar</button>
+                <button type="button" onclick="addEducation()" style="background: linear-gradient(135deg, #8B5A9D 0%, #667eea 100%); color: white; border: none; padding: 12px 24px; border-radius: 12px; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(139, 90, 157, 0.3);">Guardar Educación</button>
             </div>
         </div>
     </div>
@@ -1265,7 +1328,137 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+    
+    // Manejar checkbox de estudio actual
+    const eduActualCheckbox = document.getElementById('eduActual');
+    const eduFechaFinInput = document.getElementById('eduFechaFin');
+    
+    if (eduActualCheckbox && eduFechaFinInput) {
+        eduActualCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+                eduFechaFinInput.disabled = true;
+                eduFechaFinInput.value = '';
+            } else {
+                eduFechaFinInput.disabled = false;
+            }
+        });
+    }
 });
+
+// Funciones para manejar educación
+function openAddEducationModal() {
+    const modal = document.getElementById('addEducationModal');
+    
+    // Mostrar modal como ventana emergente
+    modal.style.display = 'flex';
+    modal.classList.add('show');
+    modal.setAttribute('aria-hidden', 'false');
+    
+    // Prevenir scroll del body
+    document.body.style.overflow = 'hidden';
+    
+    // Agregar event listener para cerrar con Escape
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeAddEducationModal();
+        }
+    });
+    
+    // Cerrar al hacer clic fuera del modal
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            closeAddEducationModal();
+        }
+    });
+}
+
+function closeAddEducationModal() {
+    const modal = document.getElementById('addEducationModal');
+    
+    // Ocultar modal
+    modal.style.display = 'none';
+    modal.classList.remove('show');
+    modal.setAttribute('aria-hidden', 'true');
+    
+    // Restaurar scroll del body
+    document.body.style.overflow = '';
+    
+    // Limpiar formulario
+    document.getElementById('addEducationForm').reset();
+}
+
+function addEducation() {
+    const titulo = document.getElementById('eduTitulo').value;
+    const institucion = document.getElementById('eduInstitucion').value;
+    const fechaInicio = document.getElementById('eduFechaInicio').value;
+    const fechaFin = document.getElementById('eduFechaFin').value;
+    const actual = document.getElementById('eduActual').checked;
+    const areaEstudio = document.getElementById('eduAreaEstudio').value;
+    const descripcion = document.getElementById('eduDescripcion').value;
+    
+    if (!titulo || !institucion || !fechaInicio || (!fechaFin && !actual)) {
+        alert('Por favor completa todos los campos obligatorios');
+        return;
+    }
+    
+    // Preparar datos para enviar al backend
+    const formData = {
+        titulo: titulo,
+        institucion: institucion,
+        fecha_inicio: fechaInicio,
+        fecha_fin: actual ? null : fechaFin,
+        estudio_actual: actual,
+        area_estudio: areaEstudio,
+        descripcion: descripcion
+    };
+    
+    // Enviar datos al backend
+    fetch('/api/educacion', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            // Formatear fechas para mostrar
+            const fechaInicioFormatted = formatDate(fechaInicio);
+            const fechaFinFormatted = actual ? 'Presente' : formatDate(fechaFin);
+            const periodoText = fechaInicioFormatted + ' - ' + fechaFinFormatted;
+            
+            // Crear nuevo elemento de educación en el DOM
+            const educacionContainer = document.getElementById('educacion-container');
+            const newEducation = document.createElement('div');
+            newEducation.className = 'education-item';
+            newEducation.innerHTML = `
+                <div class="item-title">${titulo}</div>
+                <div class="item-subtitle">${institucion}</div>
+                <div class="item-date">${periodoText}</div>
+                <div class="item-description">
+                    ${areaEstudio ? `<strong>Área de estudio:</strong> ${areaEstudio}<br>` : ''}
+                    ${descripcion || ''}
+                </div>
+            `;
+            
+            // Agregar al inicio del contenedor
+            educacionContainer.insertBefore(newEducation, educacionContainer.firstChild);
+            
+            // Cerrar modal y limpiar formulario
+            closeAddEducationModal();
+            
+            // Mostrar mensaje de éxito
+            alert('Educación agregada correctamente');
+        } else {
+            alert('Error al agregar educación: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error al enviar los datos de educación');
+    });
+}
 </script>
 {% endblock %}
 
