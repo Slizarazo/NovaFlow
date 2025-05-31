@@ -968,16 +968,42 @@ def api_certificaciones():
         return jsonify({"status": "error", "message": str(e)}), 500
 
 @app.route('/api/proyectos-destacados', methods=['POST'])
-def api_proyectos_destacados():
+def add_proyecto_destacado():
     try:
         data = request.get_json()
-        print("=== DATOS DE PROYECTOS DESTACADOS RECIBIDOS ===")
-        print(json.dumps(data, indent=2, ensure_ascii=False))
-        print("=" * 49)
+        print("📝 Datos del proyecto destacado recibidos:", json.dumps(data, indent=2, ensure_ascii=False))
 
-        # Aquí normalmente guardarías en la base de datos
-        # Por ahora solo retornamos éxito
-        return jsonify({"status": "success", "message": "Proyecto destacado guardado correctamente"})
+        # Validar campos requeridos
+        required_fields = ['titulo', 'fecha_inicio', 'descripcion']
+        for field in required_fields:
+            if not data.get(field):
+                return jsonify({'status': 'error', 'message': f'El campo {field} es requerido'})
+
+        return jsonify({'status': 'success', 'message': 'Proyecto destacado agregado correctamente'})
+
     except Exception as e:
-        print(f"Error en /api/proyectos-destacados: {e}")
-        return jsonify({"status": "error", "message": str(e)}), 500
+        print(f"❌ Error al procesar proyecto destacado: {str(e)}")
+        return jsonify({'status': 'error', 'message': 'Error interno del servidor'}), 500
+
+@app.route('/api/habilidades-tecnicas', methods=['POST'])
+def add_habilidad_tecnica():
+    try:
+        data = request.get_json()
+        print("🔧 Datos de la habilidad técnica recibidos:", json.dumps(data, indent=2, ensure_ascii=False))
+
+        # Validar campos requeridos
+        required_fields = ['nombre', 'nivel', 'porcentaje']
+        for field in required_fields:
+            if not data.get(field):
+                return jsonify({'status': 'error', 'message': f'El campo {field} es requerido'})
+
+        # Validar porcentaje
+        porcentaje = data.get('porcentaje')
+        if not isinstance(porcentaje, int) or porcentaje < 1 or porcentaje > 100:
+            return jsonify({'status': 'error', 'message': 'El porcentaje debe ser un número entre 1 y 100'})
+
+        return jsonify({'status': 'success', 'message': 'Habilidad técnica agregada correctamente'})
+
+    except Exception as e:
+        print(f"❌ Error al procesar habilidad técnica: {str(e)}")
+        return jsonify({'status': 'error', 'message': 'Error interno del servidor'}), 500

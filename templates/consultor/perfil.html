@@ -786,8 +786,10 @@
             <h3 class="section-title">
                 <i data-feather="code" class="section-icon"></i>
                 Habilidades Técnicas
+                <i data-feather="plus" class="edit-icon" onclick="openAddSkillModal()" title="Agregar habilidad" style="margin-left: 8px;"></i>
             </h3>
             
+            <div id="habilidades-container">
             <div class="skill-item">
                 <span class="skill-name">Gestión de Proyectos</span>
                 <div class="skill-level">
@@ -852,6 +854,7 @@
                     </div>
                     <span class="skill-level-text">Experto</span>
                 </div>
+            </div>
             </div>
         </div>
 
@@ -1149,6 +1152,68 @@
             <div class="modal-footer" style="background: white; border-top: 1px solid #E5E7EB; padding: 1.5rem 2rem; display: flex; justify-content: flex-end; gap: 1rem; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;">
                 <button type="button" onclick="closeAddProjectModal()" style="background: #F3F4F6; color: #6B7280; border: 2px solid #E5E7EB; padding: 12px 24px; border-radius: 12px; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: all 0.3s ease;">Cancelar</button>
                 <button type="button" onclick="addProject()" style="background: linear-gradient(135deg, #8B5A9D 0%, #667eea 100%); color: white; border: none; padding: 12px 24px; border-radius: 12px; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(139, 90, 157, 0.3);">Guardar Proyecto</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para Agregar Habilidad Técnica -->
+<div class="modal fade" id="addSkillModal" tabindex="-1" aria-labelledby="addSkillModalLabel" aria-hidden="true" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(0, 0, 0, 0.5); z-index: 1055; display: none; align-items: center; justify-content: center;">
+    <div class="modal-dialog" style="max-width: 500px; width: 500px; margin: 0; position: relative;">
+        <div class="modal-content" style="border: none; border-radius: 20px; box-shadow: 0 25px 80px rgba(0, 0, 0, 0.4); background: white; overflow: hidden; max-height: 85vh; display: flex; flex-direction: column;">
+            <div class="modal-header" style="background: linear-gradient(135deg, #8B5A9D 0%, #667eea 50%, #764ba2 100%); border-bottom: none; padding: 2rem; position: relative; display: flex; align-items: center; justify-content: space-between;">
+                <h5 class="modal-title" id="addSkillModalLabel" style="color: white; font-size: 1.5rem; font-weight: 600; margin: 0; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); flex: 1;">Añadir Habilidad Técnica</h5>
+                <button type="button" class="btn-close" onclick="closeAddSkillModal()" aria-label="Close" style="background: rgba(255, 255, 255, 0.15); border: none; color: white; font-size: 1.2rem; width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s ease; margin-left: 1rem;">×</button>
+            </div>
+            <div class="modal-body" style="padding: 2rem; overflow-y: auto; flex: 1; max-height: calc(85vh - 180px);">
+                <div style="margin-bottom: 2rem;">
+                    <h6 style="color: #8B5A9D; font-weight: 600; font-size: 1.1rem; margin-bottom: 1.5rem; padding-bottom: 0.5rem; border-bottom: 2px solid #E5E7EB;">Datos de la Habilidad</h6>
+                    
+                    <form id="addSkillForm">
+                        <div class="mb-3">
+                            <label for="skillNombre" class="form-label" style="font-weight: 600; color: #6B7280; margin-bottom: 0.5rem; font-size: 0.9rem;">Nombre de la Habilidad</label>
+                            <input type="text" class="form-control" id="skillNombre" placeholder="Ej. Python, JavaScript, AWS, etc." required style="padding: 12px 16px; border: 2px solid #E5E7EB; border-radius: 12px; background: white; color: #374151; font-size: 0.95rem; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);">
+                        </div>
+                        <div class="mb-3">
+                            <label for="skillNivel" class="form-label" style="font-weight: 600; color: #6B7280; margin-bottom: 0.5rem; font-size: 0.9rem;">Nivel de Competencia</label>
+                            <select class="form-control" id="skillNivel" required style="padding: 12px 16px; border: 2px solid #E5E7EB; border-radius: 12px; background: white; color: #374151; font-size: 0.95rem; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);">
+                                <option value="">Selecciona un nivel</option>
+                                <option value="25">Básico (25%)</option>
+                                <option value="50">Intermedio (50%)</option>
+                                <option value="75">Avanzado (75%)</option>
+                                <option value="90">Experto (90%)</option>
+                                <option value="95">Maestro (95%)</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="skillPorcentaje" class="form-label" style="font-weight: 600; color: #6B7280; margin-bottom: 0.5rem; font-size: 0.9rem;">Porcentaje Personalizado (Opcional)</label>
+                            <input type="number" class="form-control" id="skillPorcentaje" min="1" max="100" placeholder="1-100" style="padding: 12px 16px; border: 2px solid #E5E7EB; border-radius: 12px; background: white; color: #374151; font-size: 0.95rem; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);">
+                            <div class="form-text" style="color: #6B7280; font-size: 0.8rem; margin-top: 0.25rem;">Si especificas un porcentaje, se usará en lugar del nivel seleccionado</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="skillCategoria" class="form-label" style="font-weight: 600; color: #6B7280; margin-bottom: 0.5rem; font-size: 0.9rem;">Categoría (Opcional)</label>
+                            <select class="form-control" id="skillCategoria" style="padding: 12px 16px; border: 2px solid #E5E7EB; border-radius: 12px; background: white; color: #374151; font-size: 0.95rem; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);">
+                                <option value="">Sin categoría</option>
+                                <option value="Lenguajes de Programación">Lenguajes de Programación</option>
+                                <option value="Frameworks y Librerías">Frameworks y Librerías</option>
+                                <option value="Bases de Datos">Bases de Datos</option>
+                                <option value="Cloud Computing">Cloud Computing</option>
+                                <option value="DevOps">DevOps</option>
+                                <option value="Metodologías">Metodologías</option>
+                                <option value="Herramientas">Herramientas</option>
+                                <option value="Soft Skills">Soft Skills</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="skillDescripcion" class="form-label" style="font-weight: 600; color: #6B7280; margin-bottom: 0.5rem; font-size: 0.9rem;">Descripción (Opcional)</label>
+                            <textarea class="form-control" id="skillDescripcion" rows="3" placeholder="Describe tu experiencia con esta habilidad..." style="padding: 12px 16px; border: 2px solid #E5E7EB; border-radius: 12px; background: white; color: #374151; font-size: 0.95rem; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); resize: vertical; min-height: 80px;"></textarea>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer" style="background: white; border-top: 1px solid #E5E7EB; padding: 1.5rem 2rem; display: flex; justify-content: flex-end; gap: 1rem; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;">
+                <button type="button" onclick="closeAddSkillModal()" style="background: #F3F4F6; color: #6B7280; border: 2px solid #E5E7EB; padding: 12px 24px; border-radius: 12px; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: all 0.3s ease;">Cancelar</button>
+                <button type="button" onclick="addSkill()" style="background: linear-gradient(135deg, #8B5A9D 0%, #667eea 100%); color: white; border: none; padding: 12px 24px; border-radius: 12px; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(139, 90, 157, 0.3);">Guardar Habilidad</button>
             </div>
         </div>
     </div>
@@ -1876,6 +1941,159 @@ function addProject() {
         alert('Error al enviar los datos del proyecto');
     });
 }
+
+// Funciones para manejar habilidades técnicas
+function openAddSkillModal() {
+    const modal = document.getElementById('addSkillModal');
+    
+    // Mostrar modal como ventana emergente
+    modal.style.display = 'flex';
+    modal.classList.add('show');
+    modal.setAttribute('aria-hidden', 'false');
+    
+    // Prevenir scroll del body
+    document.body.style.overflow = 'hidden';
+    
+    // Agregar event listener para cerrar con Escape
+    const escapeHandler = function(e) {
+        if (e.key === 'Escape') {
+            closeAddSkillModal();
+            document.removeEventListener('keydown', escapeHandler);
+        }
+    };
+    document.addEventListener('keydown', escapeHandler);
+    
+    // Cerrar al hacer clic fuera del modal
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            closeAddSkillModal();
+        }
+    });
+}
+
+function closeAddSkillModal() {
+    const modal = document.getElementById('addSkillModal');
+    
+    // Ocultar modal
+    modal.style.display = 'none';
+    modal.classList.remove('show');
+    modal.setAttribute('aria-hidden', 'true');
+    
+    // Restaurar scroll del body
+    document.body.style.overflow = '';
+    
+    // Limpiar formulario
+    document.getElementById('addSkillForm').reset();
+}
+
+function addSkill() {
+    const nombre = document.getElementById('skillNombre').value;
+    const nivel = document.getElementById('skillNivel').value;
+    const porcentajeCustom = document.getElementById('skillPorcentaje').value;
+    const categoria = document.getElementById('skillCategoria').value;
+    const descripcion = document.getElementById('skillDescripcion').value;
+    
+    if (!nombre || (!nivel && !porcentajeCustom)) {
+        alert('Por favor completa el nombre de la habilidad y especifica un nivel o porcentaje');
+        return;
+    }
+    
+    // Determinar el porcentaje a usar
+    const porcentaje = porcentajeCustom ? parseInt(porcentajeCustom) : parseInt(nivel);
+    
+    if (porcentaje < 1 || porcentaje > 100) {
+        alert('El porcentaje debe estar entre 1 y 100');
+        return;
+    }
+    
+    // Determinar el texto del nivel
+    let nivelTexto = '';
+    if (porcentaje <= 30) {
+        nivelTexto = 'Básico';
+    } else if (porcentaje <= 60) {
+        nivelTexto = 'Intermedio';
+    } else if (porcentaje <= 80) {
+        nivelTexto = 'Avanzado';
+    } else if (porcentaje <= 95) {
+        nivelTexto = 'Experto';
+    } else {
+        nivelTexto = 'Maestro';
+    }
+    
+    // Preparar datos para enviar al backend
+    const formData = {
+        nombre: nombre,
+        nivel: nivelTexto,
+        porcentaje: porcentaje,
+        categoria: categoria,
+        descripcion: descripcion
+    };
+    
+    // Enviar datos al backend
+    fetch('/api/habilidades-tecnicas', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            // Crear nuevo elemento de habilidad en el DOM
+            const habilidadesContainer = document.getElementById('habilidades-container');
+            const newSkill = document.createElement('div');
+            newSkill.className = 'skill-item';
+            newSkill.innerHTML = `
+                <span class="skill-name">${nombre}</span>
+                <div class="skill-level">
+                    <div class="skill-bar">
+                        <div class="skill-progress" style="width: ${porcentaje}%"></div>
+                        <span class="skill-percentage">${porcentaje}%</span>
+                    </div>
+                    <span class="skill-level-text">${nivelTexto}</span>
+                </div>
+            `;
+            
+            // Agregar al final del contenedor (antes del último elemento)
+            habilidadesContainer.appendChild(newSkill);
+            
+            // Cerrar modal y limpiar formulario
+            closeAddSkillModal();
+            
+            // Mostrar mensaje de éxito
+            alert('Habilidad agregada correctamente');
+        } else {
+            alert('Error al agregar habilidad: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error al enviar los datos de la habilidad');
+    });
+}
+
+// Manejar cambio de nivel personalizado
+document.addEventListener('DOMContentLoaded', function() {
+    const skillNivel = document.getElementById('skillNivel');
+    const skillPorcentaje = document.getElementById('skillPorcentaje');
+    
+    if (skillNivel && skillPorcentaje) {
+        // Cuando se selecciona un nivel predefinido, limpiar el porcentaje personalizado
+        skillNivel.addEventListener('change', function() {
+            if (this.value) {
+                skillPorcentaje.value = '';
+            }
+        });
+        
+        // Cuando se ingresa un porcentaje personalizado, limpiar la selección de nivel
+        skillPorcentaje.addEventListener('input', function() {
+            if (this.value) {
+                skillNivel.value = '';
+            }
+        });
+    }
+});
 </script>
 {% endblock %}
 
