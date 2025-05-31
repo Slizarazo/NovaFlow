@@ -1007,3 +1007,26 @@ def add_habilidad_tecnica():
     except Exception as e:
         print(f"❌ Error al procesar habilidad técnica: {str(e)}")
         return jsonify({'status': 'error', 'message': 'Error interno del servidor'}), 500
+
+@app.route('/api/idiomas', methods=['POST'])
+def add_idioma():
+    try:
+        data = request.get_json()
+        print("🌐 Datos del idioma recibidos:", json.dumps(data, indent=2, ensure_ascii=False))
+
+        # Validar campos requeridos
+        required_fields = ['idioma', 'nivel', 'porcentaje']
+        for field in required_fields:
+            if not data.get(field):
+                return jsonify({'status': 'error', 'message': f'El campo {field} es requerido'})
+
+        # Validar porcentaje
+        porcentaje = data.get('porcentaje')
+        if not isinstance(porcentaje, int) or porcentaje < 1 or porcentaje > 100:
+            return jsonify({'status': 'error', 'message': 'El porcentaje debe ser un número entre 1 y 100'})
+
+        return jsonify({'status': 'success', 'message': 'Idioma agregado correctamente'})
+
+    except Exception as e:
+        print(f"❌ Error al procesar idioma: {str(e)}")
+        return jsonify({'status': 'error', 'message': 'Error interno del servidor'}), 500

@@ -863,6 +863,7 @@
             <h3 class="section-title">
                 <i data-feather="globe" class="section-icon"></i>
                 Idiomas
+                <i data-feather="plus" class="edit-icon" onclick="openAddLanguageModal()" title="Agregar idioma" style="margin-left: 8px;"></i>
             </h3>
             
             <div class="skill-item">
@@ -1214,6 +1215,72 @@
             <div class="modal-footer" style="background: white; border-top: 1px solid #E5E7EB; padding: 1.5rem 2rem; display: flex; justify-content: flex-end; gap: 1rem; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;">
                 <button type="button" onclick="closeAddSkillModal()" style="background: #F3F4F6; color: #6B7280; border: 2px solid #E5E7EB; padding: 12px 24px; border-radius: 12px; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: all 0.3s ease;">Cancelar</button>
                 <button type="button" onclick="addSkill()" style="background: linear-gradient(135deg, #8B5A9D 0%, #667eea 100%); color: white; border: none; padding: 12px 24px; border-radius: 12px; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(139, 90, 157, 0.3);">Guardar Habilidad</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para Agregar Idioma -->
+<div class="modal fade" id="addLanguageModal" tabindex="-1" aria-labelledby="addLanguageModalLabel" aria-hidden="true" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(0, 0, 0, 0.5); z-index: 1055; display: none; align-items: center; justify-content: center;">
+    <div class="modal-dialog" style="max-width: 500px; width: 500px; margin: 0; position: relative;">
+        <div class="modal-content" style="border: none; border-radius: 20px; box-shadow: 0 25px 80px rgba(0, 0, 0, 0.4); background: white; overflow: hidden; max-height: 85vh; display: flex; flex-direction: column;">
+            <div class="modal-header" style="background: linear-gradient(135deg, #8B5A9D 0%, #667eea 50%, #764ba2 100%); border-bottom: none; padding: 2rem; position: relative; display: flex; align-items: center; justify-content: space-between;">
+                <h5 class="modal-title" id="addLanguageModalLabel" style="color: white; font-size: 1.5rem; font-weight: 600; margin: 0; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); flex: 1;">Añadir Idioma</h5>
+                <button type="button" class="btn-close" onclick="closeAddLanguageModal()" aria-label="Close" style="background: rgba(255, 255, 255, 0.15); border: none; color: white; font-size: 1.2rem; width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s ease; margin-left: 1rem;">×</button>
+            </div>
+            <div class="modal-body" style="padding: 2rem; overflow-y: auto; flex: 1; max-height: calc(85vh - 180px);">
+                <div style="margin-bottom: 2rem;">
+                    <h6 style="color: #8B5A9D; font-weight: 600; font-size: 1.1rem; margin-bottom: 1.5rem; padding-bottom: 0.5rem; border-bottom: 2px solid #E5E7EB;">Datos del Idioma</h6>
+                    
+                    <form id="addLanguageForm">
+                        <div class="mb-3">
+                            <label for="langNombre" class="form-label" style="font-weight: 600; color: #6B7280; margin-bottom: 0.5rem; font-size: 0.9rem;">Idioma</label>
+                            <select class="form-control" id="langNombre" required style="padding: 12px 16px; border: 2px solid #E5E7EB; border-radius: 12px; background: white; color: #374151; font-size: 0.95rem; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);">
+                                <option value="">Selecciona un idioma</option>
+                                <option value="Inglés">Inglés</option>
+                                <option value="Francés">Francés</option>
+                                <option value="Alemán">Alemán</option>
+                                <option value="Italiano">Italiano</option>
+                                <option value="Portugués">Portugués</option>
+                                <option value="Mandarín">Mandarín</option>
+                                <option value="Japonés">Japonés</option>
+                                <option value="Coreano">Coreano</option>
+                                <option value="Árabe">Árabe</option>
+                                <option value="Ruso">Ruso</option>
+                                <option value="Otro">Otro (especificar abajo)</option>
+                            </select>
+                        </div>
+                        <div class="mb-3" id="customLanguageDiv" style="display: none;">
+                            <label for="langCustom" class="form-label" style="font-weight: 600; color: #6B7280; margin-bottom: 0.5rem; font-size: 0.9rem;">Especifica el idioma</label>
+                            <input type="text" class="form-control" id="langCustom" placeholder="Ej. Catalán, Euskera, etc." style="padding: 12px 16px; border: 2px solid #E5E7EB; border-radius: 12px; background: white; color: #374151; font-size: 0.95rem; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);">
+                        </div>
+                        <div class="mb-3">
+                            <label for="langNivel" class="form-label" style="font-weight: 600; color: #6B7280; margin-bottom: 0.5rem; font-size: 0.9rem;">Nivel de Competencia</label>
+                            <select class="form-control" id="langNivel" required style="padding: 12px 16px; border: 2px solid #E5E7EB; border-radius: 12px; background: white; color: #374151; font-size: 0.95rem; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);">
+                                <option value="">Selecciona un nivel</option>
+                                <option value="100">Nativo</option>
+                                <option value="90">Avanzado (C2)</option>
+                                <option value="80">Avanzado (C1)</option>
+                                <option value="70">Intermedio Alto (B2)</option>
+                                <option value="60">Intermedio (B1)</option>
+                                <option value="45">Básico Alto (A2)</option>
+                                <option value="30">Básico (A1)</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="langCertificacion" class="form-label" style="font-weight: 600; color: #6B7280; margin-bottom: 0.5rem; font-size: 0.9rem;">Certificación (Opcional)</label>
+                            <input type="text" class="form-control" id="langCertificacion" placeholder="Ej. TOEFL, DELE, DELF, etc." style="padding: 12px 16px; border: 2px solid #E5E7EB; border-radius: 12px; background: white; color: #374151; font-size: 0.95rem; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);">
+                        </div>
+                        <div class="mb-3">
+                            <label for="langExperiencia" class="form-label" style="font-weight: 600; color: #6B7280; margin-bottom: 0.5rem; font-size: 0.9rem;">Experiencia de Uso (Opcional)</label>
+                            <textarea class="form-control" id="langExperiencia" rows="3" placeholder="Ej. Vivir en el país, trabajo profesional, estudios académicos..." style="padding: 12px 16px; border: 2px solid #E5E7EB; border-radius: 12px; background: white; color: #374151; font-size: 0.95rem; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); resize: vertical; min-height: 80px;"></textarea>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer" style="background: white; border-top: 1px solid #E5E7EB; padding: 1.5rem 2rem; display: flex; justify-content: flex-end; gap: 1rem; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;">
+                <button type="button" onclick="closeAddLanguageModal()" style="background: #F3F4F6; color: #6B7280; border: 2px solid #E5E7EB; padding: 12px 24px; border-radius: 12px; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: all 0.3s ease;">Cancelar</button>
+                <button type="button" onclick="addLanguage()" style="background: linear-gradient(135deg, #8B5A9D 0%, #667eea 100%); color: white; border: none; padding: 12px 24px; border-radius: 12px; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(139, 90, 157, 0.3);">Guardar Idioma</button>
             </div>
         </div>
     </div>
@@ -2093,7 +2160,162 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+    
+    // Manejar idioma personalizado
+    const langNombre = document.getElementById('langNombre');
+    const customLanguageDiv = document.getElementById('customLanguageDiv');
+    
+    if (langNombre && customLanguageDiv) {
+        langNombre.addEventListener('change', function() {
+            if (this.value === 'Otro') {
+                customLanguageDiv.style.display = 'block';
+                document.getElementById('langCustom').required = true;
+            } else {
+                customLanguageDiv.style.display = 'none';
+                document.getElementById('langCustom').required = false;
+                document.getElementById('langCustom').value = '';
+            }
+        });
+    }
 });
+
+// Funciones para manejar idiomas
+function openAddLanguageModal() {
+    const modal = document.getElementById('addLanguageModal');
+    
+    // Mostrar modal como ventana emergente
+    modal.style.display = 'flex';
+    modal.classList.add('show');
+    modal.setAttribute('aria-hidden', 'false');
+    
+    // Prevenir scroll del body
+    document.body.style.overflow = 'hidden';
+    
+    // Agregar event listener para cerrar con Escape
+    const escapeHandler = function(e) {
+        if (e.key === 'Escape') {
+            closeAddLanguageModal();
+            document.removeEventListener('keydown', escapeHandler);
+        }
+    };
+    document.addEventListener('keydown', escapeHandler);
+    
+    // Cerrar al hacer clic fuera del modal
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            closeAddLanguageModal();
+        }
+    });
+}
+
+function closeAddLanguageModal() {
+    const modal = document.getElementById('addLanguageModal');
+    
+    // Ocultar modal
+    modal.style.display = 'none';
+    modal.classList.remove('show');
+    modal.setAttribute('aria-hidden', 'true');
+    
+    // Restaurar scroll del body
+    document.body.style.overflow = '';
+    
+    // Limpiar formulario
+    document.getElementById('addLanguageForm').reset();
+    
+    // Ocultar campo personalizado
+    const customLanguageDiv = document.getElementById('customLanguageDiv');
+    if (customLanguageDiv) {
+        customLanguageDiv.style.display = 'none';
+        document.getElementById('langCustom').required = false;
+    }
+}
+
+function addLanguage() {
+    const idioma = document.getElementById('langNombre').value;
+    const idiomaCustom = document.getElementById('langCustom').value;
+    const nivel = document.getElementById('langNivel').value;
+    const certificacion = document.getElementById('langCertificacion').value;
+    const experiencia = document.getElementById('langExperiencia').value;
+    
+    // Determinar el nombre del idioma
+    const nombreIdioma = idioma === 'Otro' ? idiomaCustom : idioma;
+    
+    if (!nombreIdioma || !nivel) {
+        alert('Por favor completa el idioma y nivel');
+        return;
+    }
+    
+    // Determinar el texto del nivel
+    let nivelTexto = '';
+    const porcentaje = parseInt(nivel);
+    if (porcentaje === 100) {
+        nivelTexto = 'Nativo';
+    } else if (porcentaje >= 90) {
+        nivelTexto = 'Avanzado (C2)';
+    } else if (porcentaje >= 80) {
+        nivelTexto = 'Avanzado (C1)';
+    } else if (porcentaje >= 70) {
+        nivelTexto = 'Intermedio Alto (B2)';
+    } else if (porcentaje >= 60) {
+        nivelTexto = 'Intermedio (B1)';
+    } else if (porcentaje >= 45) {
+        nivelTexto = 'Básico Alto (A2)';
+    } else {
+        nivelTexto = 'Básico (A1)';
+    }
+    
+    // Preparar datos para enviar al backend
+    const formData = {
+        idioma: nombreIdioma,
+        nivel: nivelTexto,
+        porcentaje: porcentaje,
+        certificacion: certificacion,
+        experiencia: experiencia
+    };
+    
+    // Enviar datos al backend
+    fetch('/api/idiomas', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            // Crear nuevo elemento de idioma en el DOM
+            const idiomasContainer = document.querySelector('.profile-section:last-child .skill-item:last-child').parentElement;
+            const newLanguage = document.createElement('div');
+            newLanguage.className = 'skill-item';
+            newLanguage.innerHTML = `
+                <span class="skill-name">${nombreIdioma}</span>
+                <div class="skill-level">
+                    <div class="skill-bar">
+                        <div class="skill-progress" style="width: ${porcentaje}%"></div>
+                        <span class="skill-percentage">${porcentaje}%</span>
+                    </div>
+                    <span class="skill-level-text">${nivelTexto}</span>
+                </div>
+            `;
+            
+            // Agregar al final del contenedor
+            idiomasContainer.appendChild(newLanguage);
+            
+            // Cerrar modal y limpiar formulario
+            closeAddLanguageModal();
+            
+            // Mostrar mensaje de éxito
+            alert('Idioma agregado correctamente');
+        } else {
+            alert('Error al agregar idioma: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error al enviar los datos del idioma');
+    });
+}
 </script>
 {% endblock %}
 
