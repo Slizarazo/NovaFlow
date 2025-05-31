@@ -1023,3 +1023,220 @@ def add_idioma():
     except Exception as e:
         print(f"❌ Error al procesar idioma: {str(e)}")
         return jsonify({'status': 'error', 'message': 'Error interno del servidor'}), 500
+
+@app.route('/aliados/aliados')
+@login_required
+def aliados_aliados():
+    aliados = Aliado.ALIADOS
+    return render_template('aliados/aliados.html',
+                         title='Gestión de Aliados',
+                         aliados=aliados,
+                         config=app.config,
+                         role=current_user.role)
+
+@app.route('/aliados/portfolio')
+@login_required
+def aliados_portfolio():
+    proyectos = Proyecto.PROYECTOS
+    return render_template('aliados/portfolio.html',
+                         title='Portafolio de Proyectos',
+                         proyectos=proyectos,
+                         config=app.config,
+                         role=current_user.role)
+
+@app.route('/aliados/asignaciones')
+@login_required
+def aliados_asignaciones():
+    consultores = Consultor.CONSULTORES
+    proyectos = {p.id: p for p in Proyecto.PROYECTOS}
+    return render_template('aliados/asignaciones.html',
+                         title='Asignaciones de Consultores',
+                         consultores=consultores,
+                         proyectos=proyectos,
+                         config=app.config,
+                         role=current_user.role)
+
+@app.route('/api/asignaciones', methods=['POST'])
+@login_required
+def create_asignacion():
+    try:
+        data = request.get_json()
+        print(f"Datos de asignación recibidos: {data}")
+
+        if not data:
+            return jsonify({'status': 'error', 'message': 'No se recibieron datos'}), 400
+
+        tipo = data.get('tipo')
+        caso_uso = data.get('caso_uso')
+
+        if tipo == 'freelance':
+            usuario = data.get('usuario')
+            rol_proyecto = data.get('rol_proyecto')
+            print(f"Asignación freelance - Usuario: {usuario}, Proyecto: {caso_uso}, Rol: {rol_proyecto}")
+        elif tipo == 'comunidad':
+            comunidad = data.get('comunidad')
+            print(f"Asignación comunidad - Comunidad: {comunidad}, Proyecto: {caso_uso}")
+
+        return jsonify({'status': 'success', 'message': 'Asignación creada exitosamente'})
+
+    except Exception as e:
+        app.logger.error(f"Error al crear asignación: {str(e)}")
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+
+@app.route('/proyectos/general')
+@login_required
+def proyectos_general():
+    proyectos = Proyecto.PROYECTOS
+    estados = {
+        'oportunidad': [p for p in proyectos if p.etapa == 'oportunidad'],
+        'propuesta': [p for p in proyectos if p.etapa == 'propuesta'],
+        'aprobado': [p for p in proyectos if p.etapa == 'aprobado'],
+        'desarrollo': [p for p in proyectos if p.etapa == 'desarrollo'],
+        'testing': [p for p in proyectos if p.etapa == 'testing'],
+        'cierre': [p for p in proyectos if p.etapa == 'cierre'],
+        'evaluacion': [p for p in proyectos if p.etapa == 'evaluacion'],
+        'finalizados': [p for p in proyectos if p.etapa == 'finalizado']
+    }
+    return render_template('proyectos/general.html',
+                         title='Gestión de Proyectos',
+                         estados=estados,
+                         config=app.config,
+                         role=current_user.role)
+
+@app.route('/api/oportunidades', methods=['POST'])
+@login_required
+def create_oportunidad():
+    try:
+        data = request.get_json()
+        print(f"Datos de oportunidad recibidos: {data}")
+
+        if not data:
+            return jsonify({'status': 'error', 'message': 'No se recibieron datos'}), 400
+
+        cuenta = data.get('cuenta')
+        caso_uso = data.get('casoUso')
+        descripcion = data.get('descripcion')
+        impacto = data.get('impacto')
+
+        print(f"Nueva oportunidad - Cuenta: {cuenta}, Caso de uso: {caso_uso}")
+        print(f"Descripción: {descripcion}")
+        print(f"Impacto: {impacto}")
+
+        return jsonify({'status': 'success', 'message': 'Oportunidad creada exitosamente'})
+
+    except Exception as e:
+        app.logger.error(f"Error al crear oportunidad: {str(e)}")
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+
+@app.route('/proyectos/calculadora', methods=['GET', 'POST'])
+@login_required
+def proyectos_calculadora():
+    if request.method == 'POST':
+        try:
+            data = request.get_json()
+            print(f"Datos de calculadora recibidos: {data}")
+
+            if not data:
+                return jsonify({'status': 'error', 'message': 'No se recibieron datos'}), 400
+
+            project_id = data.get('projectId')
+            project_name = data.get('projectName')
+            time_estimates = data.get('timeEstimates', {})
+            costs = data.get('costs', {})
+
+            print(f"Proyecto: {project_name} (ID: {project_id})")
+            print(f"Estimaciones de tiempo: {time_estimates}")
+            print(f"Costos: {costs}")
+
+            return jsonify({'status': 'success', 'message': 'Estimación guardada exitosamente'})
+
+        except Exception as e:
+            app.logger.error(f"Error al guardar estimación: {str(e)}")
+            return jsonify({'status': 'error', 'message': str(e)}), 500
+    
+    # GET request
+    proyectos = Proyecto.PROYECTOS
+    return render_template('proyectos/calculadora.html',
+                         title='Calculadora de Tiempos',
+                         proyectos=proyectos,
+                         config=app.config,
+                         role=current_user.role)
+
+@app.route('/proyectos/estimaciones')
+@login_required
+def proyectos_estimaciones():
+    # Datos de ejemplo para las estimaciones
+    estimaciones = [
+        {
+            'id': 'EST-001',
+            'aliado': 'Aliado Tech',
+            'caso_uso': 'Sistema de Gestión de Inventarios para Retail',
+            'fecha': '2024-01-15',
+            'tipo': 'Desarrollo Completo',
+            'horas_estimadas': 320,
+            'tarifa_freelance': 45,
+            'recursos': '3 Desarrolladores, 1 QA, 1 PM',
+            'estado': 'Aprobada'
+        },
+        {
+            'id': 'EST-002',
+            'aliado': 'Financiera Global',
+            'caso_uso': 'Plataforma de Pagos Móviles',
+            'fecha': '2024-01-20',
+            'tipo': 'MVP',
+            'horas_estimadas': 480,
+            'tarifa_freelance': 60,
+            'recursos': '4 Desarrolladores, 1 Designer, 1 QA',
+            'estado': 'En Revisión'
+        },
+        {
+            'id': 'EST-003',
+            'aliado': 'Industrias Este',
+            'caso_uso': 'Dashboard de Analytics en Tiempo Real',
+            'fecha': '2024-01-25',
+            'tipo': 'Prototipo',
+            'horas_estimadas': 160,
+            'tarifa_freelance': 55,
+            'recursos': '2 Desarrolladores Frontend, 1 Data Engineer',
+            'estado': 'Pendiente'
+        },
+        {
+            'id': 'EST-004',
+            'aliado': 'Consultores Sur',
+            'caso_uso': 'Sistema CRM Personalizado',
+            'fecha': '2024-02-01',
+            'tipo': 'Desarrollo Completo',
+            'horas_estimadas': 600,
+            'tarifa_freelance': 50,
+            'recursos': '5 Desarrolladores, 2 QA, 1 PM, 1 Designer',
+            'estado': 'Aprobada'
+        },
+        {
+            'id': 'EST-005',
+            'aliado': 'Servicios Oeste',
+            'caso_uso': 'Migración a la Nube AWS',
+            'fecha': '2024-02-05',
+            'tipo': 'Consultoría',
+            'horas_estimadas': 120,
+            'tarifa_freelance': 75,
+            'recursos': '2 Cloud Architects, 1 DevOps Engineer',
+            'estado': 'Rechazada'
+        },
+        {
+            'id': 'EST-006',
+            'aliado': 'Aliado Tech',
+            'caso_uso': 'App Móvil de E-commerce',
+            'fecha': '2024-02-10',
+            'tipo': 'MVP',
+            'horas_estimadas': 280,
+            'tarifa_freelance': 42,
+            'recursos': '2 Desarrolladores Mobile, 1 Designer',
+            'estado': 'En Revisión'
+        }
+    ]
+    
+    return render_template('proyectos/estimaciones.html',
+                         title='Estimaciones de Proyectos',
+                         estimaciones=estimaciones,
+                         config=app.config,
+                         role=current_user.role)
