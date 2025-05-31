@@ -904,11 +904,9 @@
 <div class="modal fade" id="addExperienceModal" tabindex="-1" aria-labelledby="addExperienceModalLabel" aria-hidden="true" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(0, 0, 0, 0.5); z-index: 1055; display: none; align-items: center; justify-content: center;">
     <div class="modal-dialog" style="max-width: 500px; width: 500px; margin: 0; position: relative;">
         <div class="modal-content" style="border: none; border-radius: 20px; box-shadow: 0 25px 80px rgba(0, 0, 0, 0.4); background: white; overflow: hidden; max-height: 85vh; display: flex; flex-direction: column;">
-            <div class="modal-header" style="background: linear-gradient(135deg, #8B5A9D 0%, #667eea 50%, #764ba2 100%); border-bottom: none; padding: 2rem 2rem 1.5rem 2rem; position: relative;">
-                <div style="display: flex; align-items: center; width: 100%; justify-content: flex-end;">
-                    <button type="button" class="btn-close" onclick="closeAddExperienceModal()" aria-label="Close" style="background: rgba(255, 255, 255, 0.15); border: none; color: white; font-size: 1.2rem; width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s ease;">×</button>
-                </div>
-                <h5 class="modal-title" id="addExperienceModalLabel" style="color: white; font-size: 1.5rem; font-weight: 600; margin: 1rem 0 0 0; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);">Añadir Usuario</h5>
+            <div class="modal-header" style="background: linear-gradient(135deg, #8B5A9D 0%, #667eea 50%, #764ba2 100%); border-bottom: none; padding: 2rem; position: relative; display: flex; align-items: center; justify-content: space-between;">
+                <h5 class="modal-title" id="addExperienceModalLabel" style="color: white; font-size: 1.5rem; font-weight: 600; margin: 0; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); flex: 1;">Añadir Experiencia Profesional</h5>
+                <button type="button" class="btn-close" onclick="closeAddExperienceModal()" aria-label="Close" style="background: rgba(255, 255, 255, 0.15); border: none; color: white; font-size: 1.2rem; width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s ease; margin-left: 1rem;">×</button>
             </div>
             <div class="modal-body" style="padding: 2rem; overflow-y: auto; flex: 1; max-height: calc(85vh - 180px);">
                 <div style="margin-bottom: 2rem;">
@@ -956,7 +954,7 @@
             </div>
             <div class="modal-footer" style="background: white; border-top: 1px solid #E5E7EB; padding: 1.5rem 2rem; display: flex; justify-content: flex-end; gap: 1rem; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;">
                 <button type="button" onclick="closeAddExperienceModal()" style="background: #F3F4F6; color: #6B7280; border: 2px solid #E5E7EB; padding: 12px 24px; border-radius: 12px; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: all 0.3s ease;">Cancelar</button>
-                <button type="button" onclick="addExperience()" style="background: linear-gradient(135deg, #8B5A9D 0%, #667eea 100%); color: white; border: none; padding: 12px 24px; border-radius: 12px; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(139, 90, 157, 0.3);">Guardar Usuario</button>
+                <button type="button" onclick="addExperience()" style="background: linear-gradient(135deg, #8B5A9D 0%, #667eea 100%); color: white; border: none; padding: 12px 24px; border-radius: 12px; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(139, 90, 157, 0.3);">Guardar Experiencia</button>
             </div>
         </div>
     </div>
