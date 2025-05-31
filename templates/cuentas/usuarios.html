@@ -1,10 +1,11 @@
 
 {% extends "layout.html" %}
+
 {% block content %}
 <div class="container-fluid p-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>Gestión de Usuarios</h2>
-        <button class="btn btn-primary" onclick="window.location.href='/cuentas/usuarios/nuevo'">
+        <button class="btn btn-primary" onclick="showUsuarioModal()">
             <i data-feather="plus"></i> Nuevo Usuario
         </button>
     </div>
@@ -47,12 +48,400 @@
         </div>
     </div>
 </div>
+
+<!-- Modal Nuevo Usuario -->
+<div class="modal fade" id="addUsuarioModal" tabindex="-1" aria-labelledby="addUsuarioModalLabel" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addUsuarioModalLabel">Añadir Usuario</h5>
+                <button type="button" class="btn-close" onclick="hideUsuarioModal()" aria-label="Close">×</button>
+            </div>
+            <div class="modal-body">
+                <form id="addUsuarioForm">
+                    <div class="form-section">
+                        <h6 class="section-title">Información del Usuario</h6>
+                        
+                        <div class="mb-3">
+                            <label for="usuarioNombre" class="form-label">Nombre</label>
+                            <input type="text" class="form-control" id="usuarioNombre" placeholder="Nombre completo del usuario" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="usuarioCorreo" class="form-label">Correo</label>
+                            <input type="email" class="form-control" id="usuarioCorreo" placeholder="correo@ejemplo.com" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="usuarioCargo" class="form-label">Cargo</label>
+                            <input type="text" class="form-control" id="usuarioCargo" placeholder="Cargo del usuario" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="usuarioRolLaboral" class="form-label">Rol Laboral</label>
+                            <select class="form-select" id="usuarioRolLaboral" required>
+                                <option value="">Seleccionar rol laboral...</option>
+                                <option value="Supervisor">Supervisor</option>
+                                <option value="Consultor">Consultor</option>
+                                <option value="Analista">Analista</option>
+                                <option value="Gerente">Gerente</option>
+                                <option value="Coordinador">Coordinador</option>
+                                <option value="Desarrollador">Desarrollador</option>
+                                <option value="Especialista">Especialista</option>
+                                <option value="Líder de Proyecto">Líder de Proyecto</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="hideUsuarioModal()">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="submitUsuarioForm()">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block scripts %}
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        feather.replace();
+        console.log('Inicializando página de usuarios...');
+
+        // Inicializar iconos de Feather
+        if (typeof feather !== 'undefined') {
+            feather.replace();
+        }
     });
+
+    function showUsuarioModal() {
+        console.log('Mostrando modal de usuario...');
+        const modal = document.getElementById('addUsuarioModal');
+        
+        if (!modal) {
+            console.error('Modal no encontrado');
+            return;
+        }
+
+        // Limpiar estilos anteriores
+        modal.style.cssText = '';
+        
+        // Mostrar modal
+        modal.style.display = 'block';
+        modal.classList.add('show');
+        modal.setAttribute('aria-hidden', 'false');
+
+        // Crear backdrop si no existe
+        let backdrop = document.querySelector('.modal-backdrop');
+        if (!backdrop) {
+            backdrop = document.createElement('div');
+            backdrop.className = 'modal-backdrop fade show';
+            document.body.appendChild(backdrop);
+        }
+
+        // Prevenir scroll del body
+        document.body.style.overflow = 'hidden';
+        document.body.classList.add('modal-open');
+
+        // Actualizar iconos
+        if (typeof feather !== 'undefined') {
+            setTimeout(() => feather.replace(), 100);
+        }
+
+        console.log('Modal mostrado correctamente');
+    }
+
+    function hideUsuarioModal() {
+        console.log('Ocultando modal de usuario...');
+        const modal = document.getElementById('addUsuarioModal');
+        
+        if (!modal) {
+            console.error('Modal no encontrado');
+            return;
+        }
+
+        // Ocultar modal
+        modal.style.display = 'none';
+        modal.classList.remove('show');
+        modal.setAttribute('aria-hidden', 'true');
+
+        // Remover backdrop
+        const backdrop = document.querySelector('.modal-backdrop');
+        if (backdrop) {
+            backdrop.remove();
+        }
+
+        // Restaurar scroll del body
+        document.body.style.overflow = '';
+        document.body.classList.remove('modal-open');
+
+        // Limpiar formulario
+        const form = document.getElementById('addUsuarioForm');
+        if (form) {
+            form.reset();
+        }
+
+        console.log('Modal ocultado correctamente');
+    }
+
+    function submitUsuarioForm() {
+        console.log('Enviando formulario de usuario...');
+
+        // Obtener datos del formulario
+        const formData = {
+            nombre: document.getElementById('usuarioNombre').value,
+            correo: document.getElementById('usuarioCorreo').value,
+            cargo: document.getElementById('usuarioCargo').value,
+            rol_laboral: document.getElementById('usuarioRolLaboral').value
+        };
+
+        console.log('Datos del formulario:', formData);
+
+        // Validar campos requeridos
+        if (!formData.nombre || !formData.correo || !formData.cargo || !formData.rol_laboral) {
+            alert('Por favor complete todos los campos requeridos');
+            return;
+        }
+
+        // Enviar datos al servidor
+        fetch('/api/usuarios-cuentas', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Respuesta del servidor:', data);
+            if (data.status === 'success') {
+                alert('Usuario creado exitosamente');
+                hideUsuarioModal();
+                // Recargar página para mostrar nuevo usuario
+                location.reload();
+            } else {
+                alert('Error al crear usuario: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error al crear usuario');
+        });
+    }
 </script>
+
+<style>
+/* Modal estilos para ventana emergente */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1055;
+    display: none;
+    outline: 0;
+}
+
+.modal.show {
+    display: block !important;
+}
+
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1050;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-dialog {
+    position: relative;
+    width: auto;
+    max-width: 500px;
+    margin: 1.75rem auto;
+    pointer-events: none;
+}
+
+.modal-dialog-centered {
+    display: flex;
+    align-items: center;
+    min-height: calc(100% - 3.5rem);
+}
+
+.modal-content {
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+    background: white;
+    position: relative;
+    pointer-events: auto;
+    width: 100%;
+}
+
+.modal-header {
+    background: linear-gradient(135deg, #9c88ff 0%, #8b5a9d 100%);
+    color: white;
+    border: none;
+    padding: 1.25rem 1.5rem;
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.btn-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    font-weight: 300;
+    opacity: 0.8;
+    margin: 0;
+    padding: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.btn-close:hover {
+    opacity: 1;
+    color: white;
+}
+
+.modal-body {
+    padding: 1.5rem;
+    background: white;
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+.form-section {
+    margin-bottom: 0;
+}
+
+.section-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.form-label {
+    font-weight: 500;
+    color: #495057;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.form-control,
+.form-select {
+    padding: 10px 14px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: white;
+    color: #495057;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+    width: 100%;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #9c88ff;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(156, 136, 255, 0.1);
+}
+
+.form-select {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23999' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px 12px;
+    appearance: none;
+    cursor: pointer;
+}
+
+.modal-footer {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid #e9ecef;
+    background: #f8f9fa;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+}
+
+.modal-footer .btn {
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 0.9rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.modal-footer .btn-primary {
+    background: linear-gradient(135deg, #9c88ff 0%, #8b5a9d 100%);
+    color: white;
+}
+
+.modal-footer .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(156, 136, 255, 0.3);
+}
+
+.modal-footer .btn-secondary {
+    background: #f8f9fa;
+    color: #6c757d;
+    border: 1px solid #dee2e6;
+}
+
+.modal-footer .btn-secondary:hover {
+    background: #e9ecef;
+    border-color: #adb5bd;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .modal-dialog {
+        width: 95%;
+        max-width: none;
+    }
+    
+    .modal-body {
+        padding: 1rem;
+        max-height: 50vh;
+    }
+    
+    .modal-header {
+        padding: 1rem;
+    }
+    
+    .modal-footer {
+        padding: 1rem;
+        flex-direction: column;
+    }
+    
+    .modal-footer .btn {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+}
+</style>
 {% endblock %}

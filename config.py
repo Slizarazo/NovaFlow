@@ -74,9 +74,10 @@ class Config:
              ]}
         ],
         'consultor': [
-            {'name': 'Dashboard', 'icon': 'home', 'url': '/dashboard'},
+            {'name': 'Perfil', 'icon': 'user', 'url': '/consultor/perfil'},
             {'name': 'Mis Proyectos', 'icon': 'briefcase', 'url': '/mis-proyectos'},
-            {'name': 'Tareas', 'icon': 'check-square', 'url': '/tareas'}
+            {'name': 'Actividades', 'icon': 'activity', 'url': '/actividades'},
+            {'name': 'Propuestas', 'icon': 'file-text', 'url': '/propuestas'}
         ]
     }
     

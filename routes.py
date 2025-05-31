@@ -1,3 +1,4 @@
+# Applying changes to the original code to add routes for project management and details.
 from flask import render_template, redirect, url_for, request, flash, jsonify, session
 from flask_login import current_user
 from functools import reduce
@@ -36,7 +37,11 @@ def login():
 
         if user and user.password == password:  # In a real app, use proper password hashing
             login_user(user)
-            return redirect(url_for('dashboard'))
+            # Redirigir según el rol del usuario
+            if user.role == 'consultor':
+                return redirect(url_for('consultor_perfil'))
+            else:
+                return redirect(url_for('dashboard'))
         else:
             flash('Usuario o contraseña inválidos', 'danger')
 
@@ -111,6 +116,14 @@ def dashboard_crecimiento():
                          clientes_nuevos_recurrentes=generar_grafico_clientes_nuevos_vs_recurrentes(datos_clientes),
                          rentabilidad=generar_grafico_rentabilidad(datos_rentabilidad))
 
+
+@app.route('/consultor/perfil')
+@login_required
+def consultor_perfil():
+    return render_template('consultor/perfil.html',
+                         title='Perfil del Consultor',
+                         config=app.config,
+                         role=current_user.role)
 
 @app.route('/dashboard/growth')
 @login_required
@@ -394,7 +407,7 @@ def dashboard_facturacion():
     return render_template(
         'dashboard/facturacion.html',
         title='Dashboard de Facturación',
-        config=app.config,
+        config=app.app.config,
         role=current_user.role,
         facturacion_mensual=generar_grafico_facturacion(datos_facturacion),
         deudas_cobros=generar_grafico_deudas(datos_deudas),
@@ -620,536 +633,401 @@ def create_user():
             nuevo_aliado.create()
 
         elif tipo == 'empleado':
-            organizacion = Usuario.get_by_id(data.get('nombreOrganizacion'))
-            nuevo_usuario = Usuario(data.get('nombre'), organizacion[2],  data.get('correo'), "Dnova%2025", 5, "activo", None)
-            id_usuario = nuevo_usuario.create()
-
-            nuevo_colaborador = Colaborador(id_usuario, organizacion[0], data.get('cargo'), data.get('rol_laboral'))
-            nuevo_colaborador.create()
-
-        elif tipo == 'freelance':
-            
-            print("Datos del freelance:")
+            print("Datos del empleado:")
             print(f"  - Nombre: {data.get('nombre')}")
             print(f"  - Email: {data.get('email')}")
             print(f"  - Teléfono: {data.get('telefono')}")
-            print(f"  - Especialidad: {data.get('especialidad')}")
-            print(f"  - Tarifa Hora: {data.get('tarifaHora')}")
-            print(f"  - Disponibilidad: {data.get('disponibilidad')}")
-            print(f"  - Experiencia: {data.get('experiencia')}")
-            print(f"  - Portfolio: {data.get('portfolio')}")
+            print(f"  - Puesto: {data.get('puesto')}")
+            print(f"  - Departamento: {data.get('departamento')}")
+            print(f"  - Salario: {data.get('salario')}")
 
-        return jsonify({
-            'status': 'success',
-            'message': f'Usuario {tipo} procesado correctamente',
-            'data': data
-        })
+        return jsonify({'status': 'success', 'message': 'Usuario creado exitosamente'})
 
     except Exception as e:
         app.logger.error(f"Error al crear usuario: {str(e)}")
         return jsonify({'status': 'error', 'message': str(e)}), 500
 
-@app.route('/api/proyectos', methods=['POST'])
+@app.route('/api/usuarios-cuentas', methods=['POST'])
 @login_required
-def create_proyecto():
+def create_usuario_cuenta():
     try:
         data = request.get_json()
-
-        print("\n=== DATOS DEL PROYECTO RECIBIDOS ===")
-        print(f"Nombre: {data.get('nombre')}")
-        print(f"Categoría: {data.get('categoria')}")
-        print(f"Familia: {data.get('familia')}")
-        print(f"Estado: {data.get('estado')}")
-        print("=" * 40)
-
-        return jsonify({'status': 'success', 'message': 'Proyecto creado exitosamente'})
-
-    except Exception as e:
-        app.logger.error(f"Error al crear proyecto: {str(e)}")
-        return jsonify({'status': 'error', 'message': str(e)}), 500
-
-@app.route('/api/productos', methods=['POST'])
-@login_required
-def create_product():
-    try:
-        data = request.get_json()
-        print(f"Datos del producto recibidos: {data}")
+        print(f"Datos recibidos para usuario de cuenta: {data}")
 
         if not data:
             return jsonify({'status': 'error', 'message': 'No se recibieron datos'}), 400
 
-        print("Datos del producto:")
+        print("Datos del usuario:")
         print(f"  - Nombre: {data.get('nombre')}")
-        print(f"  - Categoría: {data.get('categoria')}")
-        print(f"  - Familia: {data.get('familia')}")
-        print(f"  - Estado: {data.get('estado')}")
+        print(f"  - Correo: {data.get('correo')}")
+        print(f"  - Cargo: {data.get('cargo')}")
+        print(f"  - Rol Laboral: {data.get('rol_laboral')}")
 
-        # Aquí puedes agregar la lógica para guardar en base de datos
-        # Por ahora solo imprimimos los datos
-
-        return jsonify({
-            'status': 'success',
-            'message': 'Producto creado exitosamente',
-            'data': data
-        })
+        return jsonify({'status': 'success', 'message': 'Usuario de cuenta creado exitosamente'})
 
     except Exception as e:
-        print(f"Error al procesar producto: {str(e)}")
+        app.logger.error(f"Error al crear usuario de cuenta: {str(e)}")
         return jsonify({'status': 'error', 'message': str(e)}), 500
 
-@app.route('/api/aliados', methods=['POST'])
+@app.route('/api/clientes', methods=['POST'])
 @login_required
-def create_aliado():
+def create_cliente():
     try:
         data = request.get_json()
+        print(f"Datos recibidos para cliente: {data}")
 
         if not data:
             return jsonify({'status': 'error', 'message': 'No se recibieron datos'}), 400
 
-        print("\n=== DATOS DEL ALIADO RECIBIDOS ===")
-        print(f"Nombre de la Empresa: {data.get('companyName')}")
-        print(f"Correo Electrónico: {data.get('email')}")
-        print(f"Contacto Principal: {data.get('contact')}")
-        print(f"Industria: {data.get('industry')}")
-        print("=" * 40)
+        print("Datos del cliente:")
+        print(f"  - Nombre: {data.get('nombre')}")
+        print(f"  - Industria: {data.get('industria')}")
+        print(f"  - Región: {data.get('region')}")
+        print(f"  - Código: {data.get('codigo')}")
+        print(f"  - Sector: {data.get('sector')}")
 
-        return jsonify({
-            'status': 'success',
-            'message': 'Aliado creado exitosamente',
-            'data': data
-        })
+        return jsonify({'status': 'success', 'message': 'Cliente creado exitosamente'})
 
     except Exception as e:
-        app.logger.error(f"Error al crear aliado: {str(e)}")
+        app.logger.error(f"Error al crear cliente: {str(e)}")
         return jsonify({'status': 'error', 'message': str(e)}), 500
 
-@app.route('/api/asignaciones', methods=['POST'])
+@app.route('/api/informacion-personal', methods=['POST'])
 @login_required
-def create_asignacion():
+def update_informacion_personal():
     try:
         data = request.get_json()
+
+        # Imprimir el JSON completo recibido
+        print("=" * 60)
+        print("📥 DATOS JSON RECIBIDOS EN /api/informacion-personal")
+        print("=" * 60)
+        print(json.dumps(data, indent=2, ensure_ascii=False))
+        print("=" * 60)
 
         if not data:
             return jsonify({'status': 'error', 'message': 'No se recibieron datos'}), 400
 
-        print("\n=== DATOS DE ASIGNACIÓN RECIBIDOS ===")
-        print(f"Aliado ID: {data.get('aliado')}")
-        print(f"Freelance ID: {data.get('freelance')}")
-        print(f"Fecha de Inicio: {data.get('fecha_inicio')}")
-        print(f"Fecha de Fin: {data.get('fecha_fin')}")
-        print("=" * 40)
+        # Extraer los datos del formulario
+        nombre = data.get('nombre')
+        email = data.get('email')
+        telefono = data.get('telefono')
+        linkedin = data.get('linkedin')
+        especialidad = data.get('especialidad')
+        nivel = data.get('nivel')
+        direccion = data.get('direccion')
+        ciudad = data.get('ciudad')
+        codigo_postal = data.get('codigo_postal')
+        pais = data.get('pais')
+        tarifa_hora = data.get('tarifa_hora')
+        resumen = data.get('resumen')
+
+        print("Datos de información personal:")
+        print(f"  - Nombre: {nombre}")
+        print(f"  - Email: {email}")
+        print(f"  - Teléfono: {telefono}")
+        print(f"  - LinkedIn: {linkedin}")
+        print(f"  - Especialidad: {especialidad}")
+        print(f"  - Nivel: {nivel}")
+        print(f"  - Dirección: {direccion}")
+        print(f"  - Ciudad: {ciudad}")
+        print(f"  - Código Postal: {codigo_postal}")
+        print(f"  - País: {pais}")
+        print(f"  - Tarifa por hora: {tarifa_hora}")
+        print(f"  - Resumen: {resumen}")
+
+        # Validaciones básicas
+        if not nombre or not email:
+            return jsonify({'status': 'error', 'message': 'Nombre y email son campos obligatorios'}), 400
+
+        # Aquí podrías agregar la lógica para actualizar la base de datos
+        # Por ejemplo: current_user.update_profile(data)
 
         return jsonify({
-            'status': 'success',
-            'message': 'Asignación creada exitosamente',
-            'data': data
+            'status': 'success', 
+            'message': 'Información personal actualizada exitosamente',
+            'data': {
+                'nombre': nombre,
+                'email': email,
+                'telefono': telefono,
+                'linkedin': linkedin,
+                'especialidad': especialidad,
+                'nivel': nivel,
+                'direccion': direccion,
+                'ciudad': ciudad,
+                'codigo_postal': codigo_postal,
+                'pais': pais,
+                'tarifa_hora': tarifa_hora,
+                'resumen': resumen
+            }
         })
 
     except Exception as e:
-        app.logger.error(f"Error al crear asignación: {str(e)}")
+        app.logger.error(f"Error al actualizar información personal: {str(e)}")
         return jsonify({'status': 'error', 'message': str(e)}), 500
 
-@app.route('/api/oportunidades', methods=['POST'])
+@app.route('/api/experiencia-laboral', methods=['POST'])
 @login_required
-def create_oportunidad():
+def create_experiencia_laboral():
     try:
         data = request.get_json()
+
+        # Imprimir el JSON completo recibido
+        print("=" * 60)
+        print("📥 DATOS JSON RECIBIDOS EN /api/experiencia-laboral")
+        print("=" * 60)
+        print(json.dumps(data, indent=2, ensure_ascii=False))
+        print("=" * 60)
 
         if not data:
             return jsonify({'status': 'error', 'message': 'No se recibieron datos'}), 400
 
-        print("\n=== DATOS DE NUEVA OPORTUNIDAD RECIBIDOS ===")
-        print(f"Cuenta ID: {data.get('cuenta')}")
-        print(f"Nombre (Business Problem): {data.get('nombre')}")
-        print(f"Descripción (Iniciativa Analítica): {data.get('descripcion')}")
-        print(f"Impacto (Impacto de negocio esperado): {data.get('impacto')}")
-        print("=" * 50)
+        # Extraer los datos del formulario de experiencia laboral
+        puesto = data.get('puesto')
+        empresa = data.get('empresa')
+        fecha_inicio = data.get('fecha_inicio')
+        fecha_fin = data.get('fecha_fin')
+        trabajo_actual = data.get('trabajo_actual', False)
+        ubicacion = data.get('ubicacion')
+        descripcion = data.get('descripcion')
+        tipo_empleo = data.get('tipo_empleo')  # tiempo_completo, medio_tiempo, freelance, contrato
+        sector = data.get('sector')
+        logros = data.get('logros', [])  # Lista de logros específicos
 
-        return jsonify({
-            'status': 'success',
-            'message': 'Oportunidad creada exitosamente',
-            'data': data
-        })
+        print("📋 DATOS PROCESADOS:")
+        print(f"  - Puesto: {puesto}")
+        print(f"  - Empresa: {empresa}")
+        print(f"  - Fecha Inicio: {fecha_inicio}")
+        print(f"  - Fecha Fin: {fecha_fin}")
+        print(f"  - Trabajo Actual: {trabajo_actual}")
+        print(f"  - Ubicación: {ubicacion}")
+        print(f"  - Descripción: {descripcion}")
+        print(f"  - Tipo de Empleo: {tipo_empleo}")
+        print(f"  - Sector: {sector}")
+        print(f"  - Logros: {logros}")
 
-    except Exception as e:
-        app.logger.error(f"Error al crear oportunidad: {str(e)}")
-        return jsonify({'status': 'error', 'message': str(e)}), 500
+        # Validaciones básicas
+        if not puesto or not empresa or not fecha_inicio:
+            return jsonify({'status': 'error', 'message': 'Puesto, empresa y fecha de inicio son campos obligatorios'}), 400
 
-@app.route('/api/proyecto/<int:proyecto_id>', methods=['PUT'])
-@login_required
-def update_proyecto(proyecto_id):
-    try:
-        data = request.get_json()
+        # Validar que si no es trabajo actual, debe tener fecha de fin
+        if not trabajo_actual and not fecha_fin:
+            return jsonify({'status': 'error', 'message': 'Debe especificar fecha de fin o marcar como trabajo actual'}), 400
 
-        if not data:
-            return jsonify({'status': 'error', 'message': 'No se recibieron datos'}), 400
+        # Aquí podrías agregar la lógica para guardar en la base de datos
+        # Por ejemplo: current_user.add_work_experience(data)
 
-        print(f"\n=== ACTUALIZACIÓN DE PROYECTO {proyecto_id} ===")
-        print(f"Caso de Uso: {data.get('caso_uso')}")
-        print(f"Descripción: {data.get('descripcion')}")
-        print(f"Impacto: {data.get('impacto')}")
-        print(f"Puntuación Impacto: {data.get('puntuacion_impacto')}")
-        print(f"Puntuación Técnica: {data.get('puntuacion_tecnica')}")
-        print(f"Palabras Clave: {data.get('palabras_clave')}")
-        print(f"Producto: {data.get('producto')}")
-        print(f"Fecha Inicio: {data.get('fecha_inicio')}")
-        print(f"Fecha Cierre: {data.get('fecha_cierre')}")
-        print(f"Monto Venta: {data.get('monto_venta')}")
-        print(f"Costos Proyecto: {data.get('costos_proyecto')}")
-        print(f"Margen Estimado %: {data.get('margen_estimado_porcentaje')}")
-        print(f"Margen Estimado Bruto: {data.get('margen_estimado_bruto')}")
-        print(f"Feedback: {data.get('feedback')}")
-        print("=" * 50)
-
-        # Aquí implementarías la lógica para actualizar el proyecto en la base de datos
-        
-        return jsonify({
-            'status': 'success',
-            'message': 'Proyecto actualizado exitosamente',
-            'data': data
-        })
-
-    except Exception as e:
-        app.logger.error(f"Error al actualizar proyecto: {str(e)}")
-        return jsonify({'status': 'error', 'message': str(e)}), 500
-
-@app.route('/aliados/aliados')
-@login_required
-def aliados_aliados():
-    aliados = Aliado.ALIADOS
-
-    # Datos estándar o extendidos según disponibilidad
-    if USAR_DATOS_EXTENDIDOS:
-        # Usar datos extendidos para visualizaciones más completas
-        aliados_extendidos = DatosDemoCompleto.ALIADOS_EXTENDIDOS
-        ventas_por_region = DatosDemoCompleto.DATOS_DASHBOARD_EXTENDIDOS[
-            'ventas_por_region']
-        app.logger.info("Usando datos extendidos para cuentas de aliados")
-    else:
-        # Usar datos estándar
-        aliados_extendidos = None
-        ventas_por_region = None
-        app.logger.info("Usando datos estándar para cuentas de aliados")
-
-    industrias = Industria.get_all()
-
-    return render_template(
-        'aliados/aliados.html',
-        title='Cuentas de Aliados',
-        industrias=industrias,
-        aliados=aliados,
-        config=app.config,
-        role=current_user.role,
-        # Nuevos datos extendidos
-        aliados_extendidos=aliados_extendidos,
-        ventas_por_region=ventas_por_region,
-        usar_datos_extendidos=USAR_DATOS_EXTENDIDOS)
-
-
-@app.route('/aliados/portfolio')
-@login_required
-def aliados_portfolio():
-    proyectos = Proyecto.PROYECTOS
-    aliados = {aliado.id: aliado for aliado in Aliado.ALIADOS}
-
-    # Datos estándar o extendidos según disponibilidad
-    if USAR_DATOS_EXTENDIDOS:
-        # Usar datos extendidos para visualizaciones más completas
-        proyectos_extendidos = DatosDemoCompleto.PROYECTOS_EXTENDIDOS
-        resultados_proyectos = DatosDemoCompleto.RESULTADOS_PROYECTOS
-        proyectos_por_etapa = DatosDemoCompleto.DATOS_DASHBOARD_EXTENDIDOS[
-            'proyectos_por_etapa']
-        app.logger.info("Usando datos extendidos para portafolio de proyectos")
-    else:
-        # Usar datos estándar
-        proyectos_extendidos = None
-        resultados_proyectos = None
-        proyectos_por_etapa = None
-        app.logger.info("Usando datos estándar para portafolio de proyectos")
-
-    return render_template(
-        'aliados/portfolio.html',
-        title='Portafolio de Proyectos',
-        proyectos=proyectos,
-        aliados=aliados,
-        config=app.config,
-        role=current_user.role,
-        # Nuevos datos extendidos
-        proyectos_extendidos=proyectos_extendidos,
-        resultados_proyectos=resultados_proyectos,
-        proyectos_por_etapa=proyectos_por_etapa,
-        usar_datos_extendidos=USAR_DATOS_EXTENDIDOS)
-
-
-@app.route('/aliados/asignaciones')
-@login_required
-def aliados_asignaciones():
-    consultores = Consultor.CONSULTORES
-    proyectos = {proyecto.id: proyecto for proyecto in Proyecto.PROYECTOS}
-
-    # Datos estándar o extendidos según disponibilidad
-    if USAR_DATOS_EXTENDIDOS:
-        # Usar datos extendidos para visualizaciones más completas
-        consultores_extendidos = DatosDemoCompleto.CONSULTORES_EXTENDIDOS
-        proyectos_extendidos = DatosDemoCompleto.PROYECTOS_EXTENDIDOS
-        desarrollo_profesional = DatosDemoCompleto.DESARROLLO_PROFESIONAL
-        app.logger.info(
-            "Usando datos extendidos para asignaciones de consultores")
-    else:
-        # Usar datos estándar
-        consultores_extendidos = None
-        proyectos_extendidos = None
-        desarrollo_profesional = None
-        app.logger.info(
-            "Usando datos estándar para asignaciones de consultores")
-
-    return render_template(
-        'aliados/asignaciones.html',
-        title='Asignaciones de Consultores',
-        consultores=consultores,
-        proyectos=proyectos,
-        config=app.config,
-        role=current_user.role,
-        # Nuevos datos extendidos
-        consultores_extendidos=consultores_extendidos,
-        proyectos_extendidos=proyectos_extendidos,
-        desarrollo_profesional=desarrollo_profesional,
-        usar_datos_extendidos=USAR_DATOS_EXTENDIDOS)
-
-
-@app.route('/api/filter_dashboard', methods=['POST'])
-@login_required
-def filter_dashboard():
-    filters = request.json
-
-    # Obtener datos según los filtros
-    filtered_data = filter_dashboard_data(filters)
-
-    return jsonify(filtered_data)
-
-
-def filter_dashboard_data(filters):
-    # Aplicar filtros a los datos
-    aliados = Aliado.ALIADOS
-    if filters.get('aliado'):
-        aliados = [a for a in aliados if str(a.id) == filters['aliado']]
-
-    # Filtrar por periodo si está especificado
-    periodo = filters.get('periodo', 'q3_2023')
-
-    # Calcular KPIs con los datos filtrados
-    ventas_trimestre_total = sum(aliado.ventas_trimestre for aliado in aliados)
-    ventas_promedio_cuenta = ventas_trimestre_total / len(
-        aliados) if aliados else 0
-
-    proyectos = Proyecto.PROYECTOS
-    if filters.get('cuenta'):
-        proyectos = [
-            p for p in proyectos if str(p.cuenta_id) == filters['cuenta']
-        ]
-    if filters.get('supervisor'):
-        proyectos = [
-            p for p in proyectos
-            if str(p.supervisor_id) == filters['supervisor']
-        ]
-
-    ventas_promedio_proyecto = ventas_trimestre_total / len(
-        proyectos) if proyectos else 0
-    rentabilidad = ventas_trimestre_total * 0.3
-
-    # Generar gráficos actualizados
-    mapa_html = generar_html_mapa_operaciones(DatosDashboard.UBICACIONES)
-    datos_grafico = generar_grafico_ventas(
-        DatosDashboard.VENTAS_POR_PORTAFOLIO)
-    distribucion_industria = generar_grafico_distribucion_industria_html(
-        DatosDashboard.DISTRIBUCION_INDUSTRIA)
-    crecimiento_yoy = generar_grafico_crecimiento_yoy(
-        DatosDashboard.CRECIMIENTO_ANUAL)
-
-    return {
-        'kpis': {
-            'ventas_trimestre': ventas_trimestre_total,
-            'ventas_promedio_cuenta': ventas_promedio_cuenta,
-            'ventas_promedio_proyecto': ventas_promedio_proyecto,
-            'rentabilidad': rentabilidad
-        },
-        'charts': {
-            'mapa_sesiones': mapa_html,
-            'ventas_portafolio': datos_grafico,
-            'distribucion_industria': distribucion_industria,
-            'crecimiento_yoy': crecimiento_yoy
+        # Preparar datos de respuesta
+        experiencia_data = {
+            'puesto': puesto,
+            'empresa': empresa,
+            'fecha_inicio': fecha_inicio,
+            'fecha_fin': fecha_fin if not trabajo_actual else None,
+            'trabajo_actual': trabajo_actual,
+            'ubicacion': ubicacion,
+            'descripcion': descripcion,
+            'tipo_empleo': tipo_empleo,
+            'sector': sector,
+            'logros': logros,
+            'periodo_formateado': f"{fecha_inicio} - {'Presente' if trabajo_actual else fecha_fin}"
         }
-    }
 
+        return jsonify({
+            'status': 'success', 
+            'message': 'Experiencia laboral agregada exitosamente',
+            'data': experiencia_data
+        })
 
-def aliados_asignaciones():
-    consultores = Consultor.CONSULTORES
-    proyectos = {proyecto.id: proyecto for proyecto in Proyecto.PROYECTOS}
+    except Exception as e:
+        app.logger.error(f"Error al crear experiencia laboral: {str(e)}")
+        return jsonify({'status': 'error', 'message': str(e)}), 500
 
-    # Datos estándar o extendidos según disponibilidad
-    if USAR_DATOS_EXTENDIDOS:
-        # Usar datos extendidos para visualizaciones más completas
-        consultores_extendidos = DatosDemoCompleto.CONSULTORES_EXTENDIDOS
-        proyectos_extendidos = DatosDemoCompleto.PROYECTOS_EXTENDIDOS
-        desarrollo_profesional = DatosDemoCompleto.DESARROLLO_PROFESIONAL
-        app.logger.info(
-            "Usando datos extendidos para asignaciones de consultores")
-    else:
-        # Usar datos estándar
-        consultores_extendidos = None
-        proyectos_extendidos = None
-        desarrollo_profesional = None
-        app.logger.info(
-            "Usando datos estándar para asignaciones de consultores")
-
-    return render_template(
-        'aliados/asignaciones.html',
-        title='Asignaciones de Consultores',
-        consultores=consultores,
-        proyectos=proyectos,
-        config=app.config,
-        role=current_user.role,
-        # Nuevos datos extendidos
-        consultores_extendidos=consultores_extendidos,
-        proyectos_extendidos=proyectos_extendidos,
-        desarrollo_profesional=desarrollo_profesional,
-        usar_datos_extendidos=USAR_DATOS_EXTENDIDOS)
-
-
-# Error handlers
-@app.errorhandler(404)
-def page_not_found(e):
-    # Para páginas de error, no hay usuario autenticado, por lo que pasamos role=None
-    return render_template('404.html',
-                           title='Página no encontrada',
-                           config=app.config,
-                           role=None), 404
-
-
-@app.errorhandler(500)
-def internal_server_error(e):
-    # Para páginas de error, no hay usuario autenticado, por lo que pasamos role=None
-    return render_template('500.html',
-                           title='Error interno del servidor',
-                           config=app.config,
-                           role=None), 500
-
-@app.route('/proyectos/calculadora', methods=['GET', 'POST'])
-@login_required
-def proyectos_calculadora():
-    if request.method == 'POST':
-        data = request.json
-        print("Received calculator data:", data)
-        return jsonify({"status": "success"})
-
-    proyectos = Proyecto.PROYECTOS
-    return render_template('proyectos/calculadora.html', 
-                         title='Calculadora de Tiempos',
-                         config=app.config,
-                         role=current_user.role,
-                         proyectos=proyectos)
-
-@app.route('/proyectos/estimaciones')
-@login_required
-def proyectos_estimaciones():
-    # Datos de ejemplo para las estimaciones
-    estimaciones = [
+@app.route('/proyectos/gestion')
+@login_required  
+def proyectos_gestion():
+    # Datos de ejemplo para los proyectos
+    proyectos = [
         {
-            'id': 'EST-001',
-            'aliado': 'Aliado Tech',
-            'caso_uso': 'IA para Detección de Fraudes',
-            'fecha': '2023-05-15',
-            'tipo': 'Desarrollo Completo',
-            'horas_estimadas': 320,
-            'tarifa_freelance': 45,
-            'recursos': 'Senior Dev, Data Scientist',
-            'estado': 'Aprobada'
+            'id': 1,
+            'nombre': 'Transformación Digital Bancaria',
+            'estado': 'En Desarrollo',
+            'etapa': 'desarrollo',
+            'tiempo_estimado': 960,
+            'costos_estimados': 150000,
+            'monto': 180000,
+            'consultores_asignados': 5,
+            'progreso': 65,
+            'aliado_id': 'Banco Nacional',
+            'fecha_inicio': '2024-01-15',
+            'fecha_fin': '2024-07-15'
         },
         {
-            'id': 'EST-002',
-            'aliado': 'Financiera Global',
-            'caso_uso': 'Chatbot Inteligente',
-            'fecha': '2023-05-12',
-            'tipo': 'MVP',
-            'horas_estimadas': 180,
-            'tarifa_freelance': 40,
-            'recursos': 'Frontend Dev, Backend Dev',
-            'estado': 'En Revisión'
+            'id': 2,
+            'nombre': 'Sistema de Gestión Hospitalaria',
+            'estado': 'Planificación',
+            'etapa': 'planificacion',
+            'tiempo_estimado': 1280,
+            'costos_estimados': 200000,
+            'monto': 250000,
+            'consultores_asignados': 7,
+            'progreso': 25,
+            'aliado_id': 'Hospital Central',
+            'fecha_inicio': '2024-02-01',
+            'fecha_fin': '2024-10-01'
         },
         {
-            'id': 'EST-003',
-            'aliado': 'Industrias Este',
-            'caso_uso': 'Optimización de Inventarios',
-            'fecha': '2023-05-10',
-            'tipo': 'Consultoría',
-            'horas_estimadas': 120,
-            'tarifa_freelance': 60,
-            'recursos': 'Consultor Senior',
-            'estado': 'Pendiente'
+            'id': 3,
+            'nombre': 'E-commerce para Retail',
+            'estado': 'Testing',
+            'etapa': 'testing',
+            'tiempo_estimado': 640,
+            'costos_estimados': 80000,
+            'monto': 100000,
+            'consultores_asignados': 3,
+            'progreso': 85,
+            'aliado_id': 'Retail Plus',
+            'fecha_inicio': '2024-03-01',
+            'fecha_fin': '2024-07-01'
         },
         {
-            'id': 'EST-004',
-            'aliado': 'Consultores Sur',
-            'caso_uso': 'Dashboard BI Cliente B',
-            'fecha': '2023-05-08',
-            'tipo': 'Desarrollo Completo',
-            'horas_estimadas': 240,
-            'tarifa_freelance': 50,
-            'recursos': 'BI Developer, UX Designer',
-            'estado': 'Rechazada'
-        },
-        {
-            'id': 'EST-005',
-            'aliado': 'Servicios Oeste',
-            'caso_uso': 'Sistema de Recomendaciones',
-            'fecha': '2023-05-05',
-            'tipo': 'Prototipo',
-            'horas_estimadas': 160,
-            'tarifa_freelance': 55,
-            'recursos': 'ML Engineer, Data Analyst',
-            'estado': 'Aprobada'
-        },
-        {
-            'id': 'EST-006',
-            'aliado': 'Aliado Tech',
-            'caso_uso': 'Portal de Autoservicio',
-            'fecha': '2023-05-03',
-            'tipo': 'Desarrollo Completo',
-            'horas_estimadas': 280,
-            'tarifa_freelance': 45,
-            'recursos': 'Fullstack Dev, DevOps',
-            'estado': 'En Revisión'
+            'id': 4,
+            'nombre': 'Plataforma de Logística',
+            'estado': 'Finalizado',
+            'etapa': 'finalizado',
+            'tiempo_estimado': 800,
+            'costos_estimados': 120000,
+            'monto': 140000,
+            'consultores_asignados': 4,
+            'progreso': 100,
+            'aliado_id': 'LogiTech',
+            'fecha_inicio': '2023-10-01',
+            'fecha_fin': '2024-03-01'
         }
     ]
-    
-    return render_template('proyectos/estimaciones.html',
-                         title='Estimaciones de Proyectos',
-                         estimaciones=estimaciones,
-                         config=app.config,
-                         role=current_user.role)
 
-@app.route('/proyectos/general')
-@login_required
-def proyectos_general():
-    proyectos = Proyecto.PROYECTOS 
-    aliados = {aliado.id: aliado for aliado in Aliado.ALIADOS}
-
-    # Agrupar proyectos por estado
-    estados = {
-        'oportunidad': [p for p in proyectos if p.etapa == 'oportunidad'],
-        'propuesta': [p for p in proyectos if p.etapa == 'propuesta'],
-        'aprobado': [p for p in proyectos if p.etapa == 'aprobado'],
-        'desarrollo': [p for p in proyectos if p.etapa == 'desarrollo'],
-        'testing': [p for p in proyectos if p.etapa == 'testing'],
-        'cierre': [p for p in proyectos if p.etapa == 'cierre'],
-        'evaluacion': [p for p in proyectos if p.etapa == 'evaluacion']
-    }
-
-    return render_template('proyectos/general.html',
+    return render_template('proyectos/gestion.html',
                          title='Gestión de Proyectos',
                          proyectos=proyectos,
-                         aliados=aliados,
-                         estados=estados,
                          config=app.config,
                          role=current_user.role)
 
+@app.route('/api/idiomas', methods=['POST'])
+def api_idiomas():
+    """Endpoint para recibir e imprimir datos de idiomas"""
+    try:
+        data = request.get_json()
+        print("=== DATOS DE IDIOMAS RECIBIDOS ===")
+        print(json.dumps(data, indent=2, ensure_ascii=False))
+        print("=====================================")
+
+        return jsonify({
+            'status': 'success',
+            'message': 'Datos de idiomas recibidos correctamente',
+            'data': data
+        })
+    except Exception as e:
+        print(f"Error al procesar idiomas: {str(e)}")
+        return jsonify({
+            'status': 'error',
+            'message': f'Error al procesar los datos: {str(e)}'
+        }), 400
+
+@app.route('/api/educacion', methods=['POST'])
+def api_educacion():
+    """Endpoint para recibir e imprimir datos de educación"""
+    try:
+        data = request.get_json()
+        print("=== DATOS DE EDUCACIÓN RECIBIDOS ===")
+        print(json.dumps(data, indent=2, ensure_ascii=False))
+        print("=====================================")
+
+        return jsonify({
+            'status': 'success',
+            'message': 'Datos de educación recibidos correctamente',
+            'data': data
+        })
+    except Exception as e:
+        print(f"Error al procesar educación: {str(e)}")
+        return jsonify({
+            'status': 'error',
+            'message': f'Error al procesar los datos: {str(e)}'
+        }), 400
+
+@app.route('/api/certificaciones', methods=['POST'])
+def api_certificaciones():
+    try:
+        data = request.get_json()
+        print("=== DATOS DE CERTIFICACIONES RECIBIDOS ===")
+        print(json.dumps(data, indent=2, ensure_ascii=False))
+        print("=" * 45)
+
+        # Aquí normalmente guardarías en la base de datos
+        # Por ahora solo retornamos éxito
+        return jsonify({"status": "success", "message": "Certificación guardada correctamente"})
+    except Exception as e:
+        print(f"Error en /api/certificaciones: {e}")
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+@app.route('/api/proyectos-destacados', methods=['POST'])
+def add_proyecto_destacado():
+    try:
+        data = request.get_json()
+        print("📝 Datos del proyecto destacado recibidos:", json.dumps(data, indent=2, ensure_ascii=False))
+
+        # Validar campos requeridos
+        required_fields = ['titulo', 'fecha_inicio', 'descripcion']
+        for field in required_fields:
+            if not data.get(field):
+                return jsonify({'status': 'error', 'message': f'El campo {field} es requerido'})
+
+        return jsonify({'status': 'success', 'message': 'Proyecto destacado agregado correctamente'})
+
+    except Exception as e:
+        print(f"❌ Error al procesar proyecto destacado: {str(e)}")
+        return jsonify({'status': 'error', 'message': 'Error interno del servidor'}), 500
+
+@app.route('/api/habilidades-tecnicas', methods=['POST'])
+def add_habilidad_tecnica():
+    try:
+        data = request.get_json()
+        print("🔧 Datos de la habilidad técnica recibidos:", json.dumps(data, indent=2, ensure_ascii=False))
+
+        # Validar campos requeridos
+        required_fields = ['nombre', 'nivel', 'porcentaje']
+        for field in required_fields:
+            if not data.get(field):
+                return jsonify({'status': 'error', 'message': f'El campo {field} es requerido'})
+
+        # Validar porcentaje
+        porcentaje = data.get('porcentaje')
+        if not isinstance(porcentaje, int) or porcentaje < 1 or porcentaje > 100:
+            return jsonify({'status': 'error', 'message': 'El porcentaje debe ser un número entre 1 y 100'})
+
+        return jsonify({'status': 'success', 'message': 'Habilidad técnica agregada correctamente'})
+
+    except Exception as e:
+        print(f"❌ Error al procesar habilidad técnica: {str(e)}")
+        return jsonify({'status': 'error', 'message': 'Error interno del servidor'}), 500
+
+@app.route('/api/idiomas', methods=['POST'])
+def add_idioma():
+    try:
+        data = request.get_json()
+        print("🌐 Datos del idioma recibidos:", json.dumps(data, indent=2, ensure_ascii=False))
+
+        # Validar campos requeridos
+        required_fields = ['idioma', 'nivel', 'porcentaje']
+        for field in required_fields:
+            if not data.get(field):
+                return jsonify({'status': 'error', 'message': f'El campo {field} es requerido'})
+
+        # Validar porcentaje
+        porcentaje = data.get('porcentaje')
+        if not isinstance(porcentaje, int) or porcentaje < 1 or porcentaje > 100:
+            return jsonify({'status': 'error', 'message': 'El porcentaje debe ser un número entre 1 y 100'})
+
+        return jsonify({'status': 'success', 'message': 'Idioma agregado correctamente'})
+
+    except Exception as e:
+        print(f"❌ Error al procesar idioma: {str(e)}")
+        return jsonify({'status': 'error', 'message': 'Error interno del servidor'}), 500

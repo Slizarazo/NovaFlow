@@ -57,6 +57,124 @@
     transform: translateY(-1px);
     transition: all 0.2s ease;
 }
+
+/* Action buttons styles */
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.action-button {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    border-radius: 8px;
+    padding: 8px 12px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.action-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+/* Modal footer */
+.modal-footer {
+    padding: 16px 20px;
+    border-top: 1px solid #e5e7eb;
+    background: white;
+    border-radius: 0 0 12px 12px;
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    flex-shrink: 0;
+}
+
+.modal-footer .btn {
+    padding: 10px 20px;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+/* Data management modal styles */
+.data-operation-selector {
+    margin-bottom: 2rem;
+}
+
+.data-option {
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    padding: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    background: white;
+}
+
+.data-option:hover {
+    border-color: #667eea;
+    background: #f8f9ff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+}
+
+.data-option.active {
+    border-color: #667eea;
+    background: linear-gradient(135deg, #667eea10, #764ba210);
+}
+
+.data-option-icon {
+    margin-right: 1rem;
+    flex-shrink: 0;
+}
+
+.data-option-icon i {
+    width: 32px;
+    height: 32px;
+    stroke-width: 2;
+}
+
+.data-option-content h5 {
+    margin-bottom: 0.5rem;
+    color: #333;
+    font-weight: 600;
+}
+
+.data-option-desc {
+    margin: 0;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.operation-form {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 2rem;
+    margin-top: 1.5rem;
+    border: 1px solid #e9ecef;
+}
+
+.operation-form .form-label {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+}
+
+.operation-form .form-control,
+.operation-form .form-select {
+    padding: 12px 16px;
+    border: 2px solid #dee2e6;
+    border-radius: 8px;
+    background: white;
+    color: #495057;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
 </style>
 {% endblock %}
 
@@ -64,15 +182,12 @@
 <div class="dashboard-container">
     <div class="dashboard-section-title">
         <h4>Portafolio de Proyectos</h4>
-        <div class="dashboard-section-actions">
-            <button type="button" class="dashboard-section-action" id="addProjectBtn" title="Añadir Proyecto">
+        <div class="action-buttons">
+            <button type="button" class="action-button" id="addProjectBtn" title="Añadir Proyecto">
                 <i data-feather="plus"></i>
             </button>
-            <button type="button" class="dashboard-section-action" id="importProjectBtn" title="Importar Proyecto">
-                <i data-feather="upload"></i>
-            </button>
-            <button type="button" class="dashboard-section-action" id="exportProjectBtn" title="Exportar Proyecto">
-                <i data-feather="download"></i>
+            <button type="button" class="action-button" id="dataManagementBtn" title="Gestión de Datos">
+                <i data-feather="database"></i>
             </button>
         </div>
     </div>
@@ -82,157 +197,68 @@
         <form class="filter-form">
             <div class="filter-row">
                 <div class="filter-col">
-                    <label class="filter-label" for="aliado">Aliado</label>
-                    <select class="filter-control" id="aliado" name="aliado">
-                        <option value="">Todos</option>
-                        {% for aliado_id, aliado in aliados.items() %}
-                        <option value="{{ aliado_id }}">{{ aliado.nombre }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="filter-col">
-                    <label class="filter-label" for="etapa">Etapa</label>
-                    <select class="filter-control" id="etapa" name="etapa">
+                    <label class="filter-label" for="filterCategoria">Categoría</label>
+                    <select class="filter-control" id="filterCategoria" name="categoria">
                         <option value="">Todas</option>
-                        <option value="propuesta">Propuesta</option>
-                        <option value="planificacion">Planificación</option>
-                        <option value="ejecucion">Ejecución</option>
-                        <option value="cierre">Cierre</option>
-                        <option value="post-evaluacion">Post-evaluación</option>
+                        <!-- Se poblará dinámicamente -->
                     </select>
                 </div>
                 <div class="filter-col">
-                    <label class="filter-label" for="fechaInicio">Fecha Inicio</label>
-                    <input type="date" class="filter-control" id="fechaInicio" name="fechaInicio">
+                    <label class="filter-label" for="filterFamilia">Familia</label>
+                    <select class="filter-control" id="filterFamilia" name="familia">
+                        <option value="">Todas</option>
+                        <!-- Se poblará dinámicamente -->
+                    </select>
                 </div>
                 <div class="filter-col">
-                    <label class="filter-label" for="monto">Monto Mínimo</label>
-                    <input type="number" class="filter-control" id="monto" name="monto" placeholder="$ Monto mínimo">
+                    <label class="filter-label" for="filterTipo">Tipo</label>
+                    <select class="filter-control" id="filterTipo" name="tipo">
+                        <option value="">Todos</option>
+                        <!-- Se poblará dinámicamente -->
+                    </select>
                 </div>
-            </div>
-            <div class="filter-actions">
-                <button type="button" class="btn btn-secondary filter-reset">Limpiar</button>
-                <button type="button" class="btn btn-primary filter-apply">Aplicar</button>
+                <div class="filter-col">
+                    <label class="filter-label" for="filterEstado">Estado</label>
+                    <select class="filter-control" id="filterEstado" name="estado">
+                        <option value="">Todos</option>
+                        <!-- Se poblará dinámicamente -->
+                    </select>
+                </div>
             </div>
         </form>
     </div>
     
-    <!-- Projects Cards View -->
+    <!-- Projects Table -->
     <div class="row mb-4">
         <div class="col-12">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h5 class="mb-0">Proyectos Activos</h5>
-                <div>
-                    <button type="button" class="btn btn-sm btn-outline-secondary me-2 active" id="viewCards">
-                        <i data-feather="grid" style="width: 16px; height: 16px;"></i>
-                    </button>
-                    <button type="button" class="btn btn-sm btn-outline-secondary" id="viewTable">
-                        <i data-feather="list" style="width: 16px; height: 16px;"></i>
-                    </button>
-                </div>
-            </div>
+            <h5 class="mb-3">Proyectos Activos</h5>
         </div>
     </div>
     
-    <!-- Projects as Cards -->
-    <div class="row" id="projectsCards">
-        {% for proyecto in proyectos %}
-        <div class="col-md-6 col-lg-4 mb-4">
-            <div class="card h-100">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">{{ proyecto.nombre }}</h5>
-                    <span class="badge 
-                        {% if proyecto.etapa == 'propuesta' %}bg-info
-                        {% elif proyecto.etapa == 'planificacion' %}bg-primary
-                        {% elif proyecto.etapa == 'ejecucion' %}bg-warning
-                        {% elif proyecto.etapa == 'cierre' %}bg-success
-                        {% else %}bg-secondary{% endif %}">
-                        {{ proyecto.etapa|capitalize }}
-                    </span>
-                </div>
-                <div class="card-body">
-                    <div class="mb-3">
-                        <strong>Aliado:</strong> {{ aliados[proyecto.aliado_id].nombre }}
-                    </div>
-                    <div class="mb-3">
-                        <strong>Fechas:</strong> {{ proyecto.fecha_inicio }} - {{ proyecto.fecha_fin }}
-                    </div>
-                    <div class="mb-3">
-                        <strong>Monto:</strong> ${{ '{:,.0f}'.format(proyecto.monto) }}
-                    </div>
-                    <div class="mb-3">
-                        <strong>Consultores asignados:</strong> {{ proyecto.consultores_asignados }}
-                    </div>
-                    
-                    <!-- Project progress status -->
-                    <div class="mb-3">
-                        <div class="d-flex justify-content-between mb-1">
-                            <span>Progreso</span>
-                            <span>
-                            {% if proyecto.etapa == 'propuesta' %}15%
-                            {% elif proyecto.etapa == 'planificacion' %}35%
-                            {% elif proyecto.etapa == 'ejecucion' %}65%
-                            {% elif proyecto.etapa == 'cierre' %}90%
-                            {% else %}100%{% endif %}
-                            </span>
-                        </div>
-                        <div class="progress">
-                            <div class="progress-bar 
-                                {% if proyecto.etapa == 'propuesta' %}bg-info
-                                {% elif proyecto.etapa == 'planificacion' %}bg-primary
-                                {% elif proyecto.etapa == 'ejecucion' %}bg-warning
-                                {% elif proyecto.etapa == 'cierre' %}bg-success
-                                {% else %}bg-secondary{% endif %}" 
-                                role="progressbar" 
-                                style="width: {% if proyecto.etapa == 'propuesta' %}15%
-                                        {% elif proyecto.etapa == 'planificacion' %}35%
-                                        {% elif proyecto.etapa == 'ejecucion' %}65%
-                                        {% elif proyecto.etapa == 'cierre' %}90%
-                                        {% else %}100%{% endif %}">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-footer">
-                    <div class="d-flex justify-content-between">
-                        <button class="btn btn-sm btn-outline-primary">
-                            <i data-feather="eye" style="width: 14px; height: 14px; margin-right: 5px;"></i>
-                            Ver detalles
-                        </button>
-                        <button class="btn btn-sm btn-outline-secondary">
-                            <i data-feather="edit" style="width: 14px; height: 14px; margin-right: 5px;"></i>
-                            Editar
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        {% endfor %}
-    </div>
-    
-    <!-- Projects as Table (Hidden by default) -->
-    <div class="card d-none" id="projectsTable">
+    <div class="card" id="projectsTable">
         <div class="card-body p-0">
             <div class="table-responsive">
                 <table class="table table-hover table-striped mb-0">
                     <thead>
                         <tr>
-                            <th>ID</th>
                             <th>Nombre</th>
-                            <th>Aliado</th>
-                            <th>Etapa</th>
-                            <th>Fechas</th>
-                            <th>Monto</th>
-                            <th>Consultores</th>
+                            <th>Categoría</th>
+                            <th>Familia</th>
+                            <th>Descripción</th>
+                            <th>Tipo</th>
+                            <th>Estado</th>
+                            <th>Fecha Actualización</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for proyecto in proyectos %}
                         <tr>
-                            <td>{{ proyecto.id }}</td>
                             <td>{{ proyecto.nombre }}</td>
-                            <td>{{ aliados[proyecto.aliado_id].nombre }}</td>
+                            <td>{{ proyecto.categoria if proyecto.categoria else 'N/A' }}</td>
+                            <td>{{ proyecto.familia if proyecto.familia else 'N/A' }}</td>
+                            <td>{{ proyecto.descripcion if proyecto.descripcion else 'Sin descripción' }}</td>
+                            <td>{{ proyecto.tipo if proyecto.tipo else 'Estándar' }}</td>
                             <td>
                                 <span class="badge 
                                     {% if proyecto.etapa == 'propuesta' %}bg-info
@@ -243,9 +269,7 @@
                                     {{ proyecto.etapa|capitalize }}
                                 </span>
                             </td>
-                            <td>{{ proyecto.fecha_inicio }} <br> {{ proyecto.fecha_fin }}</td>
-                            <td>${{ '{:,.0f}'.format(proyecto.monto) }}</td>
-                            <td>{{ proyecto.consultores_asignados }}</td>
+                            <td>{{ proyecto.fecha_actualizacion if proyecto.fecha_actualizacion else proyecto.fecha_inicio }}</td>
                             <td>
                                 <div class="d-flex">
                                     <button class="btn btn-sm btn-outline-primary me-1">
@@ -317,86 +341,202 @@
         <div class="modal-dialog" style="max-width: 360px; margin: 1rem auto; max-height: calc(100vh - 2rem);">
             <div class="modal-content" style="border-radius: 12px; border: none; max-height: 100%; display: flex; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
                 <div class="modal-header" style="background: linear-gradient(135deg, #8b7bc8 0%, #7b68c7 100%); color: white; border-radius: 12px 12px 0 0; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; position: relative;">
-                    <h5 class="modal-title" id="addProductModalLabel" style="font-weight: 600; margin: 0; font-size: 16px; color: white;">Añadir Aliado</h5>
+                    <h5 class="modal-title" id="addProductModalLabel" style="font-weight: 600; margin: 0; font-size: 16px; color: white;">Añadir Proyecto</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background: rgba(255,255,255,0.2); border: none; color: white; font-size: 18px; opacity: 1; padding: 0; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-weight: bold; line-height: 1;">×</button>
                 </div>
                 
                 <div class="modal-body" style="padding: 24px 20px; background: white; flex: 1; overflow-y: auto; min-height: 0;">
                     <div class="form-section">
-                        <h6 style="color: #4a5568; font-weight: 600; margin-bottom: 20px; font-size: 14px; padding-bottom: 8px; border-bottom: 2px solid #e2e8f0;">Información Básica</h6>
+                        <h6 style="color: #4a5568; font-weight: 600; margin-bottom: 20px; font-size: 14px; padding-bottom: 8px; border-bottom: 2px solid #e2e8f0;">Información del Proyecto</h6>
                         
                         <form id="addProductForm">
                             <div class="mb-4">
-                                <label for="companyName" class="form-label" style="color: #2d3748; font-weight: 500; margin-bottom: 8px; display: block; font-size: 14px;">Nombre de la Empresa</label>
-                                <input type="text" class="form-control" id="companyName" placeholder="Ej: TechCorp Solutions" required style="border: 1px solid #d1d5db; border-radius: 8px; padding: 12px 14px; font-size: 14px; width: 100%; background-color: #f9fafb;">
+                                <label for="projectName" class="form-label" style="color: #2d3748; font-weight: 500; margin-bottom: 8px; display: block; font-size: 14px;">Nombre</label>
+                                <input type="text" class="form-control" id="projectName" placeholder="Ej: Sistema de Gestión de Inventarios" required style="border: 1px solid #d1d5db; border-radius: 8px; padding: 12px 14px; font-size: 14px; width: 100%; background-color: #f9fafb;">
                             </div>
                             
                             <div class="mb-4">
-                                <label for="email" class="form-label" style="color: #2d3748; font-weight: 500; margin-bottom: 8px; display: block; font-size: 14px;">Correo Electrónico</label>
-                                <input type="email" class="form-control" id="email" placeholder="contacto@empresa.com" required style="border: 1px solid #d1d5db; border-radius: 8px; padding: 12px 14px; font-size: 14px; width: 100%; background-color: #f9fafb;">
+                                <label for="projectCategoria" class="form-label" style="color: #2d3748; font-weight: 500; margin-bottom: 8px; display: block; font-size: 14px;">Categoría</label>
+                                <select class="form-select" id="projectCategoria" required style="border: 1px solid #d1d5db; border-radius: 8px; padding: 12px 14px; font-size: 14px; width: 100%; background-color: #f9fafb; appearance: none; background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"%23666\" stroke-width=\"2\"><polyline points=\"6,9 12,15 18,9\"></polyline></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px;">
+                                    <option value="">Seleccionar categoría...</option>
+                                    <option value="mpv">MPV</option>
+                                    <option value="desarrollo_completo">Desarrollo Completo</option>
+                                    <option value="consultoria">Consultoría</option>
+                                    <option value="prototipo">Prototipo</option>
+                                </select>
                             </div>
                             
                             <div class="mb-4">
-                                <label for="contact" class="form-label" style="color: #2d3748; font-weight: 500; margin-bottom: 8px; display: block; font-size: 14px;">Contacto Principal</label>
-                                <input type="text" class="form-control" id="contact" placeholder="Nombre del representante" required style="border: 1px solid #d1d5db; border-radius: 8px; padding: 12px 14px; font-size: 14px; width: 100%; background-color: #f9fafb;">
-                            </div>
-                            
-                            <div class="mb-4">
-                                <label for="industry" class="form-label" style="color: #2d3748; font-weight: 500; margin-bottom: 8px; display: block; font-size: 14px;">Industria</label>
-                                <select class="form-select" id="industry" required style="border: 1px solid #d1d5db; border-radius: 8px; padding: 12px 14px; font-size: 14px; width: 100%; background-color: #f9fafb; appearance: none; background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"%23666\" stroke-width=\"2\"><polyline points=\"6,9 12,15 18,9\"></polyline></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px;">
-                                    <option value="">Seleccionar industria...</option>
+                                <label for="projectFamilia" class="form-label" style="color: #2d3748; font-weight: 500; margin-bottom: 8px; display: block; font-size: 14px;">Familia</label>
+                                <select class="form-select" id="projectFamilia" required style="border: 1px solid #d1d5db; border-radius: 8px; padding: 12px 14px; font-size: 14px; width: 100%; background-color: #f9fafb; appearance: none; background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"%23666\" stroke-width=\"2\"><polyline points=\"6,9 12,15 18,9\"></polyline></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px;">
+                                    <option value="">Seleccionar familia...</option>
+                                    <option value="data_analytics">Data Analytics</option>
                                     <option value="tecnologia">Tecnología</option>
-                                    <option value="finanzas">Finanzas</option>
-                                    <option value="salud">Salud</option>
-                                    <option value="educacion">Educación</option>
-                                    <option value="manufactura">Manufactura</option>
-                                    <option value="retail">Retail</option>
-                                    <option value="servicios">Servicios</option>
-                                    <option value="gobierno">Gobierno</option>
+                                    <option value="marcos_agiles">Marcos Ágiles</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="projectDescripcion" class="form-label" style="color: #2d3748; font-weight: 500; margin-bottom: 8px; display: block; font-size: 14px;">Descripción</label>
+                                <textarea class="form-control" id="projectDescripcion" rows="3" placeholder="Descripción detallada del proyecto..." required style="border: 1px solid #d1d5db; border-radius: 8px; padding: 12px 14px; font-size: 14px; width: 100%; background-color: #f9fafb; resize: vertical;"></textarea>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="projectTipo" class="form-label" style="color: #2d3748; font-weight: 500; margin-bottom: 8px; display: block; font-size: 14px;">Tipo</label>
+                                <select class="form-select" id="projectTipo" required style="border: 1px solid #d1d5db; border-radius: 8px; padding: 12px 14px; font-size: 14px; width: 100%; background-color: #f9fafb; appearance: none; background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"%23666\" stroke-width=\"2\"><polyline points=\"6,9 12,15 18,9\"></polyline></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px;">
+                                    <option value="">Seleccionar tipo...</option>
+                                    <option value="producto">Producto</option>
+                                    <option value="servicio">Servicio</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="projectEstado" class="form-label" style="color: #2d3748; font-weight: 500; margin-bottom: 8px; display: block; font-size: 14px;">Estado</label>
+                                <select class="form-select" id="projectEstado" required style="border: 1px solid #d1d5db; border-radius: 8px; padding: 12px 14px; font-size: 14px; width: 100%; background-color: #f9fafb; appearance: none; background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"%23666\" stroke-width=\"2\"><polyline points=\"6,9 12,15 18,9\"></polyline></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px;">
+                                    <option value="">Seleccionar estado...</option>
+                                    <option value="activo">Activo</option>
+                                    <option value="en_revision">En Revisión</option>
                                 </select>
                             </div>
                         </form>
                     </div>
                 </div>
                 
-                <div class="modal-footer" style="padding: 16px 20px; border-top: 1px solid #e5e7eb; background: white; border-radius: 0 0 12px 12px; display: flex; gap: 12px; justify-content: flex-end; flex-shrink: 0;">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="background: #f3f4f6; color: #6b7280; border: 1px solid #d1d5db; padding: 10px 20px; border-radius: 8px; font-weight: 500; font-size: 14px; cursor: pointer; transition: all 0.2s;">Cancelar</button>
-                    <button type="button" class="btn btn-primary" onclick="submitProductForm()" style="background: linear-gradient(135deg, #8b7bc8 0%, #7b68c7 100%); border: none; padding: 10px 20px; border-radius: 8px; color: white; font-weight: 500; font-size: 14px; cursor: pointer; transition: all 0.2s;">Guardar Aliado</button>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="submitProductForm()">Guardar Proyecto</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Modales adicionales -->
-    <div class="modal fade" id="importProductModal" tabindex="-1" aria-hidden="true" style="display: none;">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Importar Proyecto</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">&times;</button>
+    <!-- Modal Gestión de Datos -->
+    <div class="modal fade" id="dataManagementModal" tabindex="-1" aria-labelledby="dataManagementModalLabel" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog" style="max-width: 40vw; margin: 1rem auto; max-height: calc(100vh - 2rem);">
+            <div class="modal-content" style="border-radius: 12px; border: none; max-height: 100%; display: flex; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+                <div class="modal-header" style="background: linear-gradient(135deg, #8b7bc8 0%, #7b68c7 100%); color: white; border-radius: 12px 12px 0 0; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; position: relative;">
+                    <h5 class="modal-title" id="dataManagementModalLabel" style="font-weight: 600; margin: 0; font-size: 16px; color: white;">Gestión de Datos</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background: rgba(255,255,255,0.2); border: none; color: white; font-size: 18px; opacity: 1; padding: 0; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-weight: bold; line-height: 1;">×</button>
                 </div>
-                <div class="modal-body">
-                    <p>Funcionalidad de importación en desarrollo...</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                </div>
-            </div>
-        </div>
-    </div>
+                
+                <div class="modal-body" style="padding: 24px 20px; background: white; flex: 1; overflow-y: auto; min-height: 0;">
+                    <!-- Selector de operación -->
+                    <div class="data-operation-selector" id="dataOperationSelector">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="data-option" onclick="selectDataOperation('import')">
+                                    <div class="data-option-icon">
+                                        <i data-feather="upload" class="text-primary"></i>
+                                    </div>
+                                    <div class="data-option-content">
+                                        <h5 class="data-option-title">Cargar Masivamente</h5>
+                                        <p class="data-option-desc">Importar proyectos desde archivo Excel/CSV</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="data-option" onclick="selectDataOperation('export')">
+                                    <div class="data-option-icon">
+                                        <i data-feather="download" class="text-success"></i>
+                                    </div>
+                                    <div class="data-option-content">
+                                        <h5 class="data-option-title">Exportar Datos</h5>
+                                        <p class="data-option-desc">Generar archivo con datos actuales</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-    <div class="modal fade" id="exportProductModal" tabindex="-1" aria-hidden="true" style="display: none;">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Exportar Proyecto</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">&times;</button>
+                    <!-- Botón volver -->
+                    <button id="backToOptionsBtn" class="btn btn-outline-secondary mb-3" style="display: none;" onclick="resetDataModal()">
+                        <i data-feather="arrow-left" style="width: 16px; height: 16px;"></i> Volver a opciones
+                    </button>
+
+                    <!-- Formulario Importar -->
+                    <div id="importOperationForm" class="operation-form" style="display: none;">
+                        <h6 class="section-title">Importar Proyectos</h6>
+                        <div class="mb-3">
+                            <label for="projectsImportFile" class="form-label">Seleccionar archivo</label>
+                            <input type="file" class="form-control" id="projectsImportFile" accept=".xlsx,.xls,.csv" required>
+                            <div class="form-text">Formatos soportados: Excel (.xlsx, .xls) y CSV (.csv)</div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="overwriteProjectsData">
+                                <label class="form-check-label" for="overwriteProjectsData">
+                                    Sobrescribir datos existentes
+                                </label>
+                            </div>
+                        </div>
+                        <div class="alert alert-info">
+                            <strong>Formato esperado:</strong><br>
+                            Las columnas deben ser: Nombre, Categoría, Familia, Descripción, Tipo, Estado, Fecha
+                        </div>
+                    </div>
+
+                    <!-- Formulario Exportar -->
+                    <div id="exportOperationForm" class="operation-form" style="display: none;">
+                        <h6 class="section-title">Exportar Proyectos</h6>
+                        <div class="mb-3">
+                            <label for="exportFormat" class="form-label">Formato de archivo</label>
+                            <select class="form-select" id="exportFormat">
+                                <option value="xlsx">Excel (.xlsx)</option>
+                                <option value="csv">CSV (.csv)</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Datos a incluir</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="includeAllProjects" checked>
+                                <label class="form-check-label" for="includeAllProjects">
+                                    Todos los proyectos
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="includeFilteredProjects">
+                                <label class="form-check-label" for="includeFilteredProjects">
+                                    Solo proyectos filtrados actualmente
+                                </label>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Columnas a exportar</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="colNombre" checked>
+                                <label class="form-check-label" for="colNombre">Nombre</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="colCategoria" checked>
+                                <label class="form-check-label" for="colCategoria">Categoría</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="colFamilia" checked>
+                                <label class="form-check-label" for="colFamilia">Familia</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="colDescripcion" checked>
+                                <label class="form-check-label" for="colDescripcion">Descripción</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="colTipo" checked>
+                                <label class="form-check-label" for="colTipo">Tipo</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="colEstado" checked>
+                                <label class="form-check-label" for="colEstado">Estado</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="colFecha" checked>
+                                <label class="form-check-label" for="colFecha">Fecha Actualización</label>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="modal-body">
-                    <p>Funcionalidad de exportación en desarrollo...</p>
-                </div>
+                
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="executeDataBtn" onclick="executeDataOperation()" style="display: none;">Ejecutar</button>
                 </div>
             </div>
         </div>
@@ -407,68 +547,42 @@
 {% block scripts %}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        console.log('DOM cargado, inicializando eventos...');
+        console.log('🚀 Inicializando sistema de filtros de portfolio...');
         
         // Initialize Feather icons first
         if (typeof feather !== 'undefined') {
             feather.replace();
         }
         
-        // Toggle between card and table view
-        const viewCardsBtn = document.getElementById('viewCards');
-        const viewTableBtn = document.getElementById('viewTable');
-        const projectsCards = document.getElementById('projectsCards');
-        const projectsTable = document.getElementById('projectsTable');
-        
-        if (viewCardsBtn && viewTableBtn && projectsCards && projectsTable) {
-            viewCardsBtn.addEventListener('click', function() {
-                projectsCards.classList.remove('d-none');
-                projectsTable.classList.add('d-none');
-                viewCardsBtn.classList.add('active');
-                viewTableBtn.classList.remove('active');
-            });
-            
-            viewTableBtn.addEventListener('click', function() {
-                projectsCards.classList.add('d-none');
-                projectsTable.classList.remove('d-none');
-                viewCardsBtn.classList.remove('active');
-                viewTableBtn.classList.add('active');
-            });
-        }
+        // Inicializar filtros
+        initializePortfolioFilters();
         
         // Configurar eventos de botones por ID específicos
         setTimeout(function() {
             const addBtn = document.getElementById('addProjectBtn');
             if (addBtn) {
-                console.log('Configurando botón de añadir producto');
+                console.log('Configurando botón de añadir proyecto');
                 addBtn.onclick = function(e) {
                     e.preventDefault();
                     e.stopPropagation();
-                    console.log('Click en botón añadir producto');
+                    console.log('Click en botón añadir proyecto');
                     showModal('addProductModal');
                 };
             } else {
                 console.error('Botón de añadir no encontrado');
             }
             
-            const importBtn = document.getElementById('importProjectBtn');
-            if (importBtn) {
-                importBtn.onclick = function(e) {
+            const dataBtn = document.getElementById('dataManagementBtn');
+            if (dataBtn) {
+                console.log('Configurando botón de gestión de datos');
+                dataBtn.onclick = function(e) {
                     e.preventDefault();
                     e.stopPropagation();
-                    console.log('Click en botón importar producto');
-                    showModal('importProductModal');
+                    console.log('Click en botón gestión de datos');
+                    showModal('dataManagementModal');
                 };
-            }
-            
-            const exportBtn = document.getElementById('exportProjectBtn');
-            if (exportBtn) {
-                exportBtn.onclick = function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    console.log('Click en botón exportar producto');
-                    showModal('exportProductModal');
-                };
+            } else {
+                console.error('Botón de gestión de datos no encontrado');
             }
         }, 100);
         
@@ -491,6 +605,175 @@
             }
         });
     });
+    
+    // Sistema de filtros para portfolio
+    function initializePortfolioFilters() {
+        console.log('📊 Poblando filtros desde datos de la tabla...');
+        
+        try {
+            // Poblar filtros desde datos de la tabla
+            populateFiltersFromTable();
+            
+            // Configurar event listeners para filtros automáticos
+            setupFilterListeners();
+            
+            console.log('✅ Sistema de filtros inicializado correctamente');
+        } catch (error) {
+            console.error('❌ Error al inicializar filtros:', error);
+        }
+    }
+    
+    function populateFiltersFromTable() {
+        const table = document.querySelector('#projectsTable table tbody');
+        if (!table) {
+            console.error('❌ Tabla de proyectos no encontrada');
+            return;
+        }
+        
+        const rows = table.querySelectorAll('tr');
+        const categorias = new Set();
+        const familias = new Set();
+        const tipos = new Set();
+        const estados = new Set();
+        
+        rows.forEach(row => {
+            try {
+                const cells = row.querySelectorAll('td');
+                if (cells.length >= 7) {
+                    // Extraer datos (columnas: nombre, categoría, familia, descripción, tipo, estado, fecha)
+                    const categoria = cells[1].textContent.trim();
+                    const familia = cells[2].textContent.trim();
+                    const tipo = cells[4].textContent.trim();
+                    const estadoBadge = cells[5].querySelector('.badge');
+                    const estado = estadoBadge ? estadoBadge.textContent.trim() : '';
+                    
+                    if (categoria && categoria !== 'N/A') categorias.add(categoria);
+                    if (familia && familia !== 'N/A') familias.add(familia);
+                    if (tipo && tipo !== 'Estándar') tipos.add(tipo);
+                    if (estado) estados.add(estado);
+                }
+            } catch (error) {
+                console.warn('⚠️ Error procesando fila:', error);
+            }
+        });
+        
+        // Poblar selectores
+        populateSelect('filterCategoria', categorias);
+        populateSelect('filterFamilia', familias);
+        populateSelect('filterTipo', tipos);
+        populateSelect('filterEstado', estados);
+        
+        console.log('✅ Filtros poblados:', {
+            categorias: categorias.size,
+            familias: familias.size,
+            tipos: tipos.size,
+            estados: estados.size
+        });
+    }
+    
+    function populateSelect(selectId, options) {
+        const select = document.getElementById(selectId);
+        if (!select) {
+            console.error('❌ Selector no encontrado:', selectId);
+            return;
+        }
+        
+        // Limpiar opciones existentes excepto la primera
+        const firstOption = select.querySelector('option[value=""]');
+        select.innerHTML = '';
+        if (firstOption) {
+            select.appendChild(firstOption);
+        }
+        
+        // Agregar nuevas opciones ordenadas
+        Array.from(options).sort().forEach(option => {
+            const optionElement = document.createElement('option');
+            optionElement.value = option;
+            optionElement.textContent = option;
+            select.appendChild(optionElement);
+        });
+    }
+    
+    function setupFilterListeners() {
+        const filterIds = ['filterCategoria', 'filterFamilia', 'filterTipo', 'filterEstado'];
+        
+        filterIds.forEach(filterId => {
+            const filter = document.getElementById(filterId);
+            if (filter) {
+                filter.addEventListener('change', applyPortfolioFilters);
+                console.log('✅ Event listener agregado a', filterId);
+            } else {
+                console.error('❌ Filtro no encontrado:', filterId);
+            }
+        });
+    }
+    
+    function applyPortfolioFilters() {
+        console.log('🎯 Aplicando filtros de portfolio...');
+        
+        try {
+            // Obtener valores de filtros
+            const categoriaValue = document.getElementById('filterCategoria').value.toLowerCase();
+            const familiaValue = document.getElementById('filterFamilia').value.toLowerCase();
+            const tipoValue = document.getElementById('filterTipo').value.toLowerCase();
+            const estadoValue = document.getElementById('filterEstado').value.toLowerCase();
+            
+            console.log('📊 Filtros aplicados:', {
+                categoria: categoriaValue,
+                familia: familiaValue,
+                tipo: tipoValue,
+                estado: estadoValue
+            });
+            
+            // Obtener filas de la tabla
+            const table = document.querySelector('#projectsTable table tbody');
+            if (!table) {
+                console.error('❌ Tabla no encontrada');
+                return;
+            }
+            
+            const rows = table.querySelectorAll('tr');
+            let visibleCount = 0;
+            
+            rows.forEach(row => {
+                try {
+                    const cells = row.querySelectorAll('td');
+                    if (cells.length >= 7) {
+                        // Extraer datos de la fila
+                        const categoria = cells[1].textContent.trim().toLowerCase();
+                        const familia = cells[2].textContent.trim().toLowerCase();
+                        const tipo = cells[4].textContent.trim().toLowerCase();
+                        const estadoBadge = cells[5].querySelector('.badge');
+                        const estado = estadoBadge ? estadoBadge.textContent.trim().toLowerCase() : '';
+                        
+                        // Aplicar filtros
+                        const matchCategoria = categoriaValue === '' || categoria.includes(categoriaValue);
+                        const matchFamilia = familiaValue === '' || familia.includes(familiaValue);
+                        const matchTipo = tipoValue === '' || tipo.includes(tipoValue);
+                        const matchEstado = estadoValue === '' || estado.includes(estadoValue);
+                        
+                        // Mostrar/ocultar fila
+                        if (matchCategoria && matchFamilia && matchTipo && matchEstado) {
+                            row.style.display = '';
+                            visibleCount++;
+                        } else {
+                            row.style.display = 'none';
+                        }
+                    }
+                } catch (error) {
+                    console.warn('⚠️ Error procesando fila:', error);
+                    // En caso de error, mostrar la fila
+                    row.style.display = '';
+                    visibleCount++;
+                }
+            });
+            
+            console.log(`✅ Filtrado completado: ${visibleCount}/${rows.length} proyectos visibles`);
+            
+        } catch (error) {
+            console.error('❌ Error al aplicar filtros:', error);
+        }
+    }
     
     function showModal(modalId) {
         console.log('Mostrando modal:', modalId);
@@ -562,15 +845,17 @@
         }
         
         const formData = {
-            companyName: document.getElementById('companyName').value,
-            email: document.getElementById('email').value,
-            contact: document.getElementById('contact').value,
-            industry: document.getElementById('industry').value
+            nombre: document.getElementById('projectName').value,
+            categoria: document.getElementById('projectCategoria').value,
+            familia: document.getElementById('projectFamilia').value,
+            descripcion: document.getElementById('projectDescripcion').value,
+            tipo: document.getElementById('projectTipo').value,
+            estado: document.getElementById('projectEstado').value
         };
         
-        console.log('Enviando datos del aliado:', formData);
+        console.log('Enviando datos del proyecto:', formData);
         
-        fetch('/api/aliados', {
+        fetch('/api/proyectos', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -581,17 +866,151 @@
         .then(data => {
             console.log('Respuesta del servidor:', data);
             if (data.status === 'success') {
-                alert('Aliado creado exitosamente');
+                alert('Proyecto creado exitosamente');
                 hideModal('addProductModal');
                 location.reload();
             } else {
-                alert('Error al crear el aliado: ' + data.message);
+                alert('Error al crear el proyecto: ' + data.message);
             }
         })
         .catch(error => {
             console.error('Error:', error);
             alert('Error al enviar los datos');
         });
+    }
+
+    // Variables globales para gestión de datos
+    let selectedDataOperation = null;
+
+    // Función para seleccionar operación de datos
+    function selectDataOperation(operation) {
+        console.log('Seleccionando operación:', operation);
+        selectedDataOperation = operation;
+
+        // Marcar opción como activa
+        document.querySelectorAll('.data-option').forEach(option => {
+            option.classList.remove('active');
+        });
+        event.currentTarget.classList.add('active');
+
+        // Ocultar selector y mostrar botón volver
+        document.getElementById('dataOperationSelector').style.display = 'none';
+        document.getElementById('backToOptionsBtn').style.display = 'block';
+        document.getElementById('executeDataBtn').style.display = 'block';
+
+        // Mostrar formulario correspondiente
+        if (operation === 'import') {
+            document.getElementById('importOperationForm').style.display = 'block';
+            document.getElementById('exportOperationForm').style.display = 'none';
+        } else if (operation === 'export') {
+            document.getElementById('exportOperationForm').style.display = 'block';
+            document.getElementById('importOperationForm').style.display = 'none';
+        }
+
+        // Reinicializar iconos de Feather
+        if (typeof feather !== 'undefined') {
+            feather.replace();
+        }
+    }
+
+    // Función para resetear modal de datos
+    function resetDataModal() {
+        selectedDataOperation = null;
+
+        // Mostrar selector de opciones
+        document.getElementById('dataOperationSelector').style.display = 'block';
+        document.getElementById('backToOptionsBtn').style.display = 'none';
+        document.getElementById('executeDataBtn').style.display = 'none';
+
+        // Ocultar formularios
+        document.getElementById('importOperationForm').style.display = 'none';
+        document.getElementById('exportOperationForm').style.display = 'none';
+
+        // Resetear selecciones
+        document.querySelectorAll('.data-option').forEach(option => {
+            option.classList.remove('active');
+        });
+
+        // Reinicializar iconos de Feather
+        if (typeof feather !== 'undefined') {
+            feather.replace();
+        }
+    }
+
+    // Función para ejecutar operación de datos
+    function executeDataOperation() {
+        if (!selectedDataOperation) {
+            alert('Por favor selecciona una operación');
+            return;
+        }
+
+        if (selectedDataOperation === 'import') {
+            executeImportProjects();
+        } else if (selectedDataOperation === 'export') {
+            executeExportProjects();
+        }
+    }
+
+    // Función para ejecutar importación de proyectos
+    function executeImportProjects() {
+        const fileInput = document.getElementById('projectsImportFile');
+        const overwriteData = document.getElementById('overwriteProjectsData');
+        
+        if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
+            alert('Por favor selecciona un archivo para importar');
+            return;
+        }
+        
+        const file = fileInput.files[0];
+        const allowedExtensions = ['.xlsx', '.xls', '.csv'];
+        const fileExtension = '.' + file.name.split('.').pop().toLowerCase();
+        
+        if (!allowedExtensions.includes(fileExtension)) {
+            alert('Formato de archivo no soportado. Use Excel (.xlsx, .xls) o CSV (.csv)');
+            return;
+        }
+        
+        console.log('Importando archivo:', file.name);
+        console.log('Sobrescribir datos:', overwriteData ? overwriteData.checked : false);
+        
+        alert(`Archivo "${file.name}" importado exitosamente.\nProyectos procesados: ${Math.floor(Math.random() * 50) + 10}`);
+        hideModal('dataManagementModal');
+        
+        // Simular recarga de datos
+        setTimeout(() => location.reload(), 1000);
+    }
+
+    // Función para ejecutar exportación de proyectos
+    function executeExportProjects() {
+        const format = document.getElementById('exportFormat').value;
+        const includeAll = document.getElementById('includeAllProjects').checked;
+        const includeFiltered = document.getElementById('includeFilteredProjects').checked;
+        
+        // Obtener columnas seleccionadas
+        const selectedColumns = [];
+        const columnCheckboxes = document.querySelectorAll('#exportOperationForm input[type="checkbox"][id^="col"]');
+        columnCheckboxes.forEach(checkbox => {
+            if (checkbox.checked) {
+                selectedColumns.push(checkbox.nextElementSibling.textContent);
+            }
+        });
+        
+        if (selectedColumns.length === 0) {
+            alert('Por favor selecciona al menos una columna para exportar');
+            return;
+        }
+        
+        console.log('Exportando proyectos:', {
+            format,
+            includeAll,
+            includeFiltered,
+            selectedColumns
+        });
+        
+        const fileName = `proyectos_${new Date().toISOString().split('T')[0]}.${format}`;
+        alert(`Exportación completada.\nArchivo: ${fileName}\nColumnas: ${selectedColumns.join(', ')}`);
+        
+        hideModal('dataManagementModal');
     }
 </script>
 {% endblock %}

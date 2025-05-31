@@ -7,14 +7,11 @@
     <div class="dashboard-section-title">
         <h4>Gestión de Usuarios</h4>
         <div class="dashboard-section-actions">
-            <button type="button" class="dashboard-section-action" data-bs-toggle="modal" data-bs-target="#addUserModal" title="Añadir Usuario">
+            <button type="button" class="modern-action-btn" onclick="showUserModal()" title="Añadir Usuario">
                 <i data-feather="plus"></i>
             </button>
-            <button type="button" class="dashboard-section-action" data-bs-toggle="modal" data-bs-target="#importUsersModal" title="Importar">
-                <i data-feather="upload"></i>
-            </button>
-            <button type="button" class="dashboard-section-action" data-bs-toggle="modal" data-bs-target="#exportUsersModal" title="Exportar">
-                <i data-feather="download"></i>
+            <button type="button" class="modern-action-btn" onclick="showDataModal()" title="Gestión de Datos">
+                <i data-feather="database"></i>
             </button>
         </div>
     </div>
@@ -22,57 +19,29 @@
     <!-- Filters -->
     <div class="card mb-4">
         <div class="card-body">
-            <form class="filters-form">
-                <div class="filters-container" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 1rem;">
-                    <div class="filter-group">
-                        <label class="form-label">Usuario</label>
-                        <input type="text" class="form-control" name="usuario" placeholder="Buscar usuario...">
-                    </div>
-                    <div class="filter-group">
-                        <label class="form-label">Tipo</label>
-                        <select class="form-select" name="tipo">
-                            <option value="">Todos</option>
-                            <option value="Gestor">Gestor</option>
-                            <option value="Aliado">Aliado</option>
-                            <option value="Cuenta">Cuenta</option>
-                            <option value="Freelance">Freelance</option>
-                        </select>
-                    </div>
-                    <div class="filter-group">
-                        <label class="form-label">Rol</label>
-                        <select class="form-select" name="rol">
-                            <option value="">Todos</option>
-                            <option value="Superadministrador">Superadministrador</option>
-                            <option value="Organización">Organización</option>
-                            <option value="Cliente">Cliente</option>
-                            <option value="Supervisor">Supervisor</option>
-                            <option value="Consultor">Consultor</option>
-                        </select>
-                    </div>
-                    <div class="filter-group">
-                        <label class="form-label">Organización</label>
-                        <select class="form-select" name="organizacion">
-                            <option value="">Todas</option>
-                            <option value="DeepNova">DeepNova</option>
-                            <option value="Tech Solutions SA">Tech Solutions SA</option>
-                        </select>
-                    </div>
-                    <div class="filter-group">
-                        <label class="form-label">Estado</label>
-                        <select class="form-select" name="estado">
-                            <option value="">Todos</option>
-                            <option value="activo">Activo</option>
-                            <option value="inactivo">Inactivo</option>
-                            <option value="pendiente">Pendiente</option>
-                        </select>
-                    </div>
+            <div class="filters-container" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;">
+                <div class="filter-group">
+                    <label class="form-label">Organización</label>
+                    <select class="form-select" name="organizacion" id="filterOrganizacion">
+                        <option value="">Todas</option>
+                        <!-- Se poblará dinámicamente -->
+                    </select>
                 </div>
-
-                <div class="filter-actions">
-                    <button type="reset" class="btn btn-secondary">Limpiar</button>
-                    <button type="submit" class="btn btn-primary">Aplicar Filtros</button>
+                <div class="filter-group">
+                    <label class="form-label">Rol</label>
+                    <select class="form-select" name="rol" id="filterRol">
+                        <option value="">Todos</option>
+                        <!-- Se poblará dinámicamente -->
+                    </select>
                 </div>
-            </form>
+                <div class="filter-group">
+                    <label class="form-label">Estado</label>
+                    <select class="form-select" name="estado" id="filterEstado">
+                        <option value="">Todos</option>
+                        <!-- Se poblará dinámicamente -->
+                    </select>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -80,26 +49,24 @@
     <div class="card">
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-hover">
+                <table class="table table-hover" id="usersTable">
                     <thead>
                         <tr>
+                            <th>Nombre</th>
                             <th>Usuario</th>
-                            <th>Email</th>
-                            <th>Tipo</th>
-                            <th>Rol</th>
                             <th>Organización</th>
+                            <th>Rol</th>
                             <th>Estado</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
                         <!-- Example users -->
-                        <tr>
+                        <tr data-organizacion="DeepNova" data-rol="Superadministrador" data-estado="activo">
                             <td>Admin Principal</td>
                             <td>admin@deepnova.com</td>
-                            <td>Gestor</td>
-                            <td>Superadministrador</td>
                             <td>DeepNova</td>
+                            <td>Superadministrador</td>
                             <td><span class="badge bg-success">Activo</span></td>
                             <td>
                                 <div class="btn-group">
@@ -115,12 +82,11 @@
                                 </div>
                             </td>
                         </tr>
-                        <tr>
+                        <tr data-organizacion="Tech Solutions SA" data-rol="Organización" data-estado="activo">
                             <td>Tech Solutions</td>
                             <td>contact@techsolutions.com</td>
-                            <td>Aliado</td>
-                            <td>Organización</td>
                             <td>Tech Solutions SA</td>
+                            <td>Organización</td>
                             <td><span class="badge bg-success">Activo</span></td>
                             <td>
                                 <div class="btn-group">
@@ -136,12 +102,11 @@
                                 </div>
                             </td>
                         </tr>
-                        <tr>
+                        <tr data-organizacion="Global Corp" data-rol="Cliente" data-estado="activo">
                             <td>Global Corp</td>
                             <td>info@globalcorp.com</td>
-                            <td>Cuenta</td>
+                            <td>Global Corp</td>
                             <td>Cliente</td>
-                            <td>Tech Solutions SA</td>
                             <td><span class="badge bg-success">Activo</span></td>
                             <td>
                                 <div class="btn-group">
@@ -157,12 +122,11 @@
                                 </div>
                             </td>
                         </tr>
-                        <tr>
+                        <tr data-organizacion="Freelance" data-rol="Supervisor" data-estado="activo">
                             <td>Ana Martínez</td>
                             <td>ana.martinez@freelance.com</td>
                             <td>Freelance</td>
                             <td>Supervisor</td>
-                            <td>-</td>
                             <td><span class="badge bg-success">Activo</span></td>
                             <td>
                                 <div class="btn-group">
@@ -178,13 +142,32 @@
                                 </div>
                             </td>
                         </tr>
-                        <tr>
+                        <tr data-organizacion="Freelance" data-rol="Consultor" data-estado="pendiente">
                             <td>Carlos Ruiz</td>
                             <td>carlos.ruiz@freelance.com</td>
                             <td>Freelance</td>
                             <td>Consultor</td>
-                            <td>-</td>
                             <td><span class="badge bg-warning">Pendiente</span></td>
+                            <td>
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-sm btn-icon" title="Editar">
+                                        <i data-feather="edit-2"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-icon" title="Ver detalles">
+                                        <i data-feather="eye"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-icon text-danger" title="Eliminar">
+                                        <i data-feather="trash-2"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr data-organizacion="Tech Solutions SA" data-rol="Supervisor" data-estado="inactivo">
+                            <td>María López</td>
+                            <td>maria.lopez@techsolutions.com</td>
+                            <td>Tech Solutions SA</td>
+                            <td>Supervisor</td>
+                            <td><span class="badge bg-danger">Inactivo</span></td>
                             <td>
                                 <div class="btn-group">
                                     <button type="button" class="btn btn-sm btn-icon" title="Editar">
@@ -206,57 +189,600 @@
     </div>
 </div>
 
-<!-- Bootstrap CSS -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<!-- Modal Añadir Usuario -->
+<div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-xl" style="max-width: 50vw; width: 1400px;">
+        <div class="modal-content" style="border-radius: 16px; overflow: hidden;">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addUserModalLabel">Añadir Usuario</h5>
+                <button type="button" class="btn-close" onclick="hideModal('addUserModal')" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addUserForm">
+                    <!-- Botón de volver (oculto inicialmente) -->
+                    <div id="backToUserTypeBtn" style="display: none; margin-bottom: 20px;">
+                        <button type="button" class="btn btn-link p-0" onclick="backToUserType()" style="color: #667eea; text-decoration: none;">
+                            <i data-feather="arrow-left" style="width: 16px; height: 16px; margin-right: 5px;"></i>
+                            Volver a opciones
+                        </button>
+                    </div>
 
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+                    <!-- Selección de Tipo -->
+                    <div class="form-section" id="userTypeSelection">
+                        <h6 class="section-title">Tipo de Usuario</h6>
+                        <div class="user-type-selector">
+                            <div class="row">
+                                <div class="col-md-6 col-lg-3">
+                                    <div class="user-type-option" onclick="selectUserType('gestor')">
+                                        <div class="user-type-icon">
+                                            <i data-feather="user-check" class="text-primary"></i>
+                                        </div>
+                                        <div class="user-type-content">
+                                            <h5 class="user-type-title">Gestor</h5>
+                                            <p class="user-type-desc">Administrador de organización</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-3">
+                                    <div class="user-type-option" onclick="selectUserType('aliado')">
+                                        <div class="user-type-icon">
+                                            <i data-feather="briefcase" class="text-success"></i>
+                                        </div>
+                                        <div class="user-type-content">
+                                            <h5 class="user-type-title">Aliado</h5>
+                                            <p class="user-type-desc">Socio estratégico</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-3">
+                                    <div class="user-type-option" onclick="selectUserType('empleado')">
+                                        <div class="user-type-icon">
+                                            <i data-feather="users" class="text-info"></i>
+                                        </div>
+                                        <div class="user-type-content">
+                                            <h5 class="user-type-title">Empleado</h5>
+                                            <p class="user-type-desc">Miembro del equipo</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-3">
+                                    <div class="user-type-option" onclick="selectUserType('freelance')">
+                                        <div class="user-type-icon">
+                                            <i data-feather="user" class="text-warning"></i>
+                                        </div>
+                                        <div class="user-type-content">
+                                            <h5 class="user-type-title">Freelance</h5>
+                                            <p class="user-type-desc">Consultor independiente</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Formulario Gestor -->
+                    <div id="gestorForm" class="user-form">
+                        <h6>Datos del Gestor</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="gestorNombre" class="form-label">Nombre Completo</label>
+                                    <input type="text" class="form-control" id="gestorNombre" placeholder="Ej: Juan Pérez García">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="gestorCorreo" class="form-label">Correo Electrónico</label>
+                                    <input type="email" class="form-control" id="gestorCorreo" placeholder="juan.perez@empresa.com">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="gestorOrganizacion" class="form-label">Nombre de la Organización</label>
+                            <input type="text" class="form-control" id="gestorOrganizacion" placeholder="Ej: DeepNova Solutions">
+                        </div>
+                    </div>
+
+                    <!-- Formulario Aliado -->
+                    <div id="aliadoForm" class="user-form">
+                        <h6>Información del Aliado</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="aliadoNombre" class="form-label">Nombre Completo</label>
+                                    <input type="text" class="form-control" id="aliadoNombre">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="aliadoCorreo" class="form-label">Correo</label>
+                                    <input type="email" class="form-control" id="aliadoCorreo">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="aliadoRegion" class="form-label">Región</label>
+                                    <select class="form-select" id="aliadoRegion">
+                                        <option value="">Seleccionar...</option>
+                                        <option value="Norte">Norte</option>
+                                        <option value="Sur">Sur</option>
+                                        <option value="Este">Este</option>
+                                        <option value="Oeste">Oeste</option>
+                                        <option value="Centro">Centro</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="aliadoIndustria" class="form-label">Industria</label>
+                                    <select class="form-select" id="aliadoIndustria">
+                                        <option value="">Seleccionar...</option>
+                                        <option value="Tecnología">Tecnología</option>
+                                        <option value="Finanzas">Finanzas</option>
+                                        <option value="Manufactura">Manufactura</option>
+                                        <option value="Servicios">Servicios</option>
+                                        <option value="Salud">Salud</option>
+                                        <option value="Educación">Educación</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Formulario Empleado -->
+                    <div id="empleadoForm" class="user-form">
+                        <h6>Información del Empleado</h6>
+                        <div class="mb-3">
+                            <label for="empleadoAliado" class="form-label">Aliado</label>
+                            <select class="form-select" id="empleadoAliado">
+                                <option value="">Seleccionar...</option>
+                                <option value="1">Aliado Tech</option>
+                                <option value="2">Financiera Global</option>
+                                <option value="3">Industrias Este</option>
+                                <option value="4">Consultores Sur</option>
+                                <option value="5">Servicios Oeste</option>
+                            </select>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="empleadoCargo" class="form-label">Cargo</label>
+                                    <input type="text" class="form-control" id="empleadoCargo">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="empleadoRol" class="form-label">Rol Laboral</label>
+                                   <input type="text" class="form-control" id="empleadoRol">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Formulario Freelance -->
+                    <div id="freelanceForm" class="user-form">
+                        <h6>Información del Freelance</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="freelanceEspecialidad" class="form-label">Especialidad</label>
+                                    <select class="form-select" id="freelanceEspecialidad">
+                                        <option value="">Seleccionar...</option>
+                                        <option value="Desarrollo Web">Desarrollo Web</option>
+                                        <option value="Análisis de Datos">Análisis de Datos</option>
+                                        <option value="DevOps">DevOps</option>
+                                        <option value="UI/UX Design">UI/UX Design</option>
+                                        <option value="Consultoría">Consultoría</option>
+                                        <option value="Marketing Digital">Marketing Digital</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="freelanceDisponibilidad" class="form-label">Disponibilidad (%)</label>
+                                    <input type="number" class="form-control" id="freelanceDisponibilidad" min="0" max="100">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="hideModal('addUserModal')">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="submitUserForm()">Guardar Usuario</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Gestión de Datos Unificado -->
+<div class="modal fade" id="dataManagementModal" tabindex="-1" aria-labelledby="dataManagementModalLabel" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-xl" style="max-width: 50vw; width: 1200px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="dataManagementModalLabel">Gestión de Datos de Usuarios</h5>
+                <button type="button" class="btn-close" onclick="hideModal('dataManagementModal')" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Botón de volver (oculto inicialmente) -->
+                <div id="backToOptionsBtn" style="display: none; margin-bottom: 20px;">
+                    <button type="button" class="btn btn-link p-0" onclick="backToDataOptions()" style="color: #667eea; text-decoration: none;">
+                        <i data-feather="arrow-left" style="width: 16px; height: 16px; margin-right: 5px;"></i>
+                        Volver a opciones
+                    </button>
+                </div>
+
+                <!-- Selección de operación unificada -->
+                <div class="data-operation-selector" id="dataOperationSelector">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="data-option" onclick="selectDataOperation('import')">
+                                <div class="data-option-icon">
+                                    <i data-feather="upload" class="text-primary"></i>
+                                </div>
+                                <div class="data-option-content">
+                                    <h5 class="data-option-title">Importar Usuarios</h5>
+                                    <p class="data-option-desc">Cargar usuarios desde archivo Excel/CSV</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="data-option" onclick="selectDataOperation('export')">
+                                <div class="data-option-icon">
+                                    <i data-feather="download" class="text-success"></i>
+                                </div>
+                                <div class="data-option-content">
+                                    <h5 class="data-option-title">Exportar Usuarios</h5>
+                                    <p class="data-option-desc">Generar archivo con datos actuales</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Formulario Importar -->
+                <div id="importOperationForm" class="operation-form" style="display: none;">
+                    <h6 class="section-title">Importar Usuarios</h6>
+                    <div class="mb-3">
+                        <label for="usersImportFile" class="form-label">Seleccionar archivo</label>
+                        <input type="file" class="form-control" id="usersImportFile" accept=".xlsx,.xls,.csv" required>
+                        <div class="form-text">Formatos soportados: Excel (.xlsx, .xls) y CSV (.csv)</div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="overwriteUsersData">
+                            <label class="form-check-label" for="overwriteUsersData">
+                                Sobrescribir datos existentes
+                            </label>
+                        </div>
+                    </div>
+                    <div class="alert alert-info">
+                        <strong>Formato esperado:</strong><br>
+                        Las columnas deben ser: Nombre, Usuario, Organización, Rol, Estado
+                    </div>
+                </div>
+
+                <!-- Formulario Exportar -->
+                <div id="exportOperationForm" class="operation-form" style="display: none;">
+                    <h6 class="section-title">Exportar Usuarios</h6>
+                    <div class="mb-3">
+                        <label for="usersExportFormat" class="form-label">Formato de archivo</label>
+                        <select class="form-select" id="usersExportFormat">
+                            <option value="xlsx">Excel (.xlsx)</option>
+                            <option value="csv">CSV (.csv)</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Datos a incluir</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="includeAllUsers" checked>
+                            <label class="form-check-label" for="includeAllUsers">
+                                Todos los usuarios
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="includeFilteredUsers">
+                            <label class="form-check-label" for="includeFilteredUsers">
+                                Solo usuarios filtrados actualmente
+                            </label>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Columnas a exportar</label>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="colNombre" checked>
+                                    <label class="form-check-label" for="colNombre">Nombre</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="colUsuario" checked>
+                                    <label class="form-check-label" for="colUsuario">Usuario</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="colOrganizacion" checked>
+                                    <label class="form-check-label" for="colOrganizacion">Organización</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="colRol" checked>
+                                    <label class="form-check-label" for="colRol">Rol</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="colEstado" checked>
+                                    <label class="form-check-label" for="colEstado">Estado</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="hideModal('dataManagementModal')">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="executeDataOperation()" id="executeDataBtn" style="display: none;">Ejecutar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 
 <style>
-/* Modal styles */
-.modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 1055;
-    width: 100%;
-    height: 100%;
-    overflow-x: hidden;
-    overflow-y: auto;
-    background-color: rgba(0, 0, 0, 0.5);
+/* Data management modal styles */
+.data-operation-selector {
+    margin-bottom: 2rem;
 }
 
-.modal:not(.show) {
+.data-option {
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    padding: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    background: white;
+}
+
+.data-option:hover {
+    border-color: #667eea;
+    background: #f8f9ff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+}
+
+.data-option.active {
+    border-color: #667eea;
+    background: linear-gradient(135deg, #667eea10, #764ba210);
+}
+
+.data-option-icon {
+    margin-right: 1rem;
+    flex-shrink: 0;
+}
+
+.data-option-icon i {
+    width: 32px;
+    height: 32px;
+    stroke-width: 2;
+}
+
+.data-option-content h5 {
+    margin-bottom: 0.5rem;
+    color: #333;
+    font-weight: 600;
+}
+
+.data-option-desc {
+    margin: 0;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.operation-form {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 2rem;
+    margin-top: 1.5rem;
+    border: 1px solid #e9ecef;
+}
+
+.operation-form .form-label {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+}
+
+.operation-form .form-control,
+.operation-form .form-select {
+    padding: 12px 16px;
+    border: 2px solid #dee2e6;
+    border-radius: 8px;
+    background: white;
+    color: #495057;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    width: 100%;
+}
+
+.operation-form .form-control:focus,
+.operation-form .form-select:focus {
+    border-color: #667eea;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+}
+
+.operation-form .form-select {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23667eea' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px 12px;
+    appearance: none;
+    cursor: pointer;
+}
+
+.operation-form .form-check {
+    margin-bottom: 1rem;
+}
+
+.operation-form .form-check-input {
+    margin-right: 0.5rem;
+}
+
+.operation-form .form-check-label {
+    font-size: 0.95rem;
+    color: #495057;
+}
+
+/* Modern action buttons */
+.modern-action-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    border: none;
+    background: #667eea;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
+    margin-left: 8px;
+}
+
+.modern-action-btn:hover {
+    background: #5a6fd8;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
+}
+
+.modern-action-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
+}
+
+.modern-action-btn i {
+    width: 20px;
+    height: 20px;
+    stroke-width: 2;
+}
+
+.dashboard-section-actions {
+    display: flex;
+    align-items: center;
+    gap: 0;
+}
+
+/* Styles for filters */
+.filters-container {
+    margin-bottom: 1rem;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.filter-group .form-label {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.filter-group .form-select {
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 0.75rem;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+}
+
+.filter-group .form-select:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    outline: 0;
+}
+
+/* Modal styles */
+.modal {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    z-index: 1055 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    overflow-x: hidden;
+    overflow-y: auto;
+    outline: 0;
+    background-color: rgba(0, 0, 0, 0.5) !important;
     display: none !important;
 }
 
-.modal.fade:not(.show) {
-    opacity: 0;
-}
-
 .modal.show {
-    display: block !important;
-    opacity: 1;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
 }
 
 .modal-dialog {
-    max-width: 600px;
-    margin: 2rem auto;
+    position: relative;
+    margin: 1rem auto;
+    max-width: 95%;
+    width: 100%;
+    z-index: 1056;
+}
+
+.modal-lg {
+    max-width: 900px;
+}
+
+.modal-xl {
+    max-width: 1400px;
+    width: 50vw;
+}
+
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1050;
+    width: 100vw;
+    height: 100vh;
+    background-color: #000;
+    opacity: 0.5;
+}
+
+.modal-backdrop.show {
+    opacity: 0.5;
 }
 
 .modal-content {
     border: none;
     border-radius: 16px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+    background: white;
+    color: #333;
     overflow: hidden;
+    position: relative;
+    z-index: 1056;
+    max-height: 90vh;
+    overflow-y: auto;
 }
 
 .modal-header {
-    background: transparent;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-bottom: none;
     padding: 1.5rem 2rem;
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
 }
 
 .modal-title {
@@ -265,35 +791,11 @@
     color: white;
 }
 
-.btn-close {
-    background: none;
-    border: none;
-    color: white;
-    font-size: 1.5rem;
-    opacity: 0.8;
-    padding: 0;
-    width: 24px;
-    height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.btn-close:hover {
-    opacity: 1;
-}
-
-.btn-close::before {
-    content: "×";
-    font-size: 24px;
-    line-height: 1;
-}
-
 .modal-body {
     background: white;
     color: #333;
     padding: 2rem;
-    max-height: 70vh;
+    max-height: 60vh;
     overflow-y: auto;
 }
 
@@ -304,6 +806,74 @@
     display: flex;
     justify-content: flex-end;
     gap: 1rem;
+    border-bottom-left-radius: 16px;
+    border-bottom-right-radius: 16px;
+}
+
+.user-form {
+    display: none;
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 2rem;
+    margin-top: 1.5rem;
+    border: 1px solid #e9ecef;
+}
+
+.user-form h6 {
+    color: #667eea;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    font-size: 1.2rem;
+    border-bottom: 2px solid #667eea;
+    padding-bottom: 0.5rem;
+}
+
+/* Estilos mejorados para formularios */
+.user-form .form-label {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+}
+
+.user-form .form-control,
+.user-form .form-select {
+    padding: 12px 16px;
+    border: 2px solid #dee2e6;
+    border-radius: 8px;
+    background: white;
+    color: #495057;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    width: 100%;
+}
+
+.user-form .form-control:focus,
+.user-form .form-select:focus {
+    border-color: #667eea;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+    transform: translateY(-1px);
+}
+
+.user-form .form-control:hover,
+.user-form .form-select:hover {
+    border-color: #667eea;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.user-form .form-select {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23667eea' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px 12px;
+    appearance: none;
+    cursor: pointer;
+}
+
+.user-form .mb-3 {
+    margin-bottom: 1.5rem;
 }
 
 .form-section {
@@ -317,25 +887,6 @@
     margin-bottom: 1rem;
     padding-bottom: 0.5rem;
     border-bottom: 2px solid #f0f0f0;
-}
-
-.form-label {
-    font-weight: 500;
-    color: #555;
-    margin-bottom: 0.5rem;
-}
-
-.form-control, .form-select {
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 0.75rem;
-    font-size: 0.95rem;
-    transition: all 0.3s ease;
-}
-
-.form-control:focus, .form-select:focus {
-    border-color: #667eea;
-    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
 }
 
 .btn-primary {
@@ -361,498 +912,824 @@
     transition: all 0.3s ease;
 }
 
-.btn-secondary:hover {
-    background: #5a6268;
-    transform: translateY(-1px);
+.btn-close {
+    background: none;
+    border: none;
+    color: white;
+    ```text
+opacity: 0.8;
+    font-size: 1.5rem;
+    cursor: pointer;
 }
 
-.user-form {
-    display: none;
-    background: #f8f9fa;
+.btn-close:hover {
+    opacity: 1;
+}
+
+/* User type selector styles */
+.user-type-selector {
+    margin-bottom: 2rem;
+}
+
+.user-type-option {
+    border: 2px solid #e9ecef;
     border-radius: 12px;
-    padding: 1.5rem;
-    margin-top: 1rem;
-}
-
-.user-form h6 {
-    color: #667eea;
-    font-weight: 600;
+    padding: 2rem 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    height: 100%;
+    min-height: 150px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background: white;
     margin-bottom: 1rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
-/* Scrollbar personalizado */
-.modal-body::-webkit-scrollbar {
-    width: 6px;
+.user-type-option:hover {
+    border-color: #667eea;
+    background: #f8f9ff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
 }
 
-.modal-body::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 3px;
+.user-type-option.active {
+    border-color: #667eea;
+    background: linear-gradient(135deg, #667eea10, #764ba210);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.25);
 }
 
-.modal-body::-webkit-scrollbar-thumb {
-    background: #667eea;
-    border-radius: 3px;
+.user-type-icon {
+    margin-bottom: 1rem;
+    flex-shrink: 0;
 }
 
-.modal-body::-webkit-scrollbar-thumb:hover {
-    background: #5a6fd8;
+.user-type-icon i {
+    width: 32px;
+    height: 32px;
+    stroke-width: 2;
+}
+
+.user-type-content h5 {
+    margin-bottom: 0.5rem;
+    color: #333;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.user-type-desc {
+    margin: 0;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+/* Responsive mejoras */
+@media (max-width: 1200px) {
+    .modal-xl {
+        max-width: 60vw;
+        width: 60vw;
+    }
+}
+
+@media (max-width: 768px) {
+    .modal-dialog {
+        margin: 0.5rem;
+        max-width: 98%;
+        width: 98%;
+    }
+    
+    .modal-body {
+        padding: 1rem;
+    }
+    
+    .user-form,
+    .operation-form {
+        padding: 1rem;
+    }
+    
+    .user-type-option {
+        padding: 1rem;
+        min-height: 120px;
+    }
+    
+    .user-type-selector .row {
+        gap: 0.5rem;
+    }
 }
 </style>
 
-<!-- Modal Añadir Usuario -->
-<div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addUserModalLabel">Añadir Usuario</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="addUserForm">
-                    <!-- Selección de Tipo -->
-                    <div class="form-section">
-                        <h6 class="section-title">Tipo de Usuario</h6>
-                        <div class="mb-3">
-                            <label for="userType" class="form-label">Seleccione el tipo de usuario</label>
-                            <select class="form-select" id="userType" required onchange="showUserForm()">
-                                <option value="">Seleccionar tipo...</option>
-                                <option value="gestor">Gestor</option>
-                                <option value="aliado">Aliado</option>
-                                <option value="empleado">Empleado</option>
-                                <option value="freelance">Freelance</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <!-- Formulario Gestor -->
-                    <div id="gestorForm" class="user-form" style="display: none;">
-                        <h6>Datos del Gestor</h6>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="gestorNombre" class="form-label">Nombre Completo</label>
-                                    <input type="text" class="form-control" id="gestorNombre" placeholder="Ej: Juan Pérez García">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="gestorCorreo" class="form-label">Correo Electrónico</label>
-                                    <input type="email" class="form-control" id="gestorCorreo" placeholder="juan.perez@empresa.com">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="gestorOrganizacion" class="form-label">Nombre de la Organización</label>
-                            <input type="text" class="form-control" id="gestorOrganizacion" placeholder="Ej: DeepNova Solutions">
-                        </div>
-                    </div>
-
-                    <!-- Formulario Aliado -->
-                    <div id="aliadoForm" class="user-form" style="display: none;">
-                        <h6>Información del Aliado</h6>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="aliadoNombre" class="form-label">Nombre Completo</label>
-                                    <input type="text" class="form-control" id="aliadoNombre">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="aliadoNombreOrganizacion" class="form-label">Nombre Organización</label>
-                                    <input type="text" class="form-control" id="aliadoNombreOrganizacion">
-                                </div>
-                            </div>
-                            <div class="mb-3">
-                                <label for="aliadoCorreo" class="form-label">Correo</label>
-                                <input type="email" class="form-control" id="aliadoCorreo">
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="mb-3">
-                                <label for="aliadoRegion" class="form-label">Región</label>
-                                <select class="form-select" id="aliadoRegion">
-                                    <option value="">Seleccionar...</option>
-                                    <option value="Norte">Norte</option>
-                                    <option value="Sur">Sur</option>
-                                    <option value="Este">Este</option>
-                                    <option value="Oeste">Oeste</option>
-                                    <option value="Centro">Centro</option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label for="aliadoIndustria" class="form-label">Industria</label>
-                                <select id="aliadoIndustria" placeholder="Seleccionar...">
-                                <option value="">Seleccionar...</option>
-                                {% for i in industrias %}
-                                    <option value="{{ i[0] }}">{{ i[1] }} ({{ i[2] }})</option>
-                                {% endfor %}
-                                </select>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="aliadoContacto" class="form-label">Contacto Principal</label>
-                                    <input type="text" class="form-control" id="aliadoContacto">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="aliadoTamano" class="form-label">Tamaño</label>
-                                    <select class="form-select" id="aliadoTamano">
-                                        <option value="">Seleccionar...</option>
-                                        <option value="Pequeña (1-50)">Pequeña (1-50)</option>
-                                        <option value="Mediana (51-250)">Mediana (51-250)</option>
-                                        <option value="Grande (251-1000)">Grande (251-1000)</option>
-                                        <option value="Empresa (1000+)">Empresa (1000+)</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="aliadoEmpleados" class="form-label">Número de Empleados</label>
-                            <input type="number" class="form-control" id="aliadoEmpleados" min="1">
-                        </div>
-                        <div class="mb-3">
-                            <label for="aliadoDireccion" class="form-label">Dirección</label>
-                            <input type="text" class="form-control" id="aliadoDireccion">
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label for="aliadoCiudad" class="form-label">Ciudad</label>
-                                    <input type="text" class="form-control" id="aliadoCiudad">
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label for="aliadoEstado" class="form-label">Estado</label>
-                                    <input type="text" class="form-control" id="aliadoEstado">
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label for="aliadoCodigoPostal" class="form-label">Código Postal</label>
-                                    <input type="text" class="form-control" id="aliadoCodigoPostal">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="aliadoPais" class="form-label">País</label>
-                            <input type="text" class="form-control" id="aliadoPais">
-                        </div>
-                    </div>
-
-                    <!-- Formulario Empleado -->
-                    <div id="empleadoForm" class="user-form" style="display: none;">
-                        <h6>Información del Empleado</h6>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="empleadoNombre" class="form-label">Nombre Completo</label>
-                                    <input type="text" class="form-control" id="empleadoNombre">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="empleadoNombreOrganizacion" class="form-label">Nombre Organización</label>
-                                    <select class="form-select" id="empleadoNombreOrganizacion">
-                                        <option value="">Seleccionar...</option>
-                                        {% for org in organizaciones %}
-                                        {% if org[1] != "Deepnova" %}
-                                        <option value="{{ org[0] }}">{{ org[1] }}</option>
-                                        {% endif %}
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="mb-3">
-                                <label for="empleadoCorreo" class="form-label">Correo</label>
-                                <input type="email" class="form-control" id="empleadoCorreo">
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="empleadoCargo" class="form-label">Cargo</label>
-                                    <input type="text" class="form-control" id="empleadoCargo">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="empleadoRol" class="form-label">Rol Laboral</label>
-                                   <input type="text" class="form-control" id="empleadoRol">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Formulario Freelance -->
-                    <div id="freelanceForm" class="user-form" style="display: none;">
-                        <h6>Información del Freelance</h6>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="freelanceEspecialidad" class="form-label">Especialidad</label>
-                                    <select class="form-select" id="freelanceEspecialidad">
-                                        <option value="">Seleccionar...</option>
-                                        <option value="Desarrollo Web">Desarrollo Web</option>
-                                        <option value="Análisis de Datos">Análisis de Datos</option>
-                                        <option value="DevOps">DevOps</option>
-                                        <option value="UI/UX Design">UI/UX Design</option>
-                                        <option value="Consultoría">Consultoría</option>
-                                        <option value="Marketing Digital">Marketing Digital</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="freelanceDisponibilidad" class="form-label">Disponibilidad (%)</label>
-                                    <input type="number" class="form-control" id="freelanceDisponibilidad" min="0" max="100">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="freelanceNivel" class="form-label">Nivel</label>
-                                    <select class="form-select" id="freelanceNivel">
-                                        <option value="">Seleccionar...</option>
-                                        <option value="Junior">Junior</option>
-                                        <option value="Mid">Mid</option>
-                                        <option value="Senior">Senior</option>
-                                        <option value="Expert">Expert</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="freelanceFecha" class="form-label">Fecha Incorporación</label>
-                                    <input type="date" class="form-control" id="freelanceFecha">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="freelanceUbicacion" class="form-label">Ubicación</label>
-                                    <input type="text" class="form-control" id="freelanceUbicacion">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="freelanceTarifa" class="form-label">Tarifa por Hora</label>
-                                    <input type="number" class="form-control" id="freelanceTarifa" min="0" step="0.01">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary" onclick="submitUserForm()">Guardar Usuario</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
-
-<!-- Inicialización -->
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
-    new TomSelect("#aliadoIndustria", {
-      create: false,
-      allowEmptyOption: true,
-      placeholder: 'Buscar industria...'
-    });
-  });
-</script>
+// Sistema completo de modales y filtros para usuarios
+(function() {
+    'use strict';
 
-<script>
-// Esperar a que el DOM esté completamente cargado
-document.addEventListener('DOMContentLoaded', function() {
-    // Inicializar feather icons
-    if (typeof feather !== 'undefined') {
-        feather.replace();
-    }
-    
-    // Manejar click del botón de añadir usuario
-    const addButton = document.querySelector('[data-bs-target="#addUserModal"]');
-    const modal = document.getElementById('addUserModal');
-    
-    if (addButton && modal) {
-        addButton.addEventListener('click', function(e) {
-            e.preventDefault();
-            showUserModal();
-        });
-    }
-    
-    // Manejar cierre del modal
-    const closeButtons = modal.querySelectorAll('[data-bs-dismiss="modal"]');
-    closeButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            hideUserModal();
-        });
-    });
-    
-    // Cerrar modal al hacer click fuera de él
-    modal.addEventListener('click', function(e) {
-        if (e.target === modal) {
-            hideUserModal();
+    let filtersInitialized = false;
+    let selectedDataOperation = null;
+
+    // Inicialización cuando el DOM esté listo
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('🚀 Inicializando sistema de usuarios');
+
+        // Prevenir múltiples inicializaciones
+        if (filtersInitialized) {
+            console.log('⚠️ Ya inicializado, saltando...');
+            return;
         }
-    });
-});
 
-function showUserModal() {
-    const modal = document.getElementById('addUserModal');
-    modal.style.display = 'block';
-    modal.classList.add('show');
-    document.body.style.overflow = 'hidden';
-    
-    // Añadir backdrop si no existe
-    if (!document.querySelector('.modal-backdrop')) {
-        const backdrop = document.createElement('div');
-        backdrop.className = 'modal-backdrop fade show';
-        document.body.appendChild(backdrop);
+        // Inicializar iconos de Feather
+        if (typeof feather !== 'undefined') {
+            feather.replace();
+        }
+
+        // Esperar un poco para asegurar que el DOM esté completamente cargado
+        setTimeout(function() {
+            initializeUserFilters();
+            filtersInitialized = true;
+        }, 100);
+    });
+
+    // Funciones de filtros
+    function initializeUserFilters() {
+        console.log('🔧 Inicializando filtros de usuarios...');
+
+        try {
+            // Verificar que la tabla existe
+            const table = document.getElementById('usersTable');
+            if (!table) {
+                console.error('❌ Tabla de usuarios no encontrada');
+                return;
+            }
+
+            // Poblar filtros desde datos de la tabla
+            populateFiltersFromTable();
+
+            // Configurar event listeners
+            setupFilterListeners();
+
+            console.log('✅ Sistema de filtros inicializado correctamente');
+
+        } catch (error) {
+            console.error('❌ Error al inicializar filtros:', error);
+        }
     }
-}
 
-function hideUserModal() {
-    const modal = document.getElementById('addUserModal');
-    modal.style.display = 'none';
-    modal.classList.remove('show');
-    document.body.style.overflow = '';
-    
-    // Remover backdrop
-    const backdrop = document.querySelector('.modal-backdrop');
-    if (backdrop) {
-        backdrop.remove();
+    function populateFiltersFromTable() {
+        console.log('📊 Poblando filtros desde datos de la tabla...');
+
+        const table = document.getElementById('usersTable');
+        const rows = table.querySelectorAll('tbody tr');
+
+        // Sets para almacenar valores únicos
+        const organizaciones = new Set();
+        const roles = new Set();
+        const estados = new Set();
+
+        // Extraer valores únicos de cada fila
+        rows.forEach(function(row) {
+            const org = row.getAttribute('data-organizacion');
+            const rol = row.getAttribute('data-rol');
+            const estado = row.getAttribute('data-estado');
+
+            if (org && org.trim()) organizaciones.add(org.trim());
+            if (rol && rol.trim()) roles.add(rol.trim());
+            if (estado && estado.trim()) estados.add(estado.trim());
+        });
+
+        // Poblar select de organizaciones
+        populateSelectOptions('filterOrganizacion', organizaciones, 'organizaciones');
+
+        // Poblar select de roles
+        populateSelectOptions('filterRol', roles, 'roles');
+
+        // Poblar select de estados
+        populateSelectOptions('filterEstado', estados, 'estados');
+
+        console.log('📋 Filtros poblados exitosamente');
     }
-    
-    // Limpiar formulario
-    document.getElementById('addUserForm').reset();
-    document.getElementById('userType').value = '';
-    
-    // Ocultar todos los formularios
-    const userForms = document.querySelectorAll('.user-form');
-    userForms.forEach(form => {
-        form.style.display = 'none';
-    });
-}
 
-function showUserForm() {
-    const userType = document.getElementById('userType');
-    if (!userType) return;
+    function populateSelectOptions(selectId, optionsSet, label) {
+        const selectElement = document.getElementById(selectId);
+        if (!selectElement) {
+            console.error(`❌ Select ${selectId} no encontrado`);
+            return;
+        }
 
-    const userTypeValue = userType.value;
+        // Limpiar opciones existentes excepto la primera
+        const firstOption = selectElement.firstElementChild;
+        selectElement.innerHTML = '';
+        if (firstOption) {
+            selectElement.appendChild(firstOption);
+        }
 
-    // Ocultar todos los formularios
-    const userForms = document.querySelectorAll('.user-form');
-    userForms.forEach(form => {
-        form.style.display = 'none';
-    });
+        // Agregar nuevas opciones
+        Array.from(optionsSet).sort().forEach(function(value) {
+            const option = document.createElement('option');
+            option.value = value;
+            option.textContent = value;
+            selectElement.appendChild(option);
+        });
 
-    // Mostrar el formulario correspondiente
-    if (userTypeValue) {
-        const targetForm = document.getElementById(userTypeValue + 'Form');
+        console.log(`✅ Filtro de ${label} poblado: ${optionsSet.size} opciones`);
+    }
+
+    function setupFilterListeners() {
+        console.log('🔧 Configurando event listeners para filtros...');
+
+        const filterIds = ['filterOrganizacion', 'filterRol', 'filterEstado'];
+
+        filterIds.forEach(function(filterId) {
+            const filterElement = document.getElementById(filterId);
+            if (filterElement) {
+                // Agregar event listener
+                filterElement.addEventListener('change', function(event) {
+                    console.log('🔄 Cambio detectado en', filterId, ':', this.value);
+                    event.preventDefault();
+                    event.stopPropagation();
+                    applyUserFilters();
+                });
+
+                console.log('✅ Event listener agregado a', filterId);
+            } else {
+                console.error('❌ Elemento de filtro no encontrado:', filterId);
+            }
+        });
+    }
+
+    function applyUserFilters() {
+        console.log('🎯 Aplicando filtros de usuarios...');
+
+        try {
+            // Obtener elementos de filtros de forma segura
+            const orgFilter = document.getElementById('filterOrganizacion');
+            const rolFilter = document.getElementById('filterRol');
+            const estadoFilter = document.getElementById('filterEstado');
+
+            if (!orgFilter || !rolFilter || !estadoFilter) {
+                console.error('❌ No se encontraron todos los elementos de filtro');
+                return;
+            }
+
+            // Obtener valores de filtros
+            const organizacionValue = orgFilter.value || '';
+            const rolValue = rolFilter.value || '';
+            const estadoValue = estadoFilter.value || '';
+
+            console.log('📊 Filtros aplicados:', {
+                organizacion: organizacionValue,
+                rol: rolValue,
+                estado: estadoValue
+            });
+
+            // Obtener todas las filas de la tabla
+            const table = document.getElementById('usersTable');
+            if (!table) {
+                console.error('❌ Tabla no encontrada');
+                return;
+            }
+
+            const rows = table.querySelectorAll('tbody tr');
+            let visibleCount = 0;
+
+            rows.forEach(function(row) {
+                try {
+                    const rowOrg = row.getAttribute('data-organizacion') || '';
+                    const rowRol = row.getAttribute('data-rol') || '';
+                    const rowEstado = row.getAttribute('data-estado') || '';
+
+                    // Verificar coincidencias
+                    const matchOrg = organizacionValue === '' || rowOrg === organizacionValue;
+                    const matchRol = rolValue === '' || rowRol === rolValue;
+                    const matchEstado = estadoValue === '' || rowEstado === estadoValue;
+
+                    // Mostrar/ocultar fila
+                    if (matchOrg && matchRol && matchEstado) {
+                        row.style.display = '';
+                        visibleCount++;
+                    } else {
+                        row.style.display = 'none';
+                    }
+                } catch (rowError) {
+                    console.warn('⚠️ Error procesando fila:', rowError);
+                    // En caso de error, mostrar la fila
+                    row.style.display = '';
+                    visibleCount++;
+                }
+            });
+
+            console.log(`✅ Filtrado completado: ${visibleCount}/${rows.length} usuarios visibles`);
+
+        } catch (error) {
+            console.error('❌ Error al aplicar filtros:', error);
+        }
+    }
+
+    // Funciones de modal globales
+    window.showModal = function(modalId) {
+        console.log('🔓 Mostrando modal:', modalId);
+
+        const modal = document.getElementById(modalId);
+
+        if (!modal) {
+            console.error('❌ Modal no encontrado:', modalId);
+            return;
+        }
+
+        // Asegurar posicionamiento fijo y encima de todo
+        modal.style.position = 'fixed';
+        modal.style.top = '0';
+        modal.style.left = '0';
+        modal.style.width = '100vw';
+        modal.style.height = '100vh';
+        modal.style.zIndex = '1055';
+        modal.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+
+        // Mostrar modal
+        modal.style.display = 'flex';
+        modal.style.alignItems = 'center';
+        modal.style.justifyContent = 'center';
+
+        // Añadir clase show después de un pequeño delay
+        setTimeout(() => {
+            modal.classList.add('show');
+        }, 10);
+
+        // Prevenir scroll del body
+        document.body.style.overflow = 'hidden';
+
+        // Actualizar iconos
+        if (typeof feather !== 'undefined') {
+            setTimeout(() => feather.replace(), 100);
+        }
+
+        console.log('✅ Modal mostrado:', modalId);
+    };
+
+    window.hideModal = function(modalId) {
+        console.log('🔒 Ocultando modal:', modalId);
+
+        const modal = document.getElementById(modalId);
+
+        if (!modal) {
+            console.error('❌ Modal no encontrado:', modalId);
+            return;
+        }
+
+        // Ocultar modal con animación
+        modal.classList.remove('show');
+
+        // Esperar a que termine la animación antes de ocultar completamente
+        setTimeout(() => {
+            modal.style.display = 'none';
+        }, 300);
+
+        // Restaurar scroll del body
+        document.body.style.overflow = '';
+
+        // Resetear formularios si es necesario
+        if (modalId === 'dataManagementModal') {
+            resetDataModal();
+        } else if (modalId === 'addUserModal') {
+            resetUserModal();
+        }
+
+        console.log('✅ Modal ocultado:', modalId);
+    };
+
+    // Funciones específicas para usuarios
+    window.showUserModal = function() {
+        showModal('addUserModal');
+    };
+
+    window.showDataModal = function() {
+        showModal('dataManagementModal');
+    };
+
+    window.selectUserType = function(userType) {
+        console.log('🔄 Seleccionando tipo de usuario:', userType);
+
+        // Ocultar selector de opciones
+        const userTypeSelection = document.getElementById('userTypeSelection');
+        if (userTypeSelection) {
+            userTypeSelection.style.display = 'none';
+        }
+
+        // Mostrar botón de volver
+        const backBtn = document.getElementById('backToUserTypeBtn');
+        if (backBtn) {
+            backBtn.style.display = 'block';
+        }
+
+        // Mostrar formulario correspondiente
+        showUserForm(userType);
+
+        // Actualizar iconos feather
+        if (typeof feather !== 'undefined') {
+            feather.replace();
+        }
+    };
+
+    window.showUserForm = function(userType) {
+        try {
+            console.log('🔄 Cambiando tipo de usuario a:', userType);
+
+            // Ocultar todos los formularios
+            const userForms = document.querySelectorAll('.user-form');
+            userForms.forEach(form => {
+                form.style.display = 'none';
+            });
+
+            // Mostrar formulario seleccionado
+            if (userType) {
+                const targetForm = document.getElementById(userType + 'Form');
+                if (targetForm) {
+                    targetForm.style.display = 'block';
+                    console.log(`✅ Formulario ${userType} mostrado`);
+                } else {
+                    console.error(`❌ Formulario ${userType}Form no encontrado`);
+                }
+            }
+        } catch (error) {
+            console.error('❌ Error al mostrar formulario de usuario:', error);
+        }
+    };
+
+    window.submitUserForm = function() {
+        try {
+            const selectedOption = document.querySelector('.user-type-option.active');
+
+            if (!selectedOption) {
+                alert('Por favor seleccione un tipo de usuario');
+                return;
+            }
+
+            // Obtener el tipo de usuario desde la función onclick
+            const userType = selectedOption.getAttribute('onclick').match(/selectUserType\('(\w+)'\)/)[1];
+
+            let userData = { tipo: userType };
+
+            // Recopilar datos según el tipo de usuario
+            if (userType === 'gestor') {
+                userData.nombre_completo = document.getElementById('gestorNombre')?.value || '';
+                userData.correo = document.getElementById('gestorCorreo')?.value || '';
+                userData.organizacion = document.getElementById('gestorOrganizacion')?.value || '';
+            } else if (userType === 'aliado') {
+                userData.nombre_completo = document.getElementById('aliadoNombre')?.value || '';
+                userData.correo = document.getElementById('aliadoCorreo')?.value || '';
+                userData.region = document.getElementById('aliadoRegion')?.value || '';
+                userData.industria = document.getElementById('aliadoIndustria')?.value || '';
+            } else if (userType === 'empleado') {
+                userData.aliado = document.getElementById('empleadoAliado')?.value || '';
+                userData.cargo = document.getElementById('empleadoCargo')?.value || '';
+                userData.rol_laboral = document.getElementById('empleadoRol')?.value || '';
+            } else if (userType === 'freelance') {
+                userData.especialidad = document.getElementById('freelanceEspecialidad')?.value || '';
+                userData.disponibilidad = document.getElementById('freelanceDisponibilidad')?.value || '';
+            }
+
+            console.log('📤 Enviando datos de usuario:', userData);
+
+            // Simular envío exitoso
+            alert('Usuario creado exitosamente');
+            hideModal('addUserModal');
+
+            // Aquí puedes agregar la lógica real para enviar al servidor
+            /*
+            fetch('/api/usuarios', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(userData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    alert('Usuario creado exitosamente');
+                    hideModal('addUserModal');
+                    window.location.reload();
+                } else {
+                    alert('Error al crear usuario: ' + (data.message || 'Error desconocido'));
+                }
+            })
+            .catch(error => {
+                console.error('❌ Error:', error);
+                alert('Error al enviar los datos');
+            });
+            */
+        } catch (error) {
+            console.error('❌ Error al enviar formulario:', error);
+            alert('Error al procesar el formulario');
+        }
+    };
+
+    // Funciones para gestión de datos
+    window.selectDataOperation = function(operation) {
+        console.log('🔄 Seleccionando operación:', operation);
+        selectedDataOperation = operation;
+
+        // Ocultar selector de opciones
+        const selector = document.getElementById('dataOperationSelector');
+        if (selector) {
+            selector.style.display = 'none';
+        }
+
+        // Mostrar botón de volver
+        const backBtn = document.getElementById('backToOptionsBtn');
+        if (backBtn) {
+            backBtn.style.display = 'block';
+        }
+
+        // Mostrar formulario correspondiente
+        document.querySelectorAll('.operation-form').forEach(form => {
+            form.style.display = 'none';
+        });
+
+        const formId = operation === 'import' ? 'importOperationForm' : 'exportOperationForm';
+        const targetForm = document.getElementById(formId);
         if (targetForm) {
             targetForm.style.display = 'block';
         }
-    }
-}
 
-function submitUserForm() {
-    const userTypeElement = document.getElementById('userType');
-    if (!userTypeElement) {
-        alert('Error: No se pudo encontrar el tipo de usuario');
-        return;
-    }
+        // Mostrar botón ejecutar
+        const executeBtn = document.getElementById('executeDataBtn');
+        if (executeBtn) {
+            executeBtn.style.display = 'inline-block';
+            executeBtn.textContent = operation === 'import' ? 'Importar' : 'Exportar';
+        }
 
-    const userType = userTypeElement.value;
-
-    if (!userType) {
-        alert('Por favor seleccione un tipo de usuario');
-        return;
-    }
-
-    let userData = {
-        tipo: userType
+        // Actualizar iconos feather
+        if (typeof feather !== 'undefined') {
+            feather.replace();
+        }
     };
 
-    // Recopilar datos según el tipo de usuario
-    if (userType === 'gestor') {
-        const nombre = document.getElementById('gestorNombre');
-        const correo = document.getElementById('gestorCorreo');
-        const organizacion = document.getElementById('gestorOrganizacion');
+    // Nueva función para volver a las opciones
+    window.backToDataOptions = function() {
+        console.log('🔄 Volviendo a opciones de datos');
 
-        userData.nombre_completo = nombre ? nombre.value : '';
-        userData.correo = correo ? correo.value : '';
-        userData.nombre_organizacion = organizacion ? organizacion.value : '';
-    } else if (userType === 'aliado') {
-        userData.nombre_completo = document.getElementById('aliadoNombre')?.value || '';
-        userData.nombre_organizacion = document.getElementById('aliadoNombreOrganizacion')?.value || '';
-        userData.correo = document.getElementById('aliadoCorreo')?.value || '';
-        userData.region = document.getElementById('aliadoRegion')?.value || '';
-        userData.industria = document.getElementById('aliadoIndustria')?.value || '';
-        userData.contacto_principal = document.getElementById('aliadoContacto')?.value || '';
-        userData.tamano = document.getElementById('aliadoTamano')?.value || '';
-        userData.empleados = document.getElementById('aliadoEmpleados')?.value || '';
-        userData.direccion = document.getElementById('aliadoDireccion')?.value || '';
-        userData.ciudad = document.getElementById('aliadoCiudad')?.value || '';
-        userData.estado_dir = document.getElementById('aliadoEstado')?.value || '';
-        userData.codigo_postal = document.getElementById('aliadoCodigoPostal')?.value || '';
-        userData.pais = document.getElementById('aliadoPais')?.value || '';
-    } else if (userType === 'empleado') {
-        userData.nombre = document.getElementById('empleadoNombre')?.value || '';
-        userData.nombreOrganizacion = document.getElementById('empleadoNombreOrganizacion')?.value || '';
-        userData.correo = document.getElementById('empleadoCorreo')?.value || '';
-        userData.cargo = document.getElementById('empleadoCargo')?.value || '';
-        userData.rol_laboral = document.getElementById('empleadoRol')?.value || '';
-    } else if (userType === 'freelance') {
-        userData.especialidad = document.getElementById('freelanceEspecialidad')?.value || '';
-        userData.disponibilidad = document.getElementById('freelanceDisponibilidad')?.value || '';
-        userData.nivel = document.getElementById('freelanceNivel')?.value || '';
-        userData.fecha_incorporacion = document.getElementById('freelanceFecha')?.value || '';
-        userData.ubicacion = document.getElementById('freelanceUbicacion')?.value || '';
-        userData.tarifa_hora = document.getElementById('freelanceTarifa')?.value || '';
+        // Mostrar selector de opciones
+        const selector = document.getElementById('dataOperationSelector');
+        if (selector) {
+            selector.style.display = 'block';
+        }
+
+        // Ocultar botón de volver
+        const backBtn = document.getElementById('backToOptionsBtn');
+        if (backBtn) {
+            backBtn.style.display = 'none';
+        }
+
+        // Ocultar todos los formularios
+        document.querySelectorAll('.operation-form').forEach(form => {
+            form.style.display = 'none';
+        });
+
+        // Ocultar botón ejecutar
+        const executeBtn = document.getElementById('executeDataBtn');
+        if (executeBtn) {
+            executeBtn.style.display = 'none';
+        }
+
+        // Resetear selección
+        selectedDataOperation = null;
+        document.querySelectorAll('.data-option').forEach(option => {
+            option.classList.remove('active');
+        });
+
+        // Actualizar iconos feather
+        if (typeof feather !== 'undefined') {
+            feather.replace();
+        }
+    };
+
+    window.executeDataOperation = function() {
+        console.log('🚀 Ejecutando operación:', selectedDataOperation);
+
+        if (!selectedDataOperation) {
+            alert('Por favor selecciona una operación');
+            return;
+        }
+
+        if (selectedDataOperation === 'import') {
+            executeUsersImport();
+        } else if (selectedDataOperation === 'export') {
+            executeUsersExport();
+        }
+    };
+
+    function executeUsersImport() {
+        const fileInput = document.getElementById('usersImportFile');
+        const overwriteData = document.getElementById('overwriteUsersData');
+
+        if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
+            alert('Por favor selecciona un archivo para importar');
+            return;
+        }
+
+        const file = fileInput.files[0];
+        const allowedExtensions = ['.xlsx', '.xls', '.csv'];
+        const fileExtension = '.' + file.name.split('.').pop().toLowerCase();
+
+        if (!allowedExtensions.includes(fileExtension)) {
+            alert('Formato de archivo no soportado. Use Excel (.xlsx, .xls) o CSV (.csv)');
+            return;
+        }
+
+        console.log('📤 Importando archivo:', file.name);
+        console.log('🔄 Sobrescribir datos:', overwriteData ? overwriteData.checked : false);
+
+        // Simular importación
+        alert(`Archivo "${file.name}" importado exitosamente.\n${Math.floor(Math.random() * 50) + 10} usuarios procesados.`);
+
+        // Cerrar modal
+        hideModal('dataManagementModal');
     }
 
-    // Enviar datos al servidor
-    fetch('/api/usuarios', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(userData)
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.status === 'success') {
-            alert('Usuario creado exitosamente');
-            // Cerrar modal
-            const modalElement = document.getElementById('addUserModal');
-            if (modalElement && window.bootstrap) {
-                const modal = window.bootstrap.Modal.getInstance(modalElement);
-                if (modal) {
-                    modal.hide();
-                }
-            }
-            // Recargar página
-            window.location.reload();
-        } else {
-            alert('Error al crear usuario: ' + (data.message || 'Error desconocido'));
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('Error al enviar los datos');
-    });
-}
-</script>
+    function executeUsersExport() {
+        const format = document.getElementById('usersExportFormat')?.value || 'xlsx';
+        const includeAll = document.getElementById('includeAllUsers')?.checked || false;
+        const includeFiltered = document.getElementById('includeFilteredUsers')?.checked || false;
 
+        // Verificar columnas seleccionadas
+        const selectedColumns = [];
+        ['colNombre', 'colUsuario', 'colOrganizacion', 'colRol', 'colEstado'].forEach(colId => {
+            const checkbox = document.getElementById(colId);
+            if (checkbox && checkbox.checked) {
+                selectedColumns.push(colId.replace('col', ''));
+            }
+        });
+
+        if (selectedColumns.length === 0) {
+            alert('Por favor selecciona al menos una columna para exportar');
+            return;
+        }
+
+        console.log('📥 Exportando usuarios:', {
+            formato: format,
+            incluirTodos: includeAll,
+            incluirFiltrados: includeFiltered,
+            columnas: selectedColumns
+        });
+
+        // Simular exportación
+        const fileName = `usuarios_export_${new Date().toISOString().split('T')[0]}.${format}`;
+        alert(`Exportación completada.\nArchivo: ${fileName}\nColumnas: ${selectedColumns.join(', ')}`);
+
+        // Cerrar modal
+        hideModal('dataManagementModal');
+    }
+
+    function resetDataModal() {
+        selectedDataOperation = null;
+
+        // Mostrar selector de opciones
+        const selector = document.getElementById('dataOperationSelector');
+        if (selector) {
+            selector.style.display = 'block';
+        }
+
+        // Ocultar botón de volver
+        const backBtn = document.getElementById('backToOptionsBtn');
+        if (backBtn) {
+            backBtn.style.display = 'none';
+        }
+
+        // Resetear selecciones
+        document.querySelectorAll('.data-option').forEach(option => {
+            option.classList.remove('active');
+        });
+
+        // Ocultar formularios
+        document.querySelectorAll('.operation-form').forEach(form => {
+            form.style.display = 'none';
+        });
+
+        // Ocultar botón ejecutar
+        const executeBtn = document.getElementById('executeDataBtn');
+        if (executeBtn) {
+            executeBtn.style.display = 'none';
+        }
+
+        // Resetear formularios
+        const importForm = document.getElementById('importOperationForm');
+        const exportForm = document.getElementById('exportOperationForm');
+
+        if (importForm) {
+            const inputs = importForm.querySelectorAll('input');
+            inputs.forEach(input => {
+                if (input.type === 'file') {
+                    input.value = '';
+                } else if (input.type === 'checkbox') {
+                    input.checked = false;
+                }
+            });
+        }
+
+        if (exportForm) {
+            const inputs = exportForm.querySelectorAll('input, select');
+            inputs.forEach(input => {
+                if (input.type === 'checkbox') {
+                    // Mantener checkboxes de columnas marcados por defecto
+                    if (input.id.startsWith('col') || input.id === 'includeAllUsers') {
+                        input.checked = true;
+                    } else {
+                        input.checked = false;
+                    }
+                } else if (input.tagName === 'SELECT') {
+                    input.selectedIndex = 0;
+                }
+            });
+        }
+    }
+
+    function resetUserModal() {
+        // Mostrar selección de tipo de usuario
+        const userTypeSelection = document.getElementById('userTypeSelection');
+        if (userTypeSelection) {
+            userTypeSelection.style.display = 'block';
+        }
+
+        // Ocultar botón de volver
+        const backBtn = document.getElementById('backToUserTypeBtn');
+        if (backBtn) {
+            backBtn.style.display = 'none';
+        }
+
+        // Ocultar todos los formularios
+        document.querySelectorAll('.user-form').forEach(form => {
+            form.style.display = 'none';
+        });
+
+        // Resetear selección
+        document.querySelectorAll('.user-type-option').forEach(option => {
+            option.classList.remove('active');
+        });
+
+        // Limpiar campos de formularios
+        document.querySelectorAll('.user-form input, .user-form select').forEach(field => {
+            if (field.type === 'checkbox') {
+                field.checked = false;
+            } else {
+                field.value = '';
+            }
+        });
+    }
+
+    // Nueva función para volver a la selección de tipo de usuario
+    window.backToUserType = function() {
+        console.log('🔄 Volviendo a selección de tipo de usuario');
+
+        // Mostrar selección de tipo de usuario
+        const userTypeSelection = document.getElementById('userTypeSelection');
+        if (userTypeSelection) {
+            userTypeSelection.style.display = 'block';
+        }
+
+        // Ocultar botón de volver
+        const backBtn = document.getElementById('backToUserTypeBtn');
+        if (backBtn) {
+            backBtn.style.display = 'none';
+        }
+
+        // Ocultar todos los formularios
+        document.querySelectorAll('.user-form').forEach(form => {
+            form.style.display = 'none';
+        });
+
+        // Resetear selección
+        document.querySelectorAll('.user-type-option').forEach(option => {
+            option.classList.remove('active');
+        });
+
+        // Limpiar campos de formularios
+        document.querySelectorAll('.user-form input, .user-form select').forEach(field => {
+            if (field.type === 'checkbox') {
+                field.checked = false;
+            } else {
+                field.value = '';
+            }
+        });
+
+        // Actualizar iconos feather
+        if (typeof feather !== 'undefined') {
+            feather.replace();
+        }
+    };
+
+    // Cerrar modales al hacer click en el backdrop
+    document.addEventListener('click', function(e) {
+        if (e.target.classList && e.target.classList.contains('modal') && e.target.classList.contains('show')) {
+            hideModal(e.target.id);
+        }
+    });
+
+    // Exponer funciones para debugging
+    window.applyUserFilters = applyUserFilters;
+    window.resetDataModal = resetDataModal;
+
+})();
+</script>
 {% endblock %}

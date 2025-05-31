@@ -52,6 +52,137 @@
     max-height: 90vh;
     overflow-y: auto;
 }
+
+/* Modern action buttons matching aliados.html */
+.dashboard-section-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.action-button {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    border-radius: 8px;
+    padding: 8px 12px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.action-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+/* Dropdown styles */
+.dropdown-toggle::after {
+    margin-left: 8px;
+    vertical-align: middle;
+}
+
+.dropdown-menu {
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    padding: 8px 0;
+    min-width: 160px;
+}
+
+.dropdown-item {
+    padding: 8px 16px;
+    font-size: 14px;
+    color: #374151;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+.dropdown-item:hover {
+    background-color: #f3f4f6;
+    color: #1f2937;
+}
+
+.dropdown-item i {
+    color: #6b7280;
+}
+
+/* Assignment option buttons */
+.assignment-option-btn {
+    height: auto !important;
+    min-height: 80px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    padding: 15px !important;
+    text-align: left !important;
+    border: 2px solid #667eea !important;
+    border-radius: 8px !important;
+    background: white !important;
+    color: #333 !important;
+    transition: all 0.3s ease !important;
+    width: 100% !important;
+}
+
+.assignment-option-btn:hover {
+    border-color: #5a67d8 !important;
+    background: #f7fafc !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+}
+
+.assignment-option-btn:hover i {
+    color: #5a67d8 !important;
+}
+
+/* Data management modal styles */
+.data-option {
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    padding: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    background: white;
+}
+
+.data-option:hover {
+    border-color: #667eea;
+    background: #f8f9ff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+}
+
+.data-option-icon {
+    margin-right: 1rem;
+    flex-shrink: 0;
+}
+
+.data-option-icon i {
+    width: 32px;
+    height: 32px;
+    stroke-width: 2;
+}
+
+.data-option-content h5 {
+    margin-bottom: 0.5rem;
+    color: #333;
+    font-weight: 600;
+}
+
+.data-option-desc {
+    margin: 0;
+    color: #666;
+    font-size: 0.9rem;
+}
 </style>
 {% endblock %}
 
@@ -59,16 +190,15 @@
 <div class="dashboard-container">
     <div class="dashboard-section-title">
         <h4>Asignaciones de Consultores</h4>
-        <div class="dashboard-section-actions">
-            <button type="button" class="dashboard-section-action" data-bs-toggle="modal" data-bs-target="#addAssignmentModal" title="Nueva Asignación">
+        <div class="action-buttons">
+            <button type="button" class="action-button" data-bs-toggle="modal" data-bs-target="#addAssignmentModal" title="Nueva Asignación">
                 <i data-feather="plus"></i>
             </button>
-            <button type="button" class="dashboard-section-action" data-bs-toggle="modal" data-bs-target="#importAssignmentModal" title="Importar">
-                <i data-feather="upload"></i>
-            </button>
-            <button type="button" class="dashboard-section-action" data-bs-toggle="modal" data-bs-target="#exportAssignmentModal" title="Exportar">
-                <i data-feather="download"></i>
-            </button>
+            <div class="dropdown">
+                <button type="button" class="action-button dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" title="Gestión de Datos" onclick="showDataManagementModal()">
+                    <i data-feather="database"></i>
+                </button>
+            </div>
         </div>
     </div>
     
@@ -77,43 +207,27 @@
         <form class="filter-form">
             <div class="filter-row">
                 <div class="filter-col">
-                    <label class="filter-label" for="consultor">Consultor</label>
-                    <select class="filter-control" id="consultor" name="consultor">
-                        <option value="">Todos</option>
-                        {% for consultor in consultores %}
-                        <option value="{{ consultor.id }}">{{ consultor.nombre }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="filter-col">
-                    <label class="filter-label" for="proyecto">Proyecto</label>
-                    <select class="filter-control" id="proyecto" name="proyecto">
-                        <option value="">Todos</option>
-                        {% for proyecto_id, proyecto in proyectos.items() %}
-                        <option value="{{ proyecto_id }}">{{ proyecto.nombre }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="filter-col">
-                    <label class="filter-label" for="especialidad">Especialidad</label>
-                    <select class="filter-control" id="especialidad" name="especialidad">
+                    <label class="filter-label" for="filterEspecialidad">Especialidad</label>
+                    <select class="filter-control" id="filterEspecialidad" name="especialidad">
                         <option value="">Todas</option>
-                        <option value="Tecnología">Tecnología</option>
-                        <option value="Finanzas">Finanzas</option>
-                        <option value="Manufactura">Manufactura</option>
-                        <option value="Marketing">Marketing</option>
-                        <option value="Operaciones">Operaciones</option>
-                        <option value="Estrategia">Estrategia</option>
                     </select>
                 </div>
                 <div class="filter-col">
-                    <label class="filter-label" for="disponibilidad">Disponibilidad Mínima</label>
-                    <input type="number" class="filter-control" id="disponibilidad" name="disponibilidad" placeholder="% disponible" min="0" max="100">
+                    <label class="filter-label" for="filterDisponibilidad">Disponibilidad Mínima</label>
+                    <select class="filter-control" id="filterDisponibilidad" name="disponibilidad">
+                        <option value="">Todas</option>
+                        <option value="75">75% o más</option>
+                        <option value="50">50% o más</option>
+                        <option value="25">25% o más</option>
+                        <option value="10">10% o más</option>
+                    </select>
                 </div>
-            </div>
-            <div class="filter-actions">
-                <button type="button" class="btn btn-secondary filter-reset">Limpiar</button>
-                <button type="button" class="btn btn-primary filter-apply">Aplicar</button>
+                <div class="filter-col">
+                    <label class="filter-label" for="filterCiudad">Ciudad</label>
+                    <select class="filter-control" id="filterCiudad" name="ciudad">
+                        <option value="">Todas</option>
+                    </select>
+                </div>
             </div>
         </form>
     </div>
@@ -133,16 +247,17 @@
                 <table class="table table-hover mb-0">
                     <thead>
                         <tr>
-                            <th>Consultor</th>
+                            <th>Nombre</th>
                             <th>Especialidad</th>
-                            <th>Proyectos Asignados</th>
                             <th>Disponibilidad</th>
-                            <th>Acciones</th>
+                            <th>Nivel Usuario vs Nivel Gestor</th>
+                            <th>Ciudad</th>
+                            <th>Tarifa/Hora</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for consultor in consultores %}
-                        <tr>
+                        <tr data-especialidad="{{ consultor.especialidad }}" data-disponibilidad="{{ consultor.disponibilidad }}" data-ciudad="{{ consultor.ciudad if consultor.ciudad else 'Ciudad de México' }}">
                             <td>
                                 <div class="d-flex align-items-center">
                                     <div style="width: 40px; height: 40px; background-color: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 10px; color: white; font-weight: bold;">
@@ -155,11 +270,6 @@
                                 </div>
                             </td>
                             <td>{{ consultor.especialidad }}</td>
-                            <td>
-                                {% for proyecto_id in consultor.proyectos_asignados %}
-                                    <span class="badge bg-secondary">{{ proyectos[proyecto_id].nombre }}</span>
-                                {% endfor %}
-                            </td>
                             <td>
                                 <div class="d-flex align-items-center">
                                     <div class="progress me-2" style="width: 100px; height: 10px;">
@@ -178,10 +288,13 @@
                                 </div>
                             </td>
                             <td>
-                                <button class="btn btn-sm btn-primary">
-                                    <i data-feather="plus" style="width: 14px; height: 14px; margin-right: 5px;"></i>
-                                    Asignar
-                                </button>
+                                <span class="badge {% if consultor.id % 2 == 0 %}bg-success{% else %}bg-info{% endif %}">
+                                    {% if consultor.id % 2 == 0 %}Gestor{% else %}Usuario{% endif %}
+                                </span>
+                            </td>
+                            <td>{{ consultor.ciudad if consultor.ciudad else 'Ciudad de México' }}</td>
+                            <td>
+                                <span class="fw-bold text-success">${{ "%0.0f"|format((consultor.id * 150 + 800) % 2000 + 500) }}/hora</span>
                             </td>
                         </tr>
                         {% endfor %}
@@ -334,35 +447,28 @@
                     <div id="assignmentTypeSelection">
                         <h6 style="color: #4a5568; font-weight: 600; margin-bottom: 20px;">Tipo de Asignación</h6>
                         <div class="d-grid gap-3">
-                            <button type="button" class="btn btn-outline-primary btn-lg" onclick="selectAssignmentType('comunidad')" style="padding: 15px; text-align: left; border: 2px solid #e2e8f0; border-radius: 8px;">
-                                <div class="d-flex align-items-center">
-                                    <i data-feather="users" style="width: 24px; height: 24px; margin-right: 15px;"></i>
-                                    <div>
-                                        <div style="font-weight: 600;">Asignar Comunidad</div>
-                                        <small class="text-muted">Asignar un grupo de consultores especializados</small>
+                            <button type="button" class="btn btn-outline-primary btn-lg assignment-option-btn" onclick="selectAssignmentType('comunidad')">
+                                <div class="d-flex align-items-center w-100">
+                                    <i data-feather="users" style="width: 24px; height: 24px; margin-right: 15px; color: #667eea; flex-shrink: 0;"></i>
+                                    <div class="flex-grow-1">
+                                        <div style="font-weight: 600; color: #333; margin-bottom: 4px;">Asignar Comunidad</div>
+                                        <small style="color: #666; line-height: 1.3;">Asignar un grupo de consultores especializados</small>
                                     </div>
                                 </div>
                             </button>
-                            <button type="button" class="btn btn-outline-success btn-lg" onclick="selectAssignmentType('freelance')" style="padding: 15px; text-align: left; border: 2px solid #e2e8f0; border-radius: 8px;">
-                                <div class="d-flex align-items-center">
-                                    <i data-feather="user" style="width: 24px; height: 24px; margin-right: 15px;"></i>
-                                    <div>
-                                        <div style="font-weight: 600;">Asignar Freelance</div>
-                                        <small class="text-muted">Asignar un consultor independiente específico</small>
+                            <button type="button" class="btn btn-outline-primary btn-lg assignment-option-btn" onclick="selectAssignmentType('freelance')">
+                                <div class="d-flex align-items-center w-100">
+                                    <i data-feather="user" style="width: 24px; height: 24px; margin-right: 15px; color: #667eea; flex-shrink: 0;"></i>
+                                    <div class="flex-grow-1">
+                                        <div style="font-weight: 600; color: #333; margin-bottom: 4px;">Asignar Freelance</div>
+                                        <small style="color: #666; line-height: 1.3;">Asignar un consultor independiente específico</small>
                                     </div>
                                 </div>
                             </button>
                         </div>
                     </div>
                     
-                    <div id="comunidadMessage" style="display: none;">
-                        <div class="text-center" style="padding: 40px 20px;">
-                            <i data-feather="tool" style="width: 48px; height: 48px; color: #f59e0b; margin-bottom: 20px;"></i>
-                            <h5 style="color: #4a5568; margin-bottom: 15px;">Funcionalidad en Construcción</h5>
-                            <p class="text-muted">La asignación de comunidades está actualmente en desarrollo. Esta funcionalidad estará disponible próximamente.</p>
-                            <button type="button" class="btn btn-secondary mt-3" onclick="backToTypeSelection()">Volver</button>
-                        </div>
-                    </div>
+                    
                     
                     <div id="freelanceForm" style="display: none;">
                         <button type="button" class="btn btn-link p-0 mb-3" onclick="backToTypeSelection()" style="color: #667eea; text-decoration: none;">
@@ -374,21 +480,21 @@
                         
                         <form id="assignmentForm">
                             <div class="mb-4">
-                                <label for="aliadoSelect" class="form-label" style="color: #2d3748; font-weight: 500; margin-bottom: 8px; display: block; font-size: 14px;">Aliado</label>
-                                <select class="form-select" id="aliadoSelect" required style="border: 1px solid #d1d5db; border-radius: 8px; padding: 12px 14px; font-size: 14px; width: 100%; background-color: #f9fafb; appearance: none; background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"%23666\" stroke-width=\"2\"><polyline points=\"6,9 12,15 18,9\"></polyline></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px;">
-                                    <option value="">Seleccionar aliado...</option>
-                                    <option value="1">TechCorp Solutions</option>
-                                    <option value="2">Innovation Labs</option>
-                                    <option value="3">DataFlow Systems</option>
-                                    <option value="4">CloudTech Partners</option>
-                                    <option value="5">Digital Innovations</option>
+                                <label for="casoUsoSelect" class="form-label" style="color: #2d3748; font-weight: 500; margin-bottom: 8px; display: block; font-size: 14px;">Caso de Uso</label>
+                                <select class="form-select" id="casoUsoSelect" required style="border: 1px solid #d1d5db; border-radius: 8px; padding: 12px 14px; font-size: 14px; width: 100%; background-color: #f9fafb; appearance: none; background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"%23666\" stroke-width=\"2\"><polyline points=\"6,9 12,15 18,9\"></polyline></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px;">
+                                    <option value="">Seleccionar caso de uso...</option>
+                                    {% for proyecto_id, proyecto in proyectos.items() %}
+                                        {% if proyecto.etapa not in ['testing', 'cierre', 'evaluacion', 'finalizado'] %}
+                                        <option value="{{ proyecto_id }}">{{ proyecto.nombre }} ({{ proyecto.etapa|capitalize }})</option>
+                                        {% endif %}
+                                    {% endfor %}
                                 </select>
                             </div>
                             
                             <div class="mb-4">
-                                <label for="freelanceSelect" class="form-label" style="color: #2d3748; font-weight: 500; margin-bottom: 8px; display: block; font-size: 14px;">Freelance</label>
-                                <select class="form-select" id="freelanceSelect" required style="border: 1px solid #d1d5db; border-radius: 8px; padding: 12px 14px; font-size: 14px; width: 100%; background-color: #f9fafb; appearance: none; background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"%23666\" stroke-width=\"2\"><polyline points=\"6,9 12,15 18,9\"></polyline></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px;">
-                                    <option value="">Seleccionar freelance...</option>
+                                <label for="usuarioSelect" class="form-label" style="color: #2d3748; font-weight: 500; margin-bottom: 8px; display: block; font-size: 14px;">Usuario</label>
+                                <select class="form-select" id="usuarioSelect" required style="border: 1px solid #d1d5db; border-radius: 8px; padding: 12px 14px; font-size: 14px; width: 100%; background-color: #f9fafb; appearance: none; background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"%23666\" stroke-width=\"2\"><polyline points=\"6,9 12,15 18,9\"></polyline></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px;">
+                                    <option value="">Seleccionar freelancer/consultor...</option>
                                     {% for consultor in consultores %}
                                     <option value="{{ consultor.id }}">{{ consultor.nombre }} - {{ consultor.especialidad }} ({{ consultor.disponibilidad }}% disponible)</option>
                                     {% endfor %}
@@ -396,13 +502,53 @@
                             </div>
                             
                             <div class="mb-4">
-                                <label for="fechaInicio" class="form-label" style="color: #2d3748; font-weight: 500; margin-bottom: 8px; display: block; font-size: 14px;">Fecha de Inicio</label>
-                                <input type="date" class="form-control" id="fechaInicio" required style="border: 1px solid #d1d5db; border-radius: 8px; padding: 12px 14px; font-size: 14px; width: 100%; background-color: #f9fafb;">
+                                <label for="rolProyecto" class="form-label" style="color: #2d3748; font-weight: 500; margin-bottom: 8px; display: block; font-size: 14px;">Rol del Proyecto</label>
+                                <select class="form-select" id="rolProyecto" required style="border: 1px solid #d1d5db; border-radius: 8px; padding: 12px 14px; font-size: 14px; width: 100%; background-color: #f9fafb; appearance: none; background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"%23666\" stroke-width=\"2\"><polyline points=\"6,9 12,15 18,9\"></polyline></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px;">
+                                    <option value="">Seleccionar rol...</option>
+                                    <option value="lider">Líder de Proyecto</option>
+                                    <option value="desarrollador">Desarrollador</option>
+                                    <option value="analista">Analista de Datos</option>
+                                    <option value="consultor">Consultor</option>
+                                    <option value="diseñador">Diseñador UX/UI</option>
+                                    <option value="qa">QA/Testing</option>
+                                    <option value="devops">DevOps</option>
+                                    <option value="arquitecto">Arquitecto de Software</option>
+                                </select>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <div id="comunidadForm" style="display: none;">
+                        <button type="button" class="btn btn-link p-0 mb-3" onclick="backToTypeSelection()" style="color: #667eea; text-decoration: none;">
+                            <i data-feather="arrow-left" style="width: 16px; height: 16px; margin-right: 5px;"></i>
+                            Volver
+                        </button>
+                        
+                        <h6 style="color: #4a5568; font-weight: 600; margin-bottom: 20px;">Asignación de Comunidad</h6>
+                        
+                        <form id="comunidadAssignmentForm">
+                            <div class="mb-4">
+                                <label for="casoUsoComunidadSelect" class="form-label" style="color: #2d3748; font-weight: 500; margin-bottom: 8px; display: block; font-size: 14px;">Caso de Uso</label>
+                                <select class="form-select" id="casoUsoComunidadSelect" required style="border: 1px solid #d1d5db; border-radius: 8px; padding: 12px 14px; font-size: 14px; width: 100%; background-color: #f9fafb; appearance: none; background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"%23666\" stroke-width=\"2\"><polyline points=\"6,9 12,15 18,9\"></polyline></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px;">
+                                    <option value="">Seleccionar caso de uso...</option>
+                                    {% for proyecto_id, proyecto in proyectos.items() %}
+                                    <option value="{{ proyecto_id }}">{{ proyecto.nombre }} ({{ proyecto.etapa|capitalize }})</option>
+                                    {% endfor %}
+                                </select>
                             </div>
                             
                             <div class="mb-4">
-                                <label for="fechaFin" class="form-label" style="color: #2d3748; font-weight: 500; margin-bottom: 8px; display: block; font-size: 14px;">Fecha de Fin</label>
-                                <input type="date" class="form-control" id="fechaFin" required style="border: 1px solid #d1d5db; border-radius: 8px; padding: 12px 14px; font-size: 14px; width: 100%; background-color: #f9fafb;">
+                                <label for="comunidadSelect" class="form-label" style="color: #2d3748; font-weight: 500; margin-bottom: 8px; display: block; font-size: 14px;">Comunidad</label>
+                                <select class="form-select" id="comunidadSelect" required style="border: 1px solid #d1d5db; border-radius: 8px; padding: 12px 14px; font-size: 14px; width: 100%; background-color: #f9fafb; appearance: none; background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"%23666\" stroke-width=\"2\"><polyline points=\"6,9 12,15 18,9\"></polyline></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px;">
+                                    <option value="">Seleccionar comunidad...</option>
+                                    <option value="tecnologia">Comunidad de Tecnología</option>
+                                    <option value="datos">Comunidad de Ciencia de Datos</option>
+                                    <option value="ux">Comunidad de UX/UI</option>
+                                    <option value="devops">Comunidad DevOps</option>
+                                    <option value="consultoria">Comunidad de Consultoría</option>
+                                    <option value="finanzas">Comunidad de Finanzas</option>
+                                    <option value="marketing">Comunidad de Marketing Digital</option>
+                                </select>
                             </div>
                         </form>
                     </div>
@@ -411,6 +557,107 @@
                 <div class="modal-footer" id="modalFooter" style="padding: 16px 20px; border-top: 1px solid #e5e7eb; background: white; border-radius: 0 0 12px 12px; display: flex; gap: 12px; justify-content: flex-end; flex-shrink: 0;">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="background: #f3f4f6; color: #6b7280; border: 1px solid #d1d5db; padding: 10px 20px; border-radius: 8px; font-weight: 500; font-size: 14px; cursor: pointer; transition: all 0.2s;">Cancelar</button>
                     <button type="button" class="btn btn-primary" id="submitAssignmentBtn" onclick="submitAssignment()" style="display: none; background: linear-gradient(135deg, #8b7bc8 0%, #7b68c7 100%); border: none; padding: 10px 20px; border-radius: 8px; color: white; font-weight: 500; font-size: 14px; cursor: pointer; transition: all 0.2s;">Crear Asignación</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal Gestión de Datos -->
+    <div class="modal fade" id="dataManagementModal" tabindex="-1" aria-labelledby="dataManagementModalLabel" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog" style="max-width: 480px; margin: 1rem auto; max-height: calc(100vh - 2rem);">
+            <div class="modal-content" style="border-radius: 12px; border: none; max-height: 100%; display: flex; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+                <div class="modal-header" style="background: linear-gradient(135deg, #8b7bc8 0%, #7b68c7 100%); color: white; border-radius: 12px 12px 0 0; padding: 20px 24px; display: flex; justify-content: space-between; align-items: center; position: relative; border: none;">
+                    <h5 class="modal-title" id="dataManagementModalLabel" style="font-weight: 600; margin: 0; font-size: 18px; color: white; flex: 1;">Gestión de Datos</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background: none; border: none; color: white; font-size: 24px; opacity: 0.8; padding: 0; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-weight: normal; line-height: 1; transition: all 0.2s ease; margin-left: 16px;" onmouseover="this.style.background='rgba(255,255,255,0.2)'; this.style.opacity='1'" onmouseout="this.style.background='none'; this.style.opacity='0.8'">×</button>
+                </div>
+                
+                <div class="modal-body" style="padding: 24px 20px; background: white; flex: 1; overflow-y: auto; min-height: 0;">
+                    <div class="row">
+                        <div class="col-12 mb-3">
+                            <div class="data-option" onclick="openImportModal()">
+                                <div class="data-option-icon">
+                                    <i data-feather="upload" style="color: #22c55e;"></i>
+                                </div>
+                                <div class="data-option-content">
+                                    <h5>Cargar Masivamente</h5>
+                                    <p class="data-option-desc">Importar asignaciones desde archivo Excel/CSV</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="data-option" onclick="openExportModal()">
+                                <div class="data-option-icon">
+                                    <i data-feather="download" style="color: #3b82f6;"></i>
+                                </div>
+                                <div class="data-option-content">
+                                    <h5>Exportar Datos</h5>
+                                    <p class="data-option-desc">Generar archivo con datos actuales</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="modal-footer" style="padding: 16px 20px; border-top: 1px solid #e5e7eb; background: white; border-radius: 0 0 12px 12px; display: flex; gap: 12px; justify-content: flex-end; flex-shrink: 0;">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="background: #f3f4f6; color: #6b7280; border: 1px solid #d1d5db; padding: 10px 20px; border-radius: 8px; font-weight: 500; font-size: 14px; cursor: pointer; transition: all 0.2s;">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Importar Asignaciones -->
+    <div class="modal fade" id="importAssignmentModal" tabindex="-1" aria-labelledby="importAssignmentModalLabel" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="importAssignmentModalLabel">Importar Asignaciones</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="importAssignmentForm">
+                        <div class="mb-3">
+                            <label for="assignmentFile" class="form-label">Archivo CSV/Excel</label>
+                            <input type="file" class="form-control" id="assignmentFile" accept=".csv,.xlsx" required>
+                        </div>
+                        <div class="alert alert-info">
+                            <small>El archivo debe contener las columnas: Aliado, Freelance, Fecha Inicio, Fecha Fin</small>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" form="importAssignmentForm" class="btn btn-primary">Importar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Exportar Asignaciones -->
+    <div class="modal fade" id="exportAssignmentModal" tabindex="-1" aria-labelledby="exportAssignmentModalLabel" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exportAssignmentModalLabel">Exportar Asignaciones</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="exportAssignmentForm">
+                        <div class="mb-3">
+                            <label class="form-label">Formato de Exportación</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="exportFormat" id="formatCSV" value="csv" checked>
+                                <label class="form-check-label" for="formatCSV">CSV</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="exportFormat" id="formatExcel" value="excel">
+                                <label class="form-check-label" for="formatExcel">Excel</label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" form="exportAssignmentForm" class="btn btn-primary">Exportar</button>
                 </div>
             </div>
         </div>
@@ -428,12 +675,15 @@
             feather.replace();
         }
         
+        // Inicializar filtros dinámicos
+        initializeAssignmentFilters();
+        
         // Configurar eventos del modal - buscar todos los posibles botones
         setTimeout(function() {
             // Buscar por múltiples selectores
             const addAssignmentBtn = document.querySelector('[data-bs-target="#addAssignmentModal"]') || 
                                    document.querySelector('button[title="Nueva Asignación"]') ||
-                                   document.querySelector('.dashboard-section-action[title="Nueva Asignación"]');
+                                   document.querySelector('.action-button[title="Nueva Asignación"]');
             
             console.log('Botón encontrado:', addAssignmentBtn);
             
@@ -455,6 +705,18 @@
                 const allButtons = document.querySelectorAll('button');
                 console.log('Botones disponibles:', allButtons);
             }
+            
+            // Configurar eventos para los elementos del dropdown
+            const dropdownItems = document.querySelectorAll('.dropdown-item');
+            dropdownItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const target = this.getAttribute('data-bs-target');
+                    if (target) {
+                        showModal(target.replace('#', ''));
+                    }
+                });
+            });
         }, 200);
         
         // Configurar botones de cerrar
@@ -569,14 +831,18 @@
     
     function resetModal() {
         document.getElementById('assignmentTypeSelection').style.display = 'block';
-        document.getElementById('comunidadMessage').style.display = 'none';
+        document.getElementById('comunidadForm').style.display = 'none';
         document.getElementById('freelanceForm').style.display = 'none';
         document.getElementById('submitAssignmentBtn').style.display = 'none';
         
-        // Limpiar formulario
-        const form = document.getElementById('assignmentForm');
-        if (form) {
-            form.reset();
+        // Limpiar formularios
+        const freelanceForm = document.getElementById('assignmentForm');
+        const comunidadForm = document.getElementById('comunidadAssignmentForm');
+        if (freelanceForm) {
+            freelanceForm.reset();
+        }
+        if (comunidadForm) {
+            comunidadForm.reset();
         }
     }
     
@@ -584,11 +850,13 @@
         document.getElementById('assignmentTypeSelection').style.display = 'none';
         
         if (type === 'comunidad') {
-            document.getElementById('comunidadMessage').style.display = 'block';
-            document.getElementById('submitAssignmentBtn').style.display = 'none';
+            document.getElementById('comunidadForm').style.display = 'block';
+            document.getElementById('submitAssignmentBtn').style.display = 'inline-block';
+            document.getElementById('submitAssignmentBtn').textContent = 'Crear Asignación de Comunidad';
         } else if (type === 'freelance') {
             document.getElementById('freelanceForm').style.display = 'block';
             document.getElementById('submitAssignmentBtn').style.display = 'inline-block';
+            document.getElementById('submitAssignmentBtn').textContent = 'Crear Asignación de Freelance';
         }
         
         // Reinicializar iconos de Feather
@@ -599,7 +867,7 @@
     
     function backToTypeSelection() {
         document.getElementById('assignmentTypeSelection').style.display = 'block';
-        document.getElementById('comunidadMessage').style.display = 'none';
+        document.getElementById('comunidadForm').style.display = 'none';
         document.getElementById('freelanceForm').style.display = 'none';
         document.getElementById('submitAssignmentBtn').style.display = 'none';
         
@@ -609,36 +877,86 @@
         }
     }
     
+    function showDataManagementModal() {
+        console.log('Mostrando modal de gestión de datos');
+        showModal('dataManagementModal');
+    }
+    
+    function openImportModal() {
+        hideModal('dataManagementModal');
+        setTimeout(() => {
+            showModal('importAssignmentModal');
+        }, 100);
+    }
+    
+    function openExportModal() {
+        hideModal('dataManagementModal');
+        setTimeout(() => {
+            showModal('exportAssignmentModal');
+        }, 100);
+    }
+    
     function submitAssignment() {
-        const form = document.getElementById('assignmentForm');
+        // Determinar qué formulario está visible
+        const freelanceForm = document.getElementById('freelanceForm');
+        const comunidadForm = document.getElementById('comunidadForm');
         
-        if (!form || !form.checkValidity()) {
-            if (form) form.reportValidity();
+        let formData = {};
+        let tipoAsignacion = '';
+        
+        if (freelanceForm && freelanceForm.style.display !== 'none') {
+            // Formulario de freelance
+            const form = document.getElementById('assignmentForm');
+            
+            if (!form || !form.checkValidity()) {
+                if (form) form.reportValidity();
+                return;
+            }
+            
+            const casoUso = document.getElementById('casoUsoSelect');
+            const usuario = document.getElementById('usuarioSelect');
+            const rol = document.getElementById('rolProyecto');
+            
+            if (!casoUso || !usuario || !rol) {
+                alert('Error: No se pudieron encontrar todos los campos del formulario');
+                return;
+            }
+            
+            formData = {
+                tipo: 'freelance',
+                caso_uso: casoUso.value,
+                usuario: usuario.value,
+                rol_proyecto: rol.value
+            };
+            tipoAsignacion = 'freelance';
+            
+        } else if (comunidadForm && comunidadForm.style.display !== 'none') {
+            // Formulario de comunidad
+            const form = document.getElementById('comunidadAssignmentForm');
+            
+            if (!form || !form.checkValidity()) {
+                if (form) form.reportValidity();
+                return;
+            }
+            
+            const casoUso = document.getElementById('casoUsoComunidadSelect');
+            const comunidad = document.getElementById('comunidadSelect');
+            
+            if (!casoUso || !comunidad) {
+                alert('Error: No se pudieron encontrar todos los campos del formulario');
+                return;
+            }
+            
+            formData = {
+                tipo: 'comunidad',
+                caso_uso: casoUso.value,
+                comunidad: comunidad.value
+            };
+            tipoAsignacion = 'comunidad';
+        } else {
+            alert('Error: No se pudo determinar el tipo de asignación');
             return;
         }
-        
-        const aliadoSelect = document.getElementById('aliadoSelect');
-        const freelanceSelect = document.getElementById('freelanceSelect');
-        const fechaInicio = document.getElementById('fechaInicio');
-        const fechaFin = document.getElementById('fechaFin');
-        
-        if (!aliadoSelect || !freelanceSelect || !fechaInicio || !fechaFin) {
-            alert('Error: No se pudieron encontrar todos los campos del formulario');
-            return;
-        }
-        
-        // Validar que la fecha de fin sea posterior a la fecha de inicio
-        if (fechaFin.value && fechaInicio.value && fechaFin.value <= fechaInicio.value) {
-            alert('La fecha de fin debe ser posterior a la fecha de inicio');
-            return;
-        }
-        
-        const formData = {
-            aliado: aliadoSelect.value,
-            freelance: freelanceSelect.value,
-            fecha_inicio: fechaInicio.value,
-            fecha_fin: fechaFin.value
-        };
         
         console.log('Enviando datos de asignación:', formData);
         
@@ -653,7 +971,7 @@
         .then(data => {
             console.log('Respuesta del servidor:', data);
             if (data.status === 'success') {
-                alert('Asignación creada exitosamente');
+                alert(`Asignación de ${tipoAsignacion} creada exitosamente`);
                 hideModal('addAssignmentModal');
                 location.reload();
             } else {
@@ -664,6 +982,154 @@
             console.error('Error:', error);
             alert('Error al enviar los datos');
         });
+    }
+    
+    // Sistema de filtros dinámicos para asignaciones
+    function initializeAssignmentFilters() {
+        console.log('🔧 Inicializando filtros de asignaciones...');
+        
+        try {
+            // Poblar filtros desde datos de la tabla
+            populateAssignmentFiltersFromTable();
+            
+            // Configurar event listeners para filtros automáticos
+            setupAssignmentFilterListeners();
+            
+            console.log('✅ Sistema de filtros de asignaciones inicializado correctamente');
+        } catch (error) {
+            console.error('❌ Error al inicializar filtros de asignaciones:', error);
+        }
+    }
+    
+    function populateAssignmentFiltersFromTable() {
+        console.log('📊 Poblando filtros desde datos de la tabla de asignaciones...');
+        
+        const table = document.querySelector('.table tbody');
+        if (!table) {
+            console.error('❌ Tabla de consultores no encontrada');
+            return;
+        }
+        
+        const rows = table.querySelectorAll('tr');
+        const especialidades = new Set();
+        const ciudades = new Set();
+        
+        rows.forEach(row => {
+            try {
+                const especialidad = row.getAttribute('data-especialidad');
+                const ciudad = row.getAttribute('data-ciudad');
+                
+                if (especialidad && especialidad.trim()) especialidades.add(especialidad.trim());
+                if (ciudad && ciudad.trim()) ciudades.add(ciudad.trim());
+            } catch (error) {
+                console.warn('⚠️ Error procesando fila:', error);
+            }
+        });
+        
+        // Poblar selectores
+        populateAssignmentSelect('filterEspecialidad', especialidades);
+        populateAssignmentSelect('filterCiudad', ciudades);
+        
+        console.log('✅ Filtros poblados:', {
+            especialidades: especialidades.size,
+            ciudades: ciudades.size
+        });
+    }
+    
+    function populateAssignmentSelect(selectId, options) {
+        const select = document.getElementById(selectId);
+        if (!select) {
+            console.error('❌ Selector no encontrado:', selectId);
+            return;
+        }
+        
+        // Limpiar opciones existentes excepto la primera
+        const firstOption = select.querySelector('option[value=""]');
+        select.innerHTML = '';
+        if (firstOption) {
+            select.appendChild(firstOption);
+        }
+        
+        // Agregar nuevas opciones ordenadas
+        Array.from(options).sort().forEach(option => {
+            const optionElement = document.createElement('option');
+            optionElement.value = option;
+            optionElement.textContent = option;
+            select.appendChild(optionElement);
+        });
+    }
+    
+    function setupAssignmentFilterListeners() {
+        const filterIds = ['filterEspecialidad', 'filterDisponibilidad', 'filterCiudad'];
+        
+        filterIds.forEach(filterId => {
+            const filter = document.getElementById(filterId);
+            if (filter) {
+                filter.addEventListener('change', applyAssignmentFilters);
+                console.log('✅ Event listener agregado a', filterId);
+            } else {
+                console.error('❌ Filtro no encontrado:', filterId);
+            }
+        });
+    }
+    
+    function applyAssignmentFilters() {
+        console.log('🎯 Aplicando filtros de asignaciones...');
+        
+        try {
+            // Obtener valores de filtros
+            const especialidadValue = document.getElementById('filterEspecialidad').value.toLowerCase();
+            const disponibilidadValue = parseInt(document.getElementById('filterDisponibilidad').value) || 0;
+            const ciudadValue = document.getElementById('filterCiudad').value.toLowerCase();
+            
+            console.log('📊 Filtros aplicados:', {
+                especialidad: especialidadValue,
+                disponibilidad: disponibilidadValue,
+                ciudad: ciudadValue
+            });
+            
+            // Obtener filas de la tabla
+            const table = document.querySelector('.table tbody');
+            if (!table) {
+                console.error('❌ Tabla no encontrada');
+                return;
+            }
+            
+            const rows = table.querySelectorAll('tr');
+            let visibleCount = 0;
+            
+            rows.forEach(row => {
+                try {
+                    // Extraer datos de la fila
+                    const especialidad = row.getAttribute('data-especialidad').toLowerCase();
+                    const disponibilidad = parseInt(row.getAttribute('data-disponibilidad'));
+                    const ciudad = row.getAttribute('data-ciudad').toLowerCase();
+                    
+                    // Aplicar filtros
+                    const matchEspecialidad = especialidadValue === '' || especialidad.includes(especialidadValue);
+                    const matchDisponibilidad = disponibilidadValue === 0 || disponibilidad >= disponibilidadValue;
+                    const matchCiudad = ciudadValue === '' || ciudad.includes(ciudadValue);
+                    
+                    // Mostrar/ocultar fila
+                    if (matchEspecialidad && matchDisponibilidad && matchCiudad) {
+                        row.style.display = '';
+                        visibleCount++;
+                    } else {
+                        row.style.display = 'none';
+                    }
+                } catch (error) {
+                    console.warn('⚠️ Error procesando fila:', error);
+                    // En caso de error, mostrar la fila
+                    row.style.display = '';
+                    visibleCount++;
+                }
+            });
+            
+            console.log(`✅ Filtrado completado: ${visibleCount}/${rows.length} consultores visibles`);
+            
+        } catch (error) {
+            console.error('❌ Error al aplicar filtros:', error);
+        }
     }
 </script>
 {% endblock %}

@@ -1,0 +1,384 @@
+
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container-fluid p-4">
+    <div class="mb-4">
+        <h2>Gestión de Proyectos</h2>
+    </div>
+
+    <!-- Grid de Proyectos -->
+    <div class="row" id="proyectosGrid">
+        <!-- Proyectos se cargarán aquí dinámicamente -->
+        {% for proyecto in proyectos %}
+        <div class="col-12 col-lg-6 col-xl-4 mb-4 proyecto-card" data-estado="{{ proyecto.etapa }}" data-aliado="{{ proyecto.aliado_id }}">
+            <div class="card h-100 shadow-sm">
+                <!-- Primera Fila -->
+                <div class="card-body">
+                    <!-- Título del Proyecto -->
+                    <div class="project-header mb-3">
+                        <h6 class="project-title" title="{{ proyecto.nombre }}">{{ proyecto.nombre }}</h6>
+                        <span class="badge bg-{{ 'primary' if proyecto.etapa == 'oportunidad' else 'secondary' if proyecto.etapa == 'propuesta' else 'warning' if proyecto.etapa == 'aprobado' else 'info' if proyecto.etapa == 'desarrollo' else 'success' if proyecto.etapa == 'testing' else 'dark' if proyecto.etapa == 'cierre' else 'danger' }}">
+                            {{ proyecto.etapa|title }}
+                        </span>
+                    </div>
+
+                    <!-- Información organizada en 3 grupos horizontales -->
+                    <div class="project-info-groups">
+                        <!-- Grupo 1: Información de Tiempo -->
+                        <div class="info-group">
+                            <div class="group-header">
+                                <i data-feather="clock" class="group-icon"></i>
+                                <span class="group-title">Tiempo Estimado</span>
+                            </div>
+                            <div class="group-content">
+                                <span class="info-value">
+                                    {% if proyecto.tiempo_estimado %}
+                                        {{ proyecto.tiempo_estimado }} hrs
+                                    {% else %}
+                                        N/A
+                                    {% endif %}
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Grupo 2: Información Financiera -->
+                        <div class="info-group">
+                            <div class="group-header">
+                                <i data-feather="dollar-sign" class="group-icon"></i>
+                                <span class="group-title">Información Financiera</span>
+                            </div>
+                            <div class="group-content">
+                                <div class="financial-item">
+                                    <small class="financial-label">Costos Est.</small>
+                                    <span class="financial-value">
+                                        {% if proyecto.costos_estimados %}
+                                            ${{ "{:,.0f}".format(proyecto.costos_estimados) }}
+                                        {% else %}
+                                            N/A
+                                        {% endif %}
+                                    </span>
+                                </div>
+                                <div class="financial-item">
+                                    <small class="financial-label">Presupuesto</small>
+                                    <span class="financial-value">
+                                        {% if proyecto.monto %}
+                                            ${{ "{:,.0f}".format(proyecto.monto) }}
+                                        {% else %}
+                                            N/A
+                                        {% endif %}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Grupo 3: Información del Equipo y Cliente -->
+                        <div class="info-group">
+                            <div class="group-header">
+                                <i data-feather="users" class="group-icon"></i>
+                                <span class="group-title">Equipo y Cliente</span>
+                            </div>
+                            <div class="group-content">
+                                <div class="team-item">
+                                    <small class="team-label">Consultores</small>
+                                    <span class="team-value">{{ proyecto.consultores_asignados or 0 }}</span>
+                                </div>
+                                <div class="team-item">
+                                    <small class="team-label">Cliente</small>
+                                    <span class="team-value">{{ proyecto.aliado_id }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Botones de acción -->
+                    <div class="action-buttons mt-3">
+                        <button class="btn btn-sm btn-outline-primary" onclick="verDetalles({{ proyecto.id }})">
+                            <i data-feather="eye" style="width: 12px; height: 12px;"></i>
+                            Detalles
+                        </button>
+                        <button class="btn btn-sm btn-outline-success" onclick="verFinanzas({{ proyecto.id }})">
+                            <i data-feather="dollar-sign" style="width: 12px; height: 12px;"></i>
+                            Finanzas
+                        </button>
+                        <button class="btn btn-sm btn-outline-info" onclick="verEquipo({{ proyecto.id }})">
+                            <i data-feather="users" style="width: 12px; height: 12px;"></i>
+                            Equipo
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Segunda Fila: Barra de Progreso -->
+                <div class="card-footer bg-light">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <small class="text-muted">Progreso del Proyecto</small>
+                        <small class="fw-semibold">{{ proyecto.progreso or 0 }}%</small>
+                    </div>
+                    <div class="progress" style="height: 8px;">
+                        <div class="progress-bar {% if (proyecto.progreso or 0) < 30 %}bg-danger{% elif (proyecto.progreso or 0) < 70 %}bg-warning{% else %}bg-success{% endif %}" 
+                             role="progressbar" 
+                             style="width: {{ proyecto.progreso or 0 }}%"
+                             aria-valuenow="{{ proyecto.progreso or 0 }}" 
+                             aria-valuemin="0" 
+                             aria-valuemax="100">
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <small class="text-muted">
+                            Inicio: {{ proyecto.fecha_inicio or 'N/A' }} | 
+                            Fin: {{ proyecto.fecha_fin or 'N/A' }}
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Modal de Detalles -->
+    <div class="modal fade" id="detallesModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="detallesContent">
+                    <!-- Contenido se carga dinámicamente -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Inicializar iconos de Feather
+    if (typeof feather !== 'undefined') {
+        feather.replace();
+    }
+});
+
+
+
+function verDetalles(proyectoId) {
+    // Cargar detalles del proyecto
+    fetch(`/api/proyectos/${proyectoId}`)
+        .then(response => response.json())
+        .then(data => {
+            const content = `
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>Información General</h6>
+                        <p><strong>ID:</strong> ${data.id}</p>
+                        <p><strong>Nombre:</strong> ${data.nombre}</p>
+                        <p><strong>Estado:</strong> ${data.etapa}</p>
+                        <p><strong>Cliente:</strong> ${data.aliado_id}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Fechas y Progreso</h6>
+                        <p><strong>Fecha Inicio:</strong> ${data.fecha_inicio || 'N/A'}</p>
+                        <p><strong>Fecha Fin:</strong> ${data.fecha_fin || 'N/A'}</p>
+                        <p><strong>Progreso:</strong> ${data.progreso || 0}%</p>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <h6>Recursos y Finanzas</h6>
+                        <p><strong>Consultores Asignados:</strong> ${data.consultores_asignados || 0}</p>
+                        <p><strong>Presupuesto:</strong> $${new Intl.NumberFormat().format(data.monto || 0)}</p>
+                        <p><strong>Costos Estimados:</strong> $${new Intl.NumberFormat().format(data.costos_estimados || 0)}</p>
+                        <p><strong>Tiempo Estimado:</strong> ${data.tiempo_estimado || 'N/A'} horas</p>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('detallesContent').innerHTML = content;
+            const modal = new bootstrap.Modal(document.getElementById('detallesModal'));
+            modal.show();
+        })
+        .catch(error => {
+            console.error('Error al cargar detalles:', error);
+            alert('Error al cargar los detalles del proyecto');
+        });
+}
+
+function verFinanzas(proyectoId) {
+    // Redirigir a la página de finanzas del proyecto
+    window.location.href = `/proyectos/${proyectoId}/finanzas`;
+}
+
+function verEquipo(proyectoId) {
+    // Redirigir a la página de equipo del proyecto
+    window.location.href = `/proyectos/${proyectoId}/equipo`;
+}
+
+function editarProyecto() {
+    // Lógica para editar proyecto
+    alert('Funcionalidad de edición en desarrollo');
+}
+</script>
+
+<style>
+.card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+}
+
+.card-title {
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.progress {
+    border-radius: 10px;
+}
+
+.progress-bar {
+    border-radius: 10px;
+    transition: width 0.6s ease;
+}
+
+.btn-sm {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+}
+
+.badge {
+    font-size: 0.7rem;
+}
+
+.card-footer {
+    border-top: 1px solid #dee2e6;
+    padding: 0.75rem 1rem;
+}
+
+.text-truncate {
+    max-width: 100%;
+}
+
+/* Estilos para el nuevo diseño horizontal */
+.project-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e9ecef;
+    padding-bottom: 0.75rem;
+}
+
+.project-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0;
+    color: #2d3748;
+    flex: 1;
+}
+
+.project-info-groups {
+    display: flex;
+    gap: 1rem;
+    margin: 1rem 0;
+}
+
+.info-group {
+    flex: 1;
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 0.75rem;
+    border: 1px solid #e9ecef;
+}
+
+.group-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.group-icon {
+    width: 16px;
+    height: 16px;
+    color: #6c757d;
+}
+
+.group-title {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #495057;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.group-content {
+    min-height: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.info-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #2d3748;
+}
+
+.financial-item, .team-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.25rem;
+}
+
+.financial-item:last-child, .team-item:last-child {
+    margin-bottom: 0;
+}
+
+.financial-label, .team-label {
+    font-size: 0.75rem;
+    color: #6c757d;
+    font-weight: 500;
+}
+
+.financial-value, .team-value {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #2d3748;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+    border-top: 1px solid #e9ecef;
+    padding-top: 0.75rem;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .project-info-groups {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    
+    .info-group {
+        margin-bottom: 0;
+    }
+    
+    .action-buttons {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .action-buttons .btn {
+        flex: 1;
+        min-width: 80px;
+    }
+}
+</style>
+{% endblock %}
