@@ -21,11 +21,9 @@ except ImportError:
     app.logger.warning(
         "No se pudieron cargar los datos de demostración extendidos")
 
-
 @app.route('/')
 def index():
     return redirect(url_for('login'))
-
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -51,13 +49,11 @@ def login():
                            config=app.config,
                            role=None)
 
-
 @app.route('/logout')
 @login_required
 def logout():
     logout_user()
     return redirect(url_for('login'))
-
 
 @app.route('/dashboard')
 @login_required
@@ -115,7 +111,6 @@ def dashboard_crecimiento():
                          crecimiento_yoy=generar_grafico_crecimiento_yoy(DatosDashboard.CRECIMIENTO_ANUAL),
                          clientes_nuevos_recurrentes=generar_grafico_clientes_nuevos_vs_recurrentes(datos_clientes),
                          rentabilidad=generar_grafico_rentabilidad(datos_rentabilidad))
-
 
 @app.route('/consultor/perfil')
 @login_required
@@ -228,7 +223,6 @@ def dashboard_growth():
         aliados_extendidos=aliados_extendidos,
         usar_datos_extendidos=USAR_DATOS_EXTENDIDOS)
 
-
 @app.route('/dashboard/performance')
 @login_required
 def dashboard_performance():
@@ -292,7 +286,6 @@ def dashboard_performance():
         matriz_competencias=matriz_competencias,
         proyectos_por_etapa=proyectos_por_etapa,
         usar_datos_extendidos=USAR_DATOS_EXTENDIDOS)
-
 
 @app.route('/dashboard/proyectos')
 @login_required
@@ -589,7 +582,6 @@ def dashboard_community():
         consultores_extendidos=consultores_extendidos,
         evaluaciones_consultores=evaluaciones_consultores,
         usar_datos_extendidos=USAR_DATOS_EXTENDIDOS)
-
 
 @app.route('/aliados/usuarios')
 @login_required
