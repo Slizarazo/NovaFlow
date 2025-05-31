@@ -629,8 +629,7 @@ def create_user():
             print(f"  - Industria: {data.get('industria')}")
             print(f"  - Dirección: {data.get('direccion')}")
             print(f"  - Ciudad: {data.get('ciudad')}")
-            print(f"  - País: {```python
-data.get('pais')}")
+            print(f"  - País: {data.get('pais')}")
 
         elif tipo == 'empleado':
             print("Datos del empleado:")
