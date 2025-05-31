@@ -222,20 +222,20 @@
                 'url': '/cuentas/usuarios'} ]} ] %} {% elif role == 'supervisor'
                 %} {% set navigation = [ {'name': 'Inicio', 'icon': 'home',
                 'url': '/dashboard'}, {'name': 'Proyectos', 'icon': 'briefcase',
-                'url': '/proyectos', 'submenu': [ {'name': 'Gestión de proyectos',
-                'url': '/proyectos/gestion'}, {'name': 'Planificación',
-                'url': '/proyectos/calculadora'}, {'name': 'Estimaciones',
-                'url': '/proyectos/estimaciones'} ]}, {'name': 'Consultores',
-                'icon': 'user-check', 'url': '/consultores', 'submenu': [
-                {'name': 'Propuestas', 'url': '/consultores/propuestas'},
-                {'name': 'Activos', 'url': '/consultores/activos'} ]} ] %} {%
-                elif role == 'consultor' %} {% set navigation = [
-            {'name': 'Perfil', 'icon': 'user', 'url': '/perfil'},
-            {'name': 'Mis Proyectos', 'icon': 'briefcase', 'url': '/mis-proyectos'},
-            {'name': 'Actividades', 'icon': 'activity', 'url': '/actividades'},
-            {'name': 'Propuestas', 'icon': 'file-text', 'url': '/propuestas'}
-        ]
-                %} {% else %} {% set navigation = [] %} {% endif %}
+                'url': '/proyectos', 'submenu': [ {'name': 'Gestión de
+                proyectos', 'url': '/proyectos/gestion'}, {'name':
+                'Planificación', 'url': '/proyectos/calculadora'}, {'name':
+                'Estimaciones', 'url': '/proyectos/estimaciones'} ]}, {'name':
+                'Consultores', 'icon': 'user-check', 'url': '/consultores',
+                'submenu': [ {'name': 'Propuestas', 'url':
+                '/consultores/propuestas'}, {'name': 'Activos', 'url':
+                '/consultores/activos'} ]} ] %} {% elif role == 'consultor' %}
+                {% set navigation = [ {'name': 'Perfil', 'icon': 'user', 'url':
+                '/consultor/perfil'}, {'name': 'Mis Proyectos', 'icon':
+                'briefcase', 'url': '/mis-proyectos'}, {'name': 'Actividades',
+                'icon': 'activity', 'url': '/actividades'}, {'name':
+                'Propuestas', 'icon': 'file-text', 'url': '/propuestas'} ] %} {%
+                else %} {% set navigation = [] %} {% endif %}
 
                 <!-- Loop through main menu items -->
                 {% for item in navigation %} {% if item.submenu %}
@@ -480,13 +480,13 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-    // Verificar que Bootstrap esté disponible globalmente
-    document.addEventListener('DOMContentLoaded', function() {
-        if (typeof bootstrap === 'undefined') {
-            console.error('Bootstrap no está disponible');
-        } else {
-            console.log('Bootstrap está disponible');
-        }
-    });
+        // Verificar que Bootstrap esté disponible globalmente
+        document.addEventListener("DOMContentLoaded", function () {
+            if (typeof bootstrap === "undefined") {
+                console.error("Bootstrap no está disponible");
+            } else {
+                console.log("Bootstrap está disponible");
+            }
+        });
     </script>
 </html>
