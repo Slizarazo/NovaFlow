@@ -386,7 +386,7 @@
 <div class="container-fluid">
     <!-- Header with action buttons -->
     <div class="dashboard-section-title">
-        <h4>Gestión de Organizaciones</h4>
+        <h4>Gestión de Aliados</h4>
         <div class="action-buttons">
             <button type="button" class="action-button" data-bs-toggle="modal" data-bs-target="#addAliadoModal">
                 <i data-feather="plus"></i>
@@ -545,73 +545,50 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="aliadoContactoPrincipal" class="form-label">Contacto Principal</label>
+                                    <input type="text" class="form-control" id="aliadoContactoPrincipal" placeholder="Nombre del representante" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="aliadoIndustria" class="form-label">Industria</label>
+                                    <select class="form-select" id="aliadoIndustria" required>
+                                        <option value="">Seleccionar industria...</option>
+                                        <option value="Tecnología">Tecnología</option>
+                                        <option value="Finanzas">Finanzas</option>
+                                        <option value="Manufactura">Manufactura</option>
+                                        <option value="Servicios">Servicios</option>
+                                        <option value="Salud">Salud</option>
+                                        <option value="Educación">Educación</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
 
-                <!-- Formulario Crear Organización -->
-                <div id="form-crear-organizacion" class="form-container" style="display: none;">
-                    <form id="createOrganizacionForm">
-                        <!-- Datos Organización -->
-                        <div class="form-section">
-                            <h6 class="section-title">Datos Organización</h6>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="orgNombre" class="form-label">Nombre</label>
-                                        <input type="text" class="form-control" id="orgNombre" placeholder="Ej: TechCorp Solutions" required>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="orgIndustria" class="form-label">Industria</label>
-                                        <select class="form-select" id="orgIndustria" required>
-                                            <option value="">Seleccionar industria...</option>
-                                            <option value="Tecnología">Tecnología</option>
-                                            <option value="Finanzas">Finanzas</option>
-                                            <option value="Manufactura">Manufactura</option>
-                                            <option value="Servicios">Servicios</option>
-                                            <option value="Salud">Salud</option>
-                                            <option value="Educación">Educación</option>
-                                        </select>
-                                    </div>
+                    <!-- Información de la Empresa -->
+                    <div class="form-section">
+                        <h6 class="section-title">Información de la Empresa</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="aliadoTamano" class="form-label">Tamaño de la Empresa</label>
+                                    <select class="form-select" id="aliadoTamano" required>
+                                        <option value="">Seleccionar tamaño...</option>
+                                        <option value="Pequeña (1-50)">Pequeña (1-50 empleados)</option>
+                                        <option value="Mediana (51-250)">Mediana (51-250 empleados)</option>
+                                        <option value="Grande (251-1000)">Grande (251-1000 empleados)</option>
+                                        <option value="Empresa (1000+)">Empresa (1000+ empleados)</option>
+                                    </select>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="orgEstado" class="form-label">Estado</label>
-                                        <select class="form-select" id="orgEstado" required>
-                                            <option value="">Seleccionar estado...</option>
-                                            <option value="activo">Activo</option>
-                                            <option value="inactivo">Inactivo</option>
-                                            <option value="pendiente">Pendiente</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="orgContactoPrincipal" class="form-label">Contacto Principal <small class="text-muted">(número de contacto principal)</small></label>
-                                        <input type="tel" class="form-control" id="orgContactoPrincipal" placeholder="+52 55 1234 5678" required>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="orgTamano" class="form-label">Tamaño</label>
-                                        <select class="form-select" id="orgTamano" required>
-                                            <option value="">Seleccionar tamaño...</option>
-                                            <option value="Pequeña">Pequeña</option>
-                                            <option value="Mediana">Mediana</option>
-                                            <option value="Grande">Grande</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="orgEmpleados" class="form-label">Empleados <small class="text-muted">(cantidad de empleados)</small></label>
-                                        <input type="number" class="form-control" id="orgEmpleados" placeholder="150" min="1" required>
-                                    </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="aliadoEmpleados" class="form-label">Número Exacto de Empleados</label>
+                                    <input type="number" class="form-control" id="aliadoEmpleados" placeholder="150" min="1" required>
                                 </div>
                             </div>
                         </div>
