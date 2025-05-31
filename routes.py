@@ -1040,3 +1040,13 @@ def aliados_aliados():
                          aliados=aliados,
                          config=app.config,
                          role=current_user.role)
+
+@app.route('/aliados/portfolio')
+@login_required
+def aliados_portfolio():
+    proyectos = Proyecto.PROYECTOS
+    return render_template('aliados/portfolio.html',
+                         title='Portafolio de Proyectos',
+                         proyectos=proyectos,
+                         config=app.config,
+                         role=current_user.role)
