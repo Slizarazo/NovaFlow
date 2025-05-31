@@ -697,8 +697,10 @@
             <h3 class="section-title">
                 <i data-feather="award" class="section-icon"></i>
                 Certificaciones
+                <i data-feather="plus" class="edit-icon" onclick="openAddCertificationModal()" title="Agregar certificación" style="margin-left: 8px;"></i>
             </h3>
             
+            <div id="certificaciones-container">
             <div class="certification-item">
                 <div class="item-title">Project Management Professional (PMP)</div>
                 <div class="item-subtitle">Project Management Institute (PMI)</div>
@@ -724,6 +726,7 @@
                 <a href="https://www.scrumalliance.org/community/profile/mrodriguez" class="certification-link" target="_blank">
                     Ver certificado
                 </a>
+            </div>
             </div>
         </div>
 
@@ -1018,6 +1021,70 @@
             <div class="modal-footer" style="background: white; border-top: 1px solid #E5E7EB; padding: 1.5rem 2rem; display: flex; justify-content: flex-end; gap: 1rem; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;">
                 <button type="button" onclick="closeAddEducationModal()" style="background: #F3F4F6; color: #6B7280; border: 2px solid #E5E7EB; padding: 12px 24px; border-radius: 12px; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: all 0.3s ease;">Cancelar</button>
                 <button type="button" onclick="addEducation()" style="background: linear-gradient(135deg, #8B5A9D 0%, #667eea 100%); color: white; border: none; padding: 12px 24px; border-radius: 12px; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(139, 90, 157, 0.3);">Guardar Educación</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para Agregar Certificación -->
+<div class="modal fade" id="addCertificationModal" tabindex="-1" aria-labelledby="addCertificationModalLabel" aria-hidden="true" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(0, 0, 0, 0.5); z-index: 1055; display: none; align-items: center; justify-content: center;">
+    <div class="modal-dialog" style="max-width: 500px; width: 500px; margin: 0; position: relative;">
+        <div class="modal-content" style="border: none; border-radius: 20px; box-shadow: 0 25px 80px rgba(0, 0, 0, 0.4); background: white; overflow: hidden; max-height: 85vh; display: flex; flex-direction: column;">
+            <div class="modal-header" style="background: linear-gradient(135deg, #8B5A9D 0%, #667eea 50%, #764ba2 100%); border-bottom: none; padding: 2rem; position: relative; display: flex; align-items: center; justify-content: space-between;">
+                <h5 class="modal-title" id="addCertificationModalLabel" style="color: white; font-size: 1.5rem; font-weight: 600; margin: 0; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); flex: 1;">Añadir Certificación</h5>
+                <button type="button" class="btn-close" onclick="closeAddCertificationModal()" aria-label="Close" style="background: rgba(255, 255, 255, 0.15); border: none; color: white; font-size: 1.2rem; width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s ease; margin-left: 1rem;">×</button>
+            </div>
+            <div class="modal-body" style="padding: 2rem; overflow-y: auto; flex: 1; max-height: calc(85vh - 180px);">
+                <div style="margin-bottom: 2rem;">
+                    <h6 style="color: #8B5A9D; font-weight: 600; font-size: 1.1rem; margin-bottom: 1.5rem; padding-bottom: 0.5rem; border-bottom: 2px solid #E5E7EB;">Datos de la Certificación</h6>
+                    
+                    <form id="addCertificationForm">
+                        <div class="mb-3">
+                            <label for="certNombre" class="form-label" style="font-weight: 600; color: #6B7280; margin-bottom: 0.5rem; font-size: 0.9rem;">Nombre de la Certificación</label>
+                            <input type="text" class="form-control" id="certNombre" placeholder="Ej. Project Management Professional (PMP)" required style="padding: 12px 16px; border: 2px solid #E5E7EB; border-radius: 12px; background: white; color: #374151; font-size: 0.95rem; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);">
+                        </div>
+                        <div class="mb-3">
+                            <label for="certOrganizacion" class="form-label" style="font-weight: 600; color: #6B7280; margin-bottom: 0.5rem; font-size: 0.9rem;">Organización Emisora</label>
+                            <input type="text" class="form-control" id="certOrganizacion" placeholder="Ej. Project Management Institute (PMI)" required style="padding: 12px 16px; border: 2px solid #E5E7EB; border-radius: 12px; background: white; color: #374151; font-size: 0.95rem; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);">
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="certFechaObtencion" class="form-label" style="font-weight: 600; color: #6B7280; margin-bottom: 0.5rem; font-size: 0.9rem;">Fecha de Obtención</label>
+                                    <input type="month" class="form-control" id="certFechaObtencion" required style="padding: 12px 16px; border: 2px solid #E5E7EB; border-radius: 12px; background: white; color: #374151; font-size: 0.95rem; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="certFechaVencimiento" class="form-label" style="font-weight: 600; color: #6B7280; margin-bottom: 0.5rem; font-size: 0.9rem;">Fecha de Vencimiento</label>
+                                    <input type="month" class="form-control" id="certFechaVencimiento" style="padding: 12px 16px; border: 2px solid #E5E7EB; border-radius: 12px; background: white; color: #374151; font-size: 0.95rem; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);">
+                                    <div class="form-check mt-2">
+                                        <input class="form-check-input" type="checkbox" id="certNoVence" style="border-radius: 4px; border: 2px solid #8B5A9D;">
+                                        <label class="form-check-label" for="certNoVence" style="color: #6B7280; font-size: 0.9rem;">
+                                            No vence
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="certCredencial" class="form-label" style="font-weight: 600; color: #6B7280; margin-bottom: 0.5rem; font-size: 0.9rem;">ID de Credencial (Opcional)</label>
+                            <input type="text" class="form-control" id="certCredencial" placeholder="Ej. ABC123456" style="padding: 12px 16px; border: 2px solid #E5E7EB; border-radius: 12px; background: white; color: #374151; font-size: 0.95rem; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);">
+                        </div>
+                        <div class="mb-3">
+                            <label for="certUrl" class="form-label" style="font-weight: 600; color: #6B7280; margin-bottom: 0.5rem; font-size: 0.9rem;">URL de Verificación (Opcional)</label>
+                            <input type="url" class="form-control" id="certUrl" placeholder="https://ejemplo.com/verificar" style="padding: 12px 16px; border: 2px solid #E5E7EB; border-radius: 12px; background: white; color: #374151; font-size: 0.95rem; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);">
+                        </div>
+                        <div class="mb-3">
+                            <label for="certDescripcion" class="form-label" style="font-weight: 600; color: #6B7280; margin-bottom: 0.5rem; font-size: 0.9rem;">Descripción (Opcional)</label>
+                            <textarea class="form-control" id="certDescripcion" rows="3" placeholder="Describe las competencias o conocimientos que valida esta certificación..." style="padding: 12px 16px; border: 2px solid #E5E7EB; border-radius: 12px; background: white; color: #374151; font-size: 0.95rem; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); resize: vertical; min-height: 80px;"></textarea>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer" style="background: white; border-top: 1px solid #E5E7EB; padding: 1.5rem 2rem; display: flex; justify-content: flex-end; gap: 1rem; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;">
+                <button type="button" onclick="closeAddCertificationModal()" style="background: #F3F4F6; color: #6B7280; border: 2px solid #E5E7EB; padding: 12px 24px; border-radius: 12px; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: all 0.3s ease;">Cancelar</button>
+                <button type="button" onclick="addCertification()" style="background: linear-gradient(135deg, #8B5A9D 0%, #667eea 100%); color: white; border: none; padding: 12px 24px; border-radius: 12px; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(139, 90, 157, 0.3);">Guardar Certificación</button>
             </div>
         </div>
     </div>
@@ -1343,6 +1410,21 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+    
+    // Manejar checkbox de certificación que no vence
+    const certNoVenceCheckbox = document.getElementById('certNoVence');
+    const certFechaVencimientoInput = document.getElementById('certFechaVencimiento');
+    
+    if (certNoVenceCheckbox && certFechaVencimientoInput) {
+        certNoVenceCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+                certFechaVencimientoInput.disabled = true;
+                certFechaVencimientoInput.value = '';
+            } else {
+                certFechaVencimientoInput.disabled = false;
+            }
+        });
+    }
 });
 
 // Funciones para manejar educación
@@ -1457,6 +1539,127 @@ function addEducation() {
     .catch(error => {
         console.error('Error:', error);
         alert('Error al enviar los datos de educación');
+    });
+}
+
+// Funciones para manejar certificaciones
+function openAddCertificationModal() {
+    const modal = document.getElementById('addCertificationModal');
+    
+    // Mostrar modal como ventana emergente
+    modal.style.display = 'flex';
+    modal.classList.add('show');
+    modal.setAttribute('aria-hidden', 'false');
+    
+    // Prevenir scroll del body
+    document.body.style.overflow = 'hidden';
+    
+    // Agregar event listener para cerrar con Escape
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeAddCertificationModal();
+        }
+    });
+    
+    // Cerrar al hacer clic fuera del modal
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            closeAddCertificationModal();
+        }
+    });
+}
+
+function closeAddCertificationModal() {
+    const modal = document.getElementById('addCertificationModal');
+    
+    // Ocultar modal
+    modal.style.display = 'none';
+    modal.classList.remove('show');
+    modal.setAttribute('aria-hidden', 'true');
+    
+    // Restaurar scroll del body
+    document.body.style.overflow = '';
+    
+    // Limpiar formulario
+    document.getElementById('addCertificationForm').reset();
+    
+    // Rehabilitar el campo de fecha de vencimiento en caso de que esté deshabilitado
+    const certFechaVencimientoInput = document.getElementById('certFechaVencimiento');
+    if (certFechaVencimientoInput) {
+        certFechaVencimientoInput.disabled = false;
+    }
+}
+
+function addCertification() {
+    const nombre = document.getElementById('certNombre').value;
+    const organizacion = document.getElementById('certOrganizacion').value;
+    const fechaObtencion = document.getElementById('certFechaObtencion').value;
+    const fechaVencimiento = document.getElementById('certFechaVencimiento').value;
+    const noVence = document.getElementById('certNoVence').checked;
+    const credencial = document.getElementById('certCredencial').value;
+    const url = document.getElementById('certUrl').value;
+    const descripcion = document.getElementById('certDescripcion').value;
+    
+    if (!nombre || !organizacion || !fechaObtencion) {
+        alert('Por favor completa todos los campos obligatorios');
+        return;
+    }
+    
+    // Preparar datos para enviar al backend
+    const formData = {
+        nombre: nombre,
+        organizacion: organizacion,
+        fecha_obtencion: fechaObtencion,
+        fecha_vencimiento: noVence ? null : fechaVencimiento,
+        no_vence: noVence,
+        credencial: credencial,
+        url_verificacion: url,
+        descripcion: descripcion
+    };
+    
+    // Enviar datos al backend
+    fetch('/api/certificaciones', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            // Formatear fechas para mostrar
+            const fechaObtencionFormatted = formatDate(fechaObtencion);
+            const vencimientoText = noVence ? 'No vence' : (fechaVencimiento ? formatDate(fechaVencimiento) : '');
+            
+            // Crear nuevo elemento de certificación en el DOM
+            const certificacionesContainer = document.getElementById('certificaciones-container');
+            const newCertification = document.createElement('div');
+            newCertification.className = 'certification-item';
+            newCertification.innerHTML = `
+                <div class="item-title">${nombre}</div>
+                <div class="item-subtitle">${organizacion}</div>
+                <div class="item-date">Obtenida: ${fechaObtencionFormatted}${vencimientoText ? ` - Vence: ${vencimientoText}` : ''}</div>
+                ${credencial ? `<div style="margin-bottom: 0.5rem;"><strong>ID Credencial:</strong> ${credencial}</div>` : ''}
+                ${descripcion ? `<div style="margin-bottom: 0.5rem; font-size: 0.9rem; color: #6B7280;">${descripcion}</div>` : ''}
+                ${url ? `<a href="${url}" class="certification-link" target="_blank">Ver certificado</a>` : ''}
+            `;
+            
+            // Agregar al inicio del contenedor
+            certificacionesContainer.insertBefore(newCertification, certificacionesContainer.firstChild);
+            
+            // Cerrar modal y limpiar formulario
+            closeAddCertificationModal();
+            
+            // Mostrar mensaje de éxito
+            alert('Certificación agregada correctamente');
+        } else {
+            alert('Error al agregar certificación: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error al enviar los datos de certificación');
     });
 }
 </script>

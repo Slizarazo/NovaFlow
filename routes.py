@@ -951,3 +951,24 @@ def api_educacion():
             'status': 'error',
             'message': f'Error al procesar los datos: {str(e)}'
         }), 400
+
+@app.route('/api/certificaciones', methods=['POST'])
+def api_certificaciones():
+    """Endpoint para recibir e imprimir datos de certificaciones"""
+    try:
+        data = request.get_json()
+        print("=== DATOS DE CERTIFICACIONES RECIBIDOS ===")
+        print(json.dumps(data, indent=2, ensure_ascii=False))
+        print("============================================")
+
+        return jsonify({
+            'status': 'success',
+            'message': 'Datos de certificación recibidos correctamente',
+            'data': data
+        })
+    except Exception as e:
+        print(f"Error al procesar certificaciones: {str(e)}")
+        return jsonify({
+            'status': 'error',
+            'message': f'Error al procesar los datos: {str(e)}'
+        }), 400
