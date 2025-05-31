@@ -629,7 +629,8 @@ def create_user():
             print(f"  - Industria: {data.get('industria')}")
             print(f"  - Dirección: {data.get('direccion')}")
             print(f"  - Ciudad: {data.get('ciudad')}")
-            print(f"  - País: {data.get('pais')}")
+            print(f"  - País: {```python
+data.get('pais')}")
 
         elif tipo == 'empleado':
             print("Datos del empleado:")
@@ -1030,3 +1031,13 @@ def add_idioma():
     except Exception as e:
         print(f"❌ Error al procesar idioma: {str(e)}")
         return jsonify({'status': 'error', 'message': 'Error interno del servidor'}), 500
+
+@app.route('/aliados/aliados')
+@login_required
+def aliados_aliados():
+    aliados = Aliado.ALIADOS
+    return render_template('aliados/aliados.html',
+                         title='Gestión de Aliados',
+                         aliados=aliados,
+                         config=app.config,
+                         role=current_user.role)
