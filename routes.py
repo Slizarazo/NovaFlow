@@ -1089,3 +1089,48 @@ def create_asignacion():
     except Exception as e:
         app.logger.error(f"Error al crear asignación: {str(e)}")
         return jsonify({'status': 'error', 'message': str(e)}), 500
+
+@app.route('/proyectos/general')
+@login_required
+def proyectos_general():
+    proyectos = Proyecto.PROYECTOS
+    estados = {
+        'oportunidad': [p for p in proyectos if p.etapa == 'oportunidad'],
+        'propuesta': [p for p in proyectos if p.etapa == 'propuesta'],
+        'aprobado': [p for p in proyectos if p.etapa == 'aprobado'],
+        'desarrollo': [p for p in proyectos if p.etapa == 'desarrollo'],
+        'testing': [p for p in proyectos if p.etapa == 'testing'],
+        'cierre': [p for p in proyectos if p.etapa == 'cierre'],
+        'evaluacion': [p for p in proyectos if p.etapa == 'evaluacion'],
+        'finalizados': [p for p in proyectos if p.etapa == 'finalizado']
+    }
+    return render_template('proyectos/general.html',
+                         title='Gestión de Proyectos',
+                         estados=estados,
+                         config=app.config,
+                         role=current_user.role)
+
+@app.route('/api/oportunidades', methods=['POST'])
+@login_required
+def create_oportunidad():
+    try:
+        data = request.get_json()
+        print(f"Datos de oportunidad recibidos: {data}")
+
+        if not data:
+            return jsonify({'status': 'error', 'message': 'No se recibieron datos'}), 400
+
+        cuenta = data.get('cuenta')
+        caso_uso = data.get('casoUso')
+        descripcion = data.get('descripcion')
+        impacto = data.get('impacto')
+
+        print(f"Nueva oportunidad - Cuenta: {cuenta}, Caso de uso: {caso_uso}")
+        print(f"Descripción: {descripcion}")
+        print(f"Impacto: {impacto}")
+
+        return jsonify({'status': 'success', 'message': 'Oportunidad creada exitosamente'})
+
+    except Exception as e:
+        app.logger.error(f"Error al crear oportunidad: {str(e)}")
+        return jsonify({'status': 'error', 'message': str(e)}), 500
