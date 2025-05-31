@@ -35,7 +35,11 @@ def login():
 
         if user and user.password == password:  # In a real app, use proper password hashing
             login_user(user)
-            return redirect(url_for('dashboard'))
+            # Redirigir según el rol del usuario
+            if user.role == 'consultor':
+                return redirect(url_for('consultor_perfil'))
+            else:
+                return redirect(url_for('dashboard'))
         else:
             flash('Usuario o contraseña inválidos', 'danger')
 
