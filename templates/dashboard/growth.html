@@ -1,2 +1,1275 @@
-Based on the instructions, I will generate a complete modified version of the code, incorporating the requested changes to add buttons and modals for education, certifications, projects, skills, and languages, along with their corresponding JavaScript functions to handle modal display and data submission via API endpoints.
-```
+
+{% extends "layout.html" %}
+
+{% block head %}
+<style>
+.profile-container {
+    padding: 2rem;
+    background-color: #f8f9fa;
+    min-height: 100vh;
+}
+
+.profile-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 12px;
+    padding: 2rem;
+    color: white;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.profile-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+.profile-name {
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.profile-title {
+    font-size: 1.2rem;
+    opacity: 0.9;
+    margin-bottom: 1rem;
+}
+
+.profile-level {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    display: inline-block;
+    font-weight: 500;
+}
+
+.profile-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.profile-section {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e2e8f0;
+}
+
+.section-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #e2e8f0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.section-icon {
+    width: 20px;
+    height: 20px;
+    color: #667eea;
+}
+
+.edit-icon {
+    width: 16px;
+    height: 16px;
+    color: #64748b;
+    cursor: pointer;
+    margin-left: auto;
+    transition: color 0.2s ease;
+}
+
+.edit-icon:hover {
+    color: #667eea;
+}
+
+.info-value.editable {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    padding: 4px 8px;
+    cursor: text;
+    min-height: 22px;
+}
+
+.info-value.editable:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
+}
+
+.edit-buttons {
+    display: none;
+    gap: 8px;
+    margin-top: 12px;
+    justify-content: flex-end;
+}
+
+.edit-buttons.show {
+    display: flex;
+}
+
+.btn-save, .btn-cancel {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.btn-save {
+    background: #667eea;
+    color: white;
+}
+
+.btn-save:hover {
+    background: #5a67d8;
+}
+
+.btn-cancel {
+    background: #e2e8f0;
+    color: #64748b;
+}
+
+.btn-cancel:hover {
+    background: #cbd5e0;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.info-row:last-child {
+    border-bottom: none;
+}
+
+.info-label {
+    font-weight: 500;
+    color: #64748b;
+    min-width: 120px;
+}
+
+.info-value {
+    color: #1e293b;
+    font-weight: 500;
+    flex: 1;
+    text-align: right;
+}
+
+.experience-item, .education-item, .certification-item, .project-item {
+    background: #f8fafc;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-left: 4px solid #667eea;
+}
+
+.experience-item:last-child, .education-item:last-child, .certification-item:last-child, .project-item:last-child {
+    margin-bottom: 0;
+}
+
+.item-title {
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 0.25rem;
+}
+
+.item-subtitle {
+    color: #667eea;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.item-date {
+    color: #64748b;
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+}
+
+.item-description {
+    color: #475569;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.skill-item {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.skill-item:last-child {
+    border-bottom: none;
+}
+
+.skill-name {
+    font-weight: 500;
+    color: #1e293b;
+    flex: 1;
+    min-width: 0;
+}
+
+.skill-level {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-width: 260px;
+    justify-content: flex-end;
+}
+
+.skill-bar {
+    width: 130px;
+    height: 22px;
+    background: #e2e8f0;
+    border-radius: 4px;
+    overflow: hidden;
+    flex-shrink: 0;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+}
+
+.skill-progress {
+    height: 100%;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.skill-percentage {
+    position: relative;
+    z-index: 2;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #1e293b;
+    text-shadow: 0 0 3px rgba(255, 255, 255, 0.8);
+}
+
+.skill-level-text {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #64748b;
+    min-width: 100px;
+    text-align: left;
+    flex-shrink: 0;
+}
+
+.tech-tag {
+    display: inline-block;
+    background: #e0e7ff;
+    color: #3730a3;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.875rem;
+    margin: 0.25rem 0.25rem 0.25rem 0;
+    font-weight: 500;
+}
+
+.contact-info {
+    background: #f8fafc;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-top: 1rem;
+}
+
+.rate-display {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    padding: 1rem;
+    border-radius: 8px;
+    text-align: center;
+    margin-top: 1rem;
+}
+
+.rate-amount {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+}
+
+.rate-label {
+    font-size: 0.875rem;
+    opacity: 0.9;
+}
+
+.certification-link {
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.certification-link:hover {
+    text-decoration: underline;
+}
+
+/* Estilos para modal como ventana emergente */
+.modal.show {
+    display: flex !important;
+}
+
+.modal-dialog {
+    pointer-events: auto;
+}
+
+.modal-header {
+    background: linear-gradient(90deg, #EC38A7 0%, #6733B0 50%, #00B2E3 100%);
+    border-bottom: none;
+    padding: 1.5rem 2rem;
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+    position: relative;
+    overflow: hidden;
+}
+
+.modal-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: white !important;
+    margin: 0;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    z-index: 10;
+    position: relative;
+}
+
+.btn-close {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: white !important;
+    font-size: 1.5rem;
+    opacity: 1;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    z-index: 10;
+    position: relative;
+}
+
+.btn-close:hover {
+    opacity: 0.8;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+}
+
+/* Estilos para los campos del formulario del modal */
+#addExperienceModal .form-control:focus {
+    border-color: #8B5A9D !important;
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(139, 90, 157, 0.15) !important;
+    transform: translateY(-1px);
+}
+
+#addExperienceModal .form-control:hover {
+    border-color: #8B5A9D !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+}
+
+#addExperienceModal .form-check-input:checked {
+    background-color: #8B5A9D;
+    border-color: #8B5A9D;
+}
+
+/* Efectos hover para botones del modal */
+#addExperienceModal button[onclick="closeAddExperienceModal()"]:first-of-type:hover {
+    background: rgba(255, 255, 255, 0.25) !important;
+    transform: translateY(-1px);
+}
+
+#addExperienceModal button[onclick="closeAddExperienceModal()"]:last-of-type:hover {
+    background: #E5E7EB !important;
+    border-color: #D1D5DB !important;
+    transform: translateY(-1px);
+}
+
+#addExperienceModal button[onclick="addExperience()"]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(139, 90, 157, 0.4) !important;
+}
+
+.modal-body {
+    padding: 2rem;
+    background: white;
+    color: #333;
+}
+
+.modal-footer {
+    background: white;
+    border-top: 1px solid #eee;
+    padding: 1.5rem 2rem;
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    border-bottom-left-radius: 16px;
+    border-bottom-right-radius: 16px;
+    flex-shrink: 0;
+}
+
+.modal-footer .btn {
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.modal-footer .btn-primary {
+    background: linear-gradient(90deg, var(--primary-pink) 0%, var(--primary-purple) 50%, var(--primary-blue) 100%);
+    color: white;
+    box-shadow: 0 4px 12px rgba(236, 56, 167, 0.3);
+}
+
+.modal-footer .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(236, 56, 167, 0.4);
+}
+
+.modal-footer .btn-secondary {
+    background: #f8f9fa;
+    color: #6c757d;
+    border: 2px solid #e9ecef;
+}
+
+.modal-footer .btn-secondary:hover {
+    background: #e9ecef;
+    border-color: #dee2e6;
+    transform: translateY(-1px);
+}
+
+@media (max-width: 768px) {
+    .profile-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .profile-header {
+        text-align: center;
+    }
+    
+    .info-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.25rem;
+    }
+    
+    .info-value {
+        text-align: left;
+    }
+    
+    /* Responsive para modal */
+    .modal-dialog {
+        max-width: 90vw !important;
+        width: 90vw !important;
+    }
+    
+    .modal-body {
+        padding: 1rem;
+    }
+    
+    .modal-footer {
+        padding: 1rem;
+        flex-direction: column;
+    }
+    
+    .modal-footer .btn {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+    <!-- Header del Perfil -->
+    <div class="profile-header">
+        <div class="row align-items-center">
+            <div class="col-md-2 text-center">
+                <div class="profile-avatar">
+                    MC
+                </div>
+            </div>
+            <div class="col-md-10">
+                <div class="profile-name">María Carmen Rodríguez</div>
+                <div class="profile-title">Consultora Senior en Transformación Digital</div>
+                <div class="profile-level">Senior Level</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Grid de Secciones -->
+    <div class="profile-grid">
+        
+        <!-- Bloque 1: Información Personal -->
+        <div class="profile-section">
+            <h3 class="section-title">
+                <i data-feather="user" class="section-icon"></i>
+                Información Personal
+                <i data-feather="edit-2" class="edit-icon" onclick="toggleEditMode('info-personal')" title="Editar información"></i>
+            </h3>
+            
+            <div id="info-personal">
+            <div class="info-row">
+                <span class="info-label">Nombre:</span>
+                <span class="info-value">María Carmen Rodríguez</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Email:</span>
+                <span class="info-value">maria.rodriguez@consultant.com</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Especialidad:</span>
+                <span class="info-value">Transformación Digital</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Teléfono:</span>
+                <span class="info-value">+52 55 1234 5678</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">LinkedIn:</span>
+                <span class="info-value">linkedin.com/in/mariacarmen-rodriguez</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Nivel:</span>
+                <span class="info-value">Senior</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Dirección:</span>
+                <span class="info-value">Av. Reforma 350, Col. Juárez</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Ciudad:</span>
+                <span class="info-value">Ciudad de México</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Código Postal:</span>
+                <span class="info-value">06600</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">País:</span>
+                <span class="info-value">México</span>
+            </div>
+            
+            <div class="info-row">
+                <span class="info-label">Tarifa por hora:</span>
+                <span class="info-value">$85 USD</span>
+            </div>
+            
+            <div class="rate-display">
+                <div class="rate-amount">$85 USD</div>
+                <div class="rate-label">Tarifa de referencia</div>
+            </div>
+            
+            <div class="contact-info">
+                <strong>Resumen del Perfil:</strong><br>
+                <span class="info-value">Consultora senior con más de 8 años de experiencia en transformación digital, especializada en implementación de soluciones tecnológicas empresariales. Experta en metodologías ágiles, gestión de cambio organizacional y adopción de tecnologías emergentes.</span>
+            </div>
+            
+            <div class="edit-buttons" id="edit-buttons-info-personal">
+                <button class="btn-cancel" onclick="cancelEdit('info-personal')">Cancelar</button>
+                <button class="btn-save" onclick="saveEdit('info-personal')">Guardar</button>
+            </div>
+            </div>
+        </div>
+
+        <!-- Bloque 2: Experiencia como Freelance -->
+        <div class="profile-section">
+            <h3 class="section-title">
+                <i data-feather="briefcase" class="section-icon"></i>
+                Experiencia como Freelance
+            </h3>
+            
+            <div class="experience-item">
+                <div class="item-title">Implementación de ERP SAP</div>
+                <div class="item-subtitle">Consultora Senior - Líder de Proyecto</div>
+                <div class="item-date">Enero 2024 - Mayo 2024</div>
+                <div class="item-description">
+                    Lideré la implementación de SAP S/4HANA para una empresa manufacturera de 500+ empleados. Responsable de análisis de requerimientos, configuración de módulos financieros y capacitación del equipo.
+                </div>
+            </div>
+            
+            <div class="experience-item">
+                <div class="item-title">Transformación Digital Bancaria</div>
+                <div class="item-subtitle">Arquitecta de Soluciones</div>
+                <div class="item-date">Agosto 2023 - Diciembre 2023</div>
+                <div class="item-description">
+                    Diseñé e implementé la arquitectura de microservicios para la plataforma de banca digital, mejorando la experiencia del usuario en un 40% y reduciendo los tiempos de respuesta en un 60%.
+                </div>
+            </div>
+        </div>
+
+        <!-- Bloque 3: Experiencia Profesional -->
+        <div class="profile-section">
+            <h3 class="section-title">
+                <i data-feather="building" class="section-icon"></i>
+                Experiencia Profesional
+                <i data-feather="plus" class="edit-icon" onclick="openAddExperienceModal()" title="Agregar experiencia" style="margin-left: 8px;"></i>
+            </h3>
+            
+            <div id="experiencias-container">
+            <div class="experience-item">
+                <div class="item-title">Gerente de Transformación Digital</div>
+                <div class="item-subtitle">Accenture México</div>
+                <div class="item-date">Marzo 2020 - Julio 2023</div>
+                <div class="item-description">
+                    Lideré equipos multidisciplinarios en proyectos de transformación digital para clientes Fortune 500. Gestioné un portafolio de proyectos valuado en $2.5M USD con un ratio de éxito del 95%.
+                </div>
+                <div class="item-date"><strong>Ubicación:</strong> Ciudad de México, México</div>
+            </div>
+            
+            <div class="experience-item">
+                <div class="item-title">Consultora Senior de Procesos</div>
+                <div class="item-subtitle">IBM Global Services</div>
+                <div class="item-date">Enero 2018 - Febrero 2020</div>
+                <div class="item-description">
+                    Especializada en optimización de procesos de negocio y implementación de tecnologías emergentes. Participé en más de 15 proyectos de automatización robótica de procesos (RPA).
+                </div>
+                <div class="item-date"><strong>Ubicación:</strong> Guadalajara, México</div>
+            </div>
+            </div>
+        </div>
+
+        <!-- Bloque 4: Educación -->
+        <div class="profile-section">
+            <h3 class="section-title">
+                <i data-feather="book" class="section-icon"></i>
+                Educación
+            </h3>
+            
+            <div class="education-item">
+                <div class="item-title">Maestría en Administración de Empresas (MBA)</div>
+                <div class="item-subtitle">Instituto Tecnológico de Monterrey</div>
+                <div class="item-date">2016 - 2018</div>
+                <div class="item-description">
+                    <strong>Área de estudio:</strong> Estrategia y Transformación Digital<br>
+                    Tesis sobre "Impacto de la Transformación Digital en la Competitividad Empresarial". Promedio: 9.2/10
+                </div>
+            </div>
+            
+            <div class="education-item">
+                <div class="item-title">Ingeniería en Sistemas Computacionales</div>
+                <div class="item-subtitle">Universidad Nacional Autónoma de México (UNAM)</div>
+                <div class="item-date">2012 - 2016</div>
+                <div class="item-description">
+                    <strong>Área de estudio:</strong> Desarrollo de Software y Sistemas de Información<br>
+                    Proyecto de titulación: Sistema de gestión empresarial basado en la nube. Mención honorífica.
+                </div>
+            </div>
+        </div>
+
+        <!-- Bloque 5: Certificaciones -->
+        <div class="profile-section">
+            <h3 class="section-title">
+                <i data-feather="award" class="section-icon"></i>
+                Certificaciones
+            </h3>
+            
+            <div class="certification-item">
+                <div class="item-title">Project Management Professional (PMP)</div>
+                <div class="item-subtitle">Project Management Institute (PMI)</div>
+                <div class="item-date">Obtenida: Marzo 2022</div>
+                <a href="https://www.credly.com/badges/pmp-certificate" class="certification-link" target="_blank">
+                    Ver certificado
+                </a>
+            </div>
+            
+            <div class="certification-item">
+                <div class="item-title">AWS Solutions Architect Professional</div>
+                <div class="item-subtitle">Amazon Web Services</div>
+                <div class="item-date">Obtenida: Septiembre 2023</div>
+                <a href="https://aws.amazon.com/verification" class="certification-link" target="_blank">
+                    Ver certificado
+                </a>
+            </div>
+            
+            <div class="certification-item">
+                <div class="item-title">Certified ScrumMaster (CSM)</div>
+                <div class="item-subtitle">Scrum Alliance</div>
+                <div class="item-date">Obtenida: Enero 2021</div>
+                <a href="https://www.scrumalliance.org/community/profile/mrodriguez" class="certification-link" target="_blank">
+                    Ver certificado
+                </a>
+            </div>
+        </div>
+
+        <!-- Bloque 6: Proyectos Destacados -->
+        <div class="profile-section">
+            <h3 class="section-title">
+                <i data-feather="star" class="section-icon"></i>
+                Proyectos Destacados
+            </h3>
+            
+            <div class="project-item">
+                <div class="item-title">Plataforma de E-commerce Omnicanal</div>
+                <div class="item-date">Enero 2023 - Junio 2023</div>
+                <div class="item-description">
+                    Desarrollo de plataforma e-commerce integrada con sistemas legacy, procesando +100K transacciones diarias.
+                </div>
+                <div style="margin-top: 0.75rem;">
+                    <div class="tech-tag">React.js</div>
+                    <div class="tech-tag">Node.js</div>
+                    <div class="tech-tag">AWS</div>
+                    <div class="tech-tag">MongoDB</div>
+                    <div class="tech-tag">Microservicios</div>
+                </div>
+                <div style="margin-top: 0.75rem;">
+                    <a href="https://portfolio.mariacarmen.dev/ecommerce" class="certification-link" target="_blank">
+                        Ver en portfolio
+                    </a>
+                </div>
+            </div>
+            
+            <div class="project-item">
+                <div class="item-title">Sistema de Análisis Predictivo</div>
+                <div class="item-date">Agosto 2022 - Diciembre 2022</div>
+                <div class="item-description">
+                    Implementación de ML para predicción de demanda, mejorando la precisión de forecasting en un 35%.
+                </div>
+                <div style="margin-top: 0.75rem;">
+                    <div class="tech-tag">Python</div>
+                    <div class="tech-tag">TensorFlow</div>
+                    <div class="tech-tag">Apache Kafka</div>
+                    <div class="tech-tag">Docker</div>
+                    <div class="tech-tag">Kubernetes</div>
+                </div>
+                <div style="margin-top: 0.75rem;">
+                    <a href="https://portfolio.mariacarmen.dev/ml-analytics" class="certification-link" target="_blank">
+                        Ver en portfolio
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bloque 7: Habilidades -->
+        <div class="profile-section">
+            <h3 class="section-title">
+                <i data-feather="code" class="section-icon"></i>
+                Habilidades Técnicas
+            </h3>
+            
+            <div class="skill-item">
+                <span class="skill-name">Gestión de Proyectos</span>
+                <div class="skill-level">
+                    <div class="skill-bar">
+                        <div class="skill-progress" style="width: 95%"></div>
+                        <span class="skill-percentage">95%</span>
+                    </div>
+                    <span class="skill-level-text">Experto</span>
+                </div>
+            </div>
+            
+            <div class="skill-item">
+                <span class="skill-name">Transformación Digital</span>
+                <div class="skill-level">
+                    <div class="skill-bar">
+                        <div class="skill-progress" style="width: 90%"></div>
+                        <span class="skill-percentage">90%</span>
+                    </div>
+                    <span class="skill-level-text">Experto</span>
+                </div>
+            </div>
+            
+            <div class="skill-item">
+                <span class="skill-name">Arquitectura de Software</span>
+                <div class="skill-level">
+                    <div class="skill-bar">
+                        <div class="skill-progress" style="width: 85%"></div>
+                        <span class="skill-percentage">85%</span>
+                    </div>
+                    <span class="skill-level-text">Avanzado</span>
+                </div>
+            </div>
+            
+            <div class="skill-item">
+                <span class="skill-name">Cloud Computing (AWS)</span>
+                <div class="skill-level">
+                    <div class="skill-bar">
+                        <div class="skill-progress" style="width: 80%"></div>
+                        <span class="skill-percentage">80%</span>
+                    </div>
+                    <span class="skill-level-text">Avanzado</span>
+                </div>
+            </div>
+            
+            <div class="skill-item">
+                <span class="skill-name">Machine Learning</span>
+                <div class="skill-level">
+                    <div class="skill-bar">
+                        <div class="skill-progress" style="width: 70%"></div>
+                        <span class="skill-percentage">70%</span>
+                    </div>
+                    <span class="skill-level-text">Intermedio</span>
+                </div>
+            </div>
+            
+            <div class="skill-item">
+                <span class="skill-name">Metodologías Ágiles</span>
+                <div class="skill-level">
+                    <div class="skill-bar">
+                        <div class="skill-progress" style="width: 95%"></div>
+                        <span class="skill-percentage">95%</span>
+                    </div>
+                    <span class="skill-level-text">Experto</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bloque 8: Idiomas -->
+        <div class="profile-section">
+            <h3 class="section-title">
+                <i data-feather="globe" class="section-icon"></i>
+                Idiomas
+            </h3>
+            
+            <div class="skill-item">
+                <span class="skill-name">Español</span>
+                <div class="skill-level">
+                    <div class="skill-bar">
+                        <div class="skill-progress" style="width: 100%"></div>
+                        <span class="skill-percentage">100%</span>
+                    </div>
+                    <span class="skill-level-text">Nativo</span>
+                </div>
+            </div>
+            
+            <div class="skill-item">
+                <span class="skill-name">Inglés</span>
+                <div class="skill-level">
+                    <div class="skill-bar">
+                        <div class="skill-progress" style="width: 90%"></div>
+                        <span class="skill-percentage">90%</span>
+                    </div>
+                    <span class="skill-level-text">Avanzado (C1)</span>
+                </div>
+            </div>
+            
+            <div class="skill-item">
+                <span class="skill-name">Francés</span>
+                <div class="skill-level">
+                    <div class="skill-bar">
+                        <div class="skill-progress" style="width: 60%"></div>
+                        <span class="skill-percentage">60%</span>
+                    </div>
+                    <span class="skill-level-text">Intermedio (B2)</span>
+                </div>
+            </div>
+            
+            <div class="skill-item">
+                <span class="skill-name">Portugués</span>
+                <div class="skill-level">
+                    <div class="skill-bar">
+                        <div class="skill-progress" style="width: 45%"></div>
+                        <span class="skill-percentage">45%</span>
+                    </div>
+                    <span class="skill-level-text">Básico (A2)</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para Agregar Experiencia Profesional -->
+<div class="modal fade" id="addExperienceModal" tabindex="-1" aria-labelledby="addExperienceModalLabel" aria-hidden="true" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(0, 0, 0, 0.5); z-index: 1055; display: none; align-items: center; justify-content: center;">
+    <div class="modal-dialog" style="max-width: 500px; width: 500px; margin: 0; position: relative;">
+        <div class="modal-content" style="border: none; border-radius: 20px; box-shadow: 0 25px 80px rgba(0, 0, 0, 0.4); background: white; overflow: hidden; max-height: 85vh; display: flex; flex-direction: column;">
+            <div class="modal-header" style="background: linear-gradient(135deg, #8B5A9D 0%, #667eea 50%, #764ba2 100%); border-bottom: none; padding: 2rem 2rem 1.5rem 2rem; position: relative;">
+                <div style="display: flex; align-items: center; width: 100%;">
+                    <button type="button" onclick="closeAddExperienceModal()" style="background: rgba(255, 255, 255, 0.15); border: none; border-radius: 8px; padding: 8px 12px; color: white; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; font-weight: 500; transition: all 0.3s ease; margin-right: auto;">
+                        <i data-feather="arrow-left" style="width: 16px; height: 16px;"></i>
+                        Volver a opciones
+                    </button>
+                    <button type="button" class="btn-close" onclick="closeAddExperienceModal()" aria-label="Close" style="background: rgba(255, 255, 255, 0.15); border: none; color: white; font-size: 1.2rem; width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s ease;">×</button>
+                </div>
+                <h5 class="modal-title" id="addExperienceModalLabel" style="color: white; font-size: 1.5rem; font-weight: 600; margin: 1rem 0 0 0; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);">Añadir Usuario</h5>
+            </div>
+            <div class="modal-body" style="padding: 2rem; overflow-y: auto; flex: 1; max-height: calc(85vh - 180px);">
+                <div style="margin-bottom: 2rem;">
+                    <h6 style="color: #8B5A9D; font-weight: 600; font-size: 1.1rem; margin-bottom: 1.5rem; padding-bottom: 0.5rem; border-bottom: 2px solid #E5E7EB;">Datos de la Experiencia</h6>
+                    
+                    <form id="addExperienceForm">
+                        <div class="mb-3">
+                            <label for="expPuesto" class="form-label" style="font-weight: 600; color: #6B7280; margin-bottom: 0.5rem; font-size: 0.9rem;">Puesto</label>
+                            <input type="text" class="form-control" id="expPuesto" placeholder="Ej. Gerente de Proyectos" required style="padding: 12px 16px; border: 2px solid #E5E7EB; border-radius: 12px; background: white; color: #374151; font-size: 0.95rem; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);">
+                        </div>
+                        <div class="mb-3">
+                            <label for="expEmpresa" class="form-label" style="font-weight: 600; color: #6B7280; margin-bottom: 0.5rem; font-size: 0.9rem;">Empresa</label>
+                            <input type="text" class="form-control" id="expEmpresa" placeholder="Ej. DeepNova Solutions" required style="padding: 12px 16px; border: 2px solid #E5E7EB; border-radius: 12px; background: white; color: #374151; font-size: 0.95rem; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);">
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="expFechaInicio" class="form-label" style="font-weight: 600; color: #6B7280; margin-bottom: 0.5rem; font-size: 0.9rem;">Fecha de Inicio</label>
+                                    <input type="month" class="form-control" id="expFechaInicio" required style="padding: 12px 16px; border: 2px solid #E5E7EB; border-radius: 12px; background: white; color: #374151; font-size: 0.95rem; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="expFechaFin" class="form-label" style="font-weight: 600; color: #6B7280; margin-bottom: 0.5rem; font-size: 0.9rem;">Fecha de Fin</label>
+                                    <input type="month" class="form-control" id="expFechaFin" style="padding: 12px 16px; border: 2px solid #E5E7EB; border-radius: 12px; background: white; color: #374151; font-size: 0.95rem; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);">
+                                    <div class="form-check mt-2">
+                                        <input class="form-check-input" type="checkbox" id="expActual" style="border-radius: 4px; border: 2px solid #8B5A9D;">
+                                        <label class="form-check-label" for="expActual" style="color: #6B7280; font-size: 0.9rem;">
+                                            Trabajo actual
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="expUbicacion" class="form-label" style="font-weight: 600; color: #6B7280; margin-bottom: 0.5rem; font-size: 0.9rem;">Ubicación</label>
+                            <input type="text" class="form-control" id="expUbicacion" placeholder="Ciudad, País" style="padding: 12px 16px; border: 2px solid #E5E7EB; border-radius: 12px; background: white; color: #374151; font-size: 0.95rem; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);">
+                        </div>
+                        <div class="mb-3">
+                            <label for="expDescripcion" class="form-label" style="font-weight: 600; color: #6B7280; margin-bottom: 0.5rem; font-size: 0.9rem;">Descripción</label>
+                            <textarea class="form-control" id="expDescripcion" rows="4" placeholder="Describe tus responsabilidades y logros en este puesto..." style="padding: 12px 16px; border: 2px solid #E5E7EB; border-radius: 12px; background: white; color: #374151; font-size: 0.95rem; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); resize: vertical; min-height: 100px;"></textarea>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer" style="background: white; border-top: 1px solid #E5E7EB; padding: 1.5rem 2rem; display: flex; justify-content: flex-end; gap: 1rem; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;">
+                <button type="button" onclick="closeAddExperienceModal()" style="background: #F3F4F6; color: #6B7280; border: 2px solid #E5E7EB; padding: 12px 24px; border-radius: 12px; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: all 0.3s ease;">Cancelar</button>
+                <button type="button" onclick="addExperience()" style="background: linear-gradient(135deg, #8B5A9D 0%, #667eea 100%); color: white; border: none; padding: 12px 24px; border-radius: 12px; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(139, 90, 157, 0.3);">Guardar Usuario</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Inicializar los iconos de Feather si están disponibles
+    if (typeof feather !== 'undefined') {
+        feather.replace();
+    }
+    
+    // Animación para las barras de progreso de habilidades
+    const skillBars = document.querySelectorAll('.skill-progress');
+    
+    const animateSkillBars = () => {
+        skillBars.forEach(bar => {
+            const targetWidth = bar.style.width;
+            bar.style.width = '0%';
+            
+            setTimeout(() => {
+                bar.style.transition = 'width 1.5s ease-in-out';
+                bar.style.width = targetWidth;
+            }, Math.random() * 500);
+        });
+    };
+    
+    // Ejecutar animación cuando sea visible
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                animateSkillBars();
+                observer.disconnect();
+            }
+        });
+    });
+    
+    const skillsSection = document.querySelector('.profile-section');
+    if (skillsSection) {
+        observer.observe(skillsSection);
+    }
+});
+
+// Funcionalidad de edición
+let originalData = {};
+
+function toggleEditMode(sectionId) {
+    const section = document.getElementById(sectionId);
+    const editButtons = document.getElementById(`edit-buttons-${sectionId}`);
+    const infoValues = section.querySelectorAll('.info-value');
+    
+    // Guardar datos originales
+    originalData[sectionId] = {};
+    
+    infoValues.forEach((element, index) => {
+        originalData[sectionId][index] = element.textContent;
+        element.contentEditable = true;
+        element.classList.add('editable');
+    });
+    
+    editButtons.classList.add('show');
+}
+
+function cancelEdit(sectionId) {
+    const section = document.getElementById(sectionId);
+    const editButtons = document.getElementById(`edit-buttons-${sectionId}`);
+    const infoValues = section.querySelectorAll('.info-value');
+    
+    // Restaurar datos originales
+    infoValues.forEach((element, index) => {
+        element.textContent = originalData[sectionId][index];
+        element.contentEditable = false;
+        element.classList.remove('editable');
+    });
+    
+    editButtons.classList.remove('show');
+}
+
+function saveEdit(sectionId) {
+    const section = document.getElementById(sectionId);
+    const editButtons = document.getElementById(`edit-buttons-${sectionId}`);
+    const infoValues = section.querySelectorAll('.info-value');
+    
+    // Recopilar los datos del formulario
+    const formData = {};
+    const infoRows = section.querySelectorAll('.info-row');
+    
+    infoRows.forEach(row => {
+        const label = row.querySelector('.info-label')?.textContent.replace(':', '').trim();
+        const value = row.querySelector('.info-value')?.textContent.trim();
+        
+        if (label && value) {
+            // Mapear las etiquetas a nombres de campos apropiados
+            switch(label) {
+                case 'Nombre':
+                    formData.nombre = value;
+                    break;
+                case 'Email':
+                    formData.email = value;
+                    break;
+                case 'Teléfono':
+                    formData.telefono = value;
+                    break;
+                case 'LinkedIn':
+                    formData.linkedin = value;
+                    break;
+                case 'Especialidad':
+                    formData.especialidad = value;
+                    break;
+                case 'Nivel':
+                    formData.nivel = value;
+                    break;
+                case 'Dirección':
+                    formData.direccion = value;
+                    break;
+                case 'Ciudad':
+                    formData.ciudad = value;
+                    break;
+                case 'Código Postal':
+                    formData.codigo_postal = value;
+                    break;
+                case 'País':
+                    formData.pais = value;
+                    break;
+                case 'Tarifa por hora':
+                    formData.tarifa_hora = value;
+                    break;
+            }
+        }
+    });
+    
+    // Obtener el resumen del perfil
+    const resumenElement = section.querySelector('.contact-info .info-value');
+    if (resumenElement) {
+        formData.resumen = resumenElement.textContent.trim();
+    }
+    
+    console.log('Datos a enviar:', formData);
+    
+    // Enviar datos al servidor
+    fetch('/api/informacion-personal', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            // Desactivar modo de edición
+            infoValues.forEach((element) => {
+                element.contentEditable = false;
+                element.classList.remove('editable');
+            });
+            
+            editButtons.classList.remove('show');
+            alert('Información actualizada correctamente');
+        } else {
+            alert('Error al actualizar: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error al enviar los datos');
+    });
+}
+
+// Funciones para manejar experiencias profesionales
+function openAddExperienceModal() {
+    const modal = document.getElementById('addExperienceModal');
+    
+    // Mostrar modal como ventana emergente
+    modal.style.display = 'flex';
+    modal.classList.add('show');
+    modal.setAttribute('aria-hidden', 'false');
+    
+    // Prevenir scroll del body
+    document.body.style.overflow = 'hidden';
+    
+    // Agregar event listener para cerrar con Escape
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeAddExperienceModal();
+        }
+    });
+    
+    // Cerrar al hacer clic fuera del modal
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            closeAddExperienceModal();
+        }
+    });
+}
+
+function closeAddExperienceModal() {
+    const modal = document.getElementById('addExperienceModal');
+    
+    // Ocultar modal
+    modal.style.display = 'none';
+    modal.classList.remove('show');
+    modal.setAttribute('aria-hidden', 'true');
+    
+    // Restaurar scroll del body
+    document.body.style.overflow = '';
+    
+    // Limpiar formulario
+    document.getElementById('addExperienceForm').reset();
+}
+
+function addExperience() {
+    const puesto = document.getElementById('expPuesto').value;
+    const empresa = document.getElementById('expEmpresa').value;
+    const fechaInicio = document.getElementById('expFechaInicio').value;
+    const fechaFin = document.getElementById('expFechaFin').value;
+    const actual = document.getElementById('expActual').checked;
+    const ubicacion = document.getElementById('expUbicacion').value;
+    const descripcion = document.getElementById('expDescripcion').value;
+    
+    if (!puesto || !empresa || !fechaInicio || (!fechaFin && !actual)) {
+        alert('Por favor completa todos los campos obligatorios');
+        return;
+    }
+    
+    // Preparar datos para enviar al backend
+    const formData = {
+        puesto: puesto,
+        empresa: empresa,
+        fecha_inicio: fechaInicio,
+        fecha_fin: actual ? null : fechaFin,
+        trabajo_actual: actual,
+        ubicacion: ubicacion,
+        descripcion: descripcion,
+        tipo_empleo: 'freelance', // Valor por defecto
+        sector: 'tecnologia' // Valor por defecto
+    };
+    
+    // Enviar datos al backend
+    fetch('/api/experiencia-laboral', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            // Formatear fechas para mostrar
+            const fechaInicioFormatted = formatDate(fechaInicio);
+            const fechaFinFormatted = actual ? 'Presente' : formatDate(fechaFin);
+            const periodoText = fechaInicioFormatted + ' - ' + fechaFinFormatted;
+            
+            // Crear nuevo elemento de experiencia en el DOM
+            const experienciasContainer = document.getElementById('experiencias-container');
+    const newExperience = document.createElement('div');
+    newExperience.className = 'experience-item';
+    newExperience.innerHTML = `
+        <div class="item-title">${puesto}</div>
+        <div class="item-subtitle">${empresa}</div>
+        <div class="item-date">${periodoText}</div>
+        <div class="item-description">
+            ${descripcion}
+        </div>
+        ${ubicacion ? `<div class="item-date"><strong>Ubicación:</strong> ${ubicacion}</div>` : ''}
+    `;
+    
+    // Agregar al inicio del contenedor
+            experienciasContainer.insertBefore(newExperience, experienciasContainer.firstChild);
+            
+            // Cerrar modal y limpiar formulario
+            closeAddExperienceModal();
+            
+            // Mostrar mensaje de éxito
+            alert('Experiencia agregada correctamente');
+        } else {
+            alert('Error al agregar experiencia: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error al enviar los datos de experiencia laboral');
+    });
+}
+
+function formatDate(dateString) {
+    if (!dateString) return '';
+    const [year, month] = dateString.split('-');
+    const months = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+                   'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+    return months[parseInt(month) - 1] + ' ' + year;
+}
+
+// Manejar checkbox de trabajo actual
+document.addEventListener('DOMContentLoaded', function() {
+    const actualCheckbox = document.getElementById('expActual');
+    const fechaFinInput = document.getElementById('expFechaFin');
+    
+    if (actualCheckbox && fechaFinInput) {
+        actualCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+                fechaFinInput.disabled = true;
+                fechaFinInput.value = '';
+            } else {
+                fechaFinInput.disabled = false;
+            }
+        });
+    }
+});
+</script>
+{% endblock %}
