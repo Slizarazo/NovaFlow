@@ -1134,3 +1134,37 @@ def create_oportunidad():
     except Exception as e:
         app.logger.error(f"Error al crear oportunidad: {str(e)}")
         return jsonify({'status': 'error', 'message': str(e)}), 500
+
+@app.route('/proyectos/calculadora', methods=['GET', 'POST'])
+@login_required
+def proyectos_calculadora():
+    if request.method == 'POST':
+        try:
+            data = request.get_json()
+            print(f"Datos de calculadora recibidos: {data}")
+
+            if not data:
+                return jsonify({'status': 'error', 'message': 'No se recibieron datos'}), 400
+
+            project_id = data.get('projectId')
+            project_name = data.get('projectName')
+            time_estimates = data.get('timeEstimates', {})
+            costs = data.get('costs', {})
+
+            print(f"Proyecto: {project_name} (ID: {project_id})")
+            print(f"Estimaciones de tiempo: {time_estimates}")
+            print(f"Costos: {costs}")
+
+            return jsonify({'status': 'success', 'message': 'Estimación guardada exitosamente'})
+
+        except Exception as e:
+            app.logger.error(f"Error al guardar estimación: {str(e)}")
+            return jsonify({'status': 'error', 'message': str(e)}), 500
+    
+    # GET request
+    proyectos = Proyecto.PROYECTOS
+    return render_template('proyectos/calculadora.html',
+                         title='Calculadora de Tiempos',
+                         proyectos=proyectos,
+                         config=app.config,
+                         role=current_user.role)
