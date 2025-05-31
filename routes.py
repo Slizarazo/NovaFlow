@@ -111,6 +111,14 @@ def dashboard_crecimiento():
                          rentabilidad=generar_grafico_rentabilidad(datos_rentabilidad))
 
 
+@app.route('/consultor/perfil')
+@login_required
+def consultor_perfil():
+    return render_template('consultor/perfil.html',
+                         title='Perfil del Consultor',
+                         config=app.config,
+                         role=current_user.role)
+
 @app.route('/dashboard/growth')
 @login_required
 def dashboard_growth():
