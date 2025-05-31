@@ -1168,3 +1168,82 @@ def proyectos_calculadora():
                          proyectos=proyectos,
                          config=app.config,
                          role=current_user.role)
+
+@app.route('/proyectos/estimaciones')
+@login_required
+def proyectos_estimaciones():
+    # Datos de ejemplo para las estimaciones
+    estimaciones = [
+        {
+            'id': 'EST-001',
+            'aliado': 'Aliado Tech',
+            'caso_uso': 'Sistema de Gestión de Inventarios para Retail',
+            'fecha': '2024-01-15',
+            'tipo': 'Desarrollo Completo',
+            'horas_estimadas': 320,
+            'tarifa_freelance': 45,
+            'recursos': '3 Desarrolladores, 1 QA, 1 PM',
+            'estado': 'Aprobada'
+        },
+        {
+            'id': 'EST-002',
+            'aliado': 'Financiera Global',
+            'caso_uso': 'Plataforma de Pagos Móviles',
+            'fecha': '2024-01-20',
+            'tipo': 'MVP',
+            'horas_estimadas': 480,
+            'tarifa_freelance': 60,
+            'recursos': '4 Desarrolladores, 1 Designer, 1 QA',
+            'estado': 'En Revisión'
+        },
+        {
+            'id': 'EST-003',
+            'aliado': 'Industrias Este',
+            'caso_uso': 'Dashboard de Analytics en Tiempo Real',
+            'fecha': '2024-01-25',
+            'tipo': 'Prototipo',
+            'horas_estimadas': 160,
+            'tarifa_freelance': 55,
+            'recursos': '2 Desarrolladores Frontend, 1 Data Engineer',
+            'estado': 'Pendiente'
+        },
+        {
+            'id': 'EST-004',
+            'aliado': 'Consultores Sur',
+            'caso_uso': 'Sistema CRM Personalizado',
+            'fecha': '2024-02-01',
+            'tipo': 'Desarrollo Completo',
+            'horas_estimadas': 600,
+            'tarifa_freelance': 50,
+            'recursos': '5 Desarrolladores, 2 QA, 1 PM, 1 Designer',
+            'estado': 'Aprobada'
+        },
+        {
+            'id': 'EST-005',
+            'aliado': 'Servicios Oeste',
+            'caso_uso': 'Migración a la Nube AWS',
+            'fecha': '2024-02-05',
+            'tipo': 'Consultoría',
+            'horas_estimadas': 120,
+            'tarifa_freelance': 75,
+            'recursos': '2 Cloud Architects, 1 DevOps Engineer',
+            'estado': 'Rechazada'
+        },
+        {
+            'id': 'EST-006',
+            'aliado': 'Aliado Tech',
+            'caso_uso': 'App Móvil de E-commerce',
+            'fecha': '2024-02-10',
+            'tipo': 'MVP',
+            'horas_estimadas': 280,
+            'tarifa_freelance': 42,
+            'recursos': '2 Desarrolladores Mobile, 1 Designer',
+            'estado': 'En Revisión'
+        }
+    ]
+    
+    return render_template('proyectos/estimaciones.html',
+                         title='Estimaciones de Proyectos',
+                         estimaciones=estimaciones,
+                         config=app.config,
+                         role=current_user.role)
