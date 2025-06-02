@@ -17,7 +17,7 @@ class Config:
     
     # Navigation menus for each role
     NAVIGATION = {
-        'gestor': [
+        'Gestor': [
             {'name': 'Dashboard', 'icon': 'home', 'url': '/dashboard', 
              'submenu': [
                  {'name': 'Crecimiento', 'url': '/dashboard/growth'},
@@ -32,7 +32,7 @@ class Config:
                  {'name': 'Asignaciones', 'url': '/aliados/asignaciones'}
              ]}
         ],
-        'aliado': [
+        'Aliado': [
             {'name': 'Dashboard de Crecimiento', 'icon': 'activity', 'url': '/dashboard/crecimiento', 'submenu': []},
             {'name': 'Dashboards', 'icon': 'activity', 'url': '/dashboard',
              'submenu': [
@@ -57,7 +57,7 @@ class Config:
                  {'name': 'Usuarios', 'url': '/cuentas/usuarios'}
              ]}
         ],
-        'supervisor': [
+        'Supervisor': [
             {'name': 'Dashboard', 'icon': 'home', 'url': '/dashboard'},
             {'name': 'Proyectos', 'icon': 'briefcase', 'url': '/proyectos',
              'submenu': [
@@ -73,7 +73,7 @@ class Config:
                  {'name': 'Activos', 'url': '/consultores/activos'}
              ]}
         ],
-        'consultor': [
+        'Consultor': [
             {'name': 'Perfil', 'icon': 'user', 'url': '/consultor/perfil'},
             {'name': 'Mis Proyectos', 'icon': 'briefcase', 'url': '/mis-proyectos'},
             {'name': 'Actividades', 'icon': 'activity', 'url': '/actividades'},

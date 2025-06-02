@@ -1,0 +1,900 @@
+{% extends "layout.html" %}
+
+{% block head %}
+<style>
+/* Estilos para modales */
+.modal {
+    display: none !important;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1055;
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal.show {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1050;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-dialog {
+    position: relative;
+    margin: 2rem auto;
+    max-width: 500px;
+    width: 90%;
+}
+
+.modal-content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    background-color: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    outline: 0;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+/* Modern action buttons matching aliados.html */
+.dashboard-section-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.action-button {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    border-radius: 8px;
+    padding: 8px 12px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.action-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+/* Dropdown styles */
+.dropdown-toggle::after {
+    margin-left: 8px;
+    vertical-align: middle;
+}
+
+.dropdown-menu {
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    padding: 8px 0;
+    min-width: 160px;
+}
+
+.dropdown-item {
+    padding: 8px 16px;
+    font-size: 14px;
+    color: #374151;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+.dropdown-item:hover {
+    background-color: #f3f4f6;
+    color: #1f2937;
+}
+
+.dropdown-item i {
+    color: #6b7280;
+}
+
+/* Assignment option buttons */
+.assignment-option-btn {
+    height: auto !important;
+    min-height: 80px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    padding: 15px !important;
+    text-align: left !important;
+    border: 2px solid #667eea !important;
+    border-radius: 8px !important;
+    background: white !important;
+    color: #333 !important;
+    transition: all 0.3s ease !important;
+    width: 100% !important;
+}
+
+.assignment-option-btn:hover {
+    border-color: #5a67d8 !important;
+    background: #f7fafc !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+}
+
+.assignment-option-btn:hover i {
+    color: #5a67d8 !important;
+}
+
+/* Data management modal styles */
+.data-option {
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    padding: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    background: white;
+}
+
+.data-option:hover {
+    border-color: #667eea;
+    background: #f8f9ff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+}
+
+.data-option-icon {
+    margin-right: 1rem;
+    flex-shrink: 0;
+}
+
+.data-option-icon i {
+    width: 32px;
+    height: 32px;
+    stroke-width: 2;
+}
+
+.data-option-content h5 {
+    margin-bottom: 0.5rem;
+    color: #333;
+    font-weight: 600;
+}
+
+.data-option-desc {
+    margin: 0;
+    color: #666;
+    font-size: 0.9rem;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="dashboard-section-title">
+        <h4>Asignaciones de Consultores</h4>
+        <div class="action-buttons">
+            <button type="button" class="action-button" data-bs-toggle="modal" data-bs-target="#addAssignmentModal" title="Nueva Asignación">
+                <i data-feather="plus"></i>
+            </button>
+            <div class="dropdown">
+                <button type="button" class="action-button dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" title="Gestión de Datos" onclick="showDataManagementModal()">
+                    <i data-feather="database"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Filter Section -->
+    <div class="filter-section mb-4">
+        <form class="filter-form">
+            <div class="filter-row">
+                <div class="filter-col">
+                    <label class="filter-label" for="filterEspecialidad">Especialidad</label>
+                    <select class="filter-control" id="filterEspecialidad" name="especialidad">
+                        <option value="">Todas</option>
+                    </select>
+                </div>
+                <div class="filter-col">
+                    <label class="filter-label" for="filterDisponibilidad">Disponibilidad Mínima</label>
+                    <select class="filter-control" id="filterDisponibilidad" name="disponibilidad">
+                        <option value="">Todas</option>
+                        <option value="75">75% o más</option>
+                        <option value="50">50% o más</option>
+                        <option value="25">25% o más</option>
+                        <option value="10">10% o más</option>
+                    </select>
+                </div>
+                <div class="filter-col">
+                    <label class="filter-label" for="filterCiudad">Ciudad</label>
+                    <select class="filter-control" id="filterCiudad" name="ciudad">
+                        <option value="">Todas</option>
+                    </select>
+                </div>
+            </div>
+        </form>
+    </div>
+    
+    <!-- Consultants Availability View -->
+    <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Disponibilidad de Consultores</h5>
+            <div>
+                <span class="badge bg-success me-2">Disponible (>50%)</span>
+                <span class="badge bg-warning me-2">Parcial (20-50%)</span>
+                <span class="badge bg-danger">Ocupado (20%)</span>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Especialidad</th>
+                            <th>Disponibilidad</th>
+                            <th>Nivel Usuario vs Nivel Gestor</th>
+                            <th>Ciudad</th>
+                            <th>Tarifa/Hora</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for con in consultores %}
+                        <tr data-especialidad="{{ con[2] }}" data-disponibilidad="{{ con[3] if con[3] else 'N/A' }}" data-ciudad="{{ con[5] if con[5] else 'N/A' }}">
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div style="width: 40px; height: 40px; background-color: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 10px; color: white; font-weight: bold;">
+                                        {{ con[1] }}{{ con[1].split() | last | first }}
+                                    </div>
+                                    <div>
+                                        <div><strong>{{ con[1] }}</strong></div>
+                                        <div class="text-muted">ID: {{ con[0] }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>{{ con[2] }}</td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="progress me-2" style="width: 100px; height: 10px;">
+                                        <div class="progress-bar 
+                                            {% if con[3] > 50 %}
+                                                bg-success
+                                            {% elif con[3] >= 20 %}
+                                                bg-warning
+                                            {% else %}
+                                                bg-danger
+                                            {% endif %}" 
+                                            style="width: {{ con[3] }}%">
+                                        </div>
+                                    </div>
+                                    <span>{{ con[3] }}%</span>
+                                </div>
+                            </td>
+                            <td>
+                                {% set nivel = 'Junior' %}
+                                {% set clase = 'bg-secondary' %}
+                                {% if con[4] > 75 %}
+                                    {% set nivel = 'Expert' %}
+                                    {% set clase = 'bg-success' %}
+                                {% elif con[4] > 50 %}
+                                    {% set nivel = 'Senior' %}
+                                    {% set clase = 'bg-info' %}
+                                {% elif con[4] > 25 %}
+                                    {% set nivel = 'Mid' %}
+                                    {% set clase = 'bg-warning' %}
+                                {% endif %}
+
+                                <div class="d-flex flex-column">
+                                    <span class="badge {{ clase }} mb-1">{{ nivel }}</span>
+                                    <div class="progress" style="height: 8px;">
+                                        <div class="progress-bar {{ clase }}" 
+                                            role="progressbar" 
+                                            style="width: {{ con[4] }}%;" 
+                                            aria-valuenow="{{ con[4] }}" 
+                                            aria-valuemin="0" 
+                                            aria-valuemax="100">
+                                        </div>
+                                    </div>
+                                    <small class="text-muted text-end">{{ con[4] }}%</small>
+                                </div>
+                            </td>
+                            <td>{{ con[5] if con[5] else 'Ciudad de México' }}</td>
+                            <td>
+                                <span class="fw-bold text-success">${{ "%0.0f"|format(con[6]) }}/hora</span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Current Assignments -->
+    <div class="dashboard-section-title">
+        <h4>Asignaciones Actuales</h4>
+    </div>
+    <div class="row">
+        {% for proyecto_id, proyecto in proyectos.items() %}
+        <!-- Only show projects with active assignments -->
+        {% if proyecto.consultores_asignados > 0 %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">{{ proyecto.nombre }}</h5>
+                    <span class="badge 
+                        {% if proyecto.etapa == 'propuesta' %}bg-info
+                        {% elif proyecto.etapa == 'planificacion' %}bg-primary
+                        {% elif proyecto.etapa == 'ejecucion' %}bg-warning
+                        {% elif proyecto.etapa == 'cierre' %}bg-success
+                        {% else %}bg-secondary{% endif %}">
+                        {{ proyecto.etapa|capitalize }}
+                    </span>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">Consultores asignados: {{ proyecto.consultores_asignados }}</p>
+                    
+                    <div class="mb-3">
+                        <h6>Equipo:</h6>
+                        <div class="d-flex flex-wrap">
+                            {% for consultor in consultores %}
+                                {% if proyecto_id|int in consultor.proyectos_asignados %}
+                                <div class="d-flex align-items-center me-3 mb-2" style="min-width: 100px;">
+                                    <div style="width: 30px; height: 30px; background-color: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 8px; color: white; font-size: 12px;">
+                                        {{ consultor.nombre[0] }}{{ consultor.nombre.split() | last | first }}
+                                    </div>
+                                    <div class="text-truncate" style="max-width: 150px;">{{ consultor.nombre }}</div>
+                                </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <h6>Fecha de Asignación:</h6>
+                        <p>{{ proyecto.fecha_inicio }}</p>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <h6>Fecha de Finalización:</h6>
+                        <p>{{ proyecto.fecha_fin }}</p>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="d-flex justify-content-between">
+                        <button class="btn btn-sm btn-outline-primary">
+                            <i data-feather="eye" style="width: 14px; height: 14px; margin-right: 5px;"></i>
+                            Ver detalles
+                        </button>
+                        <button class="btn btn-sm btn-outline-secondary">
+                            <i data-feather="users" style="width: 14px; height: 14px; margin-right: 5px;"></i>
+                            Gestionar equipo
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+    </div>
+    
+    <!-- Consultant Retention Process -->
+    <div class="dashboard-section-title mt-3">
+        <h4>Proceso de Retención de Talento</h4>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <div style="font-size: 2rem; color: var(--primary); margin-bottom: 1rem;">
+                                <i data-feather="award" style="width: 48px; height: 48px;"></i>
+                            </div>
+                            <h5 class="mb-3">Reconocimiento</h5>
+                            <p class="card-text">Programa de reconocimiento basado en métricas de desempeño, feedback de clientes y contribución a objetivos estratégicos.</p>
+                            <div class="text-muted mt-3">
+                                <small>Consultores reconocidos: 12</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <div style="font-size: 2rem; color: var(--info); margin-bottom: 1rem;">
+                                <i data-feather="trending-up" style="width: 48px; height: 48px;"></i>
+                            </div>
+                            <h5 class="mb-3">Desarrollo Profesional</h5>
+                            <p class="card-text">Plan de carrera personalizado con oportunidades de capacitación, certificaciones y mentoría en áreas de especialización.</p>
+                            <div class="text-muted mt-3">
+                                <small>Programas en curso: 8</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <div style="font-size: 2rem; color: var(--success); margin-bottom: 1rem;">
+                                <i data-feather="users" style="width: 48px; height: 48px;"></i>
+                            </div>
+                            <h5 class="mb-3">Comunidad & Pertenencia</h5>
+                            <p class="card-text">Creación de comunidad con eventos, colaboración abierta y participación en la toma de decisiones estratégicas.</p>
+                            <div class="text-muted mt-3">
+                                <small>Índice de satisfacción: 92%</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-3">
+                <a href="#" class="btn btn-primary">
+                    <i data-feather="info" style="width: 16px; height: 16px; margin-right: 5px;"></i>
+                    Más información sobre nuestro programa de retención
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .modal-dialog {
+            max-width: 480px;
+            margin: 1rem auto;
+            max-height: calc(100vh - 2rem);
+        }
+
+        .modal-content {
+            border-radius: 12px;
+            border: none;
+            max-height: 100%;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #8b7bc8 0%, #7b68c7 100%);
+            color: white;
+            border-radius: 12px 12px 0 0;
+            padding: 20px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            border: none;
+        }
+
+        .modal-header .btn-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            opacity: 0.8;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-weight: normal;
+            line-height: 1;
+            transition: all 0.2s ease;
+            margin-left: 16px;
+        }
+
+        .modal-header .btn-close:hover {
+            background: rgba(255,255,255,0.2);
+            opacity: 1;
+        }
+
+        .modal-body {
+            padding: 24px 20px;
+            background: white;
+            flex: 1;
+            overflow-y: auto;
+            min-height: 0;
+        }
+
+        .form-label {
+            color: #2d3748;
+            font-weight: 500;
+            margin-bottom: 8px;
+            display: block;
+            font-size: 14px;
+        }
+
+        .form-select, .form-control {
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            padding: 12px 14px;
+            font-size: 14px;
+            width: 100%;
+            background-color: #f9fafb;
+            appearance: none;
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 16px;
+        }
+
+        .btn-link {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #8b7bc8 0%, #7b68c7 100%);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #6b7280;
+            border: 1px solid #d1d5db;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .modal-footer {
+            padding: 16px 20px;
+            border-top: 1px solid #e5e7eb;
+            background: white;
+            border-radius: 0 0 12px 12px;
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            flex-shrink: 0;
+        }
+
+        .data-option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .data-option:hover {
+            background-color: #f9fafb;
+        }
+
+        .data-option-icon i {
+            font-size: 20px;
+        }
+
+        .data-option-content h5 {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .data-option-desc {
+            font-size: 13px;
+            color: #666;
+        }
+    </style>
+    
+    <!-- Modal Nueva Asignación -->
+    <div class="modal fade" id="addAssignmentModal" tabindex="-1" aria-labelledby="addAssignmentModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addAssignmentModalLabel">Nueva Asignación</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">×</button>
+                </div>
+                
+                <div class="modal-body" style="padding: 24px 20px; background: white; flex: 1; overflow-y: auto; min-height: 0;">
+                    <div id="assignmentTypeSelection">
+                        <h6 style="color: #4a5568; font-weight: 600; margin-bottom: 20px;">Tipo de Asignación</h6>
+                        <div class="d-grid gap-3">
+                            <button type="button" class="btn btn-outline-primary btn-lg assignment-option-btn" onclick="selectAssignmentType('comunidad')">
+                                <div class="d-flex align-items-center w-100">
+                                    <i data-feather="users" style="width: 24px; height: 24px; margin-right: 15px; color: #667eea; flex-shrink: 0;"></i>
+                                    <div class="flex-grow-1">
+                                        <div style="font-weight: 600; color: #333; margin-bottom: 4px;">Asignar Comunidad</div>
+                                        <small style="color: #666; line-height: 1.3;">Asignar un grupo de consultores especializados</small>
+                                    </div>
+                                </div>
+                            </button>
+                            <button type="button" class="btn btn-outline-primary btn-lg assignment-option-btn" onclick="selectAssignmentType('freelance')">
+                                <div class="d-flex align-items-center w-100">
+                                    <i data-feather="user" style="width: 24px; height: 24px; margin-right: 15px; color: #667eea; flex-shrink: 0;"></i>
+                                    <div class="flex-grow-1">
+                                        <div style="font-weight: 600; color: #333; margin-bottom: 4px;">Asignar Freelance</div>
+                                        <small style="color: #666; line-height: 1.3;">Asignar un consultor independiente específico</small>
+                                    </div>
+                                </div>
+                            </button>
+                            <button type="button" class="btn btn-outline-primary btn-lg assignment-option-btn" onclick="selectAssignmentType('crear_comunidad')">
+                                <div class="d-flex align-items-center w-100">
+                                    <i data-feather="users" style="width: 24px; height: 24px; margin-right: 15px; color: #667eea; flex-shrink: 0;"></i>
+                                    <div class="flex-grow-1">
+                                        <div style="font-weight: 600; color: #333; margin-bottom: 4px;">Crear Comunidad</div>
+                                        <small style="color: #666; line-height: 1.3;">Definir comunidad y agregar miembros</small>
+                                    </div>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    
+                    
+                    <div id="freelanceForm" style="display: none;">
+                        <button type="button" class="btn btn-link p-0 mb-3" onclick="backToTypeSelection()" style="color: #667eea; text-decoration: none;">
+                            <i data-feather="arrow-left" style="width: 16px; height: 16px; margin-right: 5px;"></i>
+                            Volver
+                        </button>
+                        
+                        <h6 style="color: #4a5568; font-weight: 600; margin-bottom: 20px;">Asignación de Freelance</h6>
+                        
+                        <form id="assignmentForm">
+                            <div class="mb-4">
+                                <label for="casoUsoSelect" class="form-label" style="color: #2d3748; font-weight: 500; margin-bottom: 8px; display: block; font-size: 14px;">Caso de Uso</label>
+                                <select class="form-select" id="casoUsoSelect" required style="border: 1px solid #d1d5db; border-radius: 8px; padding: 12px 14px; font-size: 14px; width: 100%; background-color: #f9fafb; appearance: none; background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"%23666\" stroke-width=\"2\"><polyline points=\"6,9 12,15 18,9\"></polyline></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px;">
+                                    <option value="">Seleccionar Aliado...</option>
+                                    {% for aliado in aliados %}
+                                    <option value="{{ aliado[0] }}">{{ aliado[1]|capitalize }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="usuarioSelect" class="form-label">Usuario</label>
+                                <select class="form-select" id="usuarioSelect" required>
+                                    <option value="">Seleccionar freelancer/consultor...</option>
+                                    {% for con in consultores %}
+                                    <option value="{{ con[0] }}">{{ con[1] }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="rolProyecto" class="form-label">Rol del Proyecto</label>
+                                <select class="form-select" id="rolProyecto" required>
+                                    <option value="">Seleccionar rol...</option>
+                                    <option value="lider">Líder de Proyecto</option>
+                                    <option value="desarrollador">Desarrollador</option>
+                                    <option value="analista">Analista de Datos</option>
+                                    <option value="consultor">Consultor</option>
+                                    <option value="diseñador">Diseñador UX/UI</option>
+                                    <option value="qa">QA/Testing</option>
+                                    <option value="devops">DevOps</option>
+                                    <option value="supervisor">Supervisor</option>
+                                </select>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <div id="comunidadForm">
+                        <button type="button" class="btn btn-link p-0 mb-3" onclick="backToTypeSelection()">
+                            <i data-feather="arrow-left"></i>
+                            Volver
+                        </button>
+                        
+                        <h6>Asignación de Comunidad</h6>
+                        
+                        <form id="comunidadAssignmentForm">
+                            <div class="mb-4">
+                                <label for="casoUsoComunidadSelect" class="form-label">Aliado</label>
+                                <select class="form-select" id="casoUsoComunidadSelect" required>
+                                    <option value="">Seleccionar Aliado..</option>
+                                    {% for aliado in aliados %}
+                                    <option value="{{ aliado[0] }}">{{ aliado[1]|capitalize }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="comunidadSelect" class="form-label">Comunidad</label>
+                                <select class="form-select" id="comunidadSelect" required>
+                                    <option value="">Seleccionar comunidad...</option>
+                                    {% for com in comunidades %}
+                                    <option value="{{ com[0] }}">{{ com[1] }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div id="crearComunidadForm" style="display: none;">
+                        <button type="button" class="btn btn-link p-0 mb-3" onclick="backToTypeSelection()" style="color: #667eea; text-decoration: none;">
+                            <i data-feather="arrow-left" style="width: 16px; height: 16px; margin-right: 5px;"></i>
+                            Volver
+                        </button>
+
+                        <h6 style="color: #4a5568; font-weight: 600; margin-bottom: 20px;">Crear Nueva Comunidad</h6>
+
+                        <form id="crearComunidadFormContent">
+                            <div class="mb-3">
+                                <label for="nombreComunidad" class="form-label">Nombre de la Comunidad</label>
+                                <input type="text" class="form-control" id="nombreComunidad" name="nombreComunidad" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="tipoComunidad" class="form-label">Tipo</label>
+                                <select class="form-select" id="tipoComunidad" name="tipoComunidad" required>
+                                    <option value="">Seleccionar tipo...</option>
+                                    <option value="tecnica">Técnica</option>
+                                    <option value="regional">Regional</option>
+                                    <option value="interdisciplinaria">Interdisciplinaria</option>
+                                    <option value="tematica">Temática</option>
+                                    <option value="otra">Otra</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="descripcionComunidad" class="form-label">Descripción</label>
+                                <textarea class="form-control" id="descripcionComunidad" name="descripcionComunidad" rows="3"></textarea>
+                            </div>
+
+                            <hr>
+
+                            <h6>Miembros de la Comunidad</h6>
+
+                            <div id="miembrosComunidadContainer">
+                                <div id="miembroPlantilla" class="miembro-item mb-3 d-flex align-items-center gap-2" style="display: none;">
+                                    <select class="form-select" name="usuario[]" required style="flex: 1;">
+                                        <option value="">Seleccionar usuario...</option>
+                                        {% for con in consultores %}
+                                        <option value="{{ con[0] }}">{{ con[1] }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <input type="text" class="form-control" name="rol[]" placeholder="Rol en la comunidad" required style="flex: 1;">
+                                    <button type="button" class="btn btn-danger btn-sm" onclick="this.parentNode.remove()">×</button>
+                                </div>
+                            </div>
+
+                            <button type="button" class="btn btn-outline-secondary btn-sm mt-2" onclick="agregarMiembroComunidad()">Agregar otro miembro</button>
+                        </form>
+                    </div>
+                </div>
+                
+                <div class="modal-footer" id="modalFooter">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="submitAssignmentBtn" onclick="submitAssignment()">Crear Asignación</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal Gestión de Datos -->
+    <div class="modal fade" id="dataManagementModal" tabindex="-1" aria-labelledby="dataManagementModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="dataManagementModalLabel">Gestión de Datos</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">×</button>
+                </div>
+                
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12 mb-3">
+                            <div class="data-option" onclick="openImportModal()">
+                                <div class="data-option-icon">
+                                    <i data-feather="upload"></i>
+                                </div>
+                                <div class="data-option-content">
+                                    <h5>Cargar Masivamente</h5>
+                                    <p class="data-option-desc">Importar asignaciones desde archivo Excel/CSV</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="data-option" onclick="openExportModal()">
+                                <div class="data-option-icon">
+                                    <i data-feather="download"></i>
+                                </div>
+                                <div class="data-option-content">
+                                    <h5>Exportar Datos</h5>
+                                    <p class="data-option-desc">Generar archivo con datos actuales</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Importar Asignaciones -->
+    <div class="modal fade" id="importAssignmentModal" tabindex="-1" aria-labelledby="importAssignmentModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="importAssignmentModalLabel">Importar Asignaciones</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="importAssignmentForm">
+                        <div class="mb-3">
+                            <label for="assignmentFile" class="form-label">Archivo CSV/Excel</label>
+                            <input type="file" class="form-control" id="assignmentFile" accept=".csv,.xlsx" required>
+                        </div>
+                        <div class="alert alert-info">
+                            <small>El archivo debe contener las columnas: Aliado, Freelance, Fecha Inicio, Fecha Fin</small>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" form="importAssignmentForm" class="btn btn-primary">Importar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Exportar Asignaciones -->
+    <div class="modal fade" id="exportAssignmentModal" tabindex="-1" aria-labelledby="exportAssignmentModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exportAssignmentModalLabel">Exportar Asignaciones</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="exportAssignmentForm">
+                        <div class="mb-3">
+                            <label class="form-label">Formato de Exportación</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="exportFormat" id="formatCSV" value="csv" checked>
+                                <label class="form-check-label" for="formatCSV">CSV</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="exportFormat" id="formatExcel" value="excel">
+                                <label class="form-check-label" for="formatExcel">Excel</label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" form="exportAssignmentForm" class="btn btn-primary">Exportar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/modalAsignaciones.js"></script>
+{% endblock %}

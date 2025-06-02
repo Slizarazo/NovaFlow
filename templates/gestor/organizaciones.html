@@ -25,8 +25,8 @@
                         <label class="filter-label">Nombre</label>
                         <select class="filter-control" name="nombre">
                             <option value="">Todos los aliados</option>
-                            {% for aliado in aliados %}
-                            <option value="{{ aliado.nombre }}">{{ aliado.nombre }}</option>
+                            {% for org in organizaciones %}
+                            <option value="{{ org[1] }}">{{ org[1] }}</option>
                             {% endfor %}
                         </select>
                     </div>
@@ -34,10 +34,9 @@
                         <label class="filter-label">Industria</label>
                         <select class="filter-control" name="industria">
                             <option value="">Todas las industrias</option>
-                            <option value="Tecnología">Tecnología</option>
-                            <option value="Finanzas">Finanzas</option>
-                            <option value="Manufactura">Manufactura</option>
-                            <option value="Servicios">Servicios</option>
+                            {% for ind in industrias %}
+                            <option value="{{ ind[1] }}">{{ ind[1] }}</option>
+                            {% endfor %}
                         </select>
                     </div>
                     <div class="filter-group">
@@ -57,23 +56,18 @@
                         <label class="filter-label">Región</label>
                         <select class="filter-control" name="region">
                             <option value="">Todas las regiones</option>
-                            <option value="Norte">Norte</option>
-                            <option value="Sur">Sur</option>
-                            <option value="Este">Este</option>
-                            <option value="Oeste">Oeste</option>
-                            <option value="Centro">Centro</option>
+                            {% for reg in regiones %}
+                            <option value="{{ reg[1] }} ({{ reg[2] }})">{{ reg[1] }} ({{ reg[2] }})</option>
+                            {% endfor %}
                         </select>
                     </div>
                     <div class="filter-group">
                         <label class="filter-label">Subregión</label>
                         <select class="filter-control" name="subregion">
                             <option value="">Todas las subregiones</option>
-                            <option value="Noreste">Noreste</option>
-                            <option value="Noroeste">Noroeste</option>
-                            <option value="Sureste">Sureste</option>
-                            <option value="Suroeste">Suroeste</option>
-                            <option value="Centro-Norte">Centro-Norte</option>
-                            <option value="Centro-Sur">Centro-Sur</option>
+                            {% for sreg in subregiones %}
+                            <option value="{{ sreg[1] }} ({{ sreg[2] }})">{{ sreg[1] }} ({{ sreg[2] }})</option>
+                            {% endfor %}
                         </select>
                     </div>
                     <div class="filter-group">
@@ -81,10 +75,8 @@
                         <select class="filter-control" name="pais">
                             <option value="">Todos los países</option>
                             <option value="México">México</option>
-                            <option value="Estados Unidos">Estados Unidos</option>
                             <option value="Colombia">Colombia</option>
-                            <option value="Argentina">Argentina</option>
-                            <option value="Chile">Chile</option>
+                            <option value="España">España</option>
                         </select>
                     </div>
                 </div>
@@ -110,44 +102,31 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for aliado in aliados %}
-                        <tr data-nombre="{{ aliado.nombre }}" data-industria="{{ aliado.industria }}" data-region="{{ aliado.region }}">
+                        {% for torg in table_orgs %}
+                        <tr data-nombre="{{ torg[0] }}" data-industria="{{ torg[1] }}" data-region="{{ torg[3] }}">
                             <td>
                                 <div class="d-flex align-items-center">
-                                    <div class="avatar-circle me-2">{{ aliado.nombre[0] }}</div>
-                                    <div>{{ aliado.nombre }}</div>
+                                    <div class="avatar-circle me-2">{{ torg[0] }}</div>
+                                    <div>{{ torg[0] }}</div>
                                 </div>
                             </td>
-                            <td>{{ aliado.industria }}</td>
+                            <td>{{ torg[1] }}</td>
                             <td>
-                                <span class="badge {% if aliado.id % 3 == 0 %}bg-warning{% elif aliado.id % 2 == 0 %}bg-success{% else %}bg-primary{% endif %}">
-                                    {% if aliado.id % 3 == 0 %}Pendiente
-                                    {% elif aliado.id % 2 == 0 %}Activo
-                                    {% else %}Nuevo{% endif %}
+                                <span class="badge {% if torg[2] == 'pendiente' %}bg-warning{% elif torg[2] == 'activo' %}bg-success{% else %}bg-primary{% endif %}">
+                                    {{ torg[2] }}
                                 </span>
                             </td>
-                            <td>{{ aliado.region }}</td>
                             <td>
-                                {% if aliado.region == 'Norte' %}
-                                    {% if aliado.id % 2 == 0 %}Noreste{% else %}Noroeste{% endif %}
-                                {% elif aliado.region == 'Sur' %}
-                                    {% if aliado.id % 2 == 0 %}Sureste{% else %}Suroeste{% endif %}
-                                {% else %}
-                                    Centro-Norte
-                                {% endif %}
+                                {{ torg[3] }}
                             </td>
                             <td>
-                                {% if aliado.industria == 'Tecnología' %}México
-                                {% elif aliado.industria == 'Finanzas' %}Estados Unidos
-                                {% elif aliado.industria == 'Manufactura' %}Colombia
-                                {% else %}México{% endif %}
+                                {{ torg[4] }}
                             </td>
                             <td>
-                                {% if aliado.region == 'Norte' %}Sede Norte
-                                {% elif aliado.region == 'Sur' %}Sede Sur
-                                {% elif aliado.region == 'Este' %}Sede Este
-                                {% elif aliado.region == 'Oeste' %}Sede Oeste
-                                {% else %}Sede Central{% endif %}
+                                {{ torg[5] }}
+                            </td>
+                            <td>
+                                {{ torg[6] }}
                             </td>
                             <td>
                                 <div class="btn-group">
@@ -223,12 +202,9 @@
                                 <label for="orgIndustria" class="form-label">Industria</label>
                                 <select class="form-select" id="orgIndustria">
                                     <option value="">Seleccionar industria...</option>
-                                    <option value="Tecnología">Tecnología</option>
-                                    <option value="Finanzas">Finanzas</option>
-                                    <option value="Manufactura">Manufactura</option>
-                                    <option value="Servicios">Servicios</option>
-                                    <option value="Salud">Salud</option>
-                                    <option value="Educación">Educación</option>
+                                    {% for i in industrias %}
+                                    <option value="{{ i[0] }}">{{ i[1] }} ({{ i[2] }})</option>
+                                    {% endfor %}
                                 </select>
                             </div>
                         </div>
@@ -276,14 +252,18 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
+                                <label for="orgNombreSede" class="form-label">Nombre Sede</label>
+                                <input type="text" class="form-control" id="orgNombreSede" placeholder="Nombre de la sede">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
                                 <label for="orgRegion" class="form-label">Región</label>
                                 <select class="form-select" id="orgRegion">
                                     <option value="">Seleccionar región...</option>
-                                    <option value="Norte">Norte</option>
-                                    <option value="Sur">Sur</option>
-                                    <option value="Este">Este</option>
-                                    <option value="Oeste">Oeste</option>
-                                    <option value="Centro">Centro</option>
+                                    {% for r in regiones %}
+                                    <option value="{{ r[0] }}">{{ r[1] }} ({{ r[2] }})</option>
+                                    {% endfor %}
                                 </select>
                             </div>
                         </div>
@@ -323,10 +303,16 @@
                         <label for="sedeOrganizacion" class="form-label">Organización</label>
                         <select class="form-select" id="sedeOrganizacion">
                             <option value="">Seleccionar organización...</option>
-                            {% for aliado in aliados %}
-                            <option value="{{ aliado.id }}">{{ aliado.nombre }}</option>
+                            {% for org in organizaciones %}
+                            <option value="{{ org[0] }}">{{ org[1] }}</option>
                             {% endfor %}
                         </select>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="sedeNombreSede" class="form-label">Nombre sede</label>
+                            <input type="text" class="form-control" id="sedeNombreSede" placeholder="Nombre de la sede">
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
@@ -334,11 +320,9 @@
                                 <label for="sedeRegion" class="form-label">Región</label>
                                 <select class="form-select" id="sedeRegion">
                                     <option value="">Seleccionar región...</option>
-                                    <option value="Norte">Norte</option>
-                                    <option value="Sur">Sur</option>
-                                    <option value="Este">Este</option>
-                                    <option value="Oeste">Oeste</option>
-                                    <option value="Centro">Centro</option>
+                                    {% for r in regiones %}
+                                    <option value="{{ r[0] }}">{{ r[1] }} ({{ r[2] }})</option>
+                                    {% endfor %}
                                 </select>
                             </div>
                         </div>
@@ -1246,6 +1230,7 @@ function submitForm() {
             const orgContacto = document.getElementById('orgContacto');
             const orgTamano = document.getElementById('orgTamano');
             const orgEmpleados = document.getElementById('orgEmpleados');
+            const orgNombreSede = document.getElementById('orgNombreSede');
             const orgRegion = document.getElementById('orgRegion');
             const orgDireccion = document.getElementById('orgDireccion');
             const orgCiudad = document.getElementById('orgCiudad');
@@ -1259,6 +1244,7 @@ function submitForm() {
                 estado: orgEstado ? orgEstado.value : '',
                 contacto: orgContacto ? orgContacto.value : '',
                 tamano: orgTamano ? orgTamano.value : '',
+                nombreSede: orgNombreSede ? orgNombreSede.value : '',
                 empleados: orgEmpleados ? orgEmpleados.value : '',
                 region: orgRegion ? orgRegion.value : '',
                 direccion: orgDireccion ? orgDireccion.value : '',
@@ -1276,6 +1262,7 @@ function submitForm() {
         }
         
         if (isValid) {
+            const sedeNombreSede = document.getElementById('sedeNombreSede');
             const sedeRegion = document.getElementById('sedeRegion');
             const sedeDireccion = document.getElementById('sedeDireccion');
             const sedeCiudad = document.getElementById('sedeCiudad');
@@ -1285,6 +1272,7 @@ function submitForm() {
             formData = {
                 ...formData,
                 organizacion: sedeOrganizacion.value,
+                nombreSede: sedeNombreSede ? sedeNombreSede.value : '',
                 region: sedeRegion ? sedeRegion.value : '',
                 direccion: sedeDireccion ? sedeDireccion.value : '',
                 ciudad: sedeCiudad ? sedeCiudad.value : '',
@@ -1298,8 +1286,33 @@ function submitForm() {
 
     console.log('Datos del formulario:', formData);
 
-    // Simular envío exitoso
-    alert('Datos guardados exitosamente');
+    // Enviar al backend
+    fetch('/api/organizaciones', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => {
+        if (!response.ok) throw new Error('Error en la respuesta del servidor');
+        return response.json(); // o response.text() según tu backend
+    })
+    .then(data => {
+        console.log('Respuesta del servidor:', data);
+        alert('Datos guardados exitosamente');
+
+        // Cerrar modal usando Bootstrap
+        const modal = document.getElementById('addAliadoModal');
+        if (modal && typeof bootstrap !== 'undefined') {
+            const bootstrapModal = bootstrap.Modal.getInstance(modal) || new bootstrap.Modal(modal);
+            bootstrapModal.hide();
+        }
+    })
+    .catch(error => {
+        console.error('Error al enviar el formulario:', error);
+        alert('Error al guardar los datos');
+    });
     
     // Cerrar modal usando Bootstrap
     const modal = document.getElementById('addAliadoModal');

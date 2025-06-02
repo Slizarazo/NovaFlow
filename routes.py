@@ -5,7 +5,7 @@ from functools import reduce
 from flask_login import login_user, logout_user, login_required, current_user
 from app import app
 from models import User, Aliado, Proyecto, Consultor, DatosDashboard
-from models import Usuario, Organizaciones, Industria, Colaborador
+from models import Usuario, Organizaciones, Industrias, Colaboradores, Subregiones, Sedes, Regiones, Portafolio, Consultores, Comunidades, Miembros_comunidad, Comunidad_aliado, Personas_cliente, UserAcces, Cuentas, Segmentacion
 from config import Config
 from graphs import *
 from datetime import datetime
@@ -20,6 +20,23 @@ except ImportError:
     USAR_DATOS_EXTENDIDOS = False
     app.logger.warning(
         "No se pudieron cargar los datos de demostración extendidos")
+    
+# region logeo
+
+from functools import wraps
+from flask import redirect, url_for, flash
+from flask_login import current_user, LoginManager
+
+def role_required(*roles):
+    def decorator(f):
+        @wraps(f)
+        def wrapper(*args, **kwargs):
+            if current_user.is_authenticated and current_user.rol in roles:
+                return f(*args, **kwargs)
+            flash('Acceso denegado: no tienes permiso para acceder a esta página.', 'danger')
+            return redirect(url_for('login'))  # o redirigir a un 403
+        return wrapper
+    return decorator
 
 @app.route('/')
 def index():
@@ -31,13 +48,28 @@ def login():
         username = request.form.get('username')
         password = request.form.get('password')
 
-        user = User.get_by_username(username)
+        usuario = UserAcces.get_by_access(username)
+        
+        if usuario and UserAcces.check_password(password, usuario[5]):
+            user_acces = UserAcces(
+                usuario[0],
+                usuario[1],
+                usuario[2],
+                usuario[3],
+                usuario[4],
+                usuario[5],
+                usuario[6],
+                usuario[7],
+                usuario[8]
+            )
 
-        if user and user.password == password:  # In a real app, use proper password hashing
-            login_user(user)
-            # Redirigir según el rol del usuario
-            if user.role == 'consultor':
-                return redirect(url_for('consultor_perfil'))
+            login_user(user_acces)
+
+            if current_user.rol == 'Freelance':
+                return redirect(url_for('dashboard'))
+            if current_user.rol == "Gestor":
+                next_page = request.args.get('next')
+                return redirect(next_page or url_for('gestor_organizaciones'))
             else:
                 return redirect(url_for('dashboard'))
         else:
@@ -47,7 +79,7 @@ def login():
     return render_template('login.html',
                            title='Iniciar Sesión',
                            config=app.config,
-                           role=None)
+                           rol=None)
 
 @app.route('/logout')
 @login_required
@@ -55,10 +87,333 @@ def logout():
     logout_user()
     return redirect(url_for('login'))
 
+# endregion
+
+# region Gestor
+
+@app.route('/gestor/usuarios')
+@login_required
+@role_required('Gestor')
+def aliados_usuarios():
+    users = User.get_all_users() if hasattr(User, 'get_all_users') else []
+    industrias = Industrias.get_all()
+    regiones = Subregiones.get_all()
+    sedes = Sedes.get_all()
+    organizaciones = Organizaciones.get_all()
+    tabla_usuarios = Usuario.get_table_users()
+    return render_template('gestor/usuarios.html',
+                         title='Gestión de Usuarios',
+                         tabla_usuarios=tabla_usuarios,
+                         industrias=industrias,
+                         regiones=regiones,
+                         sedes=sedes,
+                         organizaciones=organizaciones,
+                         users=users,
+                         config=app.config,
+                         rol=current_user.rol)
+
+@app.route('/gestor/organizaciones')
+@login_required
+@role_required('Gestor')
+def gestor_organizaciones():
+    industrias = Industrias.get_all()
+    regiones = Subregiones.get_all()
+    organizaciones = Organizaciones.get_all()
+    table_orgs = Organizaciones.get_table_orgs()
+    regiones = Regiones.get_all()
+    subregiones = Subregiones.get_all()
+    return render_template('gestor/organizaciones.html',
+                         title='Gestión de Aliados',
+                         subregiones=subregiones,
+                         table_orgs=table_orgs,
+                         industrias=industrias,
+                         regiones=regiones,
+                         organizaciones=organizaciones,
+                         config=app.config,
+                         rol=current_user.rol)
+
+@app.route('/gestor/portfolio')
+@login_required
+@role_required('Gestor')
+def gestor_portfolio():
+    portafolio = Portafolio.get_all()
+    return render_template('gestor/portfolio.html',
+                         title='Portafolio',
+                         portafolio=portafolio,
+                         config=app.config,
+                         rol=current_user.rol)
+
+@app.route('/gestor/asignaciones')
+@login_required
+@role_required('Gestor')
+def gestor_asignaciones():
+    consultores = Usuario.get_tbl_consultores()
+    aliados = Sedes.get_orgs()
+    comunidades = Comunidades.get_all()
+    proyectos = {p.id: p for p in Proyecto.PROYECTOS}
+    return render_template('gestor/asignaciones.html',
+                         title='Asignaciones de Consultores',
+                         consultores=consultores,
+                         comunidades=comunidades,
+                         aliados=aliados,
+                         proyectos=proyectos,
+                         config=app.config,
+                         rol=current_user.rol)
+
+# endregion
+
+# region aliado
+
+@app.route('/proyectos/general')
+@login_required
+@role_required('Aliado')
+def proyectos_general():
+    proyectos = Proyecto.PROYECTOS
+    estados = {
+        'oportunidad': [p for p in proyectos if p.etapa == 'oportunidad'],
+        'propuesta': [p for p in proyectos if p.etapa == 'propuesta'],
+        'aprobado': [p for p in proyectos if p.etapa == 'aprobado'],
+        'desarrollo': [p for p in proyectos if p.etapa == 'desarrollo'],
+        'testing': [p for p in proyectos if p.etapa == 'testing'],
+        'cierre': [p for p in proyectos if p.etapa == 'cierre'],
+        'evaluacion': [p for p in proyectos if p.etapa == 'evaluacion'],
+        'finalizados': [p for p in proyectos if p.etapa == 'finalizado']
+    }
+    return render_template('aliados/general.html',
+                         title='Gestión de Proyectos',
+                         estados=estados,
+                         config=app.config,
+                         rol=current_user.rol)
+
+@app.route('/cuentas/clientes')
+@login_required
+def cuentas_clientes():
+    industrias = Industrias.get_all()
+    regiones = Subregiones.get_all()
+    segmentacion = Segmentacion.get_all()
+    cuentas = Cuentas.get_all_tbl()
+    return render_template('aliados/clientes.html',
+                         title='Gestión de Clientes',
+                         cuentas=cuentas,
+                         segmentacion=segmentacion,
+                         industrias=industrias,
+                         regiones=regiones,
+                         config=app.config,
+                         rol=current_user.rol)
+
+
+# endregion
+
+# region Sin definir
+
+@app.route('/consultor/perfil')
+@login_required
+def consultor_perfil():
+    return render_template('consultor/perfil.html',
+                         title='Perfil del Consultor',
+                         config=app.config,
+                         rol=current_user.rol)
+
+@app.route('/cuentas/usuarios')
+@login_required
+def cuentas_usuarios():
+    users = User.USERS
+    return render_template('cuentas/usuarios.html',
+                         title='Gestión de Usuarios',
+                         users=users,
+                         config=app.config,
+                         rol=current_user.rol)
+
+@app.route('/proyectos/gestion')
+@login_required  
+def proyectos_gestion():
+    # Datos de ejemplo para los proyectos
+    proyectos = [
+        {
+            'id': 1,
+            'nombre': 'Transformación Digital Bancaria',
+            'estado': 'En Desarrollo',
+            'etapa': 'desarrollo',
+            'tiempo_estimado': 960,
+            'costos_estimados': 150000,
+            'monto': 180000,
+            'consultores_asignados': 5,
+            'progreso': 65,
+            'aliado_id': 'Banco Nacional',
+            'fecha_inicio': '2024-01-15',
+            'fecha_fin': '2024-07-15'
+        },
+        {
+            'id': 2,
+            'nombre': 'Sistema de Gestión Hospitalaria',
+            'estado': 'Planificación',
+            'etapa': 'planificacion',
+            'tiempo_estimado': 1280,
+            'costos_estimados': 200000,
+            'monto': 250000,
+            'consultores_asignados': 7,
+            'progreso': 25,
+            'aliado_id': 'Hospital Central',
+            'fecha_inicio': '2024-02-01',
+            'fecha_fin': '2024-10-01'
+        },
+        {
+            'id': 3,
+            'nombre': 'E-commerce para Retail',
+            'estado': 'Testing',
+            'etapa': 'testing',
+            'tiempo_estimado': 640,
+            'costos_estimados': 80000,
+            'monto': 100000,
+            'consultores_asignados': 3,
+            'progreso': 85,
+            'aliado_id': 'Retail Plus',
+            'fecha_inicio': '2024-03-01',
+            'fecha_fin': '2024-07-01'
+        },
+        {
+            'id': 4,
+            'nombre': 'Plataforma de Logística',
+            'estado': 'Finalizado',
+            'etapa': 'finalizado',
+            'tiempo_estimado': 800,
+            'costos_estimados': 120000,
+            'monto': 140000,
+            'consultores_asignados': 4,
+            'progreso': 100,
+            'aliado_id': 'LogiTech',
+            'fecha_inicio': '2023-10-01',
+            'fecha_fin': '2024-03-01'
+        }
+    ]
+
+    return render_template('proyectos/gestion.html',
+                         title='Gestión de Proyectos',
+                         proyectos=proyectos,
+                         config=app.config,
+                         rol=current_user.rol)
+
+@app.route('/proyectos/calculadora', methods=['GET', 'POST'])
+@login_required
+def proyectos_calculadora():
+    if request.method == 'POST':
+        try:
+            data = request.get_json()
+            print(f"Datos de calculadora recibidos: {data}")
+
+            if not data:
+                return jsonify({'status': 'error', 'message': 'No se recibieron datos'}), 400
+
+            project_id = data.get('projectId')
+            project_name = data.get('projectName')
+            time_estimates = data.get('timeEstimates', {})
+            costs = data.get('costs', {})
+
+            print(f"Proyecto: {project_name} (ID: {project_id})")
+            print(f"Estimaciones de tiempo: {time_estimates}")
+            print(f"Costos: {costs}")
+
+            return jsonify({'status': 'success', 'message': 'Estimación guardada exitosamente'})
+
+        except Exception as e:
+            app.logger.error(f"Error al guardar estimación: {str(e)}")
+            return jsonify({'status': 'error', 'message': str(e)}), 500
+    
+    # GET request
+    proyectos = Proyecto.PROYECTOS
+    return render_template('proyectos/calculadora.html',
+                         title='Calculadora de Tiempos',
+                         proyectos=proyectos,
+                         config=app.config,
+                         rol=current_user.rol)
+
+@app.route('/proyectos/estimaciones')
+@login_required
+def proyectos_estimaciones():
+    # Datos de ejemplo para las estimaciones
+    estimaciones = [
+        {
+            'id': 'EST-001',
+            'aliado': 'Aliado Tech',
+            'caso_uso': 'Sistema de Gestión de Inventarios para Retail',
+            'fecha': '2024-01-15',
+            'tipo': 'Desarrollo Completo',
+            'horas_estimadas': 320,
+            'tarifa_freelance': 45,
+            'recursos': '3 Desarrolladores, 1 QA, 1 PM',
+            'estado': 'Aprobada'
+        },
+        {
+            'id': 'EST-002',
+            'aliado': 'Financiera Global',
+            'caso_uso': 'Plataforma de Pagos Móviles',
+            'fecha': '2024-01-20',
+            'tipo': 'MVP',
+            'horas_estimadas': 480,
+            'tarifa_freelance': 60,
+            'recursos': '4 Desarrolladores, 1 Designer, 1 QA',
+            'estado': 'En Revisión'
+        },
+        {
+            'id': 'EST-003',
+            'aliado': 'Industrias Este',
+            'caso_uso': 'Dashboard de Analytics en Tiempo Real',
+            'fecha': '2024-01-25',
+            'tipo': 'Prototipo',
+            'horas_estimadas': 160,
+            'tarifa_freelance': 55,
+            'recursos': '2 Desarrolladores Frontend, 1 Data Engineer',
+            'estado': 'Pendiente'
+        },
+        {
+            'id': 'EST-004',
+            'aliado': 'Consultores Sur',
+            'caso_uso': 'Sistema CRM Personalizado',
+            'fecha': '2024-02-01',
+            'tipo': 'Desarrollo Completo',
+            'horas_estimadas': 600,
+            'tarifa_freelance': 50,
+            'recursos': '5 Desarrolladores, 2 QA, 1 PM, 1 Designer',
+            'estado': 'Aprobada'
+        },
+        {
+            'id': 'EST-005',
+            'aliado': 'Servicios Oeste',
+            'caso_uso': 'Migración a la Nube AWS',
+            'fecha': '2024-02-05',
+            'tipo': 'Consultoría',
+            'horas_estimadas': 120,
+            'tarifa_freelance': 75,
+            'recursos': '2 Cloud Architects, 1 DevOps Engineer',
+            'estado': 'Rechazada'
+        },
+        {
+            'id': 'EST-006',
+            'aliado': 'Aliado Tech',
+            'caso_uso': 'App Móvil de E-commerce',
+            'fecha': '2024-02-10',
+            'tipo': 'MVP',
+            'horas_estimadas': 280,
+            'tarifa_freelance': 42,
+            'recursos': '2 Desarrolladores Mobile, 1 Designer',
+            'estado': 'En Revisión'
+        }
+    ]
+    
+    return render_template('proyectos/estimaciones.html',
+                         title='Estimaciones de Proyectos',
+                         estimaciones=estimaciones,
+                         config=app.config,
+                         rol=current_user.rol)
+
+# endregion
+
+# region Dashboards
+
 @app.route('/dashboard')
 @login_required
 def dashboard():
-    if current_user.role == 'supervisor':
+    if current_user.rol == 'Supervisor':
         # Obtener proyectos y agrupar por estado
         proyectos = Proyecto.PROYECTOS
         estados = {
@@ -71,9 +426,9 @@ def dashboard():
             'evaluacion': [p for p in proyectos if p.etapa == 'evaluacion'],
             'finalizados': [p for p in proyectos if p.etapa == 'finalizado']
         }
-        return render_template('dashboard/supervisor.html', title='Gestión de Proyectos', config=app.config, role=current_user.role, estados=estados)
-    elif current_user.role == 'aliado':
-        return render_template('dashboard/growth_overview.html', title='Dashboard de Crecimiento', config=app.config, role=current_user.role)
+        return render_template('dashboard/supervisor.html', title='Gestión de Proyectos', config=app.config, rol=current_user.rol, estados=estados)
+    elif current_user.rol == 'Aliado':
+        return render_template('dashboard/growth_overview.html', title='Dashboard de Crecimiento', config=app.config, rol=current_user.rol)
     return redirect(url_for('dashboard_growth'))
 
 @app.route('/dashboard/crecimiento')
@@ -106,19 +461,11 @@ def dashboard_crecimiento():
     return render_template('dashboard/growth.html', 
                          title='Dashboard de Crecimiento',
                          config=app.config,
-                         role=current_user.role,
+                         rol=current_user.rol,
                          ingresos_vs_costos=generar_grafico_ingresos_vs_costos(datos_ingresos_costos),
                          crecimiento_yoy=generar_grafico_crecimiento_yoy(DatosDashboard.CRECIMIENTO_ANUAL),
                          clientes_nuevos_recurrentes=generar_grafico_clientes_nuevos_vs_recurrentes(datos_clientes),
                          rentabilidad=generar_grafico_rentabilidad(datos_rentabilidad))
-
-@app.route('/consultor/perfil')
-@login_required
-def consultor_perfil():
-    return render_template('consultor/perfil.html',
-                         title='Perfil del Consultor',
-                         config=app.config,
-                         role=current_user.role)
 
 @app.route('/dashboard/growth')
 @login_required
@@ -215,7 +562,7 @@ def dashboard_growth():
         crecimiento_yoy=crecimiento_yoy,
         crecimiento_anual=DatosDashboard.CRECIMIENTO_ANUAL,
         config=app.config,
-        role=current_user.role,
+        rol=current_user.rol,
         # Nuevos datos extendidos
         ventas_por_region=ventas_por_region,
         tendencias_industria=tendencias_industria,
@@ -278,7 +625,7 @@ def dashboard_performance():
         actividades_planificadas=DatosDashboard.ACTIVIDADES_PLANIFICADAS,
         radar_chart=radar_chart,
         config=app.config,
-        role=current_user.role,
+        rol=current_user.rol,
         # Nuevos datos extendidos
         proyectos_extendidos=proyectos_extendidos,
         resultados_proyectos=resultados_proyectos,
@@ -319,7 +666,7 @@ def dashboard_proyectos():
         'dashboard/proyectos.html',
         title='Dashboard de Proyectos',
         config=app.config,
-        role=current_user.role,
+        rol=current_user.rol,
         proyectos_activos=generar_grafico_proyectos_activos(datos_proyectos_activos),
         pipeline_oportunidades=generar_grafico_pipeline(datos_pipeline),
         desempeno_proyecto=generar_grafico_desempeno_proyectos(datos_desempeno),
@@ -359,7 +706,7 @@ def dashboard_productividad():
         'dashboard/productividad.html',
         title='Dashboard de Productividad',
         config=app.config,
-        role=current_user.role,
+        rol=current_user.rol,
         consultores_proyecto=generar_grafico_consultores_proyecto(datos_consultores_proyecto),
         horas_vs_progreso=generar_grafico_horas_vs_progreso(datos_horas_progreso),
         consultores_eficientes=generar_grafico_consultores_eficientes(datos_eficiencia),
@@ -401,30 +748,13 @@ def dashboard_facturacion():
         'dashboard/facturacion.html',
         title='Dashboard de Facturación',
         config=app.app.config,
-        role=current_user.role,
+        rol=current_user.rol,
         facturacion_mensual=generar_grafico_facturacion(datos_facturacion),
         deudas_cobros=generar_grafico_deudas(datos_deudas),
         rentabilidad_proyecto=generar_grafico_rentabilidad_proyecto(datos_rentabilidad),
         flujo_caja=generar_grafico_flujo_caja(datos_flujo)
     )
 
-@app.route('/cuentas/clientes')
-@login_required
-def cuentas_clientes():
-    return render_template('cuentas/clientes.html',
-                         title='Gestión de Clientes',
-                         config=app.config,
-                         role=current_user.role)
-
-@app.route('/cuentas/usuarios')
-@login_required
-def cuentas_usuarios():
-    users = User.USERS
-    return render_template('cuentas/usuarios.html',
-                         title='Gestión de Usuarios',
-                         users=users,
-                         config=app.config,
-                         role=current_user.role)
 
 @app.route('/dashboard/riesgos')
 @login_required
@@ -464,7 +794,7 @@ def dashboard_riesgos():
         'dashboard/riesgos.html',
         title='Dashboard de Riesgos',
         config=app.config,
-        role=current_user.role,
+        rol=current_user.rol,
         matriz_riesgos=generar_matriz_riesgos(datos_matriz),
         proyectos_riesgo=generar_grafico_proyectos_riesgo(datos_proyectos),
         historial_problemas=generar_historial_problemas(datos_historial),
@@ -504,7 +834,7 @@ def dashboard_facturacion():
         'dashboard/facturacion.html',
         title='Dashboard de Facturación',
         config=app.config,
-        role=current_user.role,
+        rol=current_user.rol,
         facturacion_mensual=generar_grafico_facturacion(datos_facturacion),
         deudas_cobros=generar_grafico_deudas(datos_deudas),
         rentabilidad_proyecto=generar_grafico_rentabilidad_proyecto(datos_rentabilidad),
@@ -544,7 +874,7 @@ def dashboard_cuentas():
         'dashboard/cuentas.html',
         title='Dashboard de Cuentas',
         config=app.config,
-        role=current_user.role,
+        rol=current_user.rol,
         segmentacion_clientes=generar_grafico_segmentacion_clientes(datos_segmentacion),
         clv_trend=generar_grafico_clv(datos_clv),
         retencion_clientes=generar_grafico_retencion(datos_retencion),
@@ -575,7 +905,7 @@ def dashboard_community():
         'dashboard/community.html',
         title='Dashboard de Comunidad',
         config=app.config,
-        role=current_user.role,
+        rol=current_user.rol,
         # Nuevos datos extendidos
         desarrollo_profesional=desarrollo_profesional,
         metricas_comunidad=metricas_comunidad,
@@ -583,19 +913,12 @@ def dashboard_community():
         evaluaciones_consultores=evaluaciones_consultores,
         usar_datos_extendidos=USAR_DATOS_EXTENDIDOS)
 
-@app.route('/aliados/usuarios')
-@login_required
-def aliados_usuarios():
-    users = User.get_all_users() if hasattr(User, 'get_all_users') else []
-    industrias = Industria.get_all()
-    organizaciones = Usuario.get_organizaciones()
-    return render_template('aliados/usuarios.html',
-                         title='Gestión de Usuarios',
-                         industrias=industrias,
-                         organizaciones=organizaciones,
-                         users=users,
-                         config=app.config,
-                         role=current_user.role)
+
+# endregion
+
+# region API
+
+# region API GESTOR
 
 @app.route('/api/usuarios', methods=['POST'])
 @login_required
@@ -603,6 +926,8 @@ def create_user():
     try:
         data = request.get_json()
         print(f"Datos recibidos: {data}")
+        fecha_actual = datetime.now()
+        formato = fecha_actual.strftime('%Y-%m-%d')
 
         if not data:
             return jsonify({'status': 'error', 'message': 'No se recibieron datos'}), 400
@@ -611,33 +936,337 @@ def create_user():
         print(f"Tipo de usuario: {tipo}")
 
         if tipo == 'gestor':
-            nuevo_usuario = Usuario(data.get('nombre_completo'), data.get('nombre_organizacion'),  data.get('correo'), "Dnova%2025", 2, "activo", None)
-            id_usuario = nuevo_usuario.create()
+            nuevo_usuario = Usuario(data.get('nombre_completo'), data.get('organizacion'), data.get('sede'), data.get('correo'), "Dnova%2025", 2, 'activo', None)
+            nuevo_usuario.create()
 
         elif tipo == 'aliado':
-            fecha_registro = datetime.now().strftime('%y/%m/%d %H:%M:%S')
-            correo = data.get('correo')
-            
-            nuevo_usuario = Usuario(data.get('nombre_completo'), data.get('nombre_organizacion'), correo, "Dnova%2025", 1, "activo", None)
-            id_usuario = nuevo_usuario.create()
-
-            nuevo_aliado = Organizaciones(id_usuario, data.get('region'), data.get('industria'), fecha_registro, "activo", data.get('contacto_principal'), data.get('tamano'), data.get('empleados'), data.get('direccion'), data.get('ciudad'), data.get('estado_dir'), data.get('codigo_postal'), data.get('pais'))
-            nuevo_aliado.create()
+            nuevo_usuario = Usuario(data.get('nombre_completo'), data.get('organizacion'), data.get('sede'), data.get('correo'), "Dnova%2025", 1, 'activo', None)
+            nuevo_usuario.create()
 
         elif tipo == 'empleado':
-            print("Datos del empleado:")
-            print(f"  - Nombre: {data.get('nombre')}")
-            print(f"  - Email: {data.get('email')}")
-            print(f"  - Teléfono: {data.get('telefono')}")
-            print(f"  - Puesto: {data.get('puesto')}")
-            print(f"  - Departamento: {data.get('departamento')}")
-            print(f"  - Salario: {data.get('salario')}")
+            nuevo_usuario = Usuario(data.get('nombre_completo'), data.get('organizacion'), data.get('sede'), data.get('correo'), "Dnova%2025", 5, 'activo', None)
+            id_usuario = nuevo_usuario.create()
+
+            nuevo_colaborador = Colaboradores(id_usuario, data.get('organizacion'), data.get('cargo'), data.get('rol_laboral'))
+            nuevo_colaborador.create()
+        
+        elif tipo == 'freelance':
+            nuevo_usuario = Usuario(data.get('nombre_completo'), None, None, data.get('correo'), "Dnova%2025", 4, 'activo', None)
+            id = nuevo_usuario.create()
+
+            nuevo_consultor = Consultores(id, data.get('especialidad'), None, None, None, formato, None, None, None, None, None, None)
+            nuevo_consultor.create()
 
         return jsonify({'status': 'success', 'message': 'Usuario creado exitosamente'})
 
     except Exception as e:
         app.logger.error(f"Error al crear usuario: {str(e)}")
         return jsonify({'status': 'error', 'message': str(e)}), 500
+
+@app.route('/api/organizaciones', methods=['POST'])
+@login_required
+def create_organizacion():
+    try:
+        data = request.get_json()
+        print(data)
+        # Validar campos mínimos requeridos
+        # if not data.get('nombre'):
+        #     return jsonify({'status': 'error', 'message': 'El nombre de la organización es requerido'}), 400
+
+        fecha_actual = datetime.now()
+        formato = fecha_actual.strftime('%Y-%m-%d')
+
+        if data.get('tipo') == 'organizacion':
+            # Crear organización
+            nueva_organizacion = Organizaciones(
+                data.get('nombre'),
+                data.get('industria'),
+                formato,
+                data.get('estado'),
+                data.get('contacto'),
+                data.get('tamano'),
+                data.get('empleados')
+            )
+            id_org = nueva_organizacion.create()
+
+            # Crear sede principal
+            nueva_sede = Sedes(
+                id_org,
+                data.get('nombreSede'),
+                data.get('region'),
+                data.get('direccion'),
+                data.get('ciudad'),
+                data.get('codigo_postal'),
+                data.get('pais')
+            )
+            nueva_sede.create()
+
+        elif data.get('tipo') == "sede":
+            # Crear sede
+            nueva_sede = Sedes(
+                data.get('organizacion'),
+                data.get('nombreSede'),
+                data.get('region'),
+                data.get('direccion'),
+                data.get('ciudad'),
+                data.get('codigo_postal'),
+                data.get('pais')
+            )
+            nueva_sede.create()
+
+        return jsonify({'status': 'success', 'message': 'Organización creada exitosamente'})
+
+    except Exception as e:
+        print('Error al crear la organización:', str(e))
+        return jsonify({
+            'status': 'error',
+            'message': 'Hubo un error al procesar la solicitud',
+            'details': str(e)
+        }), 500
+
+@app.route('/api/productos', methods=['POST'])
+@login_required
+def create_producto():
+    try:
+        fecha_actual = datetime.now()
+        formato = fecha_actual.strftime('%Y-%m-%d')
+        data = request.get_json()
+
+        print('📥 Datos recibidos:', data)
+
+        nuevo_producto = Portafolio(
+            data.get('nombre'),
+            data.get('categoria'),
+            data.get('familia'),
+            data.get('descripcion'),
+            data.get('tipo'),
+            data.get('estado'),
+            formato,
+            None  # fecha_actualizacion inicialmente nula
+        )
+
+        nuevo_producto.create()
+
+        return jsonify({'status': 'success', 'message': 'Producto o servicio creado exitosamente'})
+    
+    except Exception as e:
+        print('❌ Error al crear el producto:', str(e))
+        return jsonify({'status': 'error', 'message': 'Error al crear el producto o servicio', 'details': str(e)}), 500
+
+@app.route('/api/asignaciones', methods=['POST'])
+@login_required
+def create_asignacion():
+    try:
+        data = request.get_json()
+        fecha_actual = datetime.now()
+        formato = fecha_actual.strftime('%Y-%m-%d')
+        print(f"Datos de asignación recibidos: {data}")
+
+        if not data:
+            return jsonify({'status': 'error', 'message': 'No se recibieron datos'}), 400
+
+        tipo = data.get('tipo')
+
+        if tipo == 'freelance':
+            
+            asignar_freelance = Personas_cliente(data.get('id_sede'), data.get('id_usuario'), data.get('rol_en_cliente'), formato)
+            asignar_freelance.create()
+
+        elif tipo == 'comunidad':
+            
+            nueva_asignacion = Comunidad_aliado(data.get('id_sede'), data.get('id_comunidad'), formato, None)
+            nueva_asignacion.create()
+
+        elif tipo == 'crear_comunidad':
+
+            nueva_comunidad = Comunidades(data.get('nombre'), data.get('descripcion'), data.get('tipo_comunidad'))
+            id = nueva_comunidad.create()
+            miembros = data.get('miembros', [])
+
+            for miembro in miembros:
+                nuevo_miembro = Miembros_comunidad(id, miembro.get('usuario'), miembro.get('rol'), formato)
+                nuevo_miembro.create()
+
+        return jsonify({'status': 'success', 'message': 'Asignación creada exitosamente'})
+
+    except Exception as e:
+        app.logger.error(f"Error al crear asignación: {str(e)}")
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+
+
+# endregion
+
+# region API ALIADOs
+
+@app.route('/api/oportunidades', methods=['POST'])
+@login_required
+def create_oportunidad():
+    try:
+        data = request.get_json()
+        print(f"Datos de oportunidad recibidos: {data}")
+
+        if not data:
+            return jsonify({'status': 'error', 'message': 'No se recibieron datos'}), 400
+
+        cuenta = data.get('cuenta')
+        caso_uso = data.get('casoUso')
+        descripcion = data.get('descripcion')
+        impacto = data.get('impacto')
+
+        print(f"Nueva oportunidad - Cuenta: {cuenta}, Caso de uso: {caso_uso}")
+        print(f"Descripción: {descripcion}")
+        print(f"Impacto: {impacto}")
+
+        return jsonify({'status': 'success', 'message': 'Oportunidad creada exitosamente'})
+
+    except Exception as e:
+        app.logger.error(f"Error al crear oportunidad: {str(e)}")
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+
+@app.route('/api/clientes', methods=['POST'])
+@login_required
+def create_cliente():
+    try:
+        data = request.get_json()
+        print(f"Datos recibidos para cliente: {data}")
+
+        if not data:
+            return jsonify({'status': 'error', 'message': 'No se recibieron datos'}), 400
+
+        print(f"Datos del cliente: {data}")
+        
+        nueva_cuenta = Cuentas(current_user.organizacion, data.get('nombre'), data.get('industria'), data.get('region'), None, None, None, data.get('codigo'), data.get('sector'), 'activo')
+        nueva_cuenta.create()
+
+        return jsonify({'status': 'success', 'message': 'Cliente creado exitosamente'})
+
+    except Exception as e:
+        app.logger.error(f"Error al crear cliente: {str(e)}")
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+
+
+# endregion
+
+@app.route('/api/idiomas', methods=['POST'])
+def api_idiomas():
+    """Endpoint para recibir e imprimir datos de idiomas"""
+    try:
+        data = request.get_json()
+        print("=== DATOS DE IDIOMAS RECIBIDOS ===")
+        print(json.dumps(data, indent=2, ensure_ascii=False))
+        print("=====================================")
+
+        return jsonify({
+            'status': 'success',
+            'message': 'Datos de idiomas recibidos correctamente',
+            'data': data
+        })
+    except Exception as e:
+        print(f"Error al procesar idiomas: {str(e)}")
+        return jsonify({
+            'status': 'error',
+            'message': f'Error al procesar los datos: {str(e)}'
+        }), 400
+
+@app.route('/api/educacion', methods=['POST'])
+def api_educacion():
+    """Endpoint para recibir e imprimir datos de educación"""
+    try:
+        data = request.get_json()
+        print("=== DATOS DE EDUCACIÓN RECIBIDOS ===")
+        print(json.dumps(data, indent=2, ensure_ascii=False))
+        print("=====================================")
+
+        return jsonify({
+            'status': 'success',
+            'message': 'Datos de educación recibidos correctamente',
+            'data': data
+        })
+    except Exception as e:
+        print(f"Error al procesar educación: {str(e)}")
+        return jsonify({
+            'status': 'error',
+            'message': f'Error al procesar los datos: {str(e)}'
+        }), 400
+
+@app.route('/api/certificaciones', methods=['POST'])
+def api_certificaciones():
+    try:
+        data = request.get_json()
+        print("=== DATOS DE CERTIFICACIONES RECIBIDOS ===")
+        print(json.dumps(data, indent=2, ensure_ascii=False))
+        print("=" * 45)
+
+        # Aquí normalmente guardarías en la base de datos
+        # Por ahora solo retornamos éxito
+        return jsonify({"status": "success", "message": "Certificación guardada correctamente"})
+    except Exception as e:
+        print(f"Error en /api/certificaciones: {e}")
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+@app.route('/api/proyectos-destacados', methods=['POST'])
+def add_proyecto_destacado():
+    try:
+        data = request.get_json()
+        print("📝 Datos del proyecto destacado recibidos:", json.dumps(data, indent=2, ensure_ascii=False))
+
+        # Validar campos requeridos
+        required_fields = ['titulo', 'fecha_inicio', 'descripcion']
+        for field in required_fields:
+            if not data.get(field):
+                return jsonify({'status': 'error', 'message': f'El campo {field} es requerido'})
+
+        return jsonify({'status': 'success', 'message': 'Proyecto destacado agregado correctamente'})
+
+    except Exception as e:
+        print(f"❌ Error al procesar proyecto destacado: {str(e)}")
+        return jsonify({'status': 'error', 'message': 'Error interno del servidor'}), 500
+
+@app.route('/api/habilidades-tecnicas', methods=['POST'])
+def add_habilidad_tecnica():
+    try:
+        data = request.get_json()
+        print("🔧 Datos de la habilidad técnica recibidos:", json.dumps(data, indent=2, ensure_ascii=False))
+
+        # Validar campos requeridos
+        required_fields = ['nombre', 'nivel', 'porcentaje']
+        for field in required_fields:
+            if not data.get(field):
+                return jsonify({'status': 'error', 'message': f'El campo {field} es requerido'})
+
+        # Validar porcentaje
+        porcentaje = data.get('porcentaje')
+        if not isinstance(porcentaje, int) or porcentaje < 1 or porcentaje > 100:
+            return jsonify({'status': 'error', 'message': 'El porcentaje debe ser un número entre 1 y 100'})
+
+        return jsonify({'status': 'success', 'message': 'Habilidad técnica agregada correctamente'})
+
+    except Exception as e:
+        print(f"❌ Error al procesar habilidad técnica: {str(e)}")
+        return jsonify({'status': 'error', 'message': 'Error interno del servidor'}), 500
+
+@app.route('/api/idiomas', methods=['POST'])
+def add_idioma():
+    try:
+        data = request.get_json()
+        print("🌐 Datos del idioma recibidos:", json.dumps(data, indent=2, ensure_ascii=False))
+
+        # Validar campos requeridos
+        required_fields = ['idioma', 'nivel', 'porcentaje']
+        for field in required_fields:
+            if not data.get(field):
+                return jsonify({'status': 'error', 'message': f'El campo {field} es requerido'})
+
+        # Validar porcentaje
+        porcentaje = data.get('porcentaje')
+        if not isinstance(porcentaje, int) or porcentaje < 1 or porcentaje > 100:
+            return jsonify({'status': 'error', 'message': 'El porcentaje debe ser un número entre 1 y 100'})
+
+        return jsonify({'status': 'success', 'message': 'Idioma agregado correctamente'})
+
+    except Exception as e:
+        print(f"❌ Error al procesar idioma: {str(e)}")
+        return jsonify({'status': 'error', 'message': 'Error interno del servidor'}), 500
 
 @app.route('/api/usuarios-cuentas', methods=['POST'])
 @login_required
@@ -659,29 +1288,6 @@ def create_usuario_cuenta():
 
     except Exception as e:
         app.logger.error(f"Error al crear usuario de cuenta: {str(e)}")
-        return jsonify({'status': 'error', 'message': str(e)}), 500
-
-@app.route('/api/clientes', methods=['POST'])
-@login_required
-def create_cliente():
-    try:
-        data = request.get_json()
-        print(f"Datos recibidos para cliente: {data}")
-
-        if not data:
-            return jsonify({'status': 'error', 'message': 'No se recibieron datos'}), 400
-
-        print("Datos del cliente:")
-        print(f"  - Nombre: {data.get('nombre')}")
-        print(f"  - Industria: {data.get('industria')}")
-        print(f"  - Región: {data.get('region')}")
-        print(f"  - Código: {data.get('codigo')}")
-        print(f"  - Sector: {data.get('sector')}")
-
-        return jsonify({'status': 'success', 'message': 'Cliente creado exitosamente'})
-
-    except Exception as e:
-        app.logger.error(f"Error al crear cliente: {str(e)}")
         return jsonify({'status': 'error', 'message': str(e)}), 500
 
 @app.route('/api/informacion-personal', methods=['POST'])
@@ -834,409 +1440,27 @@ def create_experiencia_laboral():
         app.logger.error(f"Error al crear experiencia laboral: {str(e)}")
         return jsonify({'status': 'error', 'message': str(e)}), 500
 
-@app.route('/proyectos/gestion')
-@login_required  
-def proyectos_gestion():
-    # Datos de ejemplo para los proyectos
-    proyectos = [
-        {
-            'id': 1,
-            'nombre': 'Transformación Digital Bancaria',
-            'estado': 'En Desarrollo',
-            'etapa': 'desarrollo',
-            'tiempo_estimado': 960,
-            'costos_estimados': 150000,
-            'monto': 180000,
-            'consultores_asignados': 5,
-            'progreso': 65,
-            'aliado_id': 'Banco Nacional',
-            'fecha_inicio': '2024-01-15',
-            'fecha_fin': '2024-07-15'
-        },
-        {
-            'id': 2,
-            'nombre': 'Sistema de Gestión Hospitalaria',
-            'estado': 'Planificación',
-            'etapa': 'planificacion',
-            'tiempo_estimado': 1280,
-            'costos_estimados': 200000,
-            'monto': 250000,
-            'consultores_asignados': 7,
-            'progreso': 25,
-            'aliado_id': 'Hospital Central',
-            'fecha_inicio': '2024-02-01',
-            'fecha_fin': '2024-10-01'
-        },
-        {
-            'id': 3,
-            'nombre': 'E-commerce para Retail',
-            'estado': 'Testing',
-            'etapa': 'testing',
-            'tiempo_estimado': 640,
-            'costos_estimados': 80000,
-            'monto': 100000,
-            'consultores_asignados': 3,
-            'progreso': 85,
-            'aliado_id': 'Retail Plus',
-            'fecha_inicio': '2024-03-01',
-            'fecha_fin': '2024-07-01'
-        },
-        {
-            'id': 4,
-            'nombre': 'Plataforma de Logística',
-            'estado': 'Finalizado',
-            'etapa': 'finalizado',
-            'tiempo_estimado': 800,
-            'costos_estimados': 120000,
-            'monto': 140000,
-            'consultores_asignados': 4,
-            'progreso': 100,
-            'aliado_id': 'LogiTech',
-            'fecha_inicio': '2023-10-01',
-            'fecha_fin': '2024-03-01'
-        }
-    ]
 
-    return render_template('proyectos/gestion.html',
-                         title='Gestión de Proyectos',
-                         proyectos=proyectos,
-                         config=app.config,
-                         role=current_user.role)
+# endregion
 
-@app.route('/api/idiomas', methods=['POST'])
-def api_idiomas():
-    """Endpoint para recibir e imprimir datos de idiomas"""
-    try:
-        data = request.get_json()
-        print("=== DATOS DE IDIOMAS RECIBIDOS ===")
-        print(json.dumps(data, indent=2, ensure_ascii=False))
-        print("=====================================")
 
-        return jsonify({
-            'status': 'success',
-            'message': 'Datos de idiomas recibidos correctamente',
-            'data': data
-        })
-    except Exception as e:
-        print(f"Error al procesar idiomas: {str(e)}")
-        return jsonify({
-            'status': 'error',
-            'message': f'Error al procesar los datos: {str(e)}'
-        }), 400
 
-@app.route('/api/educacion', methods=['POST'])
-def api_educacion():
-    """Endpoint para recibir e imprimir datos de educación"""
-    try:
-        data = request.get_json()
-        print("=== DATOS DE EDUCACIÓN RECIBIDOS ===")
-        print(json.dumps(data, indent=2, ensure_ascii=False))
-        print("=====================================")
 
-        return jsonify({
-            'status': 'success',
-            'message': 'Datos de educación recibidos correctamente',
-            'data': data
-        })
-    except Exception as e:
-        print(f"Error al procesar educación: {str(e)}")
-        return jsonify({
-            'status': 'error',
-            'message': f'Error al procesar los datos: {str(e)}'
-        }), 400
 
-@app.route('/api/certificaciones', methods=['POST'])
-def api_certificaciones():
-    try:
-        data = request.get_json()
-        print("=== DATOS DE CERTIFICACIONES RECIBIDOS ===")
-        print(json.dumps(data, indent=2, ensure_ascii=False))
-        print("=" * 45)
 
-        # Aquí normalmente guardarías en la base de datos
-        # Por ahora solo retornamos éxito
-        return jsonify({"status": "success", "message": "Certificación guardada correctamente"})
-    except Exception as e:
-        print(f"Error en /api/certificaciones: {e}")
-        return jsonify({"status": "error", "message": str(e)}), 500
 
-@app.route('/api/proyectos-destacados', methods=['POST'])
-def add_proyecto_destacado():
-    try:
-        data = request.get_json()
-        print("📝 Datos del proyecto destacado recibidos:", json.dumps(data, indent=2, ensure_ascii=False))
 
-        # Validar campos requeridos
-        required_fields = ['titulo', 'fecha_inicio', 'descripcion']
-        for field in required_fields:
-            if not data.get(field):
-                return jsonify({'status': 'error', 'message': f'El campo {field} es requerido'})
 
-        return jsonify({'status': 'success', 'message': 'Proyecto destacado agregado correctamente'})
 
-    except Exception as e:
-        print(f"❌ Error al procesar proyecto destacado: {str(e)}")
-        return jsonify({'status': 'error', 'message': 'Error interno del servidor'}), 500
 
-@app.route('/api/habilidades-tecnicas', methods=['POST'])
-def add_habilidad_tecnica():
-    try:
-        data = request.get_json()
-        print("🔧 Datos de la habilidad técnica recibidos:", json.dumps(data, indent=2, ensure_ascii=False))
 
-        # Validar campos requeridos
-        required_fields = ['nombre', 'nivel', 'porcentaje']
-        for field in required_fields:
-            if not data.get(field):
-                return jsonify({'status': 'error', 'message': f'El campo {field} es requerido'})
 
-        # Validar porcentaje
-        porcentaje = data.get('porcentaje')
-        if not isinstance(porcentaje, int) or porcentaje < 1 or porcentaje > 100:
-            return jsonify({'status': 'error', 'message': 'El porcentaje debe ser un número entre 1 y 100'})
 
-        return jsonify({'status': 'success', 'message': 'Habilidad técnica agregada correctamente'})
 
-    except Exception as e:
-        print(f"❌ Error al procesar habilidad técnica: {str(e)}")
-        return jsonify({'status': 'error', 'message': 'Error interno del servidor'}), 500
 
-@app.route('/api/idiomas', methods=['POST'])
-def add_idioma():
-    try:
-        data = request.get_json()
-        print("🌐 Datos del idioma recibidos:", json.dumps(data, indent=2, ensure_ascii=False))
 
-        # Validar campos requeridos
-        required_fields = ['idioma', 'nivel', 'porcentaje']
-        for field in required_fields:
-            if not data.get(field):
-                return jsonify({'status': 'error', 'message': f'El campo {field} es requerido'})
 
-        # Validar porcentaje
-        porcentaje = data.get('porcentaje')
-        if not isinstance(porcentaje, int) or porcentaje < 1 or porcentaje > 100:
-            return jsonify({'status': 'error', 'message': 'El porcentaje debe ser un número entre 1 y 100'})
 
-        return jsonify({'status': 'success', 'message': 'Idioma agregado correctamente'})
 
-    except Exception as e:
-        print(f"❌ Error al procesar idioma: {str(e)}")
-        return jsonify({'status': 'error', 'message': 'Error interno del servidor'}), 500
 
-@app.route('/aliados/aliados')
-@login_required
-def aliados_aliados():
-    aliados = Aliado.ALIADOS
-    return render_template('aliados/aliados.html',
-                         title='Gestión de Aliados',
-                         aliados=aliados,
-                         config=app.config,
-                         role=current_user.role)
 
-@app.route('/aliados/portfolio')
-@login_required
-def aliados_portfolio():
-    proyectos = Proyecto.PROYECTOS
-    return render_template('aliados/portfolio.html',
-                         title='Portafolio de Proyectos',
-                         proyectos=proyectos,
-                         config=app.config,
-                         role=current_user.role)
-
-@app.route('/aliados/asignaciones')
-@login_required
-def aliados_asignaciones():
-    consultores = Consultor.CONSULTORES
-    proyectos = {p.id: p for p in Proyecto.PROYECTOS}
-    return render_template('aliados/asignaciones.html',
-                         title='Asignaciones de Consultores',
-                         consultores=consultores,
-                         proyectos=proyectos,
-                         config=app.config,
-                         role=current_user.role)
-
-@app.route('/api/asignaciones', methods=['POST'])
-@login_required
-def create_asignacion():
-    try:
-        data = request.get_json()
-        print(f"Datos de asignación recibidos: {data}")
-
-        if not data:
-            return jsonify({'status': 'error', 'message': 'No se recibieron datos'}), 400
-
-        tipo = data.get('tipo')
-        caso_uso = data.get('caso_uso')
-
-        if tipo == 'freelance':
-            usuario = data.get('usuario')
-            rol_proyecto = data.get('rol_proyecto')
-            print(f"Asignación freelance - Usuario: {usuario}, Proyecto: {caso_uso}, Rol: {rol_proyecto}")
-        elif tipo == 'comunidad':
-            comunidad = data.get('comunidad')
-            print(f"Asignación comunidad - Comunidad: {comunidad}, Proyecto: {caso_uso}")
-
-        return jsonify({'status': 'success', 'message': 'Asignación creada exitosamente'})
-
-    except Exception as e:
-        app.logger.error(f"Error al crear asignación: {str(e)}")
-        return jsonify({'status': 'error', 'message': str(e)}), 500
-
-@app.route('/proyectos/general')
-@login_required
-def proyectos_general():
-    proyectos = Proyecto.PROYECTOS
-    estados = {
-        'oportunidad': [p for p in proyectos if p.etapa == 'oportunidad'],
-        'propuesta': [p for p in proyectos if p.etapa == 'propuesta'],
-        'aprobado': [p for p in proyectos if p.etapa == 'aprobado'],
-        'desarrollo': [p for p in proyectos if p.etapa == 'desarrollo'],
-        'testing': [p for p in proyectos if p.etapa == 'testing'],
-        'cierre': [p for p in proyectos if p.etapa == 'cierre'],
-        'evaluacion': [p for p in proyectos if p.etapa == 'evaluacion'],
-        'finalizados': [p for p in proyectos if p.etapa == 'finalizado']
-    }
-    return render_template('proyectos/general.html',
-                         title='Gestión de Proyectos',
-                         estados=estados,
-                         config=app.config,
-                         role=current_user.role)
-
-@app.route('/api/oportunidades', methods=['POST'])
-@login_required
-def create_oportunidad():
-    try:
-        data = request.get_json()
-        print(f"Datos de oportunidad recibidos: {data}")
-
-        if not data:
-            return jsonify({'status': 'error', 'message': 'No se recibieron datos'}), 400
-
-        cuenta = data.get('cuenta')
-        caso_uso = data.get('casoUso')
-        descripcion = data.get('descripcion')
-        impacto = data.get('impacto')
-
-        print(f"Nueva oportunidad - Cuenta: {cuenta}, Caso de uso: {caso_uso}")
-        print(f"Descripción: {descripcion}")
-        print(f"Impacto: {impacto}")
-
-        return jsonify({'status': 'success', 'message': 'Oportunidad creada exitosamente'})
-
-    except Exception as e:
-        app.logger.error(f"Error al crear oportunidad: {str(e)}")
-        return jsonify({'status': 'error', 'message': str(e)}), 500
-
-@app.route('/proyectos/calculadora', methods=['GET', 'POST'])
-@login_required
-def proyectos_calculadora():
-    if request.method == 'POST':
-        try:
-            data = request.get_json()
-            print(f"Datos de calculadora recibidos: {data}")
-
-            if not data:
-                return jsonify({'status': 'error', 'message': 'No se recibieron datos'}), 400
-
-            project_id = data.get('projectId')
-            project_name = data.get('projectName')
-            time_estimates = data.get('timeEstimates', {})
-            costs = data.get('costs', {})
-
-            print(f"Proyecto: {project_name} (ID: {project_id})")
-            print(f"Estimaciones de tiempo: {time_estimates}")
-            print(f"Costos: {costs}")
-
-            return jsonify({'status': 'success', 'message': 'Estimación guardada exitosamente'})
-
-        except Exception as e:
-            app.logger.error(f"Error al guardar estimación: {str(e)}")
-            return jsonify({'status': 'error', 'message': str(e)}), 500
-    
-    # GET request
-    proyectos = Proyecto.PROYECTOS
-    return render_template('proyectos/calculadora.html',
-                         title='Calculadora de Tiempos',
-                         proyectos=proyectos,
-                         config=app.config,
-                         role=current_user.role)
-
-@app.route('/proyectos/estimaciones')
-@login_required
-def proyectos_estimaciones():
-    # Datos de ejemplo para las estimaciones
-    estimaciones = [
-        {
-            'id': 'EST-001',
-            'aliado': 'Aliado Tech',
-            'caso_uso': 'Sistema de Gestión de Inventarios para Retail',
-            'fecha': '2024-01-15',
-            'tipo': 'Desarrollo Completo',
-            'horas_estimadas': 320,
-            'tarifa_freelance': 45,
-            'recursos': '3 Desarrolladores, 1 QA, 1 PM',
-            'estado': 'Aprobada'
-        },
-        {
-            'id': 'EST-002',
-            'aliado': 'Financiera Global',
-            'caso_uso': 'Plataforma de Pagos Móviles',
-            'fecha': '2024-01-20',
-            'tipo': 'MVP',
-            'horas_estimadas': 480,
-            'tarifa_freelance': 60,
-            'recursos': '4 Desarrolladores, 1 Designer, 1 QA',
-            'estado': 'En Revisión'
-        },
-        {
-            'id': 'EST-003',
-            'aliado': 'Industrias Este',
-            'caso_uso': 'Dashboard de Analytics en Tiempo Real',
-            'fecha': '2024-01-25',
-            'tipo': 'Prototipo',
-            'horas_estimadas': 160,
-            'tarifa_freelance': 55,
-            'recursos': '2 Desarrolladores Frontend, 1 Data Engineer',
-            'estado': 'Pendiente'
-        },
-        {
-            'id': 'EST-004',
-            'aliado': 'Consultores Sur',
-            'caso_uso': 'Sistema CRM Personalizado',
-            'fecha': '2024-02-01',
-            'tipo': 'Desarrollo Completo',
-            'horas_estimadas': 600,
-            'tarifa_freelance': 50,
-            'recursos': '5 Desarrolladores, 2 QA, 1 PM, 1 Designer',
-            'estado': 'Aprobada'
-        },
-        {
-            'id': 'EST-005',
-            'aliado': 'Servicios Oeste',
-            'caso_uso': 'Migración a la Nube AWS',
-            'fecha': '2024-02-05',
-            'tipo': 'Consultoría',
-            'horas_estimadas': 120,
-            'tarifa_freelance': 75,
-            'recursos': '2 Cloud Architects, 1 DevOps Engineer',
-            'estado': 'Rechazada'
-        },
-        {
-            'id': 'EST-006',
-            'aliado': 'Aliado Tech',
-            'caso_uso': 'App Móvil de E-commerce',
-            'fecha': '2024-02-10',
-            'tipo': 'MVP',
-            'horas_estimadas': 280,
-            'tarifa_freelance': 42,
-            'recursos': '2 Desarrolladores Mobile, 1 Designer',
-            'estado': 'En Revisión'
-        }
-    ]
-    
-    return render_template('proyectos/estimaciones.html',
-                         title='Estimaciones de Proyectos',
-                         estimaciones=estimaciones,
-                         config=app.config,
-                         role=current_user.role)

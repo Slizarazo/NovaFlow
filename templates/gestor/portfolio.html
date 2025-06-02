@@ -252,24 +252,24 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for proyecto in proyectos %}
+                        {% for pr in portafolio %}
                         <tr>
-                            <td>{{ proyecto.nombre }}</td>
-                            <td>{{ proyecto.categoria if proyecto.categoria else 'N/A' }}</td>
-                            <td>{{ proyecto.familia if proyecto.familia else 'N/A' }}</td>
-                            <td>{{ proyecto.descripcion if proyecto.descripcion else 'Sin descripción' }}</td>
-                            <td>{{ proyecto.tipo if proyecto.tipo else 'Estándar' }}</td>
+                            <td>{{ pr[1] }}</td>
+                            <td>{{ pr[2] |capitalize }}</td>
+                            <td>{{ pr[3] }}</td>
+                            <td>{{ pr[4] }}</td>
+                            <td>{{ pr[5] }}</td>
                             <td>
                                 <span class="badge 
-                                    {% if proyecto.etapa == 'propuesta' %}bg-info
-                                    {% elif proyecto.etapa == 'planificacion' %}bg-primary
-                                    {% elif proyecto.etapa == 'ejecucion' %}bg-warning
-                                    {% elif proyecto.etapa == 'cierre' %}bg-success
+                                    {% if pr[6] == 'propuesta' %}bg-info
+                                    {% elif pr[6] == 'planificacion' %}bg-primary
+                                    {% elif pr[6] == 'ejecucion' %}bg-warning
+                                    {% elif pr[6] == 'cierre' %}bg-success
                                     {% else %}bg-secondary{% endif %}">
-                                    {{ proyecto.etapa|capitalize }}
+                                    {{ pr[6]|capitalize }}
                                 </span>
                             </td>
-                            <td>{{ proyecto.fecha_actualizacion if proyecto.fecha_actualizacion else proyecto.fecha_inicio }}</td>
+                            <td>{{ pr[8] }}</td>
                             <td>
                                 <div class="d-flex">
                                     <button class="btn btn-sm btn-outline-primary me-1">
@@ -293,7 +293,7 @@
     
     <!-- Project Workflow Stages -->
     <div class="dashboard-section-title mt-4">
-        <h4>Etapas del Flujo de Trabajo</h4>
+        <h4>Etapas del Flujo de Trabajo (Modal Bajo revisión)</h4>
     </div>
     <div class="card mb-4">
         <div class="card-body">
@@ -336,28 +336,133 @@
         </div>
     </div>
     
+    <style>
+    /* Modal personalizado */
+    #addProductModal .modal-dialog {
+        max-width: 600px;
+        margin: 1rem auto;
+        max-height: calc(100vh - 2rem);
+    }
+
+    .modal-content {
+        max-width: 40vw;
+    }
+
+    #addProductModal .modal-content {
+        border-radius: 12px;
+        border: none;
+        max-height: 100%;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    #addProductModal .modal-header {
+        background: linear-gradient(135deg, #8b7bc8 0%, #7b68c7 100%);
+        color: white;
+        border-radius: 12px 12px 0 0;
+        padding: 16px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: relative;
+    }
+
+    #addProductModal .modal-title {
+        font-weight: 600;
+        margin: 0;
+        font-size: 16px;
+        color: white;
+    }
+
+    #addProductModal .btn-close {
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        color: white;
+        font-size: 18px;
+        opacity: 1;
+        padding: 0;
+        width: 28px;
+        height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 4px;
+        font-weight: bold;
+        line-height: 1;
+    }
+
+    #addProductModal .modal-body {
+        padding: 24px 20px;
+        background: white;
+        flex: 1;
+        overflow-y: auto;
+        min-height: 0;
+    }
+
+    #addProductModal .form-section h6 {
+        color: #4a5568;
+        font-weight: 600;
+        margin-bottom: 20px;
+        font-size: 14px;
+        padding-bottom: 8px;
+        border-bottom: 2px solid #e2e8f0;
+    }
+
+    #addProductModal .form-label {
+        color: #2d3748;
+        font-weight: 500;
+        margin-bottom: 8px;
+        display: block;
+        font-size: 14px;
+    }
+
+    #addProductModal .form-control,
+    #addProductModal .form-select,
+    #addProductModal textarea {
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        padding: 12px 14px;
+        font-size: 14px;
+        width: 100%;
+        background-color: #f9fafb;
+    }
+
+    #addProductModal .form-select {
+        appearance: none;
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23666" stroke-width="2"><polyline points="6,9 12,15 18,9"></polyline></svg>');
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        background-size: 16px;
+    }
+
+    #addProductModal textarea {
+        resize: vertical;
+    }
+    </style>
+
     <!-- Modal Añadir Aliado -->
-    <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel" aria-hidden="true" style="display: none;">
-        <div class="modal-dialog" style="max-width: 360px; margin: 1rem auto; max-height: calc(100vh - 2rem);">
-            <div class="modal-content" style="border-radius: 12px; border: none; max-height: 100%; display: flex; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
-                <div class="modal-header" style="background: linear-gradient(135deg, #8b7bc8 0%, #7b68c7 100%); color: white; border-radius: 12px 12px 0 0; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; position: relative;">
-                    <h5 class="modal-title" id="addProductModalLabel" style="font-weight: 600; margin: 0; font-size: 16px; color: white;">Añadir Proyecto</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background: rgba(255,255,255,0.2); border: none; color: white; font-size: 18px; opacity: 1; padding: 0; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-weight: bold; line-height: 1;">×</button>
+    <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel" aria-hidden="true">
+        <div class="modal-dialog" >
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addProductModalLabel">Añadir Producto/Servicio</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">×</button>
                 </div>
                 
-                <div class="modal-body" style="padding: 24px 20px; background: white; flex: 1; overflow-y: auto; min-height: 0;">
+                <div class="modal-body">
                     <div class="form-section">
-                        <h6 style="color: #4a5568; font-weight: 600; margin-bottom: 20px; font-size: 14px; padding-bottom: 8px; border-bottom: 2px solid #e2e8f0;">Información del Proyecto</h6>
+                        <h6 >Información del Producto/Servicio</h6>
                         
                         <form id="addProductForm">
                             <div class="mb-4">
-                                <label for="projectName" class="form-label" style="color: #2d3748; font-weight: 500; margin-bottom: 8px; display: block; font-size: 14px;">Nombre</label>
-                                <input type="text" class="form-control" id="projectName" placeholder="Ej: Sistema de Gestión de Inventarios" required style="border: 1px solid #d1d5db; border-radius: 8px; padding: 12px 14px; font-size: 14px; width: 100%; background-color: #f9fafb;">
+                                <label for="productName" class="form-label">Nombre</label>
+                                <input type="text" class="form-control" id="productName" placeholder="Ej: Sistema de Gestión de Inventarios" required>
                             </div>
                             
                             <div class="mb-4">
-                                <label for="projectCategoria" class="form-label" style="color: #2d3748; font-weight: 500; margin-bottom: 8px; display: block; font-size: 14px;">Categoría</label>
-                                <select class="form-select" id="projectCategoria" required style="border: 1px solid #d1d5db; border-radius: 8px; padding: 12px 14px; font-size: 14px; width: 100%; background-color: #f9fafb; appearance: none; background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"%23666\" stroke-width=\"2\"><polyline points=\"6,9 12,15 18,9\"></polyline></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px;">
+                                <label for="productCategoria" class="form-label">Categoría</label>
+                                <select class="form-select" id="productCategoria" required>
                                     <option value="">Seleccionar categoría...</option>
                                     <option value="mpv">MPV</option>
                                     <option value="desarrollo_completo">Desarrollo Completo</option>
@@ -367,8 +472,8 @@
                             </div>
                             
                             <div class="mb-4">
-                                <label for="projectFamilia" class="form-label" style="color: #2d3748; font-weight: 500; margin-bottom: 8px; display: block; font-size: 14px;">Familia</label>
-                                <select class="form-select" id="projectFamilia" required style="border: 1px solid #d1d5db; border-radius: 8px; padding: 12px 14px; font-size: 14px; width: 100%; background-color: #f9fafb; appearance: none; background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"%23666\" stroke-width=\"2\"><polyline points=\"6,9 12,15 18,9\"></polyline></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px;">
+                                <label for="productFamilia" class="form-label">Familia</label>
+                                <select class="form-select" id="productFamilia" required>
                                     <option value="">Seleccionar familia...</option>
                                     <option value="data_analytics">Data Analytics</option>
                                     <option value="tecnologia">Tecnología</option>
@@ -377,13 +482,13 @@
                             </div>
                             
                             <div class="mb-4">
-                                <label for="projectDescripcion" class="form-label" style="color: #2d3748; font-weight: 500; margin-bottom: 8px; display: block; font-size: 14px;">Descripción</label>
-                                <textarea class="form-control" id="projectDescripcion" rows="3" placeholder="Descripción detallada del proyecto..." required style="border: 1px solid #d1d5db; border-radius: 8px; padding: 12px 14px; font-size: 14px; width: 100%; background-color: #f9fafb; resize: vertical;"></textarea>
+                                <label for="productDescripcion" class="form-label">Descripción</label>
+                                <textarea class="form-control" id="productDescripcion" rows="3" placeholder="Descripción detallada del proyecto..." required></textarea>
                             </div>
                             
                             <div class="mb-4">
-                                <label for="projectTipo" class="form-label" style="color: #2d3748; font-weight: 500; margin-bottom: 8px; display: block; font-size: 14px;">Tipo</label>
-                                <select class="form-select" id="projectTipo" required style="border: 1px solid #d1d5db; border-radius: 8px; padding: 12px 14px; font-size: 14px; width: 100%; background-color: #f9fafb; appearance: none; background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"%23666\" stroke-width=\"2\"><polyline points=\"6,9 12,15 18,9\"></polyline></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px;">
+                                <label for="productTipo" class="form-label">Tipo</label>
+                                <select class="form-select" id="productTipo" required>
                                     <option value="">Seleccionar tipo...</option>
                                     <option value="producto">Producto</option>
                                     <option value="servicio">Servicio</option>
@@ -391,8 +496,8 @@
                             </div>
                             
                             <div class="mb-4">
-                                <label for="projectEstado" class="form-label" style="color: #2d3748; font-weight: 500; margin-bottom: 8px; display: block; font-size: 14px;">Estado</label>
-                                <select class="form-select" id="projectEstado" required style="border: 1px solid #d1d5db; border-radius: 8px; padding: 12px 14px; font-size: 14px; width: 100%; background-color: #f9fafb; appearance: none; background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"%23666\" stroke-width=\"2\"><polyline points=\"6,9 12,15 18,9\"></polyline></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px;">
+                                <label for="productEstado" class="form-label">Estado</label>
+                                <select class="form-select" id="productEstado" required>
                                     <option value="">Seleccionar estado...</option>
                                     <option value="activo">Activo</option>
                                     <option value="en_revision">En Revisión</option>
@@ -845,17 +950,17 @@
         }
         
         const formData = {
-            nombre: document.getElementById('projectName').value,
-            categoria: document.getElementById('projectCategoria').value,
-            familia: document.getElementById('projectFamilia').value,
-            descripcion: document.getElementById('projectDescripcion').value,
-            tipo: document.getElementById('projectTipo').value,
-            estado: document.getElementById('projectEstado').value
+            nombre: document.getElementById('productName').value,
+            categoria: document.getElementById('productCategoria').value,
+            familia: document.getElementById('productFamilia').value,
+            descripcion: document.getElementById('productDescripcion').value,
+            tipo: document.getElementById('productTipo').value,
+            estado: document.getElementById('productEstado').value
         };
         
-        console.log('Enviando datos del proyecto:', formData);
+        console.log('Enviando datos del producto:', formData);
         
-        fetch('/api/proyectos', {
+        fetch('/api/productos', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -866,11 +971,11 @@
         .then(data => {
             console.log('Respuesta del servidor:', data);
             if (data.status === 'success') {
-                alert('Proyecto creado exitosamente');
+                alert('Producto creado exitosamente');
                 hideModal('addProductModal');
                 location.reload();
             } else {
-                alert('Error al crear el proyecto: ' + data.message);
+                alert('Error al crear el producto: ' + data.message);
             }
         })
         .catch(error => {

@@ -24,22 +24,22 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for cliente in clientes %}
+                        {% for cuenta in cuentas %}
                         <tr>
-                            <td>{{ cliente.id }}</td>
-                            <td>{{ cliente.nombre }}</td>
-                            <td>{{ cliente.industria }}</td>
+                            <td>{{ cuenta[0] }}</td>
+                            <td>{{ cuenta[1] }}</td>
+                            <td>{{ cuenta[2] }}</td>
                             <td>
-                                <span class="badge {% if cliente.estado == 'Activo' %}bg-success{% elif cliente.estado == 'Inactivo' %}bg-danger{% else %}bg-warning{% endif %}">
-                                    {{ cliente.estado }}
+                                <span class="badge {% if cuenta[3] == 'activo' %}bg-success{% elif cuenta[3] == 'inactivo' %}bg-danger{% else %}bg-warning{% endif %}">
+                                    {{ cuenta[3] }}
                                 </span>
                             </td>
-                            <td>{{ cliente.proyectos_activos }}</td>
+                            <td>{{ cuenta[4] }}</td>
                             <td>
-                                <button class="btn btn-sm btn-info me-2" onclick="window.location.href='/cuentas/clientes/{{ cliente.id }}'">
+                                <button class="btn btn-sm btn-info me-2" onclick="window.location.href='/cuentas/clientes/{{ cuenta[0] }}'">
                                     <i data-feather="eye"></i>
                                 </button>
-                                <button class="btn btn-sm btn-warning" onclick="window.location.href='/cuentas/clientes/{{ cliente.id }}/editar'">
+                                <button class="btn btn-sm btn-warning" onclick="window.location.href='/cuentas/clientes/{{ cuenta[0] }}/editar'">
                                     <i data-feather="edit"></i>
                                 </button>
                             </td>
@@ -74,21 +74,9 @@
                             <label for="clienteIndustria" class="form-label">Industria</label>
                             <select class="form-select" id="clienteIndustria" required>
                                 <option value="">Seleccionar industria...</option>
-                                <option value="Tecnología">Tecnología</option>
-                                <option value="Finanzas">Finanzas</option>
-                                <option value="Manufactura">Manufactura</option>
-                                <option value="Servicios">Servicios</option>
-                                <option value="Salud">Salud</option>
-                                <option value="Educación">Educación</option>
-                                <option value="Retail">Retail</option>
-                                <option value="Telecomunicaciones">Telecomunicaciones</option>
-                                <option value="Energía">Energía</option>
-                                <option value="Automotriz">Automotriz</option>
-                                <option value="Agricultura">Agricultura</option>
-                                <option value="Construcción">Construcción</option>
-                                <option value="Turismo">Turismo</option>
-                                <option value="Medios">Medios</option>
-                                <option value="Logística">Logística</option>
+                                {% for ind in industrias %}
+                                <option value="{{ ind[0] }}">{{ ind[1] }} ({{ ind[2] }})</option>
+                                {% endfor %}
                             </select>
                         </div>
 
@@ -96,16 +84,9 @@
                             <label for="clienteRegion" class="form-label">Región</label>
                             <select class="form-select" id="clienteRegion" required>
                                 <option value="">Seleccionar región...</option>
-                                <option value="Norte">Norte</option>
-                                <option value="Sur">Sur</option>
-                                <option value="Este">Este</option>
-                                <option value="Oeste">Oeste</option>
-                                <option value="Centro">Centro</option>
-                                <option value="Noreste">Noreste</option>
-                                <option value="Noroeste">Noroeste</option>
-                                <option value="Sureste">Sureste</option>
-                                <option value="Suroeste">Suroeste</option>
-                                <option value="Internacional">Internacional</option>
+                                {% for reg in regiones %}
+                                <option value="{{ reg[0] }}">{{ reg[1] }} ({{ reg[2] }})</option>
+                                {% endfor %}
                             </select>
                         </div>
 
@@ -115,16 +96,12 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="clienteSector" class="form-label">Sector</label>
+                            <label for="clienteSector" class="form-label">Segmentacion</label>
                             <select class="form-select" id="clienteSector" required>
                                 <option value="">Seleccionar sector...</option>
-                                <option value="Público">Público</option>
-                                <option value="Privado">Privado</option>
-                                <option value="Mixto">Mixto</option>
-                                <option value="ONG">ONG</option>
-                                <option value="Cooperativo">Cooperativo</option>
-                                <option value="Startup">Startup</option>
-                                <option value="Multinacional">Multinacional</option>
+                                {% for seg in segmentacion %}
+                                <option value="{{ seg[0] }}">{{ seg[1] }}</option>
+                                {% endfor %}
                             </select>
                         </div>
                     </div>

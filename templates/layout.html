@@ -64,10 +64,11 @@
                 <div class="topbar-role-indicator">
                     <i data-feather="shield" class="topbar-role-icon"></i>
                     <span>
-                        {% if role == 'gestor' %} Gestor de Aliados {% elif role
-                        == 'aliado' %} Aliado {% elif role == 'supervisor' %}
-                        Supervisor {% elif role == 'consultor' %} Consultor {%
-                        endif %}
+                        {% if rol == 'Gestor' %} Gestor de Aliados 
+                        {% elif rol == 'Aliado' %} Aliado 
+                        {% elif rol == 'Supervisor' %} Supervisor 
+                        {% elif rol == 'Consultor' %} Consultor 
+                        {% endif %}
                     </span>
                 </div>
 
@@ -147,10 +148,10 @@
                 <div class="topbar-nav-item dropdown ml-3">
                     <div class="topbar-user">
                         <div class="topbar-user-avatar">
-                            {{ current_user.username[0].upper() }}
+                            {{ current_user.nombre[0].upper() }}
                         </div>
                         <span class="topbar-user-name d-none d-md-block"
-                            >{{ current_user.username }}</span
+                            >{{ current_user.nombre }}</span
                         >
                         <i
                             data-feather="chevron-down"
@@ -160,7 +161,7 @@
 
                     <div class="topbar-dropdown" style="display: none">
                         <div class="topbar-dropdown-header">
-                            {{ current_user.email }}
+                            {{ current_user.correo }}
                         </div>
                         <a href="/perfil" class="topbar-dropdown-item">
                             <i
@@ -199,40 +200,57 @@
                 <div class="text-center mb-4 d-none d-lg-block"></div>
 
                 <!-- Navegación dinámica basada en roles (definida directamente en la plantilla) -->
-                {% if role == 'gestor' %} {% set navigation = [ {'name':
-                'Dashboard', 'icon': 'home', 'url': '/dashboard', 'submenu': [
-                {'name': 'Crecimiento', 'url': '/dashboard/growth'}, {'name':
-                'Desempeño', 'url': '/dashboard/performance'}, {'name':
-                'Comunidad', 'url': '/dashboard/community'} ]}, {'name':
-                'Organizaciones', 'icon': 'users', 'url': '/aliados', 'submenu': [
-                {'name': 'Usuarios', 'url': '/aliados/usuarios'}, {'name':
-                'Organizaciones', 'url': '/aliados/aliados'}, {'name': 'Portafolio',
-                'url': '/aliados/portfolio'}, {'name': 'Asignaciones', 'url':
-                '/aliados/asignaciones'} ]} ] %} {% elif role == 'aliado' %} {%
-                set navigation = [ {'name': 'Inicio', 'icon': 'home', 'url':
-                '/dashboard/growth', 'submenu': []}, {'name': 'Dashboards',
-                'icon': 'activity', 'url': '/dashboard', 'submenu': [ {'name':
-                'Crecimiento', 'url': '/dashboard/crecimiento'}, {'name':
-                'Proyectos', 'url': '/dashboard/proyectos'}, {'name': 'Cuentas',
-                'url': '/dashboard/cuentas'}, {'name': 'Productividad', 'url':
-                '/dashboard/productividad'}, {'name': 'Facturación', 'url':
-                '/dashboard/facturacion'}, {'name': 'Riesgos', 'url':
-                '/dashboard/riesgos'} ]}, {'name': 'Proyectos', 'icon':
-                'briefcase', 'url': '/proyectos', 'submenu': [ {'name':
-                'General', 'url': '/proyectos/general'}]}, {'name': 'Cuentas',
-                'icon': 'users', 'url': '/cuentas', 'submenu': [ {'name':
-                'Clientes', 'url': '/cuentas/clientes'}, {'name': 'Usuarios',
-                'url': '/cuentas/usuarios'} ]} ] %} {% elif role == 'supervisor'
-                %} {% set navigation = [ {'name': 'Inicio', 'icon': 'home',
-                'url': '/dashboard'}, {'name': 'Proyectos', 'icon': 'briefcase',
-                'url': '/proyectos', 'submenu': [ {'name': 'Gestión de
-                proyectos', 'url': '/proyectos/gestion'}, {'name':
-                'Planificación', 'url': '/proyectos/calculadora'}, {'name':
-                'Estimaciones', 'url': '/proyectos/estimaciones'} ]}, {'name':
-                'Consultores', 'icon': 'user-check', 'url': '/consultores',
-                'submenu': [ {'name': 'Propuestas', 'url':
-                '/consultores/propuestas'}, {'name': 'Activos', 'url':
-                '/consultores/activos'} ]} ] %} {% elif role == 'consultor' %}
+                {% if rol == 'Gestor' %} 
+                {% set navigation = [ 
+                    {'name': 'Dashboard', 'icon': 'home', 'url': '/dashboard', 
+                    'submenu': [
+                        {'name': 'Crecimiento', 'url': '/dashboard/growth'}, 
+                        {'name': 'Desempeño', 'url': '/dashboard/performance'}, 
+                        {'name': 'Comunidad', 'url': '/dashboard/community'} ]}, 
+                
+                    {'name': 'Organizaciones', 'icon': 'users', 'url': '/gestor', 
+                    'submenu': [
+                        {'name': 'Usuarios', 'url': '/gestor/usuarios'}, 
+                        {'name': 'Organizaciones', 'url': '/gestor/organizaciones'}, 
+                        {'name': 'Portafolio', 'url': '/gestor/portfolio'}, 
+                        {'name': 'Asignaciones', 'url': '/gestor/asignaciones'} ]} ] %} 
+                
+                {% elif rol == 'Aliado' %} {%
+                set navigation = [ 
+                    {'name': 'Inicio', 'icon': 'home', 'url': '/dashboard/growth', 'submenu': []}, 
+
+                    {'name': 'Dashboards', 'icon': 'activity', 'url': '/dashboard', 
+                    'submenu': [ 
+                        {'name': 'Crecimiento', 'url': '/dashboard/crecimiento'}, 
+                        {'name': 'Proyectos', 'url': '/dashboard/proyectos'}, 
+                        {'name': 'Cuentas', 'url': '/dashboard/cuentas'}, 
+                        {'name': 'Productividad', 'url': '/dashboard/productividad'}, 
+                        {'name': 'Facturación', 'url': '/dashboard/facturacion'}, 
+                        {'name': 'Riesgos', 'url': '/dashboard/riesgos'} ]}, 
+
+                    {'name': 'Proyectos', 'icon': 'briefcase', 'url': '/proyectos', 'submenu': [ 
+                        {'name': 'General', 'url': '/proyectos/general'}]}, 
+
+                    {'name': 'Cuentas', 'icon': 'users', 'url': '/cuentas', 'submenu': [ 
+                        {'name': 'Clientes', 'url': '/cuentas/clientes'}, 
+                        {'name': 'Usuarios', 'url': '/cuentas/usuarios'} ]} ] %} 
+
+                {% elif rol == 'Supervisor' %} 
+                {% set navigation = [ 
+                    {'name': 'Inicio', 'icon': 'home', 'url': '/dashboard'}, 
+
+                    {'name': 'Proyectos', 'icon': 'briefcase', 'url': '/proyectos', 
+                    'submenu': [ 
+                        {'name': 'Gestión de proyectos', 'url': '/proyectos/gestion'}, 
+                        {'name': 'Planificación', 'url': '/proyectos/calculadora'}, 
+                        {'name': 'Estimaciones', 'url': '/proyectos/estimaciones'} ]}, 
+                    
+                    {'name': 'Consultores', 'icon': 'user-check', 'url': '/consultores', 
+                    'submenu': [ 
+                        {'name': 'Propuestas', 'url': '/consultores/propuestas'}, 
+                        {'name': 'Activos', 'url': '/consultores/activos'} ]} ] %}
+
+                {% elif rol == 'Consultor' %}
                 {% set navigation = [ {'name': 'Perfil', 'icon': 'user', 'url':
                 '/consultor/perfil'}, {'name': 'Mis Proyectos', 'icon':
                 'briefcase', 'url': '/mis-proyectos'}, {'name': 'Actividades',

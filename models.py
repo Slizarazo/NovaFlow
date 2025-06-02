@@ -175,35 +175,32 @@ Consultor.CONSULTORES = [
 ]
  #endregion
 
-# region ALIADOS
-# temporalmente se le agrego la s (plural) para diferenciarlo de los modelos de testeo
+# region ORGANIZACIONES
+
 class Organizaciones:
-    def __init__(self, region, industria, fecha_registro, estado,
-                 contacto_principal, tamaño, empleados, pais):
-        self.region = region
-        self.industria = industria
+
+    def __init__(self, nombre, id_industria, fecha_registro, estado, contacto_principal, tamaño, empleados):
+        self.nombre = nombre
+        self.id_industria = id_industria
         self.fecha_registro = fecha_registro
         self.estado = estado
         self.contacto_principal = contacto_principal
         self.tamaño = tamaño
         self.empleados = empleados
-        self.pais = pais
 
     def create(self):
         conn = mydb('nova_flow')
         mycursor = conn.cursor()
 
         query = """
-        INSERT INTO aliados (
-            region, industria, fecha_registro, estado,
-            contacto_principal, tamaño, empleados, pais
+        INSERT INTO organizaciones (
+            nombre, id_industria, fecha_registro, estado, contacto_principal, tamaño, empleados
         ) VALUES(
-            %s, %s, %s, %s, %s, %s, %s, %s
+            %s, %s, %s, %s, %s, %s, %s
         );
         """
         values = (
-            self.region, self.industria, self.fecha_registro, self.estado,
-            self.contacto_principal, self.tamaño, self.empleados, self.pais
+            self.nombre, self.id_industria, self.fecha_registro, self.estado, self.contacto_principal, self.tamaño, self.empleados
         )
         
         mycursor.execute(query, values)
@@ -216,11 +213,169 @@ class Organizaciones:
 
         return id
     
+    @staticmethod
+    def get_all():
+        conn = mydb('nova_flow')
+        mycursor = conn.cursor()
+
+        mycursor.execute('SELECT * FROM organizaciones WHERE estado = "activo";')
+        data = mycursor.fetchall()
+
+        mycursor.close()
+        conn.close()
+
+        return data
+
+    @staticmethod
+    def get_table_orgs():
+        conn = mydb('nova_flow')
+        mycursor = conn.cursor()
+
+        query = """
+            SELECT 
+                org.nombre AS "Organización",
+                ind.nombre AS "Industria",
+                org.estado AS "Estado",
+                CONCAT(reg.nombre, " (", reg.codigo, ")") AS "Región",
+                CONCAT(sreg.nombre, " (", sreg.codigo, ")") AS "Sub-Región",
+                sede.pais AS "Pais",
+                sede.nombre_sede AS "Sede"
+            FROM 
+                nova_flow.organizaciones org
+            LEFT JOIN nova_flow.industrias ind ON org.id_industria = ind.id_industria
+            LEFT JOIN nova_flow.sedes sede ON sede.id_organizacion = org.id
+            LEFT JOIN nova_flow.subregiones sreg ON sede.subregion = sreg.id
+            LEFT JOIN nova_flow.regiones reg ON sreg.id_region = reg.id"""
+        
+        mycursor.execute(query)
+        data = mycursor.fetchall()
+
+        mycursor.close()
+        conn.close()
+
+        return data
+
+# endregion
+
+# region SEDES
+
+class Sedes:
+    
+    def __init__(self, id_organizacion, nombre_sede, subregion, direccion, ciudad, codigo_postal, pais):
+        self.id_organizacion = id_organizacion
+        self.nombre_sede = nombre_sede
+        self.subregion = subregion
+        self.direccion = direccion
+        self.ciudad = ciudad
+        self.codigo_postal = codigo_postal
+        self.pais = pais
+
+    def create(self):
+        conn = mydb('nova_flow')
+        mycursor = conn.cursor()
+
+        query = "INSERT INTO sedes (id_organizacion, nombre_sede, subregion, direccion, ciudad, codigo_postal, pais) VALUES(%s, %s, %s, %s, %s, %s, %s);"
+        values = (self.id_organizacion, self.nombre_sede, self.subregion, self.direccion, self.ciudad, self.codigo_postal, self.pais)
+
+        mycursor.execute(query, values)
+        conn.commit()
+
+        id = mycursor.lastrowid
+
+        mycursor.close()
+        conn.close()
+
+        return id
+    
+    @staticmethod
+    def get_all():
+        conn = mydb('nova_flow')
+        mycursor = conn.cursor()
+
+        mycursor.execute('SELECT * FROM sedes;')
+        data = mycursor.fetchall()
+
+        mycursor.close()
+        conn.close()
+
+        return data
+    
+    @staticmethod
+    def get_orgs():
+        conn = mydb('nova_flow')
+        mycursor = conn.cursor()
+
+        query = """
+            SELECT
+                se.id_sede,
+                CONCAT(se.nombre_sede, " (", org.nombre, ")")
+            FROM nova_flow.sedes se
+            LEFT JOIN nova_flow.organizaciones org ON se.id_organizacion = org.id"""
+        
+        mycursor.execute(query)
+        data = mycursor.fetchall()
+
+        mycursor.close()
+        conn.close()
+
+        return data
+
+# endregion
+
+# region SUBREGIONES
+
+class Subregiones:
+
+    def __init__(self, nombre, codigo, descripcion, id_region, activo):
+        self.nombre = nombre
+        self.codigo = codigo
+        self.descripcion = descripcion
+        self.id_region = id_region
+        self.activo = activo
+
+    @staticmethod
+    def get_all():
+        conn = mydb('nova_flow')
+        mycursor = conn.cursor()
+
+        mycursor.execute('SELECT * FROM subregiones WHERE activo = "1";')
+        data = mycursor.fetchall()
+
+        mycursor.close()
+        conn.close()
+
+        return data
+
+# endregion
+
+# region REGIONES
+
+class Regiones:
+
+    def __init__(self, nombre, codigo, descripcion, activo):
+        self.nombre = nombre
+        self.codigo = codigo
+        self.descripcion = descripcion
+        self.activo = activo
+
+    @staticmethod
+    def get_all():
+        conn = mydb('nova_flow')
+        mycursor = conn.cursor()
+
+        mycursor.execute('SELECT * FROM regiones WHERE activo = "1"')
+        data = mycursor.fetchall()
+
+        mycursor.close()
+        conn.close()
+
+        return data
+
 # endregion
 
 # region COLABORADORES
 
-class Colaborador:
+class Colaboradores:
     def __init__(self, id_usuario, id_organizacion, cargo, rol_laboral):
         self.id_usuario = id_usuario
         self.id_organizacion = id_organizacion
@@ -231,8 +386,8 @@ class Colaborador:
         conn = mydb('nova_flow')
         mycursor = conn.cursor()
 
-        query = "INSERT INTO colaboradores (id_usuario, cargo, rol_laboral) VALUES(%s, %s, %s);"
-        values = (self.id_usuario, self.cargo, self.rol_laboral)
+        query = "INSERT INTO colaboradores (id_usuario, id_organizacion, cargo, rol_laboral) VALUES(%s, %s, %s, %s);"
+        values = (self.id_usuario, self.id_organizacion, self.cargo, self.rol_laboral)
         
         mycursor.execute(query, values)
         conn.commit()
@@ -244,60 +399,18 @@ class Colaborador:
 
         return id
 
-    @staticmethod
-    def get_all(incluir_inactivos=False):
-        if incluir_inactivos:
-            query = "SELECT * FROM colaboradores ORDER BY id_colaboradores ASC;"
-        else:
-            query = "SELECT * FROM colaboradores WHERE estado = 'activo' ORDER BY id_colaboradores ASC;"
-        # return ejecutar_sql(query, fetch='all')
-
-    @staticmethod
-    def get_by_id(id_colaboradores, incluir_inactivo=False):
-        if incluir_inactivo:
-            query = "SELECT * FROM colaboradores WHERE id_colaboradores = %s;"
-        else:
-            query = "SELECT * FROM colaboradores WHERE id_colaboradores = %s AND estado = 'activo';"
-        # return ejecutar_sql(query, (id_colaboradores,), fetch='one')
-
-    def update(self, id_colaboradores):
-        query = """
-        UPDATE colaboradores SET
-            id_aliado = %s,
-            cargo = %s,
-            rol_laboral = %s,
-            estado = %s
-        WHERE id_colaboradores = %s;
-        """
-        values = (
-            self.id_aliado, self.cargo, self.rol_laboral, self.estado, id_colaboradores
-        )
-        # ejecutar_sql(query, values)
-
-    @staticmethod
-    def delete(id_colaboradores):
-        query = "UPDATE colaboradores SET estado = 'inactivo' WHERE id_colaboradores = %s;"
-        # ejecutar_sql(query, (id_colaboradores,))
-
 # endregion
 
 # region INDUSTRIAS
 
-class Industria:
-    def __init__(self, nombre):
-        self.nombre = nombre
-
-    def create(self):
-        query = "INSERT INTO industrias (nombre) VALUES (%s);"
-        # ejecutar_sql(query, (self.nombre,))
+class Industrias:
 
     @staticmethod
     def get_all():
         conn = mydb('nova_flow')
         mycursor = conn.cursor()
 
-        query = "SELECT * FROM industrias ORDER BY sector ASC;"
-        mycursor.execute(query)
+        mycursor.execute("SELECT * FROM industrias ORDER BY sector ASC;")
         data = mycursor.fetchall()
 
         mycursor.close()
@@ -305,28 +418,17 @@ class Industria:
 
         return data
 
-    @staticmethod
-    def get_by_id(id_industria):
-        query = "SELECT * FROM industrias WHERE id_industria = %s;"
-        # return ejecutar_sql(query, (id_industria,), fetch='one')
-
-    def update(self, id_industria):
-        query = "UPDATE industrias SET nombre = %s WHERE id_industria = %s;"
-        # ejecutar_sql(query, (self.nombre, id_industria))
-
-    @staticmethod
-    def delete(id_industria):
-        query = "DELETE FROM industrias WHERE id_industria = %s;"
-        # ejecutar_sql(query, (id_industria,))
-
 # endregion
 
-# region USUARIOS
+# region ACCESO DE USUARIOS
+
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import UserMixin
 
-class Usuario:
+class UserAcces(UserMixin):
 
-    def check_password(self, password):
+    @staticmethod
+    def check_password(password, contraseña_hash):
         """Verifica si la contraseña proporcionada coincide con el hash almacenado
 
         Args:
@@ -335,8 +437,9 @@ class Usuario:
         Returns:
             byte: contraseña hasheada
         """
-        return check_password_hash(self.contraseña_hash, password)
+        return check_password_hash(contraseña_hash, password)
     
+    @staticmethod
     def set_password_hash(password):
         """Establece una nueva contraseña hasheada
 
@@ -345,27 +448,158 @@ class Usuario:
         """
         return generate_password_hash(password)
 
-    def __init__(self, nombre, organizacion, correo, contraseña_hash, id_rol, estado='activo', ultimo_login=None):
+    def __init__(self, id, nombre, organizacion, sede, correo, contraseña, rol, estado, ultimo_login):
+        self.id = id
         self.nombre = nombre
         self.organizacion = organizacion
+        self.sede = sede
         self.correo = correo
-        self.contraseña_hash = contraseña_hash
+        self.contraseña = contraseña
+        self.rol = rol
+        self.estado = estado
+        self.ultimo_login = ultimo_login
+
+    def get_id(self):
+        return str(self.id)
+
+    @property
+    def is_active(self):
+        return self.estado == 'activo'
+
+    @staticmethod
+    def get_by_access(user):
+        conn = mydb('nova_flow')
+        mycursor = conn.cursor()
+
+        query = """
+            SELECT 
+                us.id_usuario AS "id",
+                us.nombre AS "nombre",
+                org.nombre AS "organizacion",
+                sede.nombre_sede AS "sede",
+                us.correo AS "correo",
+                us.contraseña AS "contraseña",
+                rol.nombre AS "rol",
+                us.estado,
+                us.ultimo_login
+            FROM 
+                nova_flow.usuarios us
+            LEFT JOIN 
+                nova_flow.organizaciones org ON us.id_organizacion = org.id
+            LEFT JOIN 
+                nova_flow.sedes sede ON us.id_sede = sede.id_sede
+            LEFT JOIN 
+                nova_flow.roles rol ON us.id_rol = rol.id_rol
+            WHERE
+                us.correo = %s
+            AND 
+                us.estado = %s"""
+        values = (user, "activo")
+
+        mycursor.execute(query, values)
+        data = mycursor.fetchone()
+
+        mycursor.close()
+        conn.close()
+
+        return data
+    
+    @staticmethod
+    def get_access_by_id(id):
+        conn = mydb('nova_flow')
+        mycursor = conn.cursor()
+
+        query = "SELECT * FROM nova_flow.usuarios WHERE id_usuario = %s;"        
+        values = (int(id),)
+
+        mycursor.execute(query, values)
+        data = mycursor.fetchone()
+
+        mycursor.close()
+        conn.close()
+
+        return data
+
+    @staticmethod
+    def get_by_id(user_id):
+        row = UserAcces.get_access_by_id(user_id)
+
+        if row[6] == 1:
+            role = "Aliado"
+        elif row[6] == 2:
+            role = "Gestor"
+        elif row[6] == 3:
+            role = "Supervisor"
+        elif row[6] == 4:
+            role = "Freelance"
+        elif row[6] == 5:
+            role = "Empleado"
+
+        if row:
+            return UserAcces(
+                id=row[0],
+                nombre=row[1],
+                organizacion=row[2],
+                sede=row[3],
+                correo=row[4],
+                contraseña="No disponible",
+                rol=role,
+                estado=row[7],
+                ultimo_login=row[8]
+            )
+        
+        return None
+
+# endregion
+
+# region USUARIOS
+
+class Usuario:
+
+    @staticmethod
+    def check_password(password, contraseña_hash):
+        """Verifica si la contraseña proporcionada coincide con el hash almacenado
+
+        Args:
+            password (str): contraseña del usuario
+
+        Returns:
+            byte: contraseña hasheada
+        """
+        return check_password_hash(contraseña_hash, password)
+    
+    @staticmethod
+    def set_password_hash(password):
+        """Establece una nueva contraseña hasheada
+
+        Args:
+            password (str): contraseña del usuario por defecto
+        """
+        return generate_password_hash(password)
+
+
+    def __init__(self, nombre, id_organizacion, id_sede, correo, contraseña, id_rol, estado='activo', ultimo_login=None):
+        self.nombre = nombre
+        self.id_organizacion = id_organizacion
+        self.id_sede = id_sede
+        self.correo = correo
+        self.contraseña = contraseña
         self.id_rol = id_rol
         self.estado = estado
         self.ultimo_login = ultimo_login
 
     def create(self):
-        password = Usuario.set_password_hash(self.contraseña_hash)
+        password = Usuario.set_password_hash(self.contraseña)
         conn = mydb('nova_flow')
         mycursor = conn.cursor()
 
         query = """
         INSERT INTO usuarios (
-            nombre, organizacion, correo, contraseña_hash, id_rol, estado, ultimo_login
-        ) VALUES(%s, %s, %s, %s, %s, %s, %s);
+            nombre, id_organizacion, id_sede, correo, contraseña, id_rol, estado, ultimo_login
+        ) VALUES(%s, %s, %s, %s, %s, %s, %s, %s);
         """
         values = (
-            self.nombre, self.organizacion, self.correo, password,
+            self.nombre, self.id_organizacion, self.id_sede, self.correo, password,
             self.id_rol, self.estado, self.ultimo_login
         )
 
@@ -428,29 +662,399 @@ class Usuario:
 
         return data
 
-    def update(self, id_usuario):
+    @staticmethod
+    def get_table_users():
+        conn = mydb('nova_flow')
+        mycursor = conn.cursor()
+
         query = """
-        UPDATE usuarios SET
-            nombre = %s,
-            correo = %s,
-            contraseña_hash = %s,
-            id_rol = %s,
-            estado = %s,
-            ultimo_login = %s
-        WHERE id_usuario = %s;
-        """
-        values = (
-            self.nombre, self.correo, self.contraseña_hash,
-            self.id_rol, self.estado, self.ultimo_login, id_usuario
-        )
-        # ejecutar_sql(query, values)
+            SELECT 
+                u.id_usuario AS 'id',
+                u.nombre AS 'Nombre',
+                o.nombre AS 'Organización',
+                s.nombre_sede AS 'Sede',
+                u.correo AS "Usuario",
+                r.nombre AS 'Rol',
+                u.estado AS 'Estado'
+            FROM nova_flow.usuarios u
+            LEFT JOIN nova_flow.organizaciones o ON u.id_organizacion = o.id
+            LEFT JOIN nova_flow.sedes s ON u.id_sede = s.id_sede
+            LEFT JOIN nova_flow.roles r ON u.id_rol = r.id_rol;"""
+        
+        mycursor.execute(query)
+        data = mycursor.fetchall()
+
+        mycursor.close()
+        conn.close()
+
+        return data
 
     @staticmethod
-    def delete(id_usuario):
-        query = "UPDATE usuarios SET estado = 'inactivo' WHERE id_usuario = %s;"
-        # ejecutar_sql(query, id_usuario)
+    def get_tbl_consultores():
+        conn = mydb('nova_flow')
+        mycursor = conn.cursor()
+
+        query = """
+            SELECT 
+                us.id_usuario,
+                us.nombre,
+                con.especialidad,
+                con.disponibilidad,
+                ROUND((con.nivel_segun_usuario + con.nivel_segun_gestor) / 2),
+                con.ciudad,
+                con.tarifa_hora AS "tarifa"
+            FROM nova_flow.usuarios us
+            LEFT JOIN nova_flow.consultores con ON us.id_usuario = con.id_usuario
+            WHERE us.id_rol = '4'"""
+        mycursor.execute(query)
+        data = mycursor.fetchall()
+
+        mycursor.close()
+        conn.close()
+
+        return data
+   
+# endregion
+
+# region PORTAFOLIO
+
+class Portafolio:
+    
+    def __init__(self, nombre, categoria, familia, descripcion, tipo, estado, fecha_creacion, fecha_actualizacion):
+        self.nombre = nombre
+        self.categoria = categoria
+        self.familia = familia
+        self.descripcion = descripcion
+        self.tipo = tipo
+        self.estado = estado
+        self. fecha_creacion = fecha_creacion
+        self.fecha_actualizacion = fecha_actualizacion
+
+    def create (self):
+        conn = mydb('nova_flow')
+        mycursor = conn.cursor()
+
+        query = "INSERT INTO portafolio (nombre, categoria, familia, descripcion, tipo, estado, fecha_creacion, fecha_actualizacion) VALUES(%s, %s, %s, %s, %s, %s, %s, %s);"
+        values = (self.nombre, self.categoria, self.familia, self.descripcion, self.tipo, self.estado, self.fecha_creacion, self.fecha_actualizacion)
+
+        mycursor.execute(query, values)
+        conn.commit()
+
+        id = mycursor.lastrowid
+
+        mycursor.close()
+        conn.close()
+
+        return id
+    
+    @staticmethod
+    def get_all():
+        conn = mydb('nova_flow')
+        mycursor = conn.cursor()
+
+        mycursor.execute("SELECT * FROM portafolio;")
+        data = mycursor.fetchall()
+
+        mycursor.close()
+        conn.close()
+
+        return data
 
 # endregion
+
+# region CONSULTORES
+
+class Consultores:
+    
+    def __init__(self, id_usuario, especialidad, disponibilidad, nivel_segun_usuario, nivel_segun_gestor, fecha_incorporacion, direccion, ciudad, codigo_postal, pais, tarifa_hora, resumen_perfil):
+        self.id_usuario = id_usuario
+        self.especialidad = especialidad
+        self.disponibilidad = disponibilidad
+        self.ns_usuario = nivel_segun_usuario
+        self.ns_gestor = nivel_segun_gestor
+        self.fecha_incorporacion = fecha_incorporacion
+        self.direccion = direccion 
+        self.ciudad = ciudad
+        self.codigo_postal = codigo_postal
+        self.pais = pais
+        self.tarifa_hora = tarifa_hora
+        self.resumen_perfil = resumen_perfil
+
+    def create(self):
+        conn = mydb('nova_flow')
+        mycursor = conn.cursor()
+
+        query = "INSERT INTO consultores (id_usuario, especialidad, disponibilidad, nivel_segun_usuario, nivel_segun_gestor, fecha_incorporacion, direccion, ciudad, codigo_postal ,pais, tarifa_hora, resumen_perfil) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);"
+        values = (self.id_usuario, self.especialidad, self.disponibilidad, self.ns_usuario, self.ns_gestor, self.fecha_incorporacion, self.direccion, self.ciudad, self.codigo_postal, self.pais, self.tarifa_hora, self.resumen_perfil)
+
+        mycursor.execute(query, values)
+        conn.commit()
+
+        id = mycursor.lastrowid
+
+        mycursor.close()
+        conn.close()
+
+        return id
+    
+    @staticmethod
+    def get_all():
+        conn = mydb('nova_flow')
+        mycursor = conn.cursor()
+
+        mycursor.execute('SELECT * FROM consultores')
+
+# endregion
+
+# region COMUNIDADES
+
+class Comunidades:
+    
+    def __init__(self, nombre, descripcion, tipo):
+        self.nombre = nombre
+        self.descripcion = descripcion
+        self.tipo = tipo
+
+    def create(self):
+        conn = mydb('nova_flow')
+        mycursor = conn.cursor()
+
+        query = "INSERT INTO comunidades (nombre, descripcion, tipo) VALUES(%s, %s, %s);"
+        values = (self.nombre, self.descripcion, self.tipo)
+
+        mycursor.execute(query, values)
+        conn.commit()
+
+        id = mycursor.lastrowid
+
+        mycursor.close()
+        conn.close()
+
+        return id
+    
+    @staticmethod
+    def get_all():
+        conn = mydb('nova_flow')
+        mycursor = conn.cursor()
+
+        mycursor.execute('SELECT * FROM comunidades;')
+        data = mycursor.fetchall()
+
+        mycursor.close()
+        conn.close()
+
+        return data
+
+# endregion
+
+# region MIEMBROS COMUNIDAD
+
+class Miembros_comunidad:
+    
+    def __init__(self, id_comunidad, id_usuario, rol_en_comunidad, fecha_union):
+        self.id_comunidad = id_comunidad
+        self.id_usuario = id_usuario
+        self.rol_en_comunidad = rol_en_comunidad
+        self.fecha_union = fecha_union
+
+    def create(self):
+        conn = mydb('nova_flow')
+        mycursor = conn.cursor()
+
+        query = "INSERT INTO miembros_comunidad (id_comunidad, id_usuario, rol_en_comunidad, fecha_union) VALUES(%s, %s, %s, %s)"
+        values = (self.id_comunidad, self.id_usuario, self.rol_en_comunidad, self.fecha_union)
+
+        mycursor.execute(query, values)
+        conn.commit()
+
+        id = mycursor.lastrowid
+
+        mycursor.close()
+        conn.close()
+
+        return id
+
+# endregion
+
+# region PERSONAS CLIENTE
+
+class Personas_cliente:
+    
+    def __init__(self, id_sede, id_usuario, rol_en_cliente, fecha_asignacion):
+        self.id_sede = id_sede
+        self.id_usuario = id_usuario
+        self.rol_en_cliente = rol_en_cliente
+        self.fecha_asignacion = fecha_asignacion
+
+    def create(self):
+        conn = mydb('nova_flow')
+        mycursor = conn.cursor()
+
+        query = "INSERT INTO personas_cliente (id_sede, id_usuario, rol_en_cliente, fecha_asignacion) VALUES(%s, %s, %s, %s);"
+        values = (self.id_sede, self.id_usuario, self.rol_en_cliente, self.fecha_asignacion)
+
+        mycursor.execute(query, values)
+        conn.commit()
+
+        id = mycursor.lastrowid
+
+        mycursor.close()
+        conn.close()
+
+        return id
+
+
+# endregion
+
+# region COMUNIDAD ALIADO
+
+class Comunidad_aliado:
+    
+    def __init__(self, id_sede, id_comunidad, fecha_asignacion, observaciones):
+        self.id_sede = id_sede
+        self.id_comunidad = id_comunidad
+        self.fecha_asignacion = fecha_asignacion
+        self.observaciones = observaciones
+
+    def create(self):
+        conn = mydb('nova_flow')
+        mycursor = conn.cursor()
+
+        query = "INSERT INTO comunidad_aliado (id_sede, id_comunidad, fecha_asignacion, observaciones) VALUES(%s, %s, %s, %s);"
+        values = (self.id_sede, self.id_comunidad, self.fecha_asignacion, self.observaciones)
+
+        mycursor.execute(query, values)
+        conn.commit()
+
+        id = mycursor.lastrowid
+
+        mycursor.close()
+        conn.close()
+
+        return id
+
+# endregion
+
+# region CASOS DE USO
+
+class Caso_uso:
+
+    def __init__(self, id_aliado, id_cuenta, caso_uso, descripcion, impacto, puntuacion_impacto, puntuacion_tecnica, tags, estado, id_producto, fecha_inicio, fecha_cierre, monto_venta, costos_proyecto, margen_estimado_porcentaje, margen_estimado_bruto, feedback):
+        self.id_aliado = id_aliado
+        self.id_cuenta = id_cuenta
+        self.caso_uso = caso_uso
+        self.descripcion = descripcion
+        self.impacto = impacto
+        self.puntuacion_impacto = puntuacion_impacto
+        self.puntuacion_tecnica = puntuacion_tecnica
+        self.tags = tags
+        self.estado = estado
+        self.id_producto = id_producto
+        self.fecha_inicio = fecha_inicio
+        self.fecha_cierre = fecha_cierre
+        self.monto_venta = monto_venta
+        self.costos_proyecto = costos_proyecto
+        self.margen_estimado_porcentaje = margen_estimado_porcentaje
+        self.margen_estimado_bruto = margen_estimado_bruto
+        self.feedback = feedback
+
+    def create(self):
+        conn = mydb('nova_flow')
+        mycursor = conn.cursor()
+
+        query = "INSERT INTO caso_uso (id_aliado, id_cuenta, caso_uso, descripcion, impacto) VALUES(%s, %s, %s, %s, %s);"
+        
+        mycursor.execute(query)
+        conn.commit()
+
+        id = mycursor.lastrowid
+
+        mycursor.close()
+        conn.close()
+
+        return id
+
+# endregion
+
+# region CUENTAS
+
+class Cuentas:
+
+    def __init__(self, id_organizacion, nombre, industria, subregion, fecha_alta, fecha_modificacion, fecha_baja, codigo, id_segmentacion, estado):
+        self.id_organizacion = id_organizacion
+        self.nombre = nombre
+        self.industria = industria
+        self.subregion = subregion
+        self.fecha_alta = fecha_alta
+        self.fecha_modificacion = fecha_modificacion
+        self.fecha_baja = fecha_baja
+        self.codigo = codigo
+        self.id_segmentacion = id_segmentacion
+        self.estado = estado
+
+    def create(self):
+        conn = mydb('nova_flow')
+        mycursor = conn.cursor()
+
+        query = "INSERT INTO cuentas (id_organizacion, nombre, industria, subregion, fecha_alta, fecha_modificacion, fecha_baja, codigo, id_segmentacion, estado) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s);"
+        values = (self.id_organizacion, self.nombre, self.industria, self.subregion, self.fecha_alta, self.fecha_modificacion, self.fecha_baja, self.codigo, self.id_segmentacion, self.estado)
+
+        mycursor.execute(query, values)
+        conn.commit()
+
+        id = mycursor.lastrowid
+
+        mycursor.close()
+        conn.close()
+
+        return id
+
+    @staticmethod
+    def get_all_tbl():
+        conn = mydb('nova_flow')
+        mycursor = conn.cursor()
+
+        query = """
+            SELECT 
+                cu.id,
+                cu.nombre,
+                CONCAT(ind.nombre, " ", ind.grupo_general) AS "industria",
+                cu.estado,
+                COUNT(pro.id_cuenta) AS "proyectos_activos"
+            FROM nova_flow.cuentas cu
+            LEFT JOIN nova_flow.industrias ind ON cu.industria = ind.id_industria
+            LEFT JOIN nova_flow.caso_uso pro ON cu.id = pro.id_cuenta
+            GROUP BY cu.id, cu.nombre, ind.nombre, ind.grupo_general, cu.estado;"""
+
+        mycursor.execute(query)
+        data = mycursor.fetchall()
+
+        mycursor.close()
+        conn.close()
+
+        return data
+
+# endregion
+
+# region SEGMENTACIONES
+
+class Segmentacion:
+
+    @staticmethod
+    def get_all():
+        conn = mydb('nova_flow')
+        mycursor = conn.cursor()
+
+        mycursor.execute('SELECT * FROM segmentacion;')
+        data = mycursor.fetchall()
+
+        mycursor.close()
+        conn.close()
+
+        return data
+
+# endregion
+
 
 
 

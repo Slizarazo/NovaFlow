@@ -62,12 +62,19 @@
                     </thead>
                     <tbody>
                         <!-- Example users -->
-                        <tr data-organizacion="DeepNova" data-rol="Superadministrador" data-estado="activo">
-                            <td>Admin Principal</td>
-                            <td>admin@deepnova.com</td>
-                            <td>DeepNova</td>
-                            <td>Superadministrador</td>
-                            <td><span class="badge bg-success">Activo</span></td>
+                        {% for tu in tabla_usuarios %}
+                        <tr data-organizacion="{{ tu[2] }}" data-rol="{{ tu[5] }}" data-estado="{{ tu[6] }}">
+                            <td>{{ tu[1] }}</td>
+                            <td>{{ tu[4] }}</td>
+                            <td>{{ tu[2] }}</td>
+                            <td>{{ tu[5] }}</td>
+                            {% if tu[6] == 'Pendiente' %}
+                            <td><span class="badge bg-warning">{{ tu[6] }}</span></td>
+                            {% elif tu[6] == "activo" %}
+                            <td><span class="badge bg-success">{{ tu[6] }}</span></td>
+                            {% elif tu[6] == "Inactivo" %}
+                            <td><span class="badge bg-danger">{{ tu[6] }}</span></td>
+                            {% endif %}
                             <td>
                                 <div class="btn-group">
                                     <button type="button" class="btn btn-sm btn-icon" title="Editar">
@@ -82,106 +89,7 @@
                                 </div>
                             </td>
                         </tr>
-                        <tr data-organizacion="Tech Solutions SA" data-rol="Organización" data-estado="activo">
-                            <td>Tech Solutions</td>
-                            <td>contact@techsolutions.com</td>
-                            <td>Tech Solutions SA</td>
-                            <td>Organización</td>
-                            <td><span class="badge bg-success">Activo</span></td>
-                            <td>
-                                <div class="btn-group">
-                                    <button type="button" class="btn btn-sm btn-icon" title="Editar">
-                                        <i data-feather="edit-2"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-sm btn-icon" title="Ver detalles">
-                                        <i data-feather="eye"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-sm btn-icon text-danger" title="Eliminar">
-                                        <i data-feather="trash-2"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr data-organizacion="Global Corp" data-rol="Cliente" data-estado="activo">
-                            <td>Global Corp</td>
-                            <td>info@globalcorp.com</td>
-                            <td>Global Corp</td>
-                            <td>Cliente</td>
-                            <td><span class="badge bg-success">Activo</span></td>
-                            <td>
-                                <div class="btn-group">
-                                    <button type="button" class="btn btn-sm btn-icon" title="Editar">
-                                        <i data-feather="edit-2"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-sm btn-icon" title="Ver detalles">
-                                        <i data-feather="eye"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-sm btn-icon text-danger" title="Eliminar">
-                                        <i data-feather="trash-2"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr data-organizacion="Freelance" data-rol="Supervisor" data-estado="activo">
-                            <td>Ana Martínez</td>
-                            <td>ana.martinez@freelance.com</td>
-                            <td>Freelance</td>
-                            <td>Supervisor</td>
-                            <td><span class="badge bg-success">Activo</span></td>
-                            <td>
-                                <div class="btn-group">
-                                    <button type="button" class="btn btn-sm btn-icon" title="Editar">
-                                        <i data-feather="edit-2"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-sm btn-icon" title="Ver detalles">
-                                        <i data-feather="eye"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-sm btn-icon text-danger" title="Eliminar">
-                                        <i data-feather="trash-2"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr data-organizacion="Freelance" data-rol="Consultor" data-estado="pendiente">
-                            <td>Carlos Ruiz</td>
-                            <td>carlos.ruiz@freelance.com</td>
-                            <td>Freelance</td>
-                            <td>Consultor</td>
-                            <td><span class="badge bg-warning">Pendiente</span></td>
-                            <td>
-                                <div class="btn-group">
-                                    <button type="button" class="btn btn-sm btn-icon" title="Editar">
-                                        <i data-feather="edit-2"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-sm btn-icon" title="Ver detalles">
-                                        <i data-feather="eye"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-sm btn-icon text-danger" title="Eliminar">
-                                        <i data-feather="trash-2"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr data-organizacion="Tech Solutions SA" data-rol="Supervisor" data-estado="inactivo">
-                            <td>María López</td>
-                            <td>maria.lopez@techsolutions.com</td>
-                            <td>Tech Solutions SA</td>
-                            <td>Supervisor</td>
-                            <td><span class="badge bg-danger">Inactivo</span></td>
-                            <td>
-                                <div class="btn-group">
-                                    <button type="button" class="btn btn-sm btn-icon" title="Editar">
-                                        <i data-feather="edit-2"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-sm btn-icon" title="Ver detalles">
-                                        <i data-feather="eye"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-sm btn-icon text-danger" title="Eliminar">
-                                        <i data-feather="trash-2"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
             </div>
@@ -276,10 +184,28 @@
                                     <input type="email" class="form-control" id="gestorCorreo" placeholder="juan.perez@empresa.com">
                                 </div>
                             </div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="gestorOrganizacion" class="form-label">Nombre de la Organización</label>
-                            <input type="text" class="form-control" id="gestorOrganizacion" placeholder="Ej: DeepNova Solutions">
+                            <div class="mb-3">
+                                <label for="gestorOrganizacion" class="form-label">Nombre de la Organización</label>
+                                <select class="form-select" id="gestorOrganizacion">
+                                    <option value="">Seleccionar...</option>
+                                    {% for o in organizaciones %}
+                                    <option value="{{ o[0] }}">{{ o[1] }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="gestorSede" class="form-label">Sede</label>
+                                    <select class="form-select" id="gestorSede">
+                                    <option value="">Seleccionar...</option>
+                                    {% for org in organizaciones %}{% for sede in sedes %}
+                                    {% if org[0] == sede[1] %}
+                                    <option value="{{ org[0] }}">{{ org[1] }} {{ sede[2] }}</option>
+                                    {% endif %}
+                                    {% endfor %}{% endfor %}
+                                </select>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -292,6 +218,28 @@
                                     <label for="aliadoNombre" class="form-label">Nombre Completo</label>
                                     <input type="text" class="form-control" id="aliadoNombre">
                                 </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="aliadoOrganizacion" class="form-label">Nombre de la Organización</label>
+                                <select class="form-select" id="aliadoOrganizacion">
+                                    <option value="">Seleccionar...</option>
+                                    {% for o in organizaciones %}
+                                    <option value="{{ o[0] }}">{{ o[1] }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="aliadoSede" class="form-label">Nombre de la sede</label>
+                                <select class="form-select" id="aliadoSede">
+                                    <option value="">Seleccionar...</option>
+                                    {% for s in sedes %}
+                                    <option value="{{ s[0] }}">
+                                        {% for org in organizaciones %}{% if org[0] == s[1] %}
+                                        {{ org[1] }} - {{ s[2] }}
+                                        {% endif %}{% endfor %}
+                                    </option>
+                                    {% endfor %}
+                                </select>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
@@ -306,25 +254,9 @@
                                     <label for="aliadoRegion" class="form-label">Región</label>
                                     <select class="form-select" id="aliadoRegion">
                                         <option value="">Seleccionar...</option>
-                                        <option value="Norte">Norte</option>
-                                        <option value="Sur">Sur</option>
-                                        <option value="Este">Este</option>
-                                        <option value="Oeste">Oeste</option>
-                                        <option value="Centro">Centro</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="aliadoIndustria" class="form-label">Industria</label>
-                                    <select class="form-select" id="aliadoIndustria">
-                                        <option value="">Seleccionar...</option>
-                                        <option value="Tecnología">Tecnología</option>
-                                        <option value="Finanzas">Finanzas</option>
-                                        <option value="Manufactura">Manufactura</option>
-                                        <option value="Servicios">Servicios</option>
-                                        <option value="Salud">Salud</option>
-                                        <option value="Educación">Educación</option>
+                                        {% for r in regiones %}
+                                        <option value="{{ r[0] }}">{{ r[1] }} ({{ r[2] }})</option>
+                                        {% endfor %}
                                     </select>
                                 </div>
                             </div>
@@ -334,16 +266,41 @@
                     <!-- Formulario Empleado -->
                     <div id="empleadoForm" class="user-form">
                         <h6>Información del Empleado</h6>
-                        <div class="mb-3">
-                            <label for="empleadoAliado" class="form-label">Aliado</label>
-                            <select class="form-select" id="empleadoAliado">
-                                <option value="">Seleccionar...</option>
-                                <option value="1">Aliado Tech</option>
-                                <option value="2">Financiera Global</option>
-                                <option value="3">Industrias Este</option>
-                                <option value="4">Consultores Sur</option>
-                                <option value="5">Servicios Oeste</option>
-                            </select>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="empleadoNombre" class="form-label">Nombre Completo</label>
+                                    <input type="text" class="form-control" id="empleadoNombre">
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="empleadoOrganizacion" class="form-label">Nombre de la Organización</label>
+                                <select class="form-select" id="empleadoOrganizacion">
+                                    <option value="">Seleccionar...</option>
+                                    {% for o in organizaciones %}
+                                    <option value="{{ o[0] }}">{{ o[1] }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="empleadoSede" class="form-label">Nombre de la sede</label>
+                                <select class="form-select" id="empleadoSede">
+                                    <option value="">Seleccionar...</option>
+                                    {% for s in sedes %}
+                                    <option value="{{ s[0] }}">
+                                        {% for org in organizaciones %}{% if org[0] == s[1] %}
+                                        {{ org[1] }} - {{ s[2] }}
+                                        {% endif %}{% endfor %}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="empleadoCorreo" class="form-label">Correo</label>
+                                    <input type="email" class="form-control" id="empleadoCorreo">
+                                </div>
+                            </div>
                         </div>
                         <div class="row">
                             <div class="col-md-6">
@@ -365,6 +322,20 @@
                     <div id="freelanceForm" class="user-form">
                         <h6>Información del Freelance</h6>
                         <div class="row">
+                            <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="freelanceNombre" class="form-label">Nombre Completo</label>
+                                    <input type="text" class="form-control" id="freelanceNombre" placeholder="Ej: Juan Pérez García">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="freelanceCorreo" class="form-label">Correo Electrónico</label>
+                                    <input type="email" class="form-control" id="freelanceCorreo" placeholder="juan.perez@empresa.com">
+                                </div>
+                            </div>
+                        </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="freelanceEspecialidad" class="form-label">Especialidad</label>
@@ -377,12 +348,6 @@
                                         <option value="Consultoría">Consultoría</option>
                                         <option value="Marketing Digital">Marketing Digital</option>
                                     </select>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="freelanceDisponibilidad" class="form-label">Disponibilidad (%)</label>
-                                    <input type="number" class="form-control" id="freelanceDisponibilidad" min="0" max="100">
                                 </div>
                             </div>
                         </div>
@@ -527,8 +492,6 @@
         </div>
     </div>
 </div>
-
-
 
 <style>
 /* Data management modal styles */
@@ -1028,6 +991,7 @@ opacity: 0.8;
 
     let filtersInitialized = false;
     let selectedDataOperation = null;
+    let selectedUserType = null;
 
     // Inicialización cuando el DOM esté listo
     document.addEventListener('DOMContentLoaded', function() {
@@ -1310,6 +1274,9 @@ opacity: 0.8;
     window.selectUserType = function(userType) {
         console.log('🔄 Seleccionando tipo de usuario:', userType);
 
+        selectedUserType = userType
+        console.log('🔄 Seleccionando tipo de usuario:', userType);
+
         // Ocultar selector de opciones
         const userTypeSelection = document.getElementById('userTypeSelection');
         if (userTypeSelection) {
@@ -1358,45 +1325,43 @@ opacity: 0.8;
 
     window.submitUserForm = function() {
         try {
-            const selectedOption = document.querySelector('.user-type-option.active');
-
-            if (!selectedOption) {
+            if (!selectedUserType) {
                 alert('Por favor seleccione un tipo de usuario');
                 return;
             }
 
-            // Obtener el tipo de usuario desde la función onclick
-            const userType = selectedOption.getAttribute('onclick').match(/selectUserType\('(\w+)'\)/)[1];
-
-            let userData = { tipo: userType };
-
+            const userType = selectedUserType
+            let userData = {tipo: userType}
             // Recopilar datos según el tipo de usuario
             if (userType === 'gestor') {
                 userData.nombre_completo = document.getElementById('gestorNombre')?.value || '';
                 userData.correo = document.getElementById('gestorCorreo')?.value || '';
                 userData.organizacion = document.getElementById('gestorOrganizacion')?.value || '';
+                userData.sede = document.getElementById('gestorSede')?.value || '';
             } else if (userType === 'aliado') {
                 userData.nombre_completo = document.getElementById('aliadoNombre')?.value || '';
+                userData.organizacion = document.getElementById('aliadoOrganizacion')?.value || '';
                 userData.correo = document.getElementById('aliadoCorreo')?.value || '';
                 userData.region = document.getElementById('aliadoRegion')?.value || '';
-                userData.industria = document.getElementById('aliadoIndustria')?.value || '';
+                userData.sede = document.getElementById('aliadoSede')?.value || '';
             } else if (userType === 'empleado') {
-                userData.aliado = document.getElementById('empleadoAliado')?.value || '';
+                userData.nombre_completo = document.getElementById('empleadoNombre')?.value || '';
+                userData.organizacion = document.getElementById('empleadoOrganizacion')?.value || '';
+                userData.correo = document.getElementById('empleadoCorreo')?.value || '';
+                userData.region = document.getElementById('empleadoRegion')?.value || '';
+                userData.sede = document.getElementById('empleadoSede')?.value || '';
+                userData.industria = document.getElementById('empleadoIndustria')?.value || '';
                 userData.cargo = document.getElementById('empleadoCargo')?.value || '';
                 userData.rol_laboral = document.getElementById('empleadoRol')?.value || '';
             } else if (userType === 'freelance') {
+                userData.nombre_completo = document.getElementById('freelanceNombre')?.value || '';
+                userData.correo = document.getElementById('freelanceCorreo')?.value || '';
                 userData.especialidad = document.getElementById('freelanceEspecialidad')?.value || '';
-                userData.disponibilidad = document.getElementById('freelanceDisponibilidad')?.value || '';
             }
 
             console.log('📤 Enviando datos de usuario:', userData);
 
-            // Simular envío exitoso
-            alert('Usuario creado exitosamente');
-            hideModal('addUserModal');
-
             // Aquí puedes agregar la lógica real para enviar al servidor
-            /*
             fetch('/api/usuarios', {
                 method: 'POST',
                 headers: {
@@ -1418,7 +1383,6 @@ opacity: 0.8;
                 console.error('❌ Error:', error);
                 alert('Error al enviar los datos');
             });
-            */
         } catch (error) {
             console.error('❌ Error al enviar formulario:', error);
             alert('Error al procesar el formulario');
