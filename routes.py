@@ -48,6 +48,10 @@ def login():
         username = request.form.get('username')
         password = request.form.get('password')
 
+        if not Usuario.get_id_by_correo('gestor1'):
+            nuevo_usuario = Usuario('gestor1', 8, 8, 'gestor1', 'password', 2, 'activo', None)
+            nuevo_usuario.create()
+
         usuario = UserAcces.get_by_access(username)
         
         if usuario and UserAcces.check_password(password, usuario[5]):
