@@ -15,6 +15,31 @@ regiones = [
     [12, "Oceanía", "OC", "Incluye Australia, Nueva Zelanda y el Pacífico Sur", True]
 ]
 
+class Regiones:
+    def __init__(self, nombre, codigo, descripcion, id_region, activo):
+        self.nombre = nombre
+        self.codigo = codigo
+        self.descripcion = descripcion
+        self.id_region = id_region
+        self.activo = activo
+
+    def create(self):
+        conn = mydb('nova_flow')
+        mycursor = conn.cursor()
+
+        query = 'INSERT INTO regiones (nombre, codigo, descripcion, id_region, activo) VALUES(%s, %s, %s, %s, %s)'
+        values = (self.nombre, self.codigo, self.descripcion, self.id_region, self.activo)
+
+        mycursor.execute(query, values)
+        conn.commit()
+
+        mycursor.close()
+        conn.close()
+
+for r in regiones:
+    new_region = Regiones(r[1], r[2], r[3], r[4], r[5])
+    new_region.create()
+
 subregiones = [
     [1, "Estados Unidos", "USA", "Estados Unidos continental y territorios", 1, True],
     [2, "Canadá", "CAN", "Incluye todas las provincias canadienses", 1, True],
@@ -65,5 +90,134 @@ class Subregiones:
 for r in subregiones:
     new_region = Subregiones(r[1], r[2], r[3], r[4], r[5])
     new_region.create()
+
+segmentacion = [
+    [1, 'A', None],
+    [2, 'B', None],
+    [3, 'C', None],
+]
+
+class Segmentacion:
+
+    def __init__(self, clasificacion, descripcion):
+        self.claseificaicon = clasificacion
+        self.descripcion = descripcion
+
+    def create(self):
+        conn = mydb('nova_flow')
+        mycursor = conn.cursor()
+
+        query = "INSERT INTO segmentacion (clasificacion, descripcion) VALUES(%s, %s);"
+        values = (self.clasificaicon, self.descripcion)
+
+        mycursor.execute(query, values)
+        conn.commit()
+
+        mycursor.close()
+        conn.close()
+
+for r in segmentacion:
+    new_region = Segmentacion(r[1], r[2])
+    new_region.create()
+
+roles = [
+    [1, 'Aliado'],
+    [2, 'Gestor'],
+    [3, 'Supervisor'],
+    [4, 'Freelance'],
+    [5, 'Empleado'],
+]
+
+class Roles:
+
+    def __init__(self, nombre):
+        self.nombre = nombre
+
+    def create(self):
+        conn = mydb('nova_flow')
+        mycursor = conn.cursor()
+
+        query = "INSERT INTO roles (nombre) VALUES(%s);"
+        values = (self.nombre,)
+
+        mycursor.execute(query, values)
+        conn.commit()
+
+        mycursor.close()
+        conn.close()
+
+for r in roles:
+    new_region = Roles(r[1])
+    new_region.create()
+
+industrias = [
+    [1, "Agricultura, silvicultura y pesca", "Sector Primario", "Sector Primario", "Sector Primario"],
+    [2, "Explotación de minas y cantera", "Sector Primario", "Sector Primario", "Sector Primario"],
+    [3, "Industrias manufactureras", "Sector Primario", "Sector Primario", "Sector Primario"],
+    [4, "Suministro de electricidad, gas, vapor y airea acondicionado", "Sector Primario", "Sector Primario", "Sector Primario"],
+    [5, "Suministro de agua; alcantarillado, gestión de desechos y actividades de saneamiento", "Sector Primario", "Sector Primario", "Sector Primario"],
+    [6, "Construcción", "Sector Primario", "Sector Primario", "Sector Primario"],
+    [8, "Comercio al por mayor y al por menor; reparación de vehiculos de motor y motocicletas", "Manufactura", "Sector Secundario", "Industrial"],
+    [9, "Transporte y almacenamiento", "Manufactura", "Sector Secundario", "Industrial"],
+    [10, "Quimica y farmacéutica", "Manufactura", "Sector Secundario", "Industrial"],
+    [11, "Producción de metales", "Manufactura", "Sector Secundario", "Industrial"],
+    [12, "Construcción", "Construcción", "Sector Secundario", "Industrial"],
+    [13, "Energía eléctrica y gas", "Energía e infraestructura", "Sector Secundario", "Industrial"],
+    [14, "Comercio al por mayor y menor", "Comercio", "Sector Terciario", "Servicios"],
+    [15, "Transporte y logística", "Servicios", "Sector Terciario", "Servicios"],
+    [16, "Hotelería y turismo", "Servicios", "Sector Terciario", "Servicios"],
+    [17, "Tecnología de la información", "Tecnología", "Sector Terciario", "Servicios"],
+    [18, "Servicios financieros y seguros", "Finanzas", "Sector Terciario", "Servicios"],
+    [19, "Educación", "Servicios Sociales", "Sector Terciario", "Servicios"],
+    [20, "Salud y asistencia social", "Servicios Sociales", "Sector Terciario", "Servicios"],
+    [21, "Entretenimiento y medios", "Creativas y Medios", "Sector Terciario", "Servicios"],
+    [22, "Actividades profesionales y técnicas", "Consultoria y Profesionales", "Sector Terciario", "Servicios"],
+    [23, "Bienes raices e inmobiliaria", "Inmobiliaria", "Sector Terciario", "Servicios"],
+    [24, "Organizaciones no gubernamentales", "Organizaciones sociales", "Sector Cuaternario", "Otros"],
+    [25, "Administración pública", "Gobierno", "Sector Cuaternario", "Otros"],
+    [26, "Actividades religiosas", "Sociedad Civil", "Sector Cuaternario", "Otros"],
+    [27, "Investigación y desarrollo", "Ciencia y Tecnología", "Sector Cuaternario", "Otros"],
+    [41, "Freelance o Multisector", "Freelance", "Multisector", "Otros"]
+]
+
+class Industrias:
+
+    def __init__(self, nombre, grupo_general, sector, nota):
+        self.nombre = nombre
+        self.grupo_general = grupo_general
+        self.sector = sector
+        self.nota = nota
+
+    def create(self):
+        conn = mydb('nova_flow')
+        mycursor = conn.cursor()
+
+        query = "INSERT INTO industrias (nombre, grupo_general, sector, nota) VALUES(%s, %s, %s, %s);"
+        values = (self.nombre, self.grupo_general, self.sector, self.nota)
+
+        mycursor.execute(query, values)
+        conn.commit()
+
+        mycursor.close()
+        conn.close()
+
+for r in industrias:
+    new_region = Industrias(r[1], r[2], r[3], r[4])
+    new_region.create()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
