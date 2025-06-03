@@ -48,34 +48,6 @@ def login():
         username = request.form.get('username')
         password = request.form.get('password')
 
-        if not Usuario.get_id_by_correo('gestor1'):
-            nuevo_usuario = Usuario('gestor1', 1, 1, 'gestor1', 'password', 2, 'activo', None)
-            nuevo_usuario.create()
-
-            # Crear organización
-            nueva_organizacion = Organizaciones(
-                "Deepnova",
-                22,
-                "2025-06-03",
-                'activo',
-                '300 123 4567',
-                'pequeña',
-                2
-            )
-            id_org = nueva_organizacion.create()
-
-            # Crear sede principal
-            nueva_sede = Sedes(
-                id_org,
-                'Casa Matriz',
-                5,
-                'Toca 123 # 321',
-                'Tocancipa',
-                '1234',
-                'Colombia'
-            )
-            nueva_sede.create()
-
         usuario = UserAcces.get_by_access(username)
         
         if usuario and UserAcces.check_password(password, usuario[5]):
@@ -102,6 +74,35 @@ def login():
                 return redirect(url_for('dashboard'))
         else:
             flash('Usuario o contraseña inválidos', 'danger')
+
+    if not Usuario.get_id_by_correo('gestor1'):
+            # Crear usuario
+            nuevo_usuario = Usuario('gestor1', 1, 1, 'gestor1', 'password', 2, 'activo', None)
+            nuevo_usuario.create()
+
+            # Crear organización
+            nueva_organizacion = Organizaciones(
+                "Deepnova",
+                22,
+                "2025-06-03",
+                'activo',
+                '300 123 4567',
+                'pequeña',
+                2
+            )
+            id_org = nueva_organizacion.create()
+
+            # Crear sede principal
+            nueva_sede = Sedes(
+                id_org,
+                'Casa Matriz',
+                5,
+                'Toca 123 # 321',
+                'Tocancipa',
+                '1234',
+                'Colombia'
+            )
+            nueva_sede.create()
 
     # Usamos app.config para acceder a la configuración
     return render_template('login.html',
