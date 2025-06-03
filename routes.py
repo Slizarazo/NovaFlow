@@ -964,22 +964,22 @@ def create_user():
         print(f"Tipo de usuario: {tipo}")
 
         if tipo == 'gestor':
-            nuevo_usuario = Usuario(data.get('nombre_completo'), data.get('organizacion'), data.get('sede'), data.get('correo'), "Dnova%2025", 2, 'activo', None)
+            nuevo_usuario = Usuario(data.get('nombre_completo'), data.get('organizacion'), data.get('sede'), data.get('correo'), 'password', 2, 'activo', None)
             nuevo_usuario.create()
 
         elif tipo == 'aliado':
-            nuevo_usuario = Usuario(data.get('nombre_completo'), data.get('organizacion'), data.get('sede'), data.get('correo'), "Dnova%2025", 1, 'activo', None)
+            nuevo_usuario = Usuario(data.get('nombre_completo'), data.get('organizacion'), data.get('sede'), data.get('correo'), "password", 1, 'activo', None)
             nuevo_usuario.create()
 
         elif tipo == 'empleado':
-            nuevo_usuario = Usuario(data.get('nombre_completo'), data.get('organizacion'), data.get('sede'), data.get('correo'), "Dnova%2025", 5, 'activo', None)
+            nuevo_usuario = Usuario(data.get('nombre_completo'), data.get('organizacion'), data.get('sede'), data.get('correo'), "password", 5, 'activo', None)
             id_usuario = nuevo_usuario.create()
 
             nuevo_colaborador = Colaboradores(id_usuario, data.get('organizacion'), data.get('cargo'), data.get('rol_laboral'))
             nuevo_colaborador.create()
         
         elif tipo == 'freelance':
-            nuevo_usuario = Usuario(data.get('nombre_completo'), None, None, data.get('correo'), "Dnova%2025", 4, 'activo', None)
+            nuevo_usuario = Usuario(data.get('nombre_completo'), None, None, data.get('correo'), "password", 4, 'activo', None)
             id = nuevo_usuario.create()
 
             nuevo_consultor = Consultores(id, data.get('especialidad'), None, None, None, formato, None, None, None, None, None, None)
