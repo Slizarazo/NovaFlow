@@ -52,6 +52,30 @@ def login():
             nuevo_usuario = Usuario('gestor1', 1, 1, 'gestor1', 'password', 2, 'activo', None)
             nuevo_usuario.create()
 
+            # Crear organización
+            nueva_organizacion = Organizaciones(
+                "Deepnova",
+                22,
+                "2025-06-03",
+                'activo',
+                '300 123 4567',
+                'pequeña',
+                2
+            )
+            id_org = nueva_organizacion.create()
+
+            # Crear sede principal
+            nueva_sede = Sedes(
+                id_org,
+                'Casa Matriz',
+                5,
+                'Toca 123 # 321',
+                'Tocancipa',
+                '1234',
+                'Colombia'
+            )
+            nueva_sede.create()
+
         usuario = UserAcces.get_by_access(username)
         
         if usuario and UserAcces.check_password(password, usuario[5]):
