@@ -12,34 +12,6 @@ def workbench_db(table='nova_flow'):
 
     return mydb
 
-def cloud_db_connection(
-    host=MYSQL_HOST,
-    user=MYSQL_USER,
-    passwd=MYSQL_PASSWORD,
-    database=MYSQL_DB,
-    port=int(MYSQL_PORT),
-    ssl_ca=None  # ruta al certificado si es necesario
-    ):
-    config = {
-        "host": host,
-        "user": user,
-        "passwd": passwd,
-        "database": database,
-        "port": port
-    }
-
-    if ssl_ca:
-        config["ssl_ca"] = ssl_ca
-
-    try:
-        conn = mysql.connector.connect(**config)
-        return conn
-    except mysql.connector.Error as err:
-        print(f"❌ Error al conectar a la base de datos: {err}")
-        return None
-
-print(cloud_db_connection())
-
 class Config:
     SECRET_KEY = os.environ.get('SESSION_SECRET', 'dev-secret-key')
     APP_NAME = 'Sistema de Gestión de Aliados'

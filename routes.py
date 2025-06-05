@@ -5,13 +5,14 @@ from functools import reduce
 from flask_login import login_user, logout_user, login_required, current_user
 from app import app
 from models import User, Aliado, Proyecto, Consultor, DatosDashboard
-from models import Usuario, Organizaciones, Industrias, Colaboradores, Subregiones, Sedes, Regiones, Portafolio, Consultores, Comunidades, Miembros_comunidad, Comunidad_aliado, Personas_cliente, UserAcces, Cuentas, Segmentacion
+from models import Usuario, Organizaciones, Industrias, Colaboradores, Subregiones, Sedes, Regiones, Portafolio, Consultores, Comunidades, Miembros_comunidad, Comunidad_aliado, Personas_cliente, UserAcces, Cuentas, Segmentacion, Casos_uso
 from config import Config
 from graphs import *
 from datetime import datetime
 import logging, json
 
-# Importamos los datos de demostración extendidos
+# region DATOS DEMOSTRACIÓN
+
 try:
     from data_demo import DatosDemoCompleto
     USAR_DATOS_EXTENDIDOS = True
@@ -20,6 +21,9 @@ except ImportError:
     USAR_DATOS_EXTENDIDOS = False
     app.logger.warning(
         "No se pudieron cargar los datos de demostración extendidos")
+    
+# endregion
+
     
 # region logeo
 
@@ -75,40 +79,10 @@ def login():
         else:
             flash('Usuario o contraseña inválidos', 'danger')
 
-    if not Usuario.get_id_by_correo('gestor1'):
-            # Crear usuario
-            nuevo_usuario = Usuario('gestor1', 1, 1, 'gestor1', 'password', 2, 'activo', None)
-            nuevo_usuario.create()
-
-            # Crear organización
-            nueva_organizacion = Organizaciones(
-                "Deepnova",
-                22,
-                "2025-06-03",
-                'activo',
-                '300 123 4567',
-                'pequeña',
-                2
-            )
-            id_org = nueva_organizacion.create()
-
-            # Crear sede principal
-            nueva_sede = Sedes(
-                id_org,
-                'Casa Matriz',
-                5,
-                'Toca 123 # 321',
-                'Tocancipa',
-                '1234',
-                'Colombia'
-            )
-            nueva_sede.create()
-
-    # Usamos app.config para acceder a la configuración
     return render_template('login.html',
-                           title='Iniciar Sesión',
-                           config=app.config,
-                           rol=None)
+                            title='Iniciar Sesión',
+                            config=app.config,
+                            rol=None)
 
 @app.route('/logout')
 @login_required
@@ -197,19 +171,22 @@ def gestor_asignaciones():
 @login_required
 @role_required('Aliado')
 def proyectos_general():
-    proyectos = Proyecto.PROYECTOS
+    proyectos = Casos_uso.get_projects(current_user.sede)
     estados = {
-        'oportunidad': [p for p in proyectos if p.etapa == 'oportunidad'],
-        'propuesta': [p for p in proyectos if p.etapa == 'propuesta'],
-        'aprobado': [p for p in proyectos if p.etapa == 'aprobado'],
-        'desarrollo': [p for p in proyectos if p.etapa == 'desarrollo'],
-        'testing': [p for p in proyectos if p.etapa == 'testing'],
-        'cierre': [p for p in proyectos if p.etapa == 'cierre'],
-        'evaluacion': [p for p in proyectos if p.etapa == 'evaluacion'],
-        'finalizados': [p for p in proyectos if p.etapa == 'finalizado']
+        'oportunidad': [p for p in proyectos if str(p[9]) == "1"],
+        'propuesta': [p for p in proyectos if str(p[9]) == "2"],
+        'aprobado': [p for p in proyectos if str(p[9]) == "3"],
+        'desarrollo': [p for p in proyectos if str(p[9]) == '4'],
+        'testing': [p for p in proyectos if str(p[9]) == '5'],
+        'cierre': [p for p in proyectos if str(p[9]) == '6'],
+        'evaluacion': [p for p in proyectos if str(p[9]) == '7'],
+        'finalizados': [p for p in proyectos if str(p[9]) == '8']
     }
+    cuentas = Cuentas.get_cuentas_by_aliado(current_user.organizacion)
     return render_template('aliados/general.html',
                          title='Gestión de Proyectos',
+                         cuentas=cuentas,
+                         proyectos=proyectos,
                          estados=estados,
                          config=app.config,
                          rol=current_user.rol)
@@ -1141,6 +1118,9 @@ def create_oportunidad():
         caso_uso = data.get('casoUso')
         descripcion = data.get('descripcion')
         impacto = data.get('impacto')
+
+        nuevo_caso_uso = Casos_uso(current_user.sede, cuenta, caso_uso, descripcion, impacto, None, None, None, 1, None, None, None, None, None, None, None, None)
+        nuevo_caso_uso.create()
 
         print(f"Nueva oportunidad - Cuenta: {cuenta}, Caso de uso: {caso_uso}")
         print(f"Descripción: {descripcion}")

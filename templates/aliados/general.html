@@ -28,19 +28,8 @@
                         <label for="cuenta" class="form-label" style="font-weight: 500; color: #555; margin-bottom: 0.5rem;">Cuenta</label>
                         <select class="form-control" id="cuenta" name="cuenta" required style="border: 1px solid #ddd; border-radius: 8px; padding: 0.75rem; font-size: 0.95rem; width: 100%; background-color: #f8f9fa;">
                             <option value="">Seleccionar cuenta...</option>
-                            <!-- Opciones de testeo temporales -->
-                            <option value="cliente_1">Banco Nacional S.A.</option>
-                            <option value="cliente_2">Corporación Minera del Norte</option>
-                            <option value="cliente_3">Industrias Alimentarias del Sur</option>
-                            <option value="cliente_4">Telecomunicaciones Globales</option>
-                            <option value="cliente_5">Energía Renovable Colombia</option>
-                            <option value="cliente_6">Retail Fashion Group</option>
-                            <option value="cliente_7">Farmaceutica Nacional</option>
-                            <option value="cliente_8">Constructora Metropolitan</option>
-                            <option value="cliente_9">Seguros y Fianzas del Pacífico</option>
-                            <option value="cliente_10">Universidad Tecnológica Nacional</option>
                             {% for cuenta in cuentas %}
-                            <option value="{{ cuenta.id }}">{{ cuenta.nombre }}</option>
+                            <option value="{{ cuenta[0] }}">{{ cuenta[2] }}</option>
                             {% endfor %}
                         </select>
                     </div>
@@ -200,103 +189,102 @@
             <tbody>
                 <tr style="vertical-align: top">
                     <td>
-                        {% for proyecto in estados.oportunidad %} {% if
-                        proyecto.id != 3 and proyecto.id != 4 %}
+                        {% for proy in proyectos %} {% if proy[9] == '1' %}
                         <div class="card mb-2">
                             <div class="card-body p-2">
                                 <h6 class="card-title">
-                                    {{ proyecto.nombre }}
+                                    {{ proy[3] }}
                                 </h6>
                                 <small class="text-muted"
-                                    >ID: {{ proyecto.id }}</small
+                                    >ID: {{ proy[0] }}</small
                                 >
                             </div>
                         </div>
                         {% endif %} {% endfor %}
                     </td>
                     <td>
-                        {% for proyecto in estados.propuesta %}
+                        {% for proy in proyectos %} {% if proy[9] == '2' %}
                         <div class="card mb-2">
                             <div class="card-body p-2">
                                 <h6 class="card-title">
-                                    {{ proyecto.nombre }}
+                                    {{ proy[3] }}
                                 </h6>
                                 <small class="text-muted"
-                                    >ID: {{ proyecto.id }}</small
+                                    >ID: {{ proy[0] }}</small
                                 >
                             </div>
                         </div>
-                        {% endfor %}
+                        {% endif %} {% endfor %}
                     </td>
                     <td>
-                        {% for proyecto in estados.aprobado %}
+                        {% for proy in proyectos %} {% if proy[9] == '3' %}
                         <div class="card mb-2">
                             <div class="card-body p-2">
                                 <h6 class="card-title">
-                                    {{ proyecto.nombre }}
+                                    {{ proy[3] }}
                                 </h6>
                                 <small class="text-muted"
-                                    >ID: {{ proyecto.id }}</small
+                                    >ID: {{ proy[0] }}</small
                                 >
                             </div>
                         </div>
-                        {% endfor %}
+                        {% endif %} {% endfor %}
                     </td>
                     <td>
-                        {% for proyecto in estados.desarrollo %}
+                        {% for proy in proyectos %} {% if proy[9] == '4' %}
                         <div class="card mb-2">
                             <div class="card-body p-2">
                                 <h6 class="card-title">
-                                    {{ proyecto.nombre }}
+                                    {{ proy[3] }}
                                 </h6>
                                 <small class="text-muted"
-                                    >ID: {{ proyecto.id }}</small
+                                    >ID: {{ proy[0] }}</small
                                 >
                             </div>
                         </div>
-                        {% endfor %}
+                        {% endif %} {% endfor %}
                     </td>
                     <td>
-                        {% for proyecto in estados.testing %}
+                        {% for proy in proyectos %} {% if proy[9] == '5' %}
                         <div class="card mb-2">
                             <div class="card-body p-2">
                                 <h6 class="card-title">
-                                    {{ proyecto.nombre }}
+                                    {{ proy[3] }}
                                 </h6>
                                 <small class="text-muted"
-                                    >ID: {{ proyecto.id }}</small
+                                    >ID: {{ proy[0] }}</small
                                 >
                             </div>
                         </div>
-                        {% endfor %}
+                        {% endif %} {% endfor %}
                     </td>
                     <td>
-                        {% for proyecto in estados.cierre %}
+                        {% for proy in proyectos %} {% if proy[9] == '6' %}
                         <div class="card mb-2">
                             <div class="card-body p-2">
                                 <h6 class="card-title">
-                                    {{ proyecto.nombre }}
+                                    {{ proy[3] }}
                                 </h6>
                                 <small class="text-muted"
-                                    >ID: {{ proyecto.id }}</small
+                                    >ID: {{ proy[0] }}</small
                                 >
                             </div>
                         </div>
-                        {% endfor %}
+                        {% endif %} {% endfor %}
                     </td>
                     <td>
-                        {% for proyecto in estados.evaluacion %}
+                        {% for proy in proyectos %} {% if proy[9] == '7' %}
                         <div class="card mb-2">
                             <div class="card-body p-2">
                                 <h6 class="card-title">
-                                    {{ proyecto.nombre }}
+                                    {{ proy[3] }}
                                 </h6>
                                 <small class="text-muted"
-                                    >ID: {{ proyecto.id }}</small
+                                    >ID: {{ proy[0] }}</small
                                 >
                             </div>
                         </div>
-                        {% endfor %}
+                        {% endif %} {% endfor %}
                     </td>
                 </tr>
             </tbody>

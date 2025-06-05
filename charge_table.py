@@ -1,4 +1,5 @@
 from config import workbench_db as mydb
+from models import *
 
 regiones = [
     [1, "Norteamérica", "NA", "Incluye EE.UU., Canadá y territorios asociados", True],
@@ -14,27 +15,6 @@ regiones = [
     [11, "Asia Central", "CAS", "Kazajistán, Uzbekistán, Turkmenistán y vecinos", True],
     [12, "Oceanía", "OC", "Incluye Australia, Nueva Zelanda y el Pacífico Sur", True]
 ]
-
-class Regiones:
-    def __init__(self, nombre, codigo, descripcion, id_region, activo):
-        self.nombre = nombre
-        self.codigo = codigo
-        self.descripcion = descripcion
-        self.id_region = id_region
-        self.activo = activo
-
-    def create(self):
-        conn = mydb('nova_flow')
-        mycursor = conn.cursor()
-
-        query = 'INSERT INTO regiones (nombre, codigo, descripcion, id_region, activo) VALUES(%s, %s, %s, %s, %s)'
-        values = (self.nombre, self.codigo, self.descripcion, self.id_region, self.activo)
-
-        mycursor.execute(query, values)
-        conn.commit()
-
-        mycursor.close()
-        conn.close()
 
 for r in regiones:
     new_region = Regiones(r[1], r[2], r[3], r[4], r[5])
@@ -66,27 +46,6 @@ subregiones = [
     [23, "Australia y Nueva Zelanda", "AUNZ", "Australia y Nueva Zelanda", 12, True]
 ]
 
-class Subregiones:
-    def __init__(self, nombre, codigo, descripcion, id_region, activo):
-        self.nombre = nombre
-        self.codigo = codigo
-        self.descripcion = descripcion
-        self.id_region = id_region
-        self.activo = activo
-
-    def create(self):
-        conn = mydb('nova_flow')
-        mycursor = conn.cursor()
-
-        query = 'INSERT INTO subregiones (nombre, codigo, descripcion, id_region, activo) VALUES(%s, %s, %s, %s, %s)'
-        values = (self.nombre, self.codigo, self.descripcion, self.id_region, self.activo)
-
-        mycursor.execute(query, values)
-        conn.commit()
-
-        mycursor.close()
-        conn.close()
-
 for r in subregiones:
     new_region = Subregiones(r[1], r[2], r[3], r[4], r[5])
     new_region.create()
@@ -96,25 +55,6 @@ segmentacion = [
     [2, 'B', None],
     [3, 'C', None],
 ]
-
-class Segmentacion:
-
-    def __init__(self, clasificacion, descripcion):
-        self.claseificaicon = clasificacion
-        self.descripcion = descripcion
-
-    def create(self):
-        conn = mydb('nova_flow')
-        mycursor = conn.cursor()
-
-        query = "INSERT INTO segmentacion (clasificacion, descripcion) VALUES(%s, %s);"
-        values = (self.clasificaicon, self.descripcion)
-
-        mycursor.execute(query, values)
-        conn.commit()
-
-        mycursor.close()
-        conn.close()
 
 for r in segmentacion:
     new_region = Segmentacion(r[1], r[2])
@@ -127,24 +67,6 @@ roles = [
     [4, 'Freelance'],
     [5, 'Empleado'],
 ]
-
-class Roles:
-
-    def __init__(self, nombre):
-        self.nombre = nombre
-
-    def create(self):
-        conn = mydb('nova_flow')
-        mycursor = conn.cursor()
-
-        query = "INSERT INTO roles (nombre) VALUES(%s);"
-        values = (self.nombre,)
-
-        mycursor.execute(query, values)
-        conn.commit()
-
-        mycursor.close()
-        conn.close()
 
 for r in roles:
     new_region = Roles(r[1])
@@ -180,32 +102,37 @@ industrias = [
     [41, "Freelance o Multisector", "Freelance", "Multisector", "Otros"]
 ]
 
-class Industrias:
-
-    def __init__(self, nombre, grupo_general, sector, nota):
-        self.nombre = nombre
-        self.grupo_general = grupo_general
-        self.sector = sector
-        self.nota = nota
-
-    def create(self):
-        conn = mydb('nova_flow')
-        mycursor = conn.cursor()
-
-        query = "INSERT INTO industrias (nombre, grupo_general, sector, nota) VALUES(%s, %s, %s, %s);"
-        values = (self.nombre, self.grupo_general, self.sector, self.nota)
-
-        mycursor.execute(query, values)
-        conn.commit()
-
-        mycursor.close()
-        conn.close()
-
 for r in industrias:
     new_region = Industrias(r[1], r[2], r[3], r[4])
     new_region.create()
 
+# Crear usuario
+nuevo_usuario = Usuario('gestor1', 1, 1, 'gestor1', 'password', 2, 'activo', None)
+nuevo_usuario.create()
 
+# Crear organización
+nueva_organizacion = Organizaciones(
+    "Deepnova",
+    22,
+    "2025-06-03",
+    'activo',
+    '300 123 4567',
+    'pequeña',
+    2
+)
+id_org = nueva_organizacion.create()
+
+# Crear sede principal
+nueva_sede = Sedes(
+    id_org,
+    'Casa Matriz',
+    5,
+    'Toca 123 # 321',
+    'Tocancipa',
+    '1234',
+    'Colombia'
+)
+nueva_sede.create()
 
 
 
