@@ -67,7 +67,7 @@
                         {% if rol == 'Gestor' %} Gestor de Aliados 
                         {% elif rol == 'Aliado' %} Aliado 
                         {% elif rol == 'Supervisor' %} Supervisor 
-                        {% elif rol == 'Consultor' %} Consultor 
+                        {% elif rol == 'Freelance' %} Consultor 
                         {% endif %}
                     </span>
                 </div>
@@ -248,15 +248,18 @@
                     {'name': 'Consultores', 'icon': 'user-check', 'url': '/consultores', 
                     'submenu': [ 
                         {'name': 'Propuestas', 'url': '/consultores/propuestas'}, 
-                        {'name': 'Activos', 'url': '/consultores/activos'} ]} ] %}
+                        {'name': 'Activos', 'url': '/consultores/activos'} ]},
 
-                {% elif rol == 'Consultor' %}
-                {% set navigation = [ {'name': 'Perfil', 'icon': 'user', 'url':
-                '/consultor/perfil'}, {'name': 'Mis Proyectos', 'icon':
-                'briefcase', 'url': '/mis-proyectos'}, {'name': 'Actividades',
-                'icon': 'activity', 'url': '/actividades'}, {'name':
-                'Propuestas', 'icon': 'file-text', 'url': '/propuestas'} ] %} {%
-                else %} {% set navigation = [] %} {% endif %}
+                    {'name': 'Consultor', 'user': 'file-text', 'url': '/cambio_rol'} ] %}
+
+                {% elif rol == 'Freelance' %}
+                {% set navigation = [ 
+                    {'name': 'Perfil', 'icon': 'home', 'url': '/consultor/perfil'}, 
+                    {'name': 'Mis Proyectos', 'icon': 'briefcase', 'url': '/mis-proyectos'}, 
+                    {'name': 'Actividades', 'icon': 'activity', 'url': '/actividades'}, 
+                    {'name': 'Propuestas', 'icon': 'file-text', 'url': '/propuestas'},
+                    {'name': 'Supervisor', 'user': 'file-text', 'url': '/cambio_rol'} ] %} 
+                    {% else %} {% set navigation = [] %} {% endif %}
 
                 <!-- Loop through main menu items -->
                 {% for item in navigation %} {% if item.submenu %}

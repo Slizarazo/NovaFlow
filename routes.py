@@ -70,7 +70,7 @@ def login():
             login_user(user_acces)
 
             if current_user.rol == 'Freelance':
-                return redirect(url_for('dashboard'))
+                return redirect(url_for('consultor_perfil'))
             if current_user.rol == "Gestor":
                 next_page = request.args.get('next')
                 return redirect(next_page or url_for('gestor_organizaciones'))
@@ -210,7 +210,13 @@ def cuentas_clientes():
 
 # endregion
 
-# region Sin definir
+# region SUPERVISOR
+
+
+
+# endregion
+
+# region CONSULTOR
 
 @app.route('/consultor/perfil')
 @login_required
@@ -219,6 +225,41 @@ def consultor_perfil():
                          title='Perfil del Consultor',
                          config=app.config,
                          rol=current_user.rol)
+
+# endregion
+
+# region CAMBIO DE ROL
+
+from flask import flash
+
+@app.route('/cambio_rol')
+@login_required
+def cambio_rol():
+    try:
+        role = current_user.rol
+        
+        if role == 'Freelance':
+            Usuario.update_rol(current_user.id, 3)
+            flash("Rol cambiado a Consultor.", "success")
+            return redirect(url_for('dashboard'))
+
+        elif role == 'Supervisor':
+            Usuario.update_rol(current_user.id, 4)
+            flash("Rol cambiado a Supervisor.", "success")
+            return redirect(url_for('consultor_perfil'))
+
+        else:
+            flash("Rol actual no admite cambio automático.", "warning")
+            return redirect(url_for('dashboard'))
+
+    except Exception as e:
+        print(f"❌ Error al cambiar rol: {e}")
+        flash("Ocurrió un error al intentar cambiar el rol.", "danger")
+        return redirect(url_for('dashboard'))
+
+# endregion
+
+# region Sin definir
 
 @app.route('/cuentas/usuarios')
 @login_required
@@ -476,7 +517,7 @@ def dashboard_crecimiento():
 @app.route('/dashboard/growth')
 @login_required
 def dashboard_growth():
-    if current_user.role == 'supervisor':
+    if current_user.rol == 'supervisor':
         return redirect(url_for('dashboard'))
 
     # Data for growth dashboard

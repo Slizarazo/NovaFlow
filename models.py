@@ -659,6 +659,16 @@ class Usuario:
 
         return id
     
+    def update_rol(id, rol):
+        conn = mydb('nova_flow')
+        mycursor = conn.cursor()
+
+        mycursor.execute('UPDATE usuarios SET id_rol = '+str(rol)+' WHERE id_usuario = '+str(id)+';')
+        conn.commit()
+
+        mycursor.close()
+        conn.close()
+
     @staticmethod
     def get_id_by_correo(correo):
         conn = mydb('nova_flow')
