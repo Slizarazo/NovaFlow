@@ -48,7 +48,7 @@
                 >
                     <i data-feather="menu"></i>
                 </button>
-                <a href="{{ url_for('dashboard') }}" class="topbar-brand">
+                <a href="{{ url_for('dashboard_growth') }}" class="topbar-brand">
                     <img
                         src="{{ url_for('static', filename='images/isotipo.png') }}"
                         alt="DEEPNOVA"
@@ -237,7 +237,7 @@
 
                 {% elif rol == 'Supervisor' %} 
                 {% set navigation = [ 
-                    {'name': 'Inicio', 'icon': 'home', 'url': '/dashboard'}, 
+                    {'name': 'Inicio', 'icon': 'home', 'url': '/supervisor/funnel'}, 
 
                     {'name': 'Proyectos', 'icon': 'briefcase', 'url': '/proyectos', 
                     'submenu': [ 

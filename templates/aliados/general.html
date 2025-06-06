@@ -25,6 +25,15 @@
                 
                 <form id="nuevaOportunidadForm">
                     <div class="mb-3">
+                        <label for="supervisor" class="form-label" style="font-weight: 500; color: #555; margin-bottom: 0.5rem;">Supervisor</label>
+                        <select class="form-control" id="id_supervisor" name="supervisor" required style="border: 1px solid #ddd; border-radius: 8px; padding: 0.75rem; font-size: 0.95rem; width: 100%; background-color: #f8f9fa;">
+                            <option value="">Seleccionar supervisor...</option>
+                            {% for sup in consultores %}
+                            <option value="{{ sup[0] }}">{{ sup[1] }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
                         <label for="cuenta" class="form-label" style="font-weight: 500; color: #555; margin-bottom: 0.5rem;">Cuenta</label>
                         <select class="form-control" id="cuenta" name="cuenta" required style="border: 1px solid #ddd; border-radius: 8px; padding: 0.75rem; font-size: 0.95rem; width: 100%; background-color: #f8f9fa;">
                             <option value="">Seleccionar cuenta...</option>

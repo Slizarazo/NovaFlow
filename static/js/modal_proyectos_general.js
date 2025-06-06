@@ -56,6 +56,7 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
+        const idSupervisor = document.getElementById('id_supervisor');
         const cuentaElement = document.getElementById('cuenta');
         const casoUsoElement = document.getElementById('casoUso');
         const descripcionElement = document.getElementById('descripcion');
@@ -67,6 +68,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         const formData = {
+            idSupervisor: idSupervisor.value,
             cuenta: cuentaElement.value,
             casoUso: casoUsoElement.value,
             descripcion: descripcionElement.value,

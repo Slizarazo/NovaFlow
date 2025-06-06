@@ -403,6 +403,7 @@ class Regiones:
 # region COLABORADORES
 
 class Colaboradores:
+
     def __init__(self, id_usuario, id_organizacion, cargo, rol_laboral):
         self.id_usuario = id_usuario
         self.id_organizacion = id_organizacion
@@ -959,6 +960,40 @@ class Personas_cliente:
 
         return id
 
+    @staticmethod
+    def get_consultores_aliado(id):
+        conn = mydb('nova_flow')
+        mycursor = conn.cursor()
+
+        query = """
+            SELECT 
+                u.id_usuario,
+                u.nombre
+            FROM personas_cliente pc
+            JOIN usuarios u ON pc.id_usuario = u.id_usuario
+            WHERE pc.id_sede = %(id_sede)s
+
+            UNION
+
+            SELECT 
+                u.id_usuario,
+                u.nombre
+            FROM comunidad_aliado ca
+            JOIN miembros_comunidad mc ON ca.id_comunidad = mc.id_comunidad
+            JOIN usuarios u ON mc.id_usuario = u.id_usuario
+            WHERE ca.id_sede = %(id_sede)s;
+            """
+        
+        # Parámetros como diccionario
+        params = {'id_sede': id}
+
+        mycursor.execute(query, params)
+        data = mycursor.fetchall()
+
+        mycursor.close()
+        conn.close()
+
+        return data
 
 # endregion
 
@@ -995,8 +1030,9 @@ class Comunidad_aliado:
 
 class Casos_uso:
 
-    def __init__(self, id_aliado, id_cuenta, caso_uso, descripcion, impacto, puntuacion_impacto, puntuacion_tecnica, tags, estado, id_producto, fecha_inicio, fecha_cierre, monto_venta, costos_proyecto, margen_estimado_porcentaje, margen_estimado_bruto, feedback):
+    def __init__(self, id_aliado, id_usuario, id_cuenta, caso_uso, descripcion, impacto, puntuacion_impacto, puntuacion_tecnica, tags, estado, id_producto, fecha_inicio, fecha_cierre, monto_venta, costos_proyecto, margen_estimado_porcentaje, margen_estimado_bruto, feedback):
         self.id_aliado = id_aliado
+        self.id_usuario = id_usuario
         self.id_cuenta = id_cuenta
         self.caso_uso = caso_uso
         self.descripcion = descripcion
@@ -1018,8 +1054,8 @@ class Casos_uso:
         conn = mydb('nova_flow')
         mycursor = conn.cursor()
 
-        query = "INSERT INTO caso_uso (id_aliado, id_cuenta, caso_uso, descripcion, impacto, puntuacion_impacto, puntuacion_tecnica, tags, estado, id_producto, fecha_inicio, fecha_cierre, monto_venta, costos_proyecto, margen_estimado_porcentaje, margen_estimado_bruto, feedback) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);"
-        values = (self.id_aliado, self.id_cuenta, self.caso_uso, self.descripcion, self.impacto, self.puntuacion_impacto, self.puntuacion_tecnica, self.tags, self.estado, self.id_producto, self.fecha_inicio, self.fecha_cierre, self.monto_venta, self.costos_proyecto, self.margen_estimado_porcentaje, self.margen_estimado_bruto, self.feedback)
+        query = "INSERT INTO caso_uso (id_aliado, id_usuario, id_cuenta, caso_uso, descripcion, impacto, puntuacion_impacto, puntuacion_tecnica, tags, estado, id_producto, fecha_inicio, fecha_cierre, monto_venta, costos_proyecto, margen_estimado_porcentaje, margen_estimado_bruto, feedback) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);"
+        values = (self.id_aliado, self.id_usuario, self.id_cuenta, self.caso_uso, self.descripcion, self.impacto, self.puntuacion_impacto, self.puntuacion_tecnica, self.tags, self.estado, self.id_producto, self.fecha_inicio, self.fecha_cierre, self.monto_venta, self.costos_proyecto, self.margen_estimado_porcentaje, self.margen_estimado_bruto, self.feedback)
         
         mycursor.execute(query, values)
         conn.commit()
@@ -1031,12 +1067,38 @@ class Casos_uso:
 
         return id
 
+    def update(campo, valor, id):
+        conn = mydb('nova_flow')
+        mycursor = conn.cursor()
+
+        query = f"UPDATE caso_uso SET {campo} = %s WHERE (id = %s);"
+        values = (valor, id)
+
+        mycursor.execute(query, values)
+        conn.commit()
+
+        mycursor.close()
+        conn.close()
+
     @staticmethod
     def get_projects(id):
         conn = mydb('nova_flow')
         mycursor = conn.cursor()
 
         mycursor.execute('SELECT * FROM caso_uso WHERE id_aliado = '+str(id)+';')
+        data = mycursor.fetchall()
+
+        mycursor.close()
+        conn.close()
+
+        return data
+
+    @staticmethod
+    def get_projects_to_sup(id):
+        conn = mydb('nova_flow')
+        mycursor = conn.cursor()
+
+        mycursor.execute('SELECT * FROM caso_uso WHERE id_usuario = '+str(id)+';')
         data = mycursor.fetchall()
 
         mycursor.close()

@@ -75,7 +75,7 @@ def login():
                 next_page = request.args.get('next')
                 return redirect(next_page or url_for('gestor_organizaciones'))
             else:
-                return redirect(url_for('dashboard'))
+                return redirect(url_for('dashboard_growth'))
         else:
             flash('Usuario o contraseña inválidos', 'danger')
 
@@ -173,21 +173,24 @@ def gestor_asignaciones():
 def proyectos_general():
     proyectos = Casos_uso.get_projects(current_user.sede)
     estados = {
-        'oportunidad': [p for p in proyectos if str(p[9]) == "1"],
-        'propuesta': [p for p in proyectos if str(p[9]) == "2"],
-        'aprobado': [p for p in proyectos if str(p[9]) == "3"],
-        'desarrollo': [p for p in proyectos if str(p[9]) == '4'],
-        'testing': [p for p in proyectos if str(p[9]) == '5'],
-        'cierre': [p for p in proyectos if str(p[9]) == '6'],
-        'evaluacion': [p for p in proyectos if str(p[9]) == '7'],
-        'finalizados': [p for p in proyectos if str(p[9]) == '8']
+        'oportunidad': [p for p in proyectos if str(p[10]) == "1"],
+        'propuesta': [p for p in proyectos if str(p[10]) == "2"],
+        'aprobado': [p for p in proyectos if str(p[10]) == "3"],
+        'desarrollo': [p for p in proyectos if str(p[10]) == '4'],
+        'testing': [p for p in proyectos if str(p[10]) == '5'],
+        'cierre': [p for p in proyectos if str(p[10]) == '6'],
+        'evaluacion': [p for p in proyectos if str(p[10]) == '7'],
+        'finalizados': [p for p in proyectos if str(p[10]) == '8']
     }
     cuentas = Cuentas.get_cuentas_by_aliado(current_user.organizacion)
+    print(f"el id de la sede del usuaro logeado actual es {current_user.sede}")
+    consultores = Personas_cliente.get_consultores_aliado(current_user.sede)
     return render_template('aliados/general.html',
                          title='Gestión de Proyectos',
                          cuentas=cuentas,
                          proyectos=proyectos,
                          estados=estados,
+                         consultores=consultores,
                          config=app.config,
                          rol=current_user.rol)
 
@@ -212,64 +215,32 @@ def cuentas_clientes():
 
 # region SUPERVISOR
 
-
-
-# endregion
-
-# region CONSULTOR
-
-@app.route('/consultor/perfil')
+@app.route('/supervisor/funnel')
 @login_required
-def consultor_perfil():
-    return render_template('consultor/perfil.html',
-                         title='Perfil del Consultor',
-                         config=app.config,
-                         rol=current_user.rol)
-
-# endregion
-
-# region CAMBIO DE ROL
-
-from flask import flash
-
-@app.route('/cambio_rol')
-@login_required
-def cambio_rol():
-    try:
-        role = current_user.rol
-        
-        if role == 'Freelance':
-            Usuario.update_rol(current_user.id, 3)
-            flash("Rol cambiado a Consultor.", "success")
-            return redirect(url_for('dashboard'))
-
-        elif role == 'Supervisor':
-            Usuario.update_rol(current_user.id, 4)
-            flash("Rol cambiado a Supervisor.", "success")
-            return redirect(url_for('consultor_perfil'))
-
-        else:
-            flash("Rol actual no admite cambio automático.", "warning")
-            return redirect(url_for('dashboard'))
-
-    except Exception as e:
-        print(f"❌ Error al cambiar rol: {e}")
-        flash("Ocurrió un error al intentar cambiar el rol.", "danger")
-        return redirect(url_for('dashboard'))
-
-# endregion
-
-# region Sin definir
-
-@app.route('/cuentas/usuarios')
-@login_required
-def cuentas_usuarios():
-    users = User.USERS
-    return render_template('cuentas/usuarios.html',
-                         title='Gestión de Usuarios',
-                         users=users,
-                         config=app.config,
-                         rol=current_user.rol)
+def supervisor_funnel():
+    if current_user.rol == 'Supervisor':
+        # Obtener proyectos y agrupar por estado
+        proyectos = Casos_uso.get_projects_to_sup(current_user.id)
+        estados = {
+            'oportunidad': [p for p in proyectos if str(p[10]) == '1'],
+            'propuesta': [p for p in proyectos if str(p[10]) == '2'],
+            'aprobacion': [p for p in proyectos if str(p[10]) == '3'],
+            'desarrollo': [p for p in proyectos if str(p[10]) == '4'],
+            'testing': [p for p in proyectos if str(p[10]) == '5'],
+            'cierre': [p for p in proyectos if str(p[10]) == '6'],
+            'evaluacion': [p for p in proyectos if str(p[10]) == '7'],
+            'finalizados': [p for p in proyectos if str(p[10]) == '8']
+        }
+        return render_template('supervisor/supervisor.html', 
+                               title='Gestión de Proyectos', 
+                               config=app.config,
+                               proyectos=proyectos,
+                               rol=current_user.rol, 
+                               estados=estados)
+    
+    elif current_user.rol == 'Aliado':
+        return render_template('dashboard/growth_overview.html', title='Dashboard de Crecimiento', config=app.config, rol=current_user.rol)
+    return redirect(url_for('dashboard_growth'))
 
 @app.route('/proyectos/gestion')
 @login_required  
@@ -337,6 +308,62 @@ def proyectos_gestion():
     return render_template('proyectos/gestion.html',
                          title='Gestión de Proyectos',
                          proyectos=proyectos,
+                         config=app.config,
+                         rol=current_user.rol)
+
+# endregion
+
+# region CONSULTOR
+
+@app.route('/consultor/perfil')
+@login_required
+def consultor_perfil():
+    return render_template('consultor/perfil.html',
+                         title='Perfil del Consultor',
+                         config=app.config,
+                         rol=current_user.rol)
+
+# endregion
+
+# region CAMBIO DE ROL
+
+@app.route('/cambio_rol')
+@login_required
+@role_required('Supervisor', 'Freelance')
+def cambio_rol():
+    try:
+        role = current_user.rol
+        
+        if role == 'Freelance':
+            Usuario.update_rol(current_user.id, 3)
+            flash("Rol cambiado a Consultor.", "success")
+            return redirect(url_for('supervisor_funnel'))
+
+        elif role == 'Supervisor':
+            Usuario.update_rol(current_user.id, 4)
+            flash("Rol cambiado a Supervisor.", "success")
+            return redirect(url_for('consultor_perfil'))
+
+        else:
+            flash("Rol actual no admite cambio automático.", "warning")
+            return redirect(url_for('dashboard_growth'))
+
+    except Exception as e:
+        print(f"❌ Error al cambiar rol: {e}")
+        flash("Ocurrió un error al intentar cambiar el rol.", "danger")
+        return redirect(url_for('dashboard_growth'))
+
+# endregion
+
+# region Sin definir
+
+@app.route('/cuentas/usuarios')
+@login_required
+def cuentas_usuarios():
+    users = User.USERS
+    return render_template('cuentas/usuarios.html',
+                         title='Gestión de Usuarios',
+                         users=users,
                          config=app.config,
                          rol=current_user.rol)
 
@@ -457,27 +484,6 @@ def proyectos_estimaciones():
 
 # region Dashboards
 
-@app.route('/dashboard')
-@login_required
-def dashboard():
-    if current_user.rol == 'Supervisor':
-        # Obtener proyectos y agrupar por estado
-        proyectos = Proyecto.PROYECTOS
-        estados = {
-            'oportunidad': [p for p in proyectos if p.etapa == 'oportunidad'],
-            'propuesta': [p for p in proyectos if p.etapa == 'propuesta'],
-            'aprobacion': [p for p in proyectos if p.etapa == 'aprobado'],
-            'desarrollo': [p for p in proyectos if p.etapa == 'desarrollo'],
-            'testing': [p for p in proyectos if p.etapa == 'testing'],
-            'cierre': [p for p in proyectos if p.etapa == 'cierre'],
-            'evaluacion': [p for p in proyectos if p.etapa == 'evaluacion'],
-            'finalizados': [p for p in proyectos if p.etapa == 'finalizado']
-        }
-        return render_template('dashboard/supervisor.html', title='Gestión de Proyectos', config=app.config, rol=current_user.rol, estados=estados)
-    elif current_user.rol == 'Aliado':
-        return render_template('dashboard/growth_overview.html', title='Dashboard de Crecimiento', config=app.config, rol=current_user.rol)
-    return redirect(url_for('dashboard_growth'))
-
 @app.route('/dashboard/crecimiento')
 @login_required
 def dashboard_crecimiento():
@@ -518,7 +524,7 @@ def dashboard_crecimiento():
 @login_required
 def dashboard_growth():
     if current_user.rol == 'supervisor':
-        return redirect(url_for('dashboard'))
+        return redirect(url_for('dashboard_growth'))
 
     # Data for growth dashboard
     aliados = Aliado.ALIADOS
@@ -1143,7 +1149,7 @@ def create_asignacion():
 
 # endregion
 
-# region API ALIADOs
+# region API ALIADO
 
 @app.route('/api/oportunidades', methods=['POST'])
 @login_required
@@ -1159,8 +1165,9 @@ def create_oportunidad():
         caso_uso = data.get('casoUso')
         descripcion = data.get('descripcion')
         impacto = data.get('impacto')
+        usuario = data.get('idSupervisor')
 
-        nuevo_caso_uso = Casos_uso(current_user.sede, cuenta, caso_uso, descripcion, impacto, None, None, None, 1, None, None, None, None, None, None, None, None)
+        nuevo_caso_uso = Casos_uso(current_user.sede, usuario, cuenta, caso_uso, descripcion, impacto, None, None, None, 1, None, None, None, None, None, None, None, None)
         nuevo_caso_uso.create()
 
         print(f"Nueva oportunidad - Cuenta: {cuenta}, Caso de uso: {caso_uso}")
@@ -1194,6 +1201,30 @@ def create_cliente():
         app.logger.error(f"Error al crear cliente: {str(e)}")
         return jsonify({'status': 'error', 'message': str(e)}), 500
 
+@app.route('/api/nueva-oportunidad', methods=['POST'])
+@login_required
+@role_required('Supervisor')
+def update_oportunidad():
+    try:
+        data = request.get_json()
+        print(f"Datos de oportunidad recibidos: {data}")
+
+        if not data:
+            return jsonify({'status': 'error', 'message': 'No se recibieron datos'}), 400
+
+        proyecto_id = data.get('proyecto_id')
+        campo = data.get('campo')
+        valor = data.get('valor')
+
+        if campo and valor and proyecto_id:
+            Casos_uso.update(campo, valor, proyecto_id)
+            return jsonify({'status': 'success', 'message': f'Campo {campo} actualizado'})
+        else:
+            return jsonify({'status': 'error', 'message': 'Faltan datos en la solicitud'}), 400
+
+    except Exception as e:
+        app.logger.error(f"Error al crear oportunidad: {str(e)}")
+        return jsonify({'status': 'error', 'message': str(e)}), 500
 
 # endregion
 
