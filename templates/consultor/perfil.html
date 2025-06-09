@@ -522,9 +522,19 @@
                 </div>
             </div>
             <div class="col-md-10">
-                <div class="profile-name">María Carmen Rodríguez</div>
-                <div class="profile-title">Consultora Senior en Transformación Digital</div>
-                <div class="profile-level">Senior Level</div>
+                <div class="profile-name">{{ usuario.nombre }}</div>
+                <div class="profile-title">{{ consultor.especialidad }}</div>
+                <div class="profile-level">
+                    {% if consultor.nivel_segun_usuario <= 25 %}
+                        <span>Junior</span>
+                    {% elif consultor.nivel_segun_usuario <= 50 %}
+                        <span>Mid</span>
+                    {% elif consultor.nivel_segun_usuario <= 75 %}
+                        <span>Senior</span>
+                    {% else %}
+                        <span>Expert</span>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>
@@ -543,58 +553,79 @@
             <div id="info-personal">
             <div class="info-row">
                 <span class="info-label">Nombre:</span>
-                <span class="info-value">María Carmen Rodríguez</span>
+                <span class="info-label" style="text-align:right">{{ usuario.nombre }}</span>
             </div>
             <div class="info-row">
                 <span class="info-label">Email:</span>
-                <span class="info-value">maria.rodriguez@consultant.com</span>
+                <span class="info-label" style="text-align:right">{{ usuario.correo }}</span>
             </div>
             <div class="info-row">
                 <span class="info-label">Especialidad:</span>
-                <span class="info-value">Transformación Digital</span>
+                <span class="info-value">{{ consultor.especialidad }}</span>
             </div>
             <div class="info-row">
                 <span class="info-label">Teléfono:</span>
-                <span class="info-value">+52 55 1234 5678</span>
+                <span class="info-value">{{ consultor.celular }}</span>
             </div>
             <div class="info-row">
                 <span class="info-label">LinkedIn:</span>
-                <span class="info-value">linkedin.com/in/mariacarmen-rodriguez</span>
+                <span class="info-value">{{ consultor.linkedin }}</span>
             </div>
             <div class="info-row">
                 <span class="info-label">Nivel:</span>
-                <span class="info-value">Senior</span>
+                
+                <!-- Texto visual mientras no se edita -->
+                <span class="info-value" id="nivelTextoVisual">
+                    {{ consultor.nivel_segun_usuario|default(0) }}%
+                    <span id="nivelTextoMensaje">(
+                        {% if consultor.nivel_segun_usuario <= 25 %}
+                            Junior
+                        {% elif consultor.nivel_segun_usuario <= 50 %}
+                            Mid
+                        {% elif consultor.nivel_segun_usuario <= 75 %}
+                            Senior
+                        {% else %}
+                            Expert
+                        {% endif %}
+                    )</span>
+                </span>
+
+                <!-- Input visible solo en modo edición -->
+                <div id="nivelEditableContainer" style="display:none;">
+                    <input type="range" min="0" max="100" id="nivelRangeInput" value="{{ usuario.nivel_numérico|default(0) }}">
+                    <span id="nivelRangeLabel" class="badge mt-2"></span>
+                </div>
             </div>
             <div class="info-row">
                 <span class="info-label">Dirección:</span>
-                <span class="info-value">Av. Reforma 350, Col. Juárez</span>
+                <span class="info-value">{{ consultor.direccion }}</span>
             </div>
             <div class="info-row">
                 <span class="info-label">Ciudad:</span>
-                <span class="info-value">Ciudad de México</span>
+                <span class="info-value">{{ consultor.ciudad }}</span>
             </div>
             <div class="info-row">
                 <span class="info-label">Código Postal:</span>
-                <span class="info-value">06600</span>
+                <span class="info-value">{{ consultor.codigo_postal }}</span>
             </div>
             <div class="info-row">
                 <span class="info-label">País:</span>
-                <span class="info-value">México</span>
+                <span class="info-value">{{ consultor.pais }}</span>
             </div>
             
             <div class="info-row">
                 <span class="info-label">Tarifa por hora:</span>
-                <span class="info-value">$85 USD</span>
+                <span class="info-value">${{ "{:,.1f}".format(consultor.tarifa_hora) }} USD</span>
             </div>
             
             <div class="rate-display">
-                <div class="rate-amount">$85 USD</div>
+                <div class="rate-amount">${{ "{:,.1f}".format(consultor.tarifa_hora) }} USD</div>
                 <div class="rate-label">Tarifa de referencia</div>
             </div>
             
             <div class="contact-info">
                 <strong>Resumen del Perfil:</strong><br>
-                <span class="info-value">Consultora senior con más de 8 años de experiencia en transformación digital, especializada en implementación de soluciones tecnológicas empresariales. Experta en metodologías ágiles, gestión de cambio organizacional y adopción de tecnologías emergentes.</span>
+                <span class="info-value">{{ consultor.resumen_perfil }}</span>
             </div>
             
             <div class="edit-buttons" id="edit-buttons-info-personal">
@@ -611,6 +642,7 @@
                 Experiencia como Freelance
             </h3>
             
+            
             <div class="experience-item">
                 <div class="item-title">Implementación de ERP SAP</div>
                 <div class="item-subtitle">Consultora Senior - Líder de Proyecto</div>
@@ -619,15 +651,7 @@
                     Lideré la implementación de SAP S/4HANA para una empresa manufacturera de 500+ empleados. Responsable de análisis de requerimientos, configuración de módulos financieros y capacitación del equipo.
                 </div>
             </div>
-            
-            <div class="experience-item">
-                <div class="item-title">Transformación Digital Bancaria</div>
-                <div class="item-subtitle">Arquitecta de Soluciones</div>
-                <div class="item-date">Agosto 2023 - Diciembre 2023</div>
-                <div class="item-description">
-                    Diseñé e implementé la arquitectura de microservicios para la plataforma de banca digital, mejorando la experiencia del usuario en un 40% y reduciendo los tiempos de respuesta en un 60%.
-                </div>
-            </div>
+
         </div>
 
         <!-- Bloque 3: Experiencia Profesional -->
@@ -1289,6 +1313,9 @@
 
 {% block scripts %}
 <script>
+    const userId = {{ current_user.id }};
+</script>
+<script>
 document.addEventListener('DOMContentLoaded', function() {
     // Inicializar los iconos de Feather si están disponibles
     if (typeof feather !== 'undefined') {
@@ -1333,17 +1360,18 @@ function toggleEditMode(sectionId) {
     const section = document.getElementById(sectionId);
     const editButtons = document.getElementById(`edit-buttons-${sectionId}`);
     const infoValues = section.querySelectorAll('.info-value');
-    
-    // Guardar datos originales
-    originalData[sectionId] = {};
-    
-    infoValues.forEach((element, index) => {
-        originalData[sectionId][index] = element.textContent;
+
+    infoValues.forEach((element) => {
         element.contentEditable = true;
         element.classList.add('editable');
     });
-    
+
     editButtons.classList.add('show');
+
+    // Activar el modo de edición del nivel
+    if (sectionId === 'info-personal') {
+        activarEdicionNivel();
+    }
 }
 
 function cancelEdit(sectionId) {
@@ -1367,7 +1395,7 @@ function saveEdit(sectionId) {
     const infoValues = section.querySelectorAll('.info-value');
     
     // Recopilar los datos del formulario
-    const formData = {};
+    const formData = {userId};
     const infoRows = section.querySelectorAll('.info-row');
     
     infoRows.forEach(row => {
@@ -1377,12 +1405,6 @@ function saveEdit(sectionId) {
         if (label && value) {
             // Mapear las etiquetas a nombres de campos apropiados
             switch(label) {
-                case 'Nombre':
-                    formData.nombre = value;
-                    break;
-                case 'Email':
-                    formData.email = value;
-                    break;
                 case 'Teléfono':
                     formData.telefono = value;
                     break;
@@ -1393,7 +1415,7 @@ function saveEdit(sectionId) {
                     formData.especialidad = value;
                     break;
                 case 'Nivel':
-                    formData.nivel = value;
+                    formData.nivel = document.getElementById('nivelRangeInput').value;
                     break;
                 case 'Dirección':
                     formData.direccion = value;
@@ -1440,7 +1462,8 @@ function saveEdit(sectionId) {
             });
             
             editButtons.classList.remove('show');
-            alert('Información actualizada correctamente');
+
+            location.reload();
         } else {
             alert('Error al actualizar: ' + data.message);
         }
@@ -1574,6 +1597,68 @@ function formatDate(dateString) {
     const months = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
                    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
     return months[parseInt(month) - 1] + ' ' + year;
+}
+
+function actualizarNivelVisualDesdeValor(valor) {
+    const label = document.getElementById('nivelRangeLabel');
+    
+    if (!label) return;
+
+    let nivel = '';
+    let clase = '';
+
+    if (valor <= 25) {
+        nivel = 'Junior';
+        clase = 'bg-secondary';
+    } else if (valor <= 50) {
+        nivel = 'Mid';
+        clase = 'bg-info';
+    } else if (valor <= 75) {
+        nivel = 'Senior';
+        clase = 'bg-warning';
+    } else {
+        nivel = 'Expert';
+        clase = 'bg-success';
+    }
+
+    label.textContent = `${valor}% - ${nivel}`;
+    label.className = `badge mt-2 ${clase}`;
+}
+
+// Activar edición de nivel
+function activarEdicionNivel() {
+    const visual = document.getElementById('nivelTextoVisual');
+    const container = document.getElementById('nivelEditableContainer');
+    const range = document.getElementById('nivelRangeInput');
+
+    if (visual && container && range) {
+        visual.style.display = 'none';
+        container.style.display = 'block';
+        actualizarNivelVisualDesdeValor(parseInt(range.value));
+
+        // Escuchar cambios en el rango
+        range.addEventListener('input', () => {
+            actualizarNivelVisualDesdeValor(parseInt(range.value));
+        });
+    }
+}
+
+// Activar edición de nivel
+function activarEdicionNivel() {
+    const visual = document.getElementById('nivelTextoVisual');
+    const container = document.getElementById('nivelEditableContainer');
+    const range = document.getElementById('nivelRangeInput');
+
+    if (visual && container && range) {
+        visual.style.display = 'none';
+        container.style.display = 'block';
+        actualizarNivelVisualDesdeValor(parseInt(range.value));
+
+        // Escuchar cambios en el rango
+        range.addEventListener('input', () => {
+            actualizarNivelVisualDesdeValor(parseInt(range.value));
+        });
+    }
 }
 
 // Manejar checkbox de trabajo actual
@@ -2144,36 +2229,44 @@ function addSkill() {
 document.addEventListener('DOMContentLoaded', function() {
     const skillNivel = document.getElementById('skillNivel');
     const skillPorcentaje = document.getElementById('skillPorcentaje');
-    
+
     if (skillNivel && skillPorcentaje) {
-        // Cuando se selecciona un nivel predefinido, limpiar el porcentaje personalizado
-        skillNivel.addEventListener('change', function() {
+        // Cuando se selecciona un nivel predefinido, limpiar el porcentaje personalizado y actualizar visual
+        skillNivel.addEventListener('change', function () {
             if (this.value) {
                 skillPorcentaje.value = '';
+                actualizarNivelVisualDesdeValor(parseInt(this.value));
             }
         });
-        
-        // Cuando se ingresa un porcentaje personalizado, limpiar la selección de nivel
-        skillPorcentaje.addEventListener('input', function() {
+
+        // Cuando se ingresa un porcentaje personalizado, limpiar el nivel predefinido y actualizar visual
+        skillPorcentaje.addEventListener('input', function () {
             if (this.value) {
                 skillNivel.value = '';
+                actualizarNivelVisualDesdeValor(parseInt(this.value));
             }
         });
+
+        // Si ya hay un valor al cargar (ej. edición), mostrar nivel visual desde el inicio
+        if (skillPorcentaje.value) {
+            actualizarNivelVisualDesdeValor(parseInt(skillPorcentaje.value));
+        }
     }
-    
+
     // Manejar idioma personalizado
     const langNombre = document.getElementById('langNombre');
     const customLanguageDiv = document.getElementById('customLanguageDiv');
-    
+
     if (langNombre && customLanguageDiv) {
-        langNombre.addEventListener('change', function() {
+        langNombre.addEventListener('change', function () {
+            const langCustom = document.getElementById('langCustom');
             if (this.value === 'Otro') {
                 customLanguageDiv.style.display = 'block';
-                document.getElementById('langCustom').required = true;
+                langCustom.required = true;
             } else {
                 customLanguageDiv.style.display = 'none';
-                document.getElementById('langCustom').required = false;
-                document.getElementById('langCustom').value = '';
+                langCustom.required = false;
+                langCustom.value = '';
             }
         });
     }

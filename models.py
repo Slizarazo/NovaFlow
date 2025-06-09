@@ -687,7 +687,7 @@ class Usuario:
     @staticmethod
     def get_by_id(id):
         conn = mydb('nova_flow')
-        mycursor = conn.cursor()
+        mycursor = conn.cursor(dictionary=True)
         
         query = "SELECT * FROM usuarios WHERE id_usuario = "+str(id)+";"
 
@@ -853,12 +853,54 @@ class Consultores:
 
         return id
     
-    @staticmethod
-    def get_all():
+    def update(celular, linkedin, especialidad, nivel, direccion, ciudad, codigo_postal, pais, tarifa_hora, resumen, id):
         conn = mydb('nova_flow')
         mycursor = conn.cursor()
 
-        mycursor.execute('SELECT * FROM consultores')
+        query = """
+        UPDATE consultores SET celular = %(celular)s, 
+            linkedin = %(linkedin)s, 
+            nivel_segun_usuario = %(nivel)s, 
+            direccion = %(direccion)s, 
+            ciudad = %(ciudad)s, 
+            codigo_postal = %(codigo_postal)s, 
+            pais = %(pais)s, 
+            tarifa_hora = %(tarifa_hora)s, 
+            resumen_perfil = %(resumen)s 
+        WHERE id_usuario = %(id)s
+        """
+        values = {
+            'celular': celular,
+            'linkedin': linkedin,
+            'especialidad': especialidad,
+            'nivel': nivel,
+            'direccion': direccion,
+            'ciudad': ciudad,
+            'codigo_postal': codigo_postal,
+            'pais': pais,
+            'tarifa_hora': tarifa_hora,
+            'resumen': resumen,
+            'id': id
+        }
+
+        mycursor.execute(query, values)
+        conn.commit()
+
+        mycursor.close()
+        conn.close()
+
+    @staticmethod
+    def get_by_id(id):
+        conn = mydb('nova_flow')
+        mycursor = conn.cursor(dictionary=True)
+
+        mycursor.execute('SELECT * FROM consultores WHERE id_usuario = '+str(id)+'')
+        data = mycursor.fetchone()
+
+        mycursor.close()
+        conn.close()
+
+        return data
 
 # endregion
 

@@ -320,8 +320,13 @@ def proyectos_gestion():
 @app.route('/consultor/perfil')
 @login_required
 def consultor_perfil():
+    id = current_user.id
+    usuario = Usuario.get_by_id(id)
+    consultor = Consultores.get_by_id(id)
     return render_template('consultor/perfil.html',
                          title='Perfil del Consultor',
+                         usuario=usuario,
+                         consultor=consultor,
                          config=app.config,
                          rol=current_user.rol)
 
@@ -1257,6 +1262,61 @@ def cambio_estado_caso_uso():
 
 # endregion
 
+# region API SUPERVISOR
+
+
+
+# endregion
+
+# region API CONSULTOR
+
+@app.route('/api/informacion-personal', methods=['POST'])
+@login_required
+def update_informacion_personal():
+    try:
+        data = request.get_json()
+
+        if not data:
+            return jsonify({'status': 'error', 'message': 'No se recibieron datos'}), 400
+
+        # Extraer los datos del formulario
+        userId = data.get('userId')
+        telefono = data.get('telefono')
+        linkedin = data.get('linkedin')
+        especialidad = data.get('especialidad')
+        nivel = data.get('nivel')
+        direccion = data.get('direccion')
+        ciudad = data.get('ciudad')
+        codigo_postal = data.get('codigo_postal')
+        pais = data.get('pais')
+        tarifa_hora = data.get('tarifa_hora').replace("$", "").replace("USD", "").strip()
+        resumen = data.get('resumen')
+
+        Consultores.update(telefono, linkedin, especialidad, nivel, direccion, ciudad, codigo_postal, pais, tarifa_hora, resumen, userId)
+
+        return jsonify({
+            'status': 'success', 
+            'message': 'Información personal actualizada exitosamente',
+            'data': {
+                'telefono': telefono,
+                'linkedin': linkedin,
+                'especialidad': especialidad,
+                'nivel': nivel,
+                'direccion': direccion,
+                'ciudad': ciudad,
+                'codigo_postal': codigo_postal,
+                'pais': pais,
+                'tarifa_hora': tarifa_hora,
+                'resumen': resumen
+            }
+        })
+
+    except Exception as e:
+        app.logger.error(f"Error al actualizar información personal: {str(e)}")
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+
+# endregion
+
 # region API SIN DEFINIR
 
 @app.route('/api/idiomas', methods=['POST'])
@@ -1400,80 +1460,6 @@ def create_usuario_cuenta():
 
     except Exception as e:
         app.logger.error(f"Error al crear usuario de cuenta: {str(e)}")
-        return jsonify({'status': 'error', 'message': str(e)}), 500
-
-@app.route('/api/informacion-personal', methods=['POST'])
-@login_required
-def update_informacion_personal():
-    try:
-        data = request.get_json()
-
-        # Imprimir el JSON completo recibido
-        print("=" * 60)
-        print("📥 DATOS JSON RECIBIDOS EN /api/informacion-personal")
-        print("=" * 60)
-        print(json.dumps(data, indent=2, ensure_ascii=False))
-        print("=" * 60)
-
-        if not data:
-            return jsonify({'status': 'error', 'message': 'No se recibieron datos'}), 400
-
-        # Extraer los datos del formulario
-        nombre = data.get('nombre')
-        email = data.get('email')
-        telefono = data.get('telefono')
-        linkedin = data.get('linkedin')
-        especialidad = data.get('especialidad')
-        nivel = data.get('nivel')
-        direccion = data.get('direccion')
-        ciudad = data.get('ciudad')
-        codigo_postal = data.get('codigo_postal')
-        pais = data.get('pais')
-        tarifa_hora = data.get('tarifa_hora')
-        resumen = data.get('resumen')
-
-        print("Datos de información personal:")
-        print(f"  - Nombre: {nombre}")
-        print(f"  - Email: {email}")
-        print(f"  - Teléfono: {telefono}")
-        print(f"  - LinkedIn: {linkedin}")
-        print(f"  - Especialidad: {especialidad}")
-        print(f"  - Nivel: {nivel}")
-        print(f"  - Dirección: {direccion}")
-        print(f"  - Ciudad: {ciudad}")
-        print(f"  - Código Postal: {codigo_postal}")
-        print(f"  - País: {pais}")
-        print(f"  - Tarifa por hora: {tarifa_hora}")
-        print(f"  - Resumen: {resumen}")
-
-        # Validaciones básicas
-        if not nombre or not email:
-            return jsonify({'status': 'error', 'message': 'Nombre y email son campos obligatorios'}), 400
-
-        # Aquí podrías agregar la lógica para actualizar la base de datos
-        # Por ejemplo: current_user.update_profile(data)
-
-        return jsonify({
-            'status': 'success', 
-            'message': 'Información personal actualizada exitosamente',
-            'data': {
-                'nombre': nombre,
-                'email': email,
-                'telefono': telefono,
-                'linkedin': linkedin,
-                'especialidad': especialidad,
-                'nivel': nivel,
-                'direccion': direccion,
-                'ciudad': ciudad,
-                'codigo_postal': codigo_postal,
-                'pais': pais,
-                'tarifa_hora': tarifa_hora,
-                'resumen': resumen
-            }
-        })
-
-    except Exception as e:
-        app.logger.error(f"Error al actualizar información personal: {str(e)}")
         return jsonify({'status': 'error', 'message': str(e)}), 500
 
 @app.route('/api/experiencia-laboral', methods=['POST'])
