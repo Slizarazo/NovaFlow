@@ -183,7 +183,6 @@ def proyectos_general():
         'finalizados': [p for p in proyectos if str(p[10]) == '8']
     }
     cuentas = Cuentas.get_cuentas_by_aliado(current_user.organizacion)
-    print(f"el id de la sede del usuaro logeado actual es {current_user.sede}")
     consultores = Personas_cliente.get_consultores_aliado(current_user.sede)
     return render_template('aliados/general.html',
                          title='Gestión de Proyectos',
@@ -1225,6 +1224,33 @@ def update_oportunidad():
     except Exception as e:
         app.logger.error(f"Error al crear oportunidad: {str(e)}")
         return jsonify({'status': 'error', 'message': str(e)}), 500
+
+@app.route('/api/cambio_estado_caso_uso', methods=['POST'])
+@login_required
+@role_required('Aliado', 'Supervisor')
+def cambio_estado_caso_uso():
+    data = request.get_json()
+    id_caso = data['id']
+    nuevo_estado = data['estado']
+
+    estado_actual = Casos_uso.get_by_id(id_caso)
+    
+    if current_user.estado == "Aliado":
+        if estado_actual[10] != '2':
+            return jsonify({'error': 'Solo se puede cambiar si el estado actual es Oportunidad'}), 403
+        if nuevo_estado != 'aprobado':
+            return jsonify({'error': 'Solo se puede cambiar a Propuesta'}), 403
+    
+        Casos_uso.update('estado', '3', id_caso)
+    else:
+        if estado_actual[10] != '1':
+            return jsonify({'error': 'Solo se puede cambiar si el estado actual es Oportunidad'}), 403
+        if nuevo_estado != 'propuesta':
+            return jsonify({'error': 'Solo se puede cambiar a Propuesta'}), 403
+    
+        Casos_uso.update('estado', '2', id_caso)
+
+    return jsonify({'status': 'ok', 'message': f'Caso {id_caso} actualizado a Propuesta'})
 
 # endregion
 

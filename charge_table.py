@@ -2,7 +2,7 @@ from config import workbench_db as mydb
 from models import *
 
 regiones = [
-    [1, "Norteamérica", "NA", "Incluye EE.UU., Canadá y territorios asociados", True],
+    [1, "Norteamérica", "Incluye EE.UU", "Canadá y territorios asociados", True],
     [2, "América Latina y el Caribe", "LATAM", "Desde México hasta Sudamérica y el Caribe", True],
     [3, "Europa Occidental", "EUW", "Incluye países como Francia, Alemania, España, etc.", True],
     [4, "Europa Oriental", "EUE", "Países del este europeo y el área del Báltico", True],

@@ -1,174 +1,48 @@
 {% extends "layout.html" %}
 
 {% block content %}
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+
 <div class="dashboard-container">
     <!-- Header -->
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
         <h3 style="margin: 0; color: #333; font-weight: 600;">Gestión de Proyectos</h3>
     </div>
 
-    <!-- Kanban Board Compacto -->
-    <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.5rem; margin-bottom: 1rem;">
-        <!-- Oportunidad -->
-        <div style="background: white; border-radius: 4px; padding: 0.4rem; box-shadow: 0 1px 2px rgba(0,0,0,0.08);">
-            <div style="color: #00BCD4; font-weight: 600; margin-bottom: 0.1rem; font-size: 0.7rem;">Oportunidad</div>
-            <div style="font-size: 1.1rem; font-weight: bold; color: #333;">{{ estados.oportunidad|length }}</div>
-        </div>
-
-        <!-- Propuesta -->
-        <div style="background: white; border-radius: 4px; padding: 0.4rem; box-shadow: 0 1px 2px rgba(0,0,0,0.08);">
-            <div style="color: #666; font-weight: 600; margin-bottom: 0.1rem; font-size: 0.7rem;">Propuesta</div>
-            <div style="font-size: 1.1rem; font-weight: bold; color: #333;">{{ estados.propuesta|length }}</div>
-        </div>
-
-        <!-- Aprobación -->
-        <div style="background: white; border-radius: 4px; padding: 0.4rem; box-shadow: 0 1px 2px rgba(0,0,0,0.08);">
-            <div style="color: #FFA726; font-weight: 600; margin-bottom: 0.1rem; font-size: 0.7rem;">Aprobación</div>
-            <div style="font-size: 1.1rem; font-weight: bold; color: #333;">{{ estados.aprobacion|length }}</div>
-        </div>
-
-        <!-- En Desarrollo -->
-        <div style="background: white; border-radius: 4px; padding: 0.4rem; box-shadow: 0 1px 2px rgba(0,0,0,0.08);">
-            <div style="color: #66BB6A; font-weight: 600; margin-bottom: 0.1rem; font-size: 0.7rem;">En Desarrollo</div>
-            <div style="font-size: 1.1rem; font-weight: bold; color: #333;">{{ estados.desarrollo|length }}</div>
-        </div>
-
-        <!-- Testing -->
-        <div style="background: white; border-radius: 4px; padding: 0.4rem; box-shadow: 0 1px 2px rgba(0,0,0,0.08);">
-            <div style="color: #00BCD4; font-weight: 600; margin-bottom: 0.1rem; font-size: 0.7rem;">Testing</div>
-            <div style="font-size: 1.1rem; font-weight: bold; color: #333;">{{ estados.testing|length }}</div>
-        </div>
-
-        <!-- Cierre -->
-        <div style="background: white; border-radius: 4px; padding: 0.4rem; box-shadow: 0 1px 2px rgba(0,0,0,0.08);">
-            <div style="color: #666; font-weight: 600; margin-bottom: 0.1rem; font-size: 0.7rem;">Cierre</div>
-            <div style="font-size: 1.1rem; font-weight: bold; color: #333;">{{ estados.cierre|length }}</div>
-        </div>
-
-        <!-- Evaluación -->
-        <div style="background: white; border-radius: 4px; padding: 0.4rem; box-shadow: 0 1px 2px rgba(0,0,0,0.08);">
-            <div style="color: #FFA726; font-weight: 600; margin-bottom: 0.1rem; font-size: 0.7rem;">Evaluación</div>
-            <div style="font-size: 1.1rem; font-weight: bold; color: #333;">{{ estados.evaluacion|length }}</div>
-        </div>
-
-        </div>
-
-    <!-- Pipeline de Proyectos Compacto -->
-    <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.75rem; margin-bottom: 1.5rem; overflow-x: auto; padding-bottom: 0.5rem;">
-        
-        <div style="min-width: 150px; background: #f8f9fa; border-radius: 6px; padding: 0.75rem;">
-            <h6 style="margin: 0 0 0.5rem 0; color: #666; font-weight: 600; font-size: 0.8rem;">Oportunidad</h6>
-            {% for proyecto in proyectos %} {% if proyecto[10] == '1' %}
-                <div style="background: white; border-radius: 4px; padding: 0.5rem; margin-bottom: 0.25rem; box-shadow: 0 1px 2px rgba(0,0,0,0.1); position: relative;">
-                    <button onclick="openProyectoModal({{ proyecto[0] }}, 'oportunidad')" style="position: absolute; top: 2px; right: 2px; background: none; border: none; padding: 2px; cursor: pointer; opacity: 0.7;" title="Ver detalles">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                            <circle cx="12" cy="12" r="3"></circle>
-                        </svg>
-                    </button>
-                    <div style="font-weight: 500; margin-bottom: 0.1rem; font-size: 0.75rem; padding-right: 20px;">{{ proyecto[4] }}</div>
-                    <div style="font-size: 0.65rem; color: #666;">ID: {{ proyecto[0] }}</div>
-                </div>
-            {% endif %} {% endfor %}
-        </div>
-        
-        <div style="min-width: 150px; background: #f8f9fa; border-radius: 6px; padding: 0.75rem;">
-            <h6 style="margin: 0 0 0.5rem 0; color: #666; font-weight: 600; font-size: 0.8rem;">Propuesta</h6>
-            {% for proyecto in proyectos %} {% if proyecto[10] == '2' %}
-                <div style="background: white; border-radius: 4px; padding: 0.5rem; margin-bottom: 0.25rem; box-shadow: 0 1px 2px rgba(0,0,0,0.1); position: relative;">
-                    <button onclick="openProyectoModal({{ proyecto[0] }}, 'propuesta')" style="position: absolute; top: 2px; right: 2px; background: none; border: none; padding: 2px; cursor: pointer; opacity: 0.7;" title="Ver detalles">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                            <circle cx="12" cy="12" r="3"></circle>
-                        </svg>
-                    </button>
-                    <div style="font-weight: 500; margin-bottom: 0.1rem; font-size: 0.75rem; padding-right: 20px;">{{ proyecto[4] }}</div>
-                    <div style="font-size: 0.65rem; color: #666;">ID: {{ proyecto[0] }}</div>
-                </div>
-            {% endif %} {% endfor %}
-        </div>
-        
-        <div style="min-width: 150px; background: #f8f9fa; border-radius: 6px; padding: 0.75rem;">
-            <h6 style="margin: 0 0 0.5rem 0; color: #666; font-weight: 600; font-size: 0.8rem;">Aprobación</h6>
-            {% for proyecto in proyectos %} {% if proyecto[10] == '3' %}
-                <div style="background: white; border-radius: 4px; padding: 0.5rem; margin-bottom: 0.25rem; box-shadow: 0 1px 2px rgba(0,0,0,0.1); position: relative;">
-                    <button onclick="openProyectoModal({{ proyecto[0] }}, 'aprobado')" style="position: absolute; top: 2px; right: 2px; background: none; border: none; padding: 2px; cursor: pointer; opacity: 0.7;" title="Ver detalles">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                            <circle cx="12" cy="12" r="3"></circle>
-                        </svg>
-                    </button>
-                    <div style="font-weight: 500; margin-bottom: 0.1rem; font-size: 0.75rem; padding-right: 20px;">{{ proyecto[4] }}</div>
-                    <div style="font-size: 0.65rem; color: #666;">ID: {{ proyecto[0] }}</div>
-                </div>
-            {% endif %} {% endfor %}
-        </div>
-        
-        <div style="min-width: 150px; background: #f8f9fa; border-radius: 6px; padding: 0.75rem;">
-            <h6 style="margin: 0 0 0.5rem 0; color: #666; font-weight: 600; font-size: 0.8rem;">En Desarrollo</h6>
-            {% for proyecto in proyectos %} {% if proyecto[10] == '4' %}
-                <div style="background: white; border-radius: 4px; padding: 0.5rem; margin-bottom: 0.25rem; box-shadow: 0 1px 2px rgba(0,0,0,0.1); position: relative;">
-                    <button onclick="openProyectoModal({{ proyecto[0] }}, 'desarrollo')" style="position: absolute; top: 2px; right: 2px; background: none; border: none; padding: 2px; cursor: pointer; opacity: 0.7;" title="Ver detalles">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                            <circle cx="12" cy="12" r="3"></circle>
-                        </svg>
-                    </button>
-                    <div style="font-weight: 500; margin-bottom: 0.1rem; font-size: 0.75rem; padding-right: 20px;">{{ proyecto[4] }}</div>
-                    <div style="font-size: 0.65rem; color: #666;">ID: {{ proyecto[0] }}</div>
-                </div>
-            {% endif %} {% endfor %}
-        </div>
-        
-        <div style="min-width: 150px; background: #f8f9fa; border-radius: 6px; padding: 0.75rem;">
-            <h6 style="margin: 0 0 0.5rem 0; color: #666; font-weight: 600; font-size: 0.8rem;">Testing</h6>
-            {% for proyecto in proyectos %} {% if proyecto[10] == '5' %}
-                <div style="background: white; border-radius: 4px; padding: 0.5rem; margin-bottom: 0.25rem; box-shadow: 0 1px 2px rgba(0,0,0,0.1); position: relative;">
-                    <button onclick="openProyectoModal({{ proyecto[0] }}, 'testing')" style="position: absolute; top: 2px; right: 2px; background: none; border: none; padding: 2px; cursor: pointer; opacity: 0.7;" title="Ver detalles">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                            <circle cx="12" cy="12" r="3"></circle>
-                        </svg>
-                    </button>
-                    <div style="font-weight: 500; margin-bottom: 0.1rem; font-size: 0.75rem; padding-right: 20px;">{{ proyecto[4] }}</div>
-                    <div style="font-size: 0.65rem; color: #666;">ID: {{ proyecto[0] }}</div>
-                </div>
-            {% endif %} {% endfor %}
-        </div>
-        
-        <div style="min-width: 150px; background: #f8f9fa; border-radius: 6px; padding: 0.75rem;">
-            <h6 style="margin: 0 0 0.5rem 0; color: #666; font-weight: 600; font-size: 0.8rem;">Cierre</h6>
-            {% for proyecto in proyectos %} {% if proyecto[10] == '6' %}
-                <div style="background: white; border-radius: 4px; padding: 0.5rem; margin-bottom: 0.25rem; box-shadow: 0 1px 2px rgba(0,0,0,0.1); position: relative;">
-                    <button onclick="openProyectoModal({{ proyecto[0] }}, 'cierre')" style="position: absolute; top: 2px; right: 2px; background: none; border: none; padding: 2px; cursor: pointer; opacity: 0.7;" title="Ver detalles">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                            <circle cx="12" cy="12" r="3"></circle>
-                        </svg>
-                    </button>
-                    <div style="font-weight: 500; margin-bottom: 0.1rem; font-size: 0.75rem; padding-right: 20px;">{{ proyecto[4] }}</div>
-                    <div style="font-size: 0.65rem; color: #666;">ID: {{ proyecto[0] }}</div>
-                </div>
-            {% endif %} {% endfor %}
-        </div>
-        
-        <div style="min-width: 150px; background: #f8f9fa; border-radius: 6px; padding: 0.75rem;">
-            <h6 style="margin: 0 0 0.5rem 0; color: #666; font-weight: 600; font-size: 0.8rem;">Evaluación</h6>
-            {% for proyecto in proyectos %} {% if proyecto[10] == '7' %}
-                <div style="background: white; border-radius: 4px; padding: 0.5rem; margin-bottom: 0.25rem; box-shadow: 0 1px 2px rgba(0,0,0,0.1); position: relative;">
-                    <button onclick="openProyectoModal({{ proyecto[0] }}, 'evaluacion')" style="position: absolute; top: 2px; right: 2px; background: none; border: none; padding: 2px; cursor: pointer; opacity: 0.7;" title="Ver detalles">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                            <circle cx="12" cy="12" r="3"></circle>
-                        </svg>
-                    </button>
-                    <div style="font-weight: 500; margin-bottom: 0.1rem; font-size: 0.75rem; padding-right: 20px;">{{ proyecto[4] }}</div>
-                    <div style="font-size: 0.65rem; color: #666;">ID: {{ proyecto[0] }}</div>
-                </div>
-            {% endif %} {% endfor %}
-        </div>
-        
-        </div>
+<div class="container-fluid mt-4">
+    <div class="table-responsive">
+        <table class="table align-top">
+            <thead>
+                <tr>
+                    <th style="color: #C27C0E; font-weight: bold;">Oportunidad ({{ estados.oportunidad|length }})</th>
+                    <th style="color: #38761D; font-weight: bold;">Propuesta ({{ estados.propuesta|length }})</th>
+                    <th style="color: #1155CC; font-weight: bold;">Aprobación ({{ estados.aprobado|length }})</th>
+                    <th style="color: #CC0000; font-weight: bold;">En Desarrollo ({{ estados.desarrollo|length }})</th>
+                    <th style="color: #741B47; font-weight: bold;">Testing ({{ estados.testing|length }})</th>
+                    <th style="color: #20124D; font-weight: bold;">Cierre ({{ estados.cierre|length }})</th>
+                    <th style="color: #990000; font-weight: bold;">Evaluación ({{ estados.evaluacion|length }})</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    {% for estado, id in [('1','oportunidad'), ('2','propuesta'), ('3','aprobado'), ('4','desarrollo'), ('5','testing'), ('6','cierre'), ('7','evaluacion')] %}
+                    <td id="col-{{ id }}" class="estado-columna" style="min-width: 200px;">
+                        {% for proy in proyectos %}
+                            {% if proy[10] == estado %}
+                            <div class="card mb-2" data-id="{{ proy[0] }}" data-estado="{{ proy[10] }}">
+                                <div class="card-body p-2">
+                                    <h6 class="card-title mb-1">{{ proy[4] }}</h6>
+                                    <small class="text-muted">ID: {{ proy[0] }}</small>
+                                </div>
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                    </td>
+                    {% endfor %}
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
 
 <!-- Modal de Detalles del Proyecto -->
@@ -291,6 +165,7 @@
     </div>
 </div>
 
+<script src="/static/js/sorteable_sup.js"></script>
 <script>
 // Datos de proyectos desde el backend
 const proyectosData = {

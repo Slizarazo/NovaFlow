@@ -37,7 +37,6 @@ from models import UserAcces
 
 @login_manager.user_loader
 def load_user(user_id):
-    print(f"🧠 load_user invocado con ID: {user_id}")
     return UserAcces.get_by_id(user_id)
 
 

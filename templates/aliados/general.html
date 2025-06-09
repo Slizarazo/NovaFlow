@@ -1,4 +1,6 @@
 {% extends "layout.html" %} {% block content %}
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+
 <div class="d-flex justify-content-between p-4">
     <h2>Gestión de Proyectos</h2>
     <button
@@ -84,222 +86,42 @@
     </div>
 </div>
 
-<div class="container-fluid px-4">
-    <div
-        class="row mb-4"
-        style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem"
-    >
-        <div>
-            <div class="card bg-light h-100">
-                <div class="card-body">
-                    <h5 class="card-title text-primary">Oportunidad</h5>
-                    <h2 class="card-text mb-0">
-                        {{ estados.oportunidad|length }}
-                    </h2>
-                    <small class="text-muted">Proyectos</small>
-                </div>
-            </div>
-        </div>
-        <div>
-            <div class="card bg-light h-100">
-                <div class="card-body">
-                    <h5 class="card-title text-info">Propuesta</h5>
-                    <h2 class="card-text mb-0">
-                        {{ estados.propuesta|length }}
-                    </h2>
-                    <small class="text-muted">Proyectos</small>
-                </div>
-            </div>
-        </div>
-        <div>
-            <div class="card bg-light h-100">
-                <div class="card-body">
-                    <h5 class="card-title text-warning">Aprobación</h5>
-                    <h2 class="card-text mb-0">
-                        {{ estados.aprobado|length }}
-                    </h2>
-                    <small class="text-muted">Proyectos</small>
-                </div>
-            </div>
-        </div>
-        <div>
-            <div class="card bg-light h-100">
-                <div class="card-body">
-                    <h5 class="card-title text-success">En Desarrollo</h5>
-                    <h2 class="card-text mb-0">
-                        {{ estados.desarrollo|length }}
-                    </h2>
-                    <small class="text-muted">Proyectos</small>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div
-        class="row"
-        style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem"
-    >
-        <div>
-            <div class="card bg-light h-100">
-                <div class="card-body">
-                    <h5 class="card-title text-primary">Testing</h5>
-                    <h2 class="card-text mb-0">{{ estados.testing|length }}</h2>
-                    <small class="text-muted">Proyectos</small>
-                </div>
-            </div>
-        </div>
-        <div>
-            <div class="card bg-light h-100">
-                <div class="card-body">
-                    <h5 class="card-title text-info">Cierre</h5>
-                    <h2 class="card-text mb-0">{{ estados.cierre|length }}</h2>
-                    <small class="text-muted">Proyectos</small>
-                </div>
-            </div>
-        </div>
-        <div>
-            <div class="card bg-light h-100">
-                <div class="card-body">
-                    <h5 class="card-title text-warning">Evaluación</h5>
-                    <h2 class="card-text mb-0">
-                        {{ estados.evaluacion|length }}
-                    </h2>
-                    <small class="text-muted">Proyectos</small>
-                </div>
-            </div>
-        </div>
-        <div>
-            <div class="card bg-light h-100">
-                <div class="card-body">
-                    <h5 class="card-title text-success">Finalizados</h5>
-                    <h2 class="card-text mb-0">
-                        {{ estados.finalizados|length }}
-                    </h2>
-                    <small class="text-muted">Proyectos</small>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
 <div class="container-fluid mt-4">
     <div class="table-responsive">
-        <table class="table">
+        <table class="table align-top">
             <thead>
                 <tr>
-                    <th>Oportunidad</th>
-                    <th>Propuesta</th>
-                    <th>Aprobación</th>
-                    <th>En Desarrollo</th>
-                    <th>Testing</th>
-                    <th>Cierre</th>
-                    <th>Evaluación</th>
+                    <th style="color: #C27C0E; font-weight: bold;">Oportunidad ({{ estados.oportunidad|length }})</th>
+                    <th style="color: #38761D; font-weight: bold;">Propuesta ({{ estados.propuesta|length }})</th>
+                    <th style="color: #1155CC; font-weight: bold;">Aprobación ({{ estados.aprobado|length }})</th>
+                    <th style="color: #CC0000; font-weight: bold;">En Desarrollo ({{ estados.desarrollo|length }})</th>
+                    <th style="color: #741B47; font-weight: bold;">Testing ({{ estados.testing|length }})</th>
+                    <th style="color: #20124D; font-weight: bold;">Cierre ({{ estados.cierre|length }})</th>
+                    <th style="color: #990000; font-weight: bold;">Evaluación ({{ estados.evaluacion|length }})</th>
                 </tr>
             </thead>
             <tbody>
-                <tr style="vertical-align: top">
-                    <td>
-                        {% for proy in proyectos %} {% if proy[9] == '1' %}
-                        <div class="card mb-2">
-                            <div class="card-body p-2">
-                                <h6 class="card-title">
-                                    {{ proy[3] }}
-                                </h6>
-                                <small class="text-muted"
-                                    >ID: {{ proy[0] }}</small
-                                >
+                <tr>
+                    {% for estado, id in [('1','oportunidad'), ('2','propuesta'), ('3','aprobado'), ('4','desarrollo'), ('5','testing'), ('6','cierre'), ('7','evaluacion')] %}
+                    <td id="col-{{ id }}" class="estado-columna" style="min-width: 200px;">
+                        {% for proy in proyectos %}
+                            {% if proy[10] == estado %}
+                            <div class="card mb-2" data-id="{{ proy[0] }}" data-estado="{{ proy[10] }}">
+                                <div class="card-body p-2">
+                                    <h6 class="card-title mb-1">{{ proy[4] }}</h6>
+                                    <small class="text-muted">ID: {{ proy[0] }}</small>
+                                </div>
                             </div>
-                        </div>
-                        {% endif %} {% endfor %}
+                            {% endif %}
+                        {% endfor %}
                     </td>
-                    <td>
-                        {% for proy in proyectos %} {% if proy[9] == '2' %}
-                        <div class="card mb-2">
-                            <div class="card-body p-2">
-                                <h6 class="card-title">
-                                    {{ proy[3] }}
-                                </h6>
-                                <small class="text-muted"
-                                    >ID: {{ proy[0] }}</small
-                                >
-                            </div>
-                        </div>
-                        {% endif %} {% endfor %}
-                    </td>
-                    <td>
-                        {% for proy in proyectos %} {% if proy[9] == '3' %}
-                        <div class="card mb-2">
-                            <div class="card-body p-2">
-                                <h6 class="card-title">
-                                    {{ proy[3] }}
-                                </h6>
-                                <small class="text-muted"
-                                    >ID: {{ proy[0] }}</small
-                                >
-                            </div>
-                        </div>
-                        {% endif %} {% endfor %}
-                    </td>
-                    <td>
-                        {% for proy in proyectos %} {% if proy[9] == '4' %}
-                        <div class="card mb-2">
-                            <div class="card-body p-2">
-                                <h6 class="card-title">
-                                    {{ proy[3] }}
-                                </h6>
-                                <small class="text-muted"
-                                    >ID: {{ proy[0] }}</small
-                                >
-                            </div>
-                        </div>
-                        {% endif %} {% endfor %}
-                    </td>
-                    <td>
-                        {% for proy in proyectos %} {% if proy[9] == '5' %}
-                        <div class="card mb-2">
-                            <div class="card-body p-2">
-                                <h6 class="card-title">
-                                    {{ proy[3] }}
-                                </h6>
-                                <small class="text-muted"
-                                    >ID: {{ proy[0] }}</small
-                                >
-                            </div>
-                        </div>
-                        {% endif %} {% endfor %}
-                    </td>
-                    <td>
-                        {% for proy in proyectos %} {% if proy[9] == '6' %}
-                        <div class="card mb-2">
-                            <div class="card-body p-2">
-                                <h6 class="card-title">
-                                    {{ proy[3] }}
-                                </h6>
-                                <small class="text-muted"
-                                    >ID: {{ proy[0] }}</small
-                                >
-                            </div>
-                        </div>
-                        {% endif %} {% endfor %}
-                    </td>
-                    <td>
-                        {% for proy in proyectos %} {% if proy[9] == '7' %}
-                        <div class="card mb-2">
-                            <div class="card-body p-2">
-                                <h6 class="card-title">
-                                    {{ proy[3] }}
-                                </h6>
-                                <small class="text-muted"
-                                    >ID: {{ proy[0] }}</small
-                                >
-                            </div>
-                        </div>
-                        {% endif %} {% endfor %}
-                    </td>
+                    {% endfor %}
                 </tr>
             </tbody>
         </table>
     </div>
 </div>
 {% endblock %} {% block scripts %}
+<script src="/static/js/sorteable_aliados_general.js"></script>
 <script src="/static/js/modal_proyectos_general.js"></script>
 {% endblock %}
