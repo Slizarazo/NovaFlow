@@ -24,8 +24,7 @@ except ImportError:
     
 # endregion
 
-    
-# region logeo
+# region LOGEO
 
 from functools import wraps
 from flask import redirect, url_for, flash
@@ -92,7 +91,7 @@ def logout():
 
 # endregion
 
-# region Gestor
+# region GESTOR
 
 @app.route('/gestor/usuarios')
 @login_required
@@ -154,8 +153,12 @@ def gestor_asignaciones():
     aliados = Sedes.get_orgs()
     comunidades = Comunidades.get_all()
     proyectos = {p.id: p for p in Proyecto.PROYECTOS}
+    casos_uso_e = Comunidad_aliado.get_asignaciones_estrategicas()
+    casos_uso_o = Comunidad_aliado.get_asignaciones_operativas()
     return render_template('gestor/asignaciones.html',
                          title='Asignaciones de Consultores',
+                         casos_uso_e=casos_uso_e,
+                         casos_uso_o=casos_uso_o,
                          consultores=consultores,
                          comunidades=comunidades,
                          aliados=aliados,
@@ -165,7 +168,7 @@ def gestor_asignaciones():
 
 # endregion
 
-# region aliado
+# region ALIADO
 
 @app.route('/proyectos/general')
 @login_required

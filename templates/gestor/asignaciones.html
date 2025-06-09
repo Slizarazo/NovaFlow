@@ -334,72 +334,66 @@
         <h4>Asignaciones Actuales</h4>
     </div>
     <div class="row">
-        {% for proyecto_id, proyecto in proyectos.items() %}
-        <!-- Only show projects with active assignments -->
-        {% if proyecto.consultores_asignados > 0 %}
-        <div class="col-md-6 col-lg-4 mb-4">
-            <div class="card h-100">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">{{ proyecto.nombre }}</h5>
-                    <span class="badge 
-                        {% if proyecto.etapa == 'propuesta' %}bg-info
-                        {% elif proyecto.etapa == 'planificacion' %}bg-primary
-                        {% elif proyecto.etapa == 'ejecucion' %}bg-warning
-                        {% elif proyecto.etapa == 'cierre' %}bg-success
-                        {% else %}bg-secondary{% endif %}">
-                        {{ proyecto.etapa|capitalize }}
-                    </span>
+        <div class="row">
+
+        <div class="col-md-6">
+            <h6 class="mb-3">Asignaciones Operativas</h6>
+            <div class="d-flex flex-wrap gap-3">
+                {% for asignacion in casos_uso_o %}
+                <div class="card shadow-sm p-3" style="min-width: 250px; max-width: 300px; margin: 5px;">
+                    <h6 class="mb-1">{{ asignacion[1] }}</h6>
+                    <small class="text-muted d-block">Organización: {{ asignacion[0] }}</small>
+                    <small class="text-muted d-block">Cuenta: {{ asignacion[2] }}</small>
+                    <span class="badge bg-primary mt-2">Caso: {{ asignacion[3] }}</span>
+
+                    {% if asignacion[4] == '1' %}
+                        <span class="badge bg-warning text-dark mt-1">Oportunidad</span>
+                    {% elif asignacion[4] == '2' %}
+                        <span class="badge bg-info text-dark mt-1">Propuesta</span>
+                    {% elif asignacion[4] == '3' %}
+                        <span class="badge bg-secondary mt-1">Aprobación</span>
+                    {% elif asignacion[4] == '4' %}
+                        <span class="badge bg-primary mt-1">En Desarrollo</span>
+                    {% elif asignacion[4] == '5' %}
+                        <span class="badge bg-purple mt-1">Testing</span>
+                    {% elif asignacion[4] == '6' %}
+                        <span class="badge bg-success mt-1">Cierre</span>
+                    {% else %}
+                        <span class="badge bg-dark mt-1">Evaluación</span>
+                    {% endif %}
                 </div>
-                <div class="card-body">
-                    <p class="text-muted">Consultores asignados: {{ proyecto.consultores_asignados }}</p>
-                    
-                    <div class="mb-3">
-                        <h6>Equipo:</h6>
-                        <div class="d-flex flex-wrap">
-                            {% for consultor in consultores %}
-                                {% if proyecto_id|int in consultor.proyectos_asignados %}
-                                <div class="d-flex align-items-center me-3 mb-2" style="min-width: 100px;">
-                                    <div style="width: 30px; height: 30px; background-color: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 8px; color: white; font-size: 12px;">
-                                        {{ consultor.nombre[0] }}{{ consultor.nombre.split() | last | first }}
-                                    </div>
-                                    <div class="text-truncate" style="max-width: 150px;">{{ consultor.nombre }}</div>
-                                </div>
-                                {% endif %}
-                            {% endfor %}
-                        </div>
-                    </div>
-                    
-                    <div class="mb-3">
-                        <h6>Fecha de Asignación:</h6>
-                        <p>{{ proyecto.fecha_inicio }}</p>
-                    </div>
-                    
-                    <div class="mb-3">
-                        <h6>Fecha de Finalización:</h6>
-                        <p>{{ proyecto.fecha_fin }}</p>
-                    </div>
-                </div>
-                <div class="card-footer">
-                    <div class="d-flex justify-content-between">
-                        <button class="btn btn-sm btn-outline-primary">
-                            <i data-feather="eye" style="width: 14px; height: 14px; margin-right: 5px;"></i>
-                            Ver detalles
-                        </button>
-                        <button class="btn btn-sm btn-outline-secondary">
-                            <i data-feather="users" style="width: 14px; height: 14px; margin-right: 5px;"></i>
-                            Gestionar equipo
-                        </button>
-                    </div>
-                </div>
+                {% endfor %}
             </div>
         </div>
-        {% endif %}
-        {% endfor %}
+
+        <div class="col-md-6">
+            <h6 class="mb-3">Asignaciones Estratégicas</h6>
+            <div class="d-flex flex-wrap gap-3">
+                {% for n in casos_uso_e %}
+                <div class="card shadow-sm p-3" style="min-width: 250px; max-width: 300px; margin: 5px;">
+                    <h6 class="mb-1">{{ n[3] }}</h6>
+                    <small class="text-muted d-block mb-1">Organización: {{ n[0] }}</small>
+
+                    {% if n[1] %}
+                    <small class="text-muted d-block">Comunidad: {{ n[1] }}</small>
+                    <small class="text-muted d-block">Descripción: {{ n[2] }}</small>
+                    {% endif %}
+
+                    <span class="badge bg-secondary mt-2">{{ n[4] }}</span>
+                    {% if n[5] %}
+                    <span class="badge bg-primary mt-2">Rol: {{ n[5] }}</span>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
     </div>
     
     <!-- Consultant Retention Process -->
     <div class="dashboard-section-title mt-3">
-        <h4>Proceso de Retención de Talento</h4>
+        <h4>Proceso de Retención de Talento (bajo validación)</h4>
     </div>
     <div class="card">
         <div class="card-body">

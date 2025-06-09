@@ -1023,6 +1023,75 @@ class Comunidad_aliado:
 
         return id
 
+    @staticmethod
+    def get_asignaciones_estrategicas():
+        conn = mydb('nova_flow')
+        mycursor = conn.cursor()
+
+        query = """
+            SELECT 
+                s.nombre_sede AS nombre_organizacion,
+                c.nombre AS nombre_comunidad,
+                c.descripcion AS descripcion,
+                u.nombre AS usuario,
+                'Comunidad' AS tipo_asignacion,
+                mc.rol_en_comunidad AS rol
+            FROM nova_flow.comunidad_aliado ca
+            JOIN nova_flow.sedes s ON ca.id_sede = s.id_sede
+            JOIN nova_flow.comunidades c ON ca.id_comunidad = c.id
+            JOIN nova_flow.miembros_comunidad mc ON ca.id_comunidad = mc.id_comunidad
+            JOIN nova_flow.usuarios u ON mc.id_usuario = u.id_usuario
+
+            UNION ALL
+
+            SELECT 
+                s.nombre_sede AS nombre_organizacion,
+                NULL AS nombre_comunidad,
+                NULL AS descripcion,
+                u.nombre AS usuario,
+                'Individual' AS tipo_asignacion,
+                pc.rol_en_cliente AS rol
+            FROM nova_flow.personas_cliente pc
+            JOIN nova_flow.sedes s ON pc.id_sede = s.id_sede
+            JOIN nova_flow.usuarios u ON pc.id_usuario = u.id_usuario
+
+            ORDER BY nombre_organizacion, tipo_asignacion, usuario;
+        """
+
+        mycursor.execute(query)
+        data = mycursor.fetchall()
+
+        mycursor.close()
+        conn.close()
+
+        return data
+
+    @staticmethod
+    def get_asignaciones_operativas():
+        conn = mydb('nova_flow')
+        mycursor = conn.cursor()
+
+        query = """
+            SELECT 
+                org.nombre_sede AS "organizacion",
+                us.nombre AS "nombre_usuario",
+                cli.nombre AS "Cuenta",
+                cu.caso_uso AS "caso_uso",
+                cu.estado AS "estado"
+            FROM caso_uso cu
+            LEFT JOIN sedes org ON cu.id_aliado = org.id_sede
+            LEFT JOIN usuarios us ON cu.id_usuario = us.id_usuario
+            LEFT JOIN cuentas cli ON cu.id_cuenta = cli.id
+            """
+        
+        mycursor.execute(query)
+        data = mycursor.fetchall()
+
+        mycursor.close()
+        conn.close()
+
+        return data
+
 # endregion
 
 # region CASOS DE USO
