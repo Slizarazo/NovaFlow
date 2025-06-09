@@ -317,7 +317,9 @@
                             </td>
                             <td>{{ con[5] if con[5] else 'Ciudad de México' }}</td>
                             <td>
-                                <span class="fw-bold text-success">${{ "%0.0f"|format(con[6]) }}/hora</span>
+                                <span class="fw-bold text-success">
+                                    ${{ "%0.0f"|format(con[6] if con[6] else 0) }}/hora
+                                </span>
                             </td>
                         </tr>
                         {% endfor %}

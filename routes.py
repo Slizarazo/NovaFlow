@@ -1006,7 +1006,7 @@ def create_user():
             nuevo_usuario = Usuario(data.get('nombre_completo'), None, None, data.get('correo'), "password", 4, 'activo', None)
             id = nuevo_usuario.create()
 
-            nuevo_consultor = Consultores(id, data.get('especialidad'), None, None, None, formato, None, None, None, None, None, None)
+            nuevo_consultor = Consultores(id, data.get('especialidad'), 90, 25, data.get('freelanceNivel'), formato, None, None, None, None, None, None)
             nuevo_consultor.create()
 
         return jsonify({'status': 'success', 'message': 'Usuario creado exitosamente'})
@@ -1253,6 +1253,8 @@ def cambio_estado_caso_uso():
     return jsonify({'status': 'ok', 'message': f'Caso {id_caso} actualizado a Propuesta'})
 
 # endregion
+
+# region API SIN DEFINIR
 
 @app.route('/api/idiomas', methods=['POST'])
 def api_idiomas():
@@ -1547,6 +1549,7 @@ def create_experiencia_laboral():
         app.logger.error(f"Error al crear experiencia laboral: {str(e)}")
         return jsonify({'status': 'error', 'message': str(e)}), 500
 
+# endregion
 
 # endregion
 

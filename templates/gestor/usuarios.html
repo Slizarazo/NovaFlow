@@ -1,6 +1,50 @@
 {% extends "layout.html" %}
 
 {% block content %}
+<style>
+    input[type=range] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    background: #e0e0e0;
+    border-radius: 3px;
+    outline: none;
+    transition: background 0.3s;
+    }
+
+    input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 18px;
+    width: 18px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #6f42c1, #4a00e0); /* violeta-azul */
+    cursor: pointer;
+    box-shadow: 0 0 4px rgba(0,0,0,0.2);
+    transition: background 0.3s ease;
+    }
+
+    input[type=range]::-moz-range-thumb {
+    height: 18px;
+    width: 18px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #6f42c1, #4a00e0);
+    cursor: pointer;
+    box-shadow: 0 0 4px rgba(0,0,0,0.2);
+    }
+
+    input[type=range]::-ms-thumb {
+    height: 18px;
+    width: 18px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #6f42c1, #4a00e0);
+    cursor: pointer;
+    box-shadow: 0 0 4px rgba(0,0,0,0.2);
+    }
+
+    input[type=range]:hover {
+    background: #d0d0d0;
+    }
+</style>
 
 <div class="container-fluid">
     <!-- Header with action buttons -->
@@ -348,6 +392,18 @@
                                         <option value="Consultoría">Consultoría</option>
                                         <option value="Marketing Digital">Marketing Digital</option>
                                     </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="freelanceNivel" class="form-label">Nivel de Afinidad (1 a 100)</label>
+                                    <input type="range" class="form-range" min="1" max="100" step="1"
+                                        id="freelanceNivel"
+                                        oninput="actualizarNivelAfinidad(this.value)">
+                                    <div class="d-flex justify-content-between">
+                                        <span id="nivelValor">50/100</span>
+                                        <span id="nivelTexto" class="fw-bold text-primary">Mid</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -984,6 +1040,8 @@ opacity: 0.8;
 }
 </style>
 
+<script src="/static/js/nivel_afinidad.js"></script>
+
 <script>
 // Sistema completo de modales y filtros para usuarios
 (function() {
@@ -1357,6 +1415,7 @@ opacity: 0.8;
                 userData.nombre_completo = document.getElementById('freelanceNombre')?.value || '';
                 userData.correo = document.getElementById('freelanceCorreo')?.value || '';
                 userData.especialidad = document.getElementById('freelanceEspecialidad')?.value || '';
+                userData.freelanceNivel = document.getElementById('freelanceNivel')?.value || '';
             }
 
             console.log('📤 Enviando datos de usuario:', userData);
