@@ -1412,4 +1412,50 @@ class Exp_laboral:
 
 # endregion
 
+# region EDUCACIÓN
 
+class Educacion:
+
+    def __init__(self, id_usuario, institucion, titulo, area_estudio, fecha_inicio, fecha_fin, descripcion):
+        self.id_usuario = id_usuario
+        self.institucion = institucion
+        self.titulo = titulo
+        self.area_estudio = area_estudio
+        self.fecha_inicio = fecha_inicio
+        self.fecha_fin = fecha_fin
+        self.descripcion = descripcion
+
+    def create(self):
+        conn = mydb('nova_flow')
+        mycursor = conn.cursor(dictionary=True)
+
+        query = "INSERT INTO educacion (id_usuario, institucion, titulo, area_estudio, fecha_inicio, fecha_fin, descripcion) VALUES(%s, %s, %s, %s, %s, %s, %s);"
+        values = (self.id_usuario, self.institucion, self.titulo, self.area_estudio, self.fecha_inicio, self.fecha_fin, self.descripcion)
+
+        mycursor.execute(query, values)
+        conn.commit()
+
+        id = mycursor.lastrowid
+
+        mycursor.close()
+        conn.close()
+
+        return id
+
+    @staticmethod
+    def get_by_id_usuario(id):
+        conn = mydb('nova_flow')
+        mycursor = conn.cursor(dictionary=True)
+
+        query = "SELECT * FROM educacion WHERE id_usuario = %(id)s;"
+        values = {'id': id}
+
+        mycursor.execute(query, values)
+        data = mycursor.fetchall()
+
+        mycursor.close()
+        conn.close()
+
+        return data
+
+# endregion

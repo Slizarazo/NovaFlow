@@ -5,7 +5,7 @@ from functools import reduce
 from flask_login import login_user, logout_user, login_required, current_user
 from app import app
 from models import User, Aliado, Proyecto, Consultor, DatosDashboard
-from models import Usuario, Organizaciones, Industrias, Colaboradores, Subregiones, Sedes, Regiones, Portafolio, Consultores, Comunidades, Miembros_comunidad, Comunidad_aliado, Personas_cliente, UserAcces, Cuentas, Segmentacion, Casos_uso, Exp_laboral
+from models import Usuario, Organizaciones, Industrias, Colaboradores, Subregiones, Sedes, Regiones, Portafolio, Consultores, Comunidades, Miembros_comunidad, Comunidad_aliado, Personas_cliente, UserAcces, Cuentas, Segmentacion, Casos_uso, Exp_laboral, Educacion
 from config import Config
 from graphs import *
 from datetime import datetime
@@ -321,11 +321,14 @@ def proyectos_gestion():
 @login_required
 def consultor_perfil():
     id = current_user.id
+    
     usuario = Usuario.get_by_id(id)
     consultor = Consultores.get_by_id(id)
-    exp_lab = Exp_laboral.get_by_id_usuario(current_user.id)
+    exp_lab = Exp_laboral.get_by_id_usuario(id)
+    educacion = Educacion.get_by_id_usuario(id)
     return render_template('consultor/perfil.html',
                          title='Perfil del Consultor',
+                         educacion=educacion,
                          usuario=usuario,
                          exp_lab=exp_lab,
                          consultor=consultor,
@@ -1337,8 +1340,8 @@ def create_experiencia_laboral():
         puesto = data.get('puesto')
         empresa = data.get('empresa')
         fecha_inicio = data.get('fecha_inicio')
-        fecha_fin = data.get('fecha_fin')
         trabajo_actual = data.get('trabajo_actual', False)
+        fecha_fin = data.get('fecha_fin') if trabajo_actual == True else None
         ubicacion = data.get('ubicacion')
         descripcion = data.get('descripcion')
         tipo_empleo = data.get('tipo_empleo')  # tiempo_completo, medio_tiempo, freelance, contrato
@@ -1364,10 +1367,6 @@ def create_experiencia_laboral():
     except Exception as e:
         app.logger.error(f"Error al crear experiencia laboral: {str(e)}")
         return jsonify({'status': 'error', 'message': str(e)}), 500
-
-# endregion
-
-# region API SIN DEFINIR
 
 @app.route('/api/idiomas', methods=['POST'])
 def api_idiomas():
@@ -1395,9 +1394,10 @@ def api_educacion():
     """Endpoint para recibir e imprimir datos de educación"""
     try:
         data = request.get_json()
-        print("=== DATOS DE EDUCACIÓN RECIBIDOS ===")
-        print(json.dumps(data, indent=2, ensure_ascii=False))
-        print("=====================================")
+        fecha_fin = data.get('fecha_fin') if data.get('estudio_actual') == False else None
+        
+        nueva_educacion = Educacion(current_user.id, data.get('institucion'), data.get('titulo'), data.get('area_estudio'), data.get('fecha_inicio'), fecha_fin, data.get('descripcion'))
+        nueva_educacion.create()
 
         return jsonify({
             'status': 'success',
@@ -1489,6 +1489,10 @@ def add_idioma():
     except Exception as e:
         print(f"❌ Error al procesar idioma: {str(e)}")
         return jsonify({'status': 'error', 'message': 'Error interno del servidor'}), 500
+
+# endregion
+
+# region API SIN DEFINIR
 
 @app.route('/api/usuarios-cuentas', methods=['POST'])
 @login_required

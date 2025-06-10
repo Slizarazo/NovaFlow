@@ -189,25 +189,16 @@
             </h3>
             
             <div id="educacion-container">
-            <div class="education-item">
-                <div class="item-title">Maestría en Administración de Empresas (MBA)</div>
-                <div class="item-subtitle">Instituto Tecnológico de Monterrey</div>
-                <div class="item-date">2016 - 2018</div>
-                <div class="item-description">
-                    <strong>Área de estudio:</strong> Estrategia y Transformación Digital<br>
-                    Tesis sobre "Impacto de la Transformación Digital en la Competitividad Empresarial". Promedio: 9.2/10
+                {% for edu in educacion %}
+                <div class="education-item">
+                    <div class="item-title">{{ edu.titulo }}</div>
+                    <div class="item-subtitle">{{ edu.institucion }}</div>
+                    <div class="item-date">{{ edu.fecha_inicio }} - {{ edu.fecha_fin if fecha_fin else "Actualmente" }}</div>
+                    <div class="item-description">
+                        <strong>Área de estudio:</strong> {{ edu.area_estudio }}
+                    </div>
                 </div>
-            </div>
-            
-            <div class="education-item">
-                <div class="item-title">Ingeniería en Sistemas Computacionales</div>
-                <div class="item-subtitle">Universidad Nacional Autónoma de México (UNAM)</div>
-                <div class="item-date">2012 - 2016</div>
-                <div class="item-description">
-                    <strong>Área de estudio:</strong> Desarrollo de Software y Sistemas de Información<br>
-                    Proyecto de titulación: Sistema de gestión empresarial basado en la nube. Mención honorífica.
-                </div>
-            </div>
+                {% endfor %}
             </div>
         </div>
 
@@ -1074,8 +1065,7 @@ function addExperience() {
             // Cerrar modal y limpiar formulario
             closeAddExperienceModal();
             
-            // Mostrar mensaje de éxito
-            alert('Experiencia agregada correctamente');
+            location.reload();
         } else {
             alert('Error al agregar experiencia: ' + data.message);
         }
@@ -1321,8 +1311,7 @@ function addEducation() {
             // Cerrar modal y limpiar formulario
             closeAddEducationModal();
             
-            // Mostrar mensaje de éxito
-            alert('Educación agregada correctamente');
+            location.reload();
         } else {
             alert('Error al agregar educación: ' + data.message);
         }
@@ -1443,7 +1432,7 @@ function addCertification() {
             closeAddCertificationModal();
             
             // Mostrar mensaje de éxito
-            alert('Certificación agregada correctamente');
+            location.reload();
         } else {
             alert('Error al agregar certificación: ' + data.message);
         }
@@ -1577,8 +1566,7 @@ function addProject() {
             // Cerrar modal y limpiar formulario
             closeAddProjectModal();
             
-            // Mostrar mensaje de éxito
-            alert('Proyecto agregado correctamente');
+            location.reload();
         } else {
             alert('Error al agregar proyecto: ' + data.message);
         }
@@ -1708,8 +1696,7 @@ function addSkill() {
             // Cerrar modal y limpiar formulario
             closeAddSkillModal();
             
-            // Mostrar mensaje de éxito
-            alert('Habilidad agregada correctamente');
+            location.reload();
         } else {
             alert('Error al agregar habilidad: ' + data.message);
         }
@@ -1893,8 +1880,7 @@ function addLanguage() {
             // Cerrar modal y limpiar formulario
             closeAddLanguageModal();
             
-            // Mostrar mensaje de éxito
-            alert('Idioma agregado correctamente');
+            location.reload();
         } else {
             alert('Error al agregar idioma: ' + data.message);
         }
