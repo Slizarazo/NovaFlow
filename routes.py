@@ -5,7 +5,7 @@ from functools import reduce
 from flask_login import login_user, logout_user, login_required, current_user
 from app import app
 from models import User, Aliado, Proyecto, Consultor, DatosDashboard
-from models import Usuario, Organizaciones, Industrias, Colaboradores, Subregiones, Sedes, Regiones, Portafolio, Consultores, Comunidades, Miembros_comunidad, Comunidad_aliado, Personas_cliente, UserAcces, Cuentas, Segmentacion, Casos_uso
+from models import Usuario, Organizaciones, Industrias, Colaboradores, Subregiones, Sedes, Regiones, Portafolio, Consultores, Comunidades, Miembros_comunidad, Comunidad_aliado, Personas_cliente, UserAcces, Cuentas, Segmentacion, Casos_uso, Exp_laboral
 from config import Config
 from graphs import *
 from datetime import datetime
@@ -323,9 +323,11 @@ def consultor_perfil():
     id = current_user.id
     usuario = Usuario.get_by_id(id)
     consultor = Consultores.get_by_id(id)
+    exp_lab = Exp_laboral.get_by_id_usuario(current_user.id)
     return render_template('consultor/perfil.html',
                          title='Perfil del Consultor',
                          usuario=usuario,
+                         exp_lab=exp_lab,
                          consultor=consultor,
                          config=app.config,
                          rol=current_user.rol)
@@ -1014,7 +1016,7 @@ def create_user():
             nuevo_usuario = Usuario(data.get('nombre_completo'), None, None, data.get('correo'), "password", 4, 'activo', None)
             id = nuevo_usuario.create()
 
-            nuevo_consultor = Consultores(id, data.get('especialidad'), 90, 25, data.get('freelanceNivel'), formato, None, None, None, None, None, None)
+            nuevo_consultor = Consultores(id, data.get('especialidad'), 90, data.get('freelanceNivel'), data.get('freelanceNivel'), formato, None, None, None, None, None, None)
             nuevo_consultor.create()
 
         return jsonify({'status': 'success', 'message': 'Usuario creado exitosamente'})
@@ -1315,6 +1317,54 @@ def update_informacion_personal():
         app.logger.error(f"Error al actualizar información personal: {str(e)}")
         return jsonify({'status': 'error', 'message': str(e)}), 500
 
+@app.route('/api/experiencia-laboral', methods=['POST'])
+@login_required
+def create_experiencia_laboral():
+    try:
+        data = request.get_json()
+
+        # Imprimir el JSON completo recibido
+        print("=" * 60)
+        print("📥 DATOS JSON RECIBIDOS EN /api/experiencia-laboral")
+        print("=" * 60)
+        print(json.dumps(data, indent=2, ensure_ascii=False))
+        print("=" * 60)
+
+        if not data:
+            return jsonify({'status': 'error', 'message': 'No se recibieron datos'}), 400
+
+        # Extraer los datos del formulario de experiencia laboral
+        puesto = data.get('puesto')
+        empresa = data.get('empresa')
+        fecha_inicio = data.get('fecha_inicio')
+        fecha_fin = data.get('fecha_fin')
+        trabajo_actual = data.get('trabajo_actual', False)
+        ubicacion = data.get('ubicacion')
+        descripcion = data.get('descripcion')
+        tipo_empleo = data.get('tipo_empleo')  # tiempo_completo, medio_tiempo, freelance, contrato
+        sector = data.get('sector')
+        logros = data.get('logros', None)  # Lista de logros específicos
+
+        # Validaciones básicas
+        if not puesto or not empresa or not fecha_inicio:
+            return jsonify({'status': 'error', 'message': 'Puesto, empresa y fecha de inicio son campos obligatorios'}), 400
+
+        # Validar que si no es trabajo actual, debe tener fecha de fin
+        if not trabajo_actual and not fecha_fin:
+            return jsonify({'status': 'error', 'message': 'Debe especificar fecha de fin o marcar como trabajo actual'}), 400
+
+        nueva_experiencia = Exp_laboral(current_user.id, puesto, empresa, descripcion, fecha_inicio, fecha_fin, ubicacion, tipo_empleo, sector, logros)
+        nueva_experiencia.create()
+
+        return jsonify({
+            'status': 'success', 
+            'message': 'Experiencia laboral agregada exitosamente'
+        })
+
+    except Exception as e:
+        app.logger.error(f"Error al crear experiencia laboral: {str(e)}")
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+
 # endregion
 
 # region API SIN DEFINIR
@@ -1462,81 +1512,6 @@ def create_usuario_cuenta():
         app.logger.error(f"Error al crear usuario de cuenta: {str(e)}")
         return jsonify({'status': 'error', 'message': str(e)}), 500
 
-@app.route('/api/experiencia-laboral', methods=['POST'])
-@login_required
-def create_experiencia_laboral():
-    try:
-        data = request.get_json()
-
-        # Imprimir el JSON completo recibido
-        print("=" * 60)
-        print("📥 DATOS JSON RECIBIDOS EN /api/experiencia-laboral")
-        print("=" * 60)
-        print(json.dumps(data, indent=2, ensure_ascii=False))
-        print("=" * 60)
-
-        if not data:
-            return jsonify({'status': 'error', 'message': 'No se recibieron datos'}), 400
-
-        # Extraer los datos del formulario de experiencia laboral
-        puesto = data.get('puesto')
-        empresa = data.get('empresa')
-        fecha_inicio = data.get('fecha_inicio')
-        fecha_fin = data.get('fecha_fin')
-        trabajo_actual = data.get('trabajo_actual', False)
-        ubicacion = data.get('ubicacion')
-        descripcion = data.get('descripcion')
-        tipo_empleo = data.get('tipo_empleo')  # tiempo_completo, medio_tiempo, freelance, contrato
-        sector = data.get('sector')
-        logros = data.get('logros', [])  # Lista de logros específicos
-
-        print("📋 DATOS PROCESADOS:")
-        print(f"  - Puesto: {puesto}")
-        print(f"  - Empresa: {empresa}")
-        print(f"  - Fecha Inicio: {fecha_inicio}")
-        print(f"  - Fecha Fin: {fecha_fin}")
-        print(f"  - Trabajo Actual: {trabajo_actual}")
-        print(f"  - Ubicación: {ubicacion}")
-        print(f"  - Descripción: {descripcion}")
-        print(f"  - Tipo de Empleo: {tipo_empleo}")
-        print(f"  - Sector: {sector}")
-        print(f"  - Logros: {logros}")
-
-        # Validaciones básicas
-        if not puesto or not empresa or not fecha_inicio:
-            return jsonify({'status': 'error', 'message': 'Puesto, empresa y fecha de inicio son campos obligatorios'}), 400
-
-        # Validar que si no es trabajo actual, debe tener fecha de fin
-        if not trabajo_actual and not fecha_fin:
-            return jsonify({'status': 'error', 'message': 'Debe especificar fecha de fin o marcar como trabajo actual'}), 400
-
-        # Aquí podrías agregar la lógica para guardar en la base de datos
-        # Por ejemplo: current_user.add_work_experience(data)
-
-        # Preparar datos de respuesta
-        experiencia_data = {
-            'puesto': puesto,
-            'empresa': empresa,
-            'fecha_inicio': fecha_inicio,
-            'fecha_fin': fecha_fin if not trabajo_actual else None,
-            'trabajo_actual': trabajo_actual,
-            'ubicacion': ubicacion,
-            'descripcion': descripcion,
-            'tipo_empleo': tipo_empleo,
-            'sector': sector,
-            'logros': logros,
-            'periodo_formateado': f"{fecha_inicio} - {'Presente' if trabajo_actual else fecha_fin}"
-        }
-
-        return jsonify({
-            'status': 'success', 
-            'message': 'Experiencia laboral agregada exitosamente',
-            'data': experiencia_data
-        })
-
-    except Exception as e:
-        app.logger.error(f"Error al crear experiencia laboral: {str(e)}")
-        return jsonify({'status': 'error', 'message': str(e)}), 500
 
 # endregion
 

@@ -1362,6 +1362,54 @@ class Roles:
 
 # endregion
 
+# region EXPERIENCIA LABORAL
 
+class Exp_laboral:
+
+    def __init__(self, id_usuario, cargo, empresa, descripcion, fecha_inicio, fecha_fin, ubicacion, tipo_empleo, sector, logros):
+        self.id_usuario = id_usuario
+        self.cargo = cargo
+        self.empresa = empresa
+        self.descripcion = descripcion
+        self.fecha_inicio = fecha_inicio
+        self.fecha_fin = fecha_fin
+        self.ubicacion = ubicacion
+        self.tipo_empleo = tipo_empleo
+        self.sector = sector
+        self.logros = logros
+
+    def create(self):
+        conn = mydb('nova_flow')
+        mycursor = conn.cursor()
+
+        query = "INSERT INTO experiencia_laboral (id_usuario, cargo, empresa, descripcion, fecha_inicio, fecha_fin, ubicacion, tipo_empleo, sector, logros) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s);"
+        values = (self.id_usuario, self.cargo, self.empresa, self.descripcion, self.fecha_inicio, self.fecha_fin, self.ubicacion, self.tipo_empleo, self.sector, self.logros)
+
+        mycursor.execute(query, values)
+        conn.commit()
+
+        id = mycursor.lastrowid
+
+        mycursor.close()
+        conn.close()
+
+        return id
+
+    def get_by_id_usuario(id):
+        conn = mydb('nova_flow')
+        mycursor = conn.cursor(dictionary=True)
+        
+        query = "SELECT * FROM experiencia_laboral WHERE id_usuario = %(id)s;"
+        values = {'id': id}
+
+        mycursor.execute(query, values)
+        data = mycursor.fetchall()
+
+        mycursor.close()
+        conn.close()
+
+        return data
+
+# endregion
 
 
