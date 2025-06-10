@@ -1459,3 +1459,124 @@ class Educacion:
         return data
 
 # endregion
+
+# region CERTIFICACIONES
+
+class Certificaciones:
+
+    def __init__(self, id_usuario, nombre, entidad, fecha_obtencion, fecha_vencimiento, url_certificado, id_credencial, descripcion):
+        self.id_usuario = id_usuario
+        self.nombre = nombre
+        self.entidad = entidad
+        self.fecha_obtencion = fecha_obtencion
+        self.fecha_vencimiento = fecha_vencimiento
+        self.url_certificado = url_certificado
+        self.id_credencial = id_credencial
+        self.descripcion = descripcion
+
+    def create(self):
+        conn = mydb('nova_flow')
+        mycursor = conn.cursor()
+
+        query = "INSERT INTO certificaciones (id_usuario, nombre, entidad, fecha_obtencion, fecha_vencimiento, url_certificado, id_credencial, descripcion) VALUES(%s, %s, %s, %s, %s, %s, %s, %s);"
+        values = (self.id_usuario, self.nombre, self.entidad, self.fecha_obtencion, self.fecha_vencimiento, self.url_certificado, self.id_credencial, self.descripcion)
+
+        mycursor.execute(query, values)
+        conn.commit()
+
+        id = mycursor.lastrowid
+
+        mycursor.close()
+        conn.close()
+
+        return id
+    
+    @staticmethod
+    def get_by_id_usuario(id):
+        conn = mydb('nova_flow')
+        mycursor = conn.cursor(dictionary=True)
+
+        query = "SELECT * FROM certificaciones WHERE id_usuario = %(id)s;"
+        values = {'id': id}
+
+        mycursor.execute(query, values)
+        data = mycursor.fetchall()
+
+        mycursor.close()
+        conn.close()
+
+        return data
+
+
+# endregion
+
+# region PROYECTOS DESTACADOS
+
+class Proyectos_destacados:
+
+    def __init__(self, id_usuario, nombre, descripcion, tecnologias_usadas, fecha_inicio, fecha_fin, link_portafolio):
+        self.id_usuario = id_usuario
+        self.nombre = nombre
+        self.descripcion = descripcion
+        self.tecnologias_usadas = tecnologias_usadas
+        self.fecha_inicio = fecha_inicio
+        self.fecha_fin = fecha_fin
+        self.link_portafolio = link_portafolio
+
+    def create(self):
+        conn = mydb('nova_flow')
+        mycursor = conn.cursor()
+
+        query = "INSERT INTO proyectos_destacados (id_usuario, nombre, descripcion, tecnologias_usadas, fecha_inicio, fecha_fin, link_portafolio) VALUES(%s, %s, %s, %s, %s, %s, %s);"
+        values = (self.id_usuario, self.nombre, self.descripcion, self.tecnologias_usadas, self.fecha_inicio, self.fecha_fin, self.link_portafolio)
+
+        mycursor.execute(query, values)
+        conn.commit()
+
+        id = mycursor.lastrowid
+
+        mycursor.close()
+        conn.close()
+
+        return id
+
+    @staticmethod
+    def get_by_id_usuario(id):
+        conn = mydb('nova_flow')
+        mycursor = conn.cursor(dictionary=True)
+
+        query = "SELECT * FROM proyectos_destacados WHERE id_usuario = %(id)s;"
+        values = {'id': id}
+
+        mycursor.execute(query, values)
+        data = mycursor.fetchall()
+
+        mycursor.close()
+        conn.close()
+
+        return data
+
+# endregion
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

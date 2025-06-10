@@ -193,7 +193,7 @@
                 <div class="education-item">
                     <div class="item-title">{{ edu.titulo }}</div>
                     <div class="item-subtitle">{{ edu.institucion }}</div>
-                    <div class="item-date">{{ edu.fecha_inicio }} - {{ edu.fecha_fin if fecha_fin else "Actualmente" }}</div>
+                    <div class="item-date">{{ edu.fecha_inicio }} - {{ edu.fecha_fin if edu.fecha_fin else "Actualmente" }}</div>
                     <div class="item-description">
                         <strong>Área de estudio:</strong> {{ edu.area_estudio }}
                     </div>
@@ -211,32 +211,21 @@
             </h3>
             
             <div id="certificaciones-container">
-            <div class="certification-item">
-                <div class="item-title">Project Management Professional (PMP)</div>
-                <div class="item-subtitle">Project Management Institute (PMI)</div>
-                <div class="item-date">Obtenida: Marzo 2022</div>
-                <a href="https://www.credly.com/badges/pmp-certificate" class="certification-link" target="_blank">
-                    Ver certificado
-                </a>
-            </div>
-            
-            <div class="certification-item">
-                <div class="item-title">AWS Solutions Architect Professional</div>
-                <div class="item-subtitle">Amazon Web Services</div>
-                <div class="item-date">Obtenida: Septiembre 2023</div>
-                <a href="https://aws.amazon.com/verification" class="certification-link" target="_blank">
-                    Ver certificado
-                </a>
-            </div>
-            
-            <div class="certification-item">
-                <div class="item-title">Certified ScrumMaster (CSM)</div>
-                <div class="item-subtitle">Scrum Alliance</div>
-                <div class="item-date">Obtenida: Enero 2021</div>
-                <a href="https://www.scrumalliance.org/community/profile/mrodriguez" class="certification-link" target="_blank">
-                    Ver certificado
-                </a>
-            </div>
+                {% for cert in certificaciones %}
+                <div class="certification-item">
+                    <div class="item-title">{{ cert.nombre }}</div>
+                    <div class="item-subtitle">{{ cert.entidad }}</div>
+                    <div class="item-description">
+                        {{ cert.descripcion }}
+                    </div>
+                    <div class="item-date">Obtenida: {{ cert.fecha_obtencion }}</div>
+                    {% if cert.url_certificado %}
+                    <a href="{{ cert.url_certificado }}" class="certification-link" target="_blank">
+                        Ver certificado
+                    </a>
+                    {% endif %}
+                </div>
+                {% endfor %}
             </div>
         </div>
 
@@ -249,45 +238,29 @@
             </h3>
             
             <div id="proyectos-container">
-            <div class="project-item">
-                <div class="item-title">Plataforma de E-commerce Omnicanal</div>
-                <div class="item-date">Enero 2023 - Junio 2023</div>
-                <div class="item-description">
-                    Desarrollo de plataforma e-commerce integrada con sistemas legacy, procesando +100K transacciones diarias.
+                {% for pd in pro_destacados %}
+                <div class="project-item">
+                    <div class="item-title">{{ pd.nombre }}</div>
+                    <div class="item-date">{{ pd.fecha_inicio }} - {{ pd.fecha_fin }}</div>
+                    <div class="item-description">
+                        {{ pd.descripcion }}
+                    </div>
+                    <div style="margin-top: 0.75rem;">
+                        {% for tec in tecnologias %} {% if tec.id == pd.id %}
+                        {% for t in tec.tecs %}
+                        <div class="tech-tag">{{ t }}</div>
+                        {% endfor %}
+                        {% endif %} {% endfor %}
+                    </div>
+                    <div style="margin-top: 0.75rem;">
+                        {% if pd.link_portafolio %}
+                        <a href="{{ pd.link_portafolio }}" class="certification-link" target="_blank">
+                            Ver en portfolio
+                        </a>
+                        {% endif %}
+                    </div>
                 </div>
-                <div style="margin-top: 0.75rem;">
-                    <div class="tech-tag">React.js</div>
-                    <div class="tech-tag">Node.js</div>
-                    <div class="tech-tag">AWS</div>
-                    <div class="tech-tag">MongoDB</div>
-                    <div class="tech-tag">Microservicios</div>
-                </div>
-                <div style="margin-top: 0.75rem;">
-                    <a href="https://portfolio.mariacarmen.dev/ecommerce" class="certification-link" target="_blank">
-                        Ver en portfolio
-                    </a>
-                </div>
-            </div>
-            
-            <div class="project-item">
-                <div class="item-title">Sistema de Análisis Predictivo</div>
-                <div class="item-date">Agosto 2022 - Diciembre 2022</div>
-                <div class="item-description">
-                    Implementación de ML para predicción de demanda, mejorando la precisión de forecasting en un 35%.
-                </div>
-                <div style="margin-top: 0.75rem;">
-                    <div class="tech-tag">Python</div>
-                    <div class="tech-tag">TensorFlow</div>
-                    <div class="tech-tag">Apache Kafka</div>
-                    <div class="tech-tag">Docker</div>
-                    <div class="tech-tag">Kubernetes</div>
-                </div>
-                <div style="margin-top: 0.75rem;">
-                    <a href="https://portfolio.mariacarmen.dev/ml-analytics" class="certification-link" target="_blank">
-                        Ver en portfolio
-                    </a>
-                </div>
-            </div>
+                {% endfor %}
             </div>
         </div>
 

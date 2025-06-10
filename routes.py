@@ -4,8 +4,9 @@ from flask_login import current_user
 from functools import reduce
 from flask_login import login_user, logout_user, login_required, current_user
 from app import app
+from controllers import *
 from models import User, Aliado, Proyecto, Consultor, DatosDashboard
-from models import Usuario, Organizaciones, Industrias, Colaboradores, Subregiones, Sedes, Regiones, Portafolio, Consultores, Comunidades, Miembros_comunidad, Comunidad_aliado, Personas_cliente, UserAcces, Cuentas, Segmentacion, Casos_uso, Exp_laboral, Educacion
+from models import Usuario, Organizaciones, Industrias, Colaboradores, Subregiones, Sedes, Regiones, Portafolio, Consultores, Comunidades, Miembros_comunidad, Comunidad_aliado, Personas_cliente, UserAcces, Cuentas, Segmentacion, Casos_uso, Exp_laboral, Educacion, Certificaciones, Proyectos_destacados
 from config import Config
 from graphs import *
 from datetime import datetime
@@ -321,14 +322,20 @@ def proyectos_gestion():
 @login_required
 def consultor_perfil():
     id = current_user.id
-    
+
     usuario = Usuario.get_by_id(id)
     consultor = Consultores.get_by_id(id)
     exp_lab = Exp_laboral.get_by_id_usuario(id)
     educacion = Educacion.get_by_id_usuario(id)
+    certificaciones = Certificaciones.get_by_id_usuario(id)
+    pro_destacados = Proyectos_destacados.get_by_id_usuario(id)
+    tecnologias = [{'id': x['id'], 'tecs':list_tecs(x['tecnologias_usadas'])} for x in pro_destacados]
     return render_template('consultor/perfil.html',
                          title='Perfil del Consultor',
+                         certificaciones=certificaciones,
+                         pro_destacados=pro_destacados,
                          educacion=educacion,
+                         tecnologias=tecnologias,
                          usuario=usuario,
                          exp_lab=exp_lab,
                          consultor=consultor,
@@ -1326,13 +1333,6 @@ def create_experiencia_laboral():
     try:
         data = request.get_json()
 
-        # Imprimir el JSON completo recibido
-        print("=" * 60)
-        print("📥 DATOS JSON RECIBIDOS EN /api/experiencia-laboral")
-        print("=" * 60)
-        print(json.dumps(data, indent=2, ensure_ascii=False))
-        print("=" * 60)
-
         if not data:
             return jsonify({'status': 'error', 'message': 'No se recibieron datos'}), 400
 
@@ -1341,7 +1341,7 @@ def create_experiencia_laboral():
         empresa = data.get('empresa')
         fecha_inicio = data.get('fecha_inicio')
         trabajo_actual = data.get('trabajo_actual', False)
-        fecha_fin = data.get('fecha_fin') if trabajo_actual == True else None
+        fecha_fin = data.get('fecha_fin', None)
         ubicacion = data.get('ubicacion')
         descripcion = data.get('descripcion')
         tipo_empleo = data.get('tipo_empleo')  # tiempo_completo, medio_tiempo, freelance, contrato
@@ -1394,7 +1394,7 @@ def api_educacion():
     """Endpoint para recibir e imprimir datos de educación"""
     try:
         data = request.get_json()
-        fecha_fin = data.get('fecha_fin') if data.get('estudio_actual') == False else None
+        fecha_fin = data.get('fecha_fin') if data.get('fecha_fin') else None
         
         nueva_educacion = Educacion(current_user.id, data.get('institucion'), data.get('titulo'), data.get('area_estudio'), data.get('fecha_inicio'), fecha_fin, data.get('descripcion'))
         nueva_educacion.create()
@@ -1415,12 +1415,12 @@ def api_educacion():
 def api_certificaciones():
     try:
         data = request.get_json()
-        print("=== DATOS DE CERTIFICACIONES RECIBIDOS ===")
-        print(json.dumps(data, indent=2, ensure_ascii=False))
-        print("=" * 45)
+        
+        fecha_vencimiento = data.get('fecha_vencimiento') if data.get('fecha_vencimiento') else None
 
-        # Aquí normalmente guardarías en la base de datos
-        # Por ahora solo retornamos éxito
+        nuevo_cert = Certificaciones(current_user.id, data.get('nombre'), data.get('organizacion'), data.get('fecha_obtencion'), fecha_vencimiento, data.get('url_verificacion'), data.get('credencial'), data.get('descripcion'))
+        nuevo_cert.create()
+        
         return jsonify({"status": "success", "message": "Certificación guardada correctamente"})
     except Exception as e:
         print(f"Error en /api/certificaciones: {e}")
@@ -1430,13 +1430,17 @@ def api_certificaciones():
 def add_proyecto_destacado():
     try:
         data = request.get_json()
-        print("📝 Datos del proyecto destacado recibidos:", json.dumps(data, indent=2, ensure_ascii=False))
+
+        print(data)
 
         # Validar campos requeridos
         required_fields = ['titulo', 'fecha_inicio', 'descripcion']
         for field in required_fields:
             if not data.get(field):
                 return jsonify({'status': 'error', 'message': f'El campo {field} es requerido'})
+
+        nuevo_pd = Proyectos_destacados(current_user.id, data.get('titulo'), data.get('descripcion'), data.get('tecnologias'), data.get('fecha_inicio'), data.get('fecha_fin'), data.get('url_proyecto'))
+        nuevo_pd.create()
 
         return jsonify({'status': 'success', 'message': 'Proyecto destacado agregado correctamente'})
 
