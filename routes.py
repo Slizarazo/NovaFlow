@@ -1255,7 +1255,7 @@ def cambio_estado_caso_uso():
 
     estado_actual = Casos_uso.get_by_id(id_caso)
     
-    if current_user.estado == "Aliado":
+    if current_user.estado == "activo":
         if estado_actual[10] != '2':
             return jsonify({'error': 'Solo se puede cambiar si el estado actual es Oportunidad'}), 403
         if nuevo_estado != 'aprobado':
