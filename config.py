@@ -6,7 +6,7 @@ def workbench_db(table='nova_flow'):
     mydb = mysql.connector.connect(
         host="localhost",
         user="root",
-        passwd="",
+        passwd="123456",
         database=table
     )
 
