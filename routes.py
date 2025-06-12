@@ -74,6 +74,8 @@ def login():
             if current_user.rol == "Gestor":
                 next_page = request.args.get('next')
                 return redirect(next_page or url_for('gestor_organizaciones'))
+            if current_user.rol == "Supervisor":
+                return redirect(url_for('supervisor_funnel'))
             else:
                 return redirect(url_for('dashboard_growth'))
         else:
@@ -1268,17 +1270,13 @@ def cambio_estado_caso_uso():
                 return jsonify({'error': 'Transición no permitida para Aliado'}), 403
 
         # Validación de rol: Supervisor
-        elif current_user.rol == "Supervisor":
+        else:
             if estado_actual[10] == '1' and nuevo_estado == 'propuesta':
                 Casos_uso.update('estado', '2', id_caso)
             elif estado_actual[10] == '2' and nuevo_estado == 'oportunidad':
                 Casos_uso.update('estado', '1', id_caso)
             else:
                 return jsonify({'error': 'Transición no permitida para Supervisor'}), 403
-
-        # Rol no autorizado
-        else:
-            return jsonify({'error': 'Rol no autorizado'}), 403
 
         # Respuesta exitosa
         return jsonify({

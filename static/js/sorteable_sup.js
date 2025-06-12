@@ -1,35 +1,57 @@
+function actualizarContadoresEstados() {
+    const estados = ['oportunidad', 'propuesta'];
+    estados.forEach(estado => {
+        const columna = document.getElementById(`col-${estado}`);
+        const tarjetas = columna.querySelectorAll('.card');
+        const th = document.getElementById(`count-${estado}`);
+        if (th) {
+            const textoBase = th.textContent.split('(')[0].trim();
+            th.textContent = `${textoBase} (${tarjetas.length})`;
+        }
+    });
+}
+
 document.querySelectorAll('.estado-columna').forEach((columna) => {
     Sortable.create(columna, {
         group: 'kanban',
         animation: 150,
 
-        // ⚠️ Aquí validamos el movimiento antes de que ocurra
         onMove: function (evt) {
             const tarjeta = evt.dragged;
-            const estadoActual = tarjeta.dataset.estado;
-            const nuevoEstado = evt.to.id.replace('col-', '');
+            const estadoActual = tarjeta.dataset.estado;             // "propuesta"
+            const nuevoEstado = evt.to.id.replace('col-', '');       // "oportunidad"
 
-            // Solo permitir mover de oportunidad (1) a propuesta
-            if (!(estadoActual === '1' && nuevoEstado === 'propuesta')) {
-                return false; // impide el movimiento
+            console.log(`Intentando mover de ${estadoActual} a ${nuevoEstado}`);
+
+            const movimientoValido =
+                (estadoActual === 'oportunidad' && nuevoEstado === 'propuesta') ||
+                (estadoActual === 'propuesta' && nuevoEstado === 'oportunidad');
+
+            if (!movimientoValido) {
+                console.warn('❌ Movimiento no permitido');
+                return false;
             }
 
             return true;
         },
 
-        // ✅ Esta función se ejecuta después del drop
         onEnd: function (evt) {
             const tarjeta = evt.item;
             const nuevoEstado = evt.to.id.replace('col-', '');
             const idProyecto = tarjeta.dataset.id;
 
-            console.log(`Proyecto ${idProyecto} movido a estado ${nuevoEstado}`);
+            tarjeta.dataset.estado = nuevoEstado;
+
+            console.log(`✅ Proyecto ${idProyecto} movido a estado ${nuevoEstado}`);
 
             fetch('/api/cambio_estado_caso_uso', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                credentials: 'include', // necesario si usas sesiones
+                credentials: 'include',
                 body: JSON.stringify({ id: idProyecto, estado: nuevoEstado })
+            }).then(() => {
+                actualizarContadoresEstados();
+                location.reload();
             });
         }
     });

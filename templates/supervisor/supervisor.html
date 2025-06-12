@@ -29,7 +29,11 @@
                     <td id="col-{{ id }}" class="estado-columna" style="min-width: 200px;">
                         {% for proy in proyectos %}
                             {% if proy[10] == estado %}
-                            <div class="card mb-2" onclick="openProyectoModal({{ proy[0] }}, '{{ id }}')" style="cursor: pointer;">
+                            <div class="card mb-2"
+                                data-id="{{ proy[0] }}"
+                                data-estado="{{ id }}"
+                                onclick="openProyectoModal({{ proy[0] }}, '{{ id }}')"
+                                style="cursor: pointer;">
                                 <div class="card-body p-2">
                                     <h6 class="card-title mb-1">{{ proy[4] }}</h6>
                                     <small class="text-muted">ID: {{ proy[0] }}</small>
