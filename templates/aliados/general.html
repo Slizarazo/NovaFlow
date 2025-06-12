@@ -1,5 +1,66 @@
 {% extends "layout.html" %} {% block content %}
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+<!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+    /* Modal centrado y adaptado al diseño */
+    .modal-content {
+        border-radius: 1rem;
+        border: none;
+    }
+
+    .modal-header {
+        background: linear-gradient(to right, #764BA2, #667EEA);
+        color: white;
+        border-top-left-radius: 1rem;
+        border-top-right-radius: 1rem;
+    }
+
+    .modal-body {
+        background-color: #f9fafb;
+        font-size: 0.95rem;
+        line-height: 1.6;
+        padding: 2rem;
+    }
+
+    .modal-body h6 {
+        margin-top: 1.5rem;
+        margin-bottom: 1rem;
+        color: #6c63ff;
+        font-weight: 600;
+        border-bottom: 1px solid #e0e0e0;
+        padding-bottom: 0.4rem;
+    }
+
+    .modal-title {
+        font-weight: 600;
+        font-size: 1.25rem;
+    }
+
+    /* Etiquetas (dt) más estilizadas */
+    .modal-body dt {
+        font-weight: 600;
+        color: #444;
+        margin-bottom: 4px;
+    }
+
+    /* Valores (dd) */
+    .modal-body dd {
+        margin-bottom: 1rem;
+        color: #222;
+    }
+
+    /* Cierre */
+    .btn-close {
+        filter: invert(1);
+    }
+
+    /* Asegura que no quede estirado al 100% */
+    .modal-lg {
+        max-width: 900px;
+    }
+</style>
 
 <div class="d-flex justify-content-between p-4">
     <h2>Gestión de Proyectos</h2>
@@ -91,25 +152,25 @@
         <table class="table align-top">
             <thead>
                 <tr>
-                    <th style="color: #C27C0E; font-weight: bold;">Oportunidad ({{ estados.oportunidad|length }})</th>
-                    <th style="color: #38761D; font-weight: bold;">Propuesta ({{ estados.propuesta|length }})</th>
-                    <th style="color: #1155CC; font-weight: bold;">Aprobación ({{ estados.aprobado|length }})</th>
-                    <th style="color: #CC0000; font-weight: bold;">En Desarrollo ({{ estados.desarrollo|length }})</th>
-                    <th style="color: #741B47; font-weight: bold;">Testing ({{ estados.testing|length }})</th>
-                    <th style="color: #20124D; font-weight: bold;">Cierre ({{ estados.cierre|length }})</th>
-                    <th style="color: #990000; font-weight: bold;">Evaluación ({{ estados.evaluacion|length }})</th>
-                </tr>
+                    <th style="color: #C27C0E; font-weight: bold;" id="count-oportunidad">Oportunidad ({{ estados.oportunidad|length }})</th>
+                    <th style="color: #38761D; font-weight: bold;" id="count-propuesta">Propuesta ({{ estados.propuesta|length }})</th>
+                    <th style="color: #1155CC; font-weight: bold;" id="count-aprobado">Aprobación ({{ estados.aprobado|length }})</th>
+                    <th style="color: #CC0000; font-weight: bold;" id="count-desarrollo">En Desarrollo ({{ estados.desarrollo|length }})</th>
+                    <th style="color: #741B47; font-weight: bold;" id="count-testing">Testing ({{ estados.testing|length }})</th>
+                    <th style="color: #20124D; font-weight: bold;" id="count-cierre">Cierre ({{ estados.cierre|length }})</th>
+                    <th style="color: #990000; font-weight: bold;" id="count-evaluacion">Evaluación ({{ estados.evaluacion|length }})</th>
+                    </tr>
             </thead>
             <tbody>
                 <tr>
                     {% for estado, id in [('1','oportunidad'), ('2','propuesta'), ('3','aprobado'), ('4','desarrollo'), ('5','testing'), ('6','cierre'), ('7','evaluacion')] %}
                     <td id="col-{{ id }}" class="estado-columna" style="min-width: 200px;">
                         {% for proy in proyectos %}
-                            {% if proy[10] == estado %}
-                            <div class="card mb-2" data-id="{{ proy[0] }}" data-estado="{{ proy[10] }}">
+                            {% if proy['estado'] == estado %}
+                            <div class="card mb-2" data-id="{{ proy['id'] }}" onclick="openProyectoModal({{ proy['id'] }}, '{{ id }}')" data-estado="{{ proy['estado'] }}">
                                 <div class="card-body p-2">
-                                    <h6 class="card-title mb-1">{{ proy[4] }}</h6>
-                                    <small class="text-muted">ID: {{ proy[0] }}</small>
+                                    <h6 class="card-title mb-1">{{ proy['descripcion'] }}</h6>
+                                    <small class="text-muted">ID: {{ proy['id'] }}</small>
                                 </div>
                             </div>
                             {% endif %}
@@ -121,7 +182,134 @@
         </table>
     </div>
 </div>
+
+<!-- Modal Caso de uso -->
+<div class="modal fade" id="proyectoDetallesModal" tabindex="-1" aria-labelledby="proyectoDetallesModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      
+      <!-- ENCABEZADO -->
+      <div class="modal-header" style="background: linear-gradient(to right, #764BA2, #667EEA); color: white;">
+        <h5 class="modal-title" id="proyectoDetallesModalLabel">🔍 Detalles del Proyecto</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+
+      <!-- CUERPO -->
+      <div class="modal-body bg-light">
+        <div class="table-responsive">
+          <table class="table table-sm table-borderless mb-0">
+            <tbody>
+              <tr>
+                <th class="text-muted">ID</th><td id="modal_id"></td>
+                <th class="text-muted"><span>Supervisor</span></th><td id="modal_id_usuario"></td>
+              </tr>
+              <tr>
+                <th class="text-muted">Cliente</th><td colspan="3" id="modal_id_cuenta"></td>
+              </tr>
+              <tr>
+                <th class="text-muted">Caso de uso</th><td colspan="3" id="modal_caso_uso"></td>
+              </tr>
+              <tr>
+                <th class="text-muted">Descripción</th><td colspan="3" id="modal_descripcion"></td>
+              </tr>
+              <tr>
+                <th class="text-muted">Impacto</th><td id="modal_impacto"></td>
+              </tr>
+              <tr>
+                <th class="text-muted">Punt. Impacto</th><td id="modal_punt_impacto"></td>
+                <th class="text-muted">Punt. Técnica</th><td id="modal_punt_tecnica"></td>
+              </tr>
+              <tr>
+                <th class="text-muted">Tags</th><td id="modal_tags"></td>
+                <th class="text-muted">Producto</th><td colspan="3" id="modal_id_producto"></td>
+              </tr>
+              <tr>
+                <th class="text-muted">Estado</th><td id="modal_estado"></td>
+              </tr>
+              <tr>
+                <th class="text-muted">Inicio</th><td id="modal_fecha_inicio"></td>
+                <th class="text-muted">Cierre</th><td id="modal_fecha_cierre"></td>
+              </tr>
+              <tr class="table-light">
+                <th class="text-muted">Monto venta</th><td id="modal_monto_venta"></td>
+                <th class="text-muted">Costos</th><td id="modal_costos_proyecto"></td>
+              </tr>
+              <tr class="table-light">
+                <th class="text-muted">Margen (%)</th><td id="modal_margen_porcentaje"></td>
+                <th class="text-muted">Margen bruto</th><td id="modal_margen_bruto"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
 {% endblock %} {% block scripts %}
+<!-- Bootstrap JS (debe estar antes de cerrar body) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="/static/js/sorteable_aliados_general.js"></script>
 <script src="/static/js/modal_proyectos_general.js"></script>
+<script>
+    function actualizarContadoresEstados() {
+        const estados = ['oportunidad', 'propuesta', 'aprobado', 'desarrollo', 'testing', 'cierre', 'evaluacion'];
+
+        estados.forEach(estado => {
+            const columna = document.getElementById(`col-${estado}`);
+            const tarjetas = columna.querySelectorAll('.card');
+            const contador = tarjetas.length;
+            const th = document.getElementById(`count-${estado}`);
+            if (th) {
+            const textoBase = th.textContent.split('(')[0].trim();
+            th.textContent = `${textoBase} (${contador})`;
+            }
+        });
+        }
+</script>
+<script>
+    const proyectosData = {
+        {% for proy in proyectos %}
+            {{ proy['id'] }}: {{ proy | tojson }},
+        {% endfor %}
+    };
+</script>
+
+<script>
+function openProyectoModal(proyectoId, estado) {
+    const proyecto = proyectosData[proyectoId];
+    if (!proyecto) return;
+
+    const formatoMoneda = new Intl.NumberFormat('es-CO', {
+        style: 'currency',
+        currency: 'COP',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
+    });
+
+    // Llenar los campos del modal
+    document.getElementById('modal_id').textContent = proyecto['id'];
+    document.getElementById('modal_id_usuario').textContent = proyecto['nombre_usuario'];
+    document.getElementById('modal_id_cuenta').textContent = proyecto['nombre_cuenta'];
+    document.getElementById('modal_caso_uso').textContent = proyecto['caso_uso'];
+    document.getElementById('modal_descripcion').textContent = proyecto['descripcion'];
+    document.getElementById('modal_impacto').textContent = proyecto['impacto'];
+    document.getElementById('modal_punt_impacto').textContent = proyecto['p_impacto'];
+    document.getElementById('modal_punt_tecnica').textContent = proyecto['p_tecnica'];
+    document.getElementById('modal_tags').textContent = proyecto['tags'];
+    document.getElementById('modal_estado').textContent = estado;
+    document.getElementById('modal_id_producto').textContent = proyecto['producto'];
+    document.getElementById('modal_fecha_inicio').textContent = proyecto['fecha_inicio'];
+    document.getElementById('modal_fecha_cierre').textContent = proyecto['fecha_fin'];
+    document.getElementById('modal_monto_venta').textContent = formatoMoneda.format(proyecto['monto_venta']);
+    document.getElementById('modal_costos_proyecto').textContent = formatoMoneda.format(proyecto['costos_proyecto']);
+    document.getElementById('modal_margen_porcentaje').textContent = proyecto['mep'];
+    document.getElementById('modal_margen_bruto').textContent = proyecto['meb'];
+
+    // Mostrar el modal (usando Bootstrap 5)
+    const modal = new bootstrap.Modal(document.getElementById('proyectoDetallesModal'));
+    modal.show();
+}
+</script>
 {% endblock %}

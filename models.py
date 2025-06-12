@@ -1193,9 +1193,36 @@ class Casos_uso:
     @staticmethod
     def get_projects(id):
         conn = mydb('nova_flow')
-        mycursor = conn.cursor()
+        mycursor = conn.cursor(dictionary=True)
 
-        mycursor.execute('SELECT * FROM caso_uso WHERE id_aliado = '+str(id)+';')
+        query = """
+            SELECT 
+                cu.id,
+                us.nombre AS nombre_usuario,
+                c.nombre AS nombre_cuenta,
+                cu.caso_uso,
+                cu.descripcion,
+                cu.impacto,
+                cu.puntuacion_impacto AS p_impacto,
+                cu.puntuacion_tecnica AS p_tecnica,
+                cu.tags,
+                cu.estado,
+                pr.nombre AS producto,
+                cu.fecha_inicio,
+                cu.fecha_cierre,
+                cu.monto_venta,
+                cu.costos_proyecto,
+                cu.margen_estimado_porcentaje AS mep,
+                cu.margen_estimado_bruto AS meb
+            FROM nova_flow.caso_uso cu
+            LEFT JOIN nova_flow.usuarios us ON cu.id_usuario = us.id_usuario
+            LEFT JOIN nova_flow.cuentas c ON cu.id_cuenta = c.id
+            LEFT JOIN nova_flow.portafolio pr ON cu.id_producto = pr.id
+            WHERE cu.id_aliado = %(id)s
+            """
+        values = {'id': id}
+
+        mycursor.execute(query, values)
         data = mycursor.fetchall()
 
         mycursor.close()

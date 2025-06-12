@@ -177,14 +177,14 @@ def gestor_asignaciones():
 def proyectos_general():
     proyectos = Casos_uso.get_projects(current_user.sede)
     estados = {
-        'oportunidad': [p for p in proyectos if str(p[10]) == "1"],
-        'propuesta': [p for p in proyectos if str(p[10]) == "2"],
-        'aprobado': [p for p in proyectos if str(p[10]) == "3"],
-        'desarrollo': [p for p in proyectos if str(p[10]) == '4'],
-        'testing': [p for p in proyectos if str(p[10]) == '5'],
-        'cierre': [p for p in proyectos if str(p[10]) == '6'],
-        'evaluacion': [p for p in proyectos if str(p[10]) == '7'],
-        'finalizados': [p for p in proyectos if str(p[10]) == '8']
+        'oportunidad': [p for p in proyectos if str(p['estado']) == "1"],
+        'propuesta': [p for p in proyectos if str(p['estado']) == "2"],
+        'aprobado': [p for p in proyectos if str(p['estado']) == "3"],
+        'desarrollo': [p for p in proyectos if str(p['estado']) == '4'],
+        'testing': [p for p in proyectos if str(p['estado']) == '5'],
+        'cierre': [p for p in proyectos if str(p['estado']) == '6'],
+        'evaluacion': [p for p in proyectos if str(p['estado']) == '7'],
+        'finalizados': [p for p in proyectos if str(p['estado']) == '8']
     }
     cuentas = Cuentas.get_cuentas_by_aliado(current_user.organizacion)
     consultores = Personas_cliente.get_consultores_aliado(current_user.sede)
@@ -1249,28 +1249,47 @@ def update_oportunidad():
 @login_required
 @role_required('Aliado', 'Supervisor')
 def cambio_estado_caso_uso():
-    data = request.get_json()
-    id_caso = data['id']
-    nuevo_estado = data['estado']
+    try:
+        # Obtener datos enviados desde el frontend
+        data = request.get_json()
+        id_caso = data['id']
+        nuevo_estado = data['estado']
 
-    estado_actual = Casos_uso.get_by_id(id_caso)
-    
-    if current_user.estado == "activo":
-        if estado_actual[10] != '2':
-            return jsonify({'error': 'Solo se puede cambiar si el estado actual es Oportunidad'}), 403
-        if nuevo_estado != 'aprobado':
-            return jsonify({'error': 'Solo se puede cambiar a Propuesta'}), 403
-    
-        Casos_uso.update('estado', '3', id_caso)
-    else:
-        if estado_actual[10] != '1':
-            return jsonify({'error': 'Solo se puede cambiar si el estado actual es Oportunidad'}), 403
-        if nuevo_estado != 'propuesta':
-            return jsonify({'error': 'Solo se puede cambiar a Propuesta'}), 403
-    
-        Casos_uso.update('estado', '2', id_caso)
+        # Consultar estado actual del caso de uso
+        estado_actual = Casos_uso.get_by_id(id_caso)
 
-    return jsonify({'status': 'ok', 'message': f'Caso {id_caso} actualizado a Propuesta'})
+        # Validación de rol: Aliado
+        if current_user.rol == "Aliado":
+            if estado_actual[10] == '2' and nuevo_estado == 'aprobado':
+                Casos_uso.update('estado', '3', id_caso)
+            elif estado_actual[10] == '3' and nuevo_estado == 'propuesta':
+                Casos_uso.update('estado', '2', id_caso)
+            else:
+                return jsonify({'error': 'Transición no permitida para Aliado'}), 403
+
+        # Validación de rol: Supervisor
+        elif current_user.rol == "Supervisor":
+            if estado_actual[10] == '1' and nuevo_estado == 'propuesta':
+                Casos_uso.update('estado', '2', id_caso)
+            elif estado_actual[10] == '2' and nuevo_estado == 'oportunidad':
+                Casos_uso.update('estado', '1', id_caso)
+            else:
+                return jsonify({'error': 'Transición no permitida para Supervisor'}), 403
+
+        # Rol no autorizado
+        else:
+            return jsonify({'error': 'Rol no autorizado'}), 403
+
+        # Respuesta exitosa
+        return jsonify({
+            'status': 'ok',
+            'message': f'Caso de uso {id_caso} actualizado correctamente.'
+        })
+
+    except KeyError as e:
+        return jsonify({'error': f'Falta un dato requerido: {str(e)}'}), 400
+    except Exception as e:
+        return jsonify({'error': f'Error interno del servidor: {str(e)}'}), 500
 
 # endregion
 

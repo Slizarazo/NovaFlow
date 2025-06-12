@@ -10,7 +10,7 @@ document.querySelectorAll('.estado-columna').forEach((columna) => {
             const nuevoEstado = evt.to.id.replace('col-', '');
 
             // Solo permitir mover de oportunidad (1) a propuesta
-            if (!(estadoActual === '2' && nuevoEstado === 'aprobado')) {
+            if (!((estadoActual === '2' && nuevoEstado === 'aprobado') || (estadoActual === '3' && nuevoEstado === 'propuesta'))) {
                 return false; // impide el movimiento
             }
 
@@ -30,6 +30,10 @@ document.querySelectorAll('.estado-columna').forEach((columna) => {
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include', // necesario si usas sesiones
                 body: JSON.stringify({ id: idProyecto, estado: nuevoEstado })
+            }).then (() => {
+                // Actualiza contadores y recarga la pagina
+                actualizarContadoresEstados();
+                location.reload();
             });
         }
     });

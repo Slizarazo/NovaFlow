@@ -16,7 +16,7 @@
                 <tr>
                     <th style="color: #C27C0E; font-weight: bold;">Oportunidad ({{ estados.oportunidad|length }})</th>
                     <th style="color: #38761D; font-weight: bold;">Propuesta ({{ estados.propuesta|length }})</th>
-                    <th style="color: #1155CC; font-weight: bold;">Aprobación ({{ estados.aprobado|length }})</th>
+                    <th style="color: #1155CC; font-weight: bold;">Aprobación ({{ estados.aprobacion|length }})</th>
                     <th style="color: #CC0000; font-weight: bold;">En Desarrollo ({{ estados.desarrollo|length }})</th>
                     <th style="color: #741B47; font-weight: bold;">Testing ({{ estados.testing|length }})</th>
                     <th style="color: #20124D; font-weight: bold;">Cierre ({{ estados.cierre|length }})</th>
@@ -29,7 +29,7 @@
                     <td id="col-{{ id }}" class="estado-columna" style="min-width: 200px;">
                         {% for proy in proyectos %}
                             {% if proy[10] == estado %}
-                            <div class="card mb-2" data-id="{{ proy[0] }}" data-estado="{{ proy[10] }}">
+                            <div class="card mb-2" onclick="openProyectoModal({{ proy[0] }}, '{{ id }}')" style="cursor: pointer;">
                                 <div class="card-body p-2">
                                     <h6 class="card-title mb-1">{{ proy[4] }}</h6>
                                     <small class="text-muted">ID: {{ proy[0] }}</small>
