@@ -36,6 +36,27 @@
         <!-- Page specific head content -->
         {% block head %}{% endblock %}
     </head>
+    <style>
+        .btn-switch-rol {
+            background: linear-gradient(90deg, #764BA2, #667EEA);
+            border: none;
+            border-radius: 2rem;
+            color: white;
+            font-size: 0.85rem;
+            padding: 6px 16px;
+            transition: all 0.2s ease-in-out;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-right: 20px;
+        }
+
+        .btn-switch-rol:hover {
+            background: linear-gradient(90deg, #6a43a4, #5564e0);
+            box-shadow: 0 0 8px rgba(118, 75, 162, 0.4);
+            cursor: pointer;
+        }
+    </style>
     <body>
         {% if current_user.is_authenticated %}
         <!-- Top Bar -->
@@ -60,6 +81,17 @@
             </div>
 
             <div class="topbar-nav">
+                {% if current_user.rol in ['Supervisor', 'Freelance'] %}
+                <!-- Botón de cambio de rol -->
+                <div class="d-flex align-items-center ms-3">
+                <button onclick="window.location.href='/cambio_rol'"
+                        class="btn btn-switch-rol"
+                        title="Cambiar rol">
+                    <i class="fas fa-exchange-alt me-1"></i> {{ 'Cambiar a consultor' if current_user.rol == "Supervisor" else "Cambiar a supervisor" }}
+                </button>
+                </div>
+                {% endif %}
+
                 <!-- Role indicator -->
                 <div class="topbar-role-indicator">
                     <i data-feather="shield" class="topbar-role-icon"></i>
@@ -248,17 +280,14 @@
                     {'name': 'Consultores', 'icon': 'user-check', 'url': '/consultores', 
                     'submenu': [ 
                         {'name': 'Propuestas', 'url': '/consultores/propuestas'}, 
-                        {'name': 'Activos', 'url': '/consultores/activos'} ]},
-
-                    {'name': 'Consultor', 'user': 'file-text', 'url': '/cambio_rol'} ] %}
+                        {'name': 'Activos', 'url': '/consultores/activos'} ]} ] %}
 
                 {% elif rol == 'Freelance' %}
                 {% set navigation = [ 
                     {'name': 'Perfil', 'icon': 'home', 'url': '/consultor/perfil'}, 
                     {'name': 'Mis Proyectos', 'icon': 'briefcase', 'url': '/mis-proyectos'}, 
                     {'name': 'Actividades', 'icon': 'activity', 'url': '/actividades'}, 
-                    {'name': 'Propuestas', 'icon': 'file-text', 'url': '/propuestas'},
-                    {'name': 'Supervisor', 'user': 'file-text', 'url': '/cambio_rol'} ] %} 
+                    {'name': 'Propuestas', 'icon': 'file-text', 'url': '/propuestas'} ] %} 
                     {% else %} {% set navigation = [] %} {% endif %}
 
                 <!-- Loop through main menu items -->
