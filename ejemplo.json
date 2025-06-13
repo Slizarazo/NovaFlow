@@ -1,0 +1,50 @@
+{
+    "costs": {
+        "resources": {
+            "items": [
+                {
+                    "id": 1749744206800,
+                    "type": "Software/licencias",
+                    "concept": "jira",
+                    "periodicity": "mensual",
+                    "currency": "COP",
+                    "quantity": 1,
+                    "cost": 120000
+                },
+                {
+                    "id": 1749744227071,
+                    "type": "Equipos",
+                    "concept": "Computador",
+                    "periodicity": "anual",
+                    "currency": "USD",
+                    "quantity": 1,
+                    "cost": 211
+                }
+            ],
+            "totalDirectCost": 964000,
+            "totalAnnualCost": 2284000
+        },
+        "freelance": {
+            "items": [
+                {
+                    "specialty": "Analista de datos",
+                    "level": "junior",
+                    "rate": 36000.009,
+                    "activity": "E1 - E1 A1",
+                    "hours": 3,
+                    "cost": 108000
+                },
+                {
+                    "specialty": "DevOps",
+                    "level": "senior",
+                    "rate": 96000.0024,
+                    "activity": "E2 - E2 A1",
+                    "hours": 8,
+                    "cost": 768000
+                }
+            ],
+            "totalCost": 876000
+        },
+        "totalProjectCost": 1840000
+    }
+}

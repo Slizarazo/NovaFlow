@@ -6,10 +6,10 @@ from flask_login import login_user, logout_user, login_required, current_user
 from app import app
 from controllers import *
 from models import User, Aliado, Proyecto, Consultor, DatosDashboard
-from models import Usuario, Organizaciones, Industrias, Colaboradores, Subregiones, Sedes, Regiones, Portafolio, Consultores, Comunidades, Miembros_comunidad, Comunidad_aliado, Personas_cliente, UserAcces, Cuentas, Segmentacion, Casos_uso, Exp_laboral, Educacion, Certificaciones, Proyectos_destacados
+from models import Usuario, Organizaciones, Industrias, Colaboradores, Subregiones, Sedes, Regiones, Portafolio, Consultores, Comunidades, Miembros_comunidad, Comunidad_aliado, Personas_cliente, UserAcces, Cuentas, Segmentacion, Casos_uso, Exp_laboral, Educacion, Certificaciones, Proyectos_destacados, Estimaciones, Entregables, Actividades, Tareas, Costos_recursos, Costos_freelance
 from config import Config
 from graphs import *
-from datetime import datetime
+from datetime import datetime, date
 import logging, json
 
 # region DATOS DEMOSTRACIÓN
@@ -316,6 +316,17 @@ def proyectos_gestion():
                          config=app.config,
                          rol=current_user.rol)
 
+@app.route('/proyectos/calculadora', methods=['GET'])
+@login_required
+def proyectos_calculadora():
+    proyectos = Casos_uso.get_projects_to_sup(current_user.id)
+    return render_template('supervisor/calculadora.html',
+                         title='Calculadora de Tiempos',
+                         proyectos=proyectos,
+                         config=app.config,
+                         rol=current_user.rol)
+
+
 # endregion
 
 # region CONSULTOR
@@ -385,40 +396,6 @@ def cuentas_usuarios():
     return render_template('cuentas/usuarios.html',
                          title='Gestión de Usuarios',
                          users=users,
-                         config=app.config,
-                         rol=current_user.rol)
-
-@app.route('/proyectos/calculadora', methods=['GET', 'POST'])
-@login_required
-def proyectos_calculadora():
-    if request.method == 'POST':
-        try:
-            data = request.get_json()
-            print(f"Datos de calculadora recibidos: {data}")
-
-            if not data:
-                return jsonify({'status': 'error', 'message': 'No se recibieron datos'}), 400
-
-            project_id = data.get('projectId')
-            project_name = data.get('projectName')
-            time_estimates = data.get('timeEstimates', {})
-            costs = data.get('costs', {})
-
-            print(f"Proyecto: {project_name} (ID: {project_id})")
-            print(f"Estimaciones de tiempo: {time_estimates}")
-            print(f"Costos: {costs}")
-
-            return jsonify({'status': 'success', 'message': 'Estimación guardada exitosamente'})
-
-        except Exception as e:
-            app.logger.error(f"Error al guardar estimación: {str(e)}")
-            return jsonify({'status': 'error', 'message': str(e)}), 500
-    
-    # GET request
-    proyectos = Proyecto.PROYECTOS
-    return render_template('proyectos/calculadora.html',
-                         title='Calculadora de Tiempos',
-                         proyectos=proyectos,
                          config=app.config,
                          rol=current_user.rol)
 
@@ -1293,7 +1270,90 @@ def cambio_estado_caso_uso():
 
 # region API SUPERVISOR
 
+@app.route('/api/calculadora', methods=['POST'])
+@login_required
+@role_required('Supervisor')
+def crear_estimacion():
+    try:
+        data = request.get_json()
 
+        if not data:
+            return jsonify({'status': 'error', 'message': 'No se recibieron datos'}), 400
+        
+        id_caso_uso = data.get('projectId')
+        caso_uso = data.get('projectName')
+        fecha_creacion = date.today()
+        usuario = current_user.id
+
+        # Creamos listas con lo que se insertaría en cada tabla
+        entregables = []
+        actividades = []
+        tareas = []
+
+        for ent in data["timeEstimates"]["entregables"]:
+            entregables.append({
+                "id": ent["id"],
+                "id_proyecto": data["projectId"],
+                "nombre": ent["name"]
+            })
+            for act in ent["actividades"]:
+                actividades.append({
+                    "id": act["id"],
+                    "id_entregable": ent["id"],
+                    "nombre": act["name"]
+                })
+                for task in act["tareas"]:
+                    tareas.append({
+                        "id": task["id"],
+                        "id_actividad": act["id"],
+                        "nombre": task["name"],
+                        "optimista": task["optimistic"],
+                        "mas_probable": task["mostLikely"],
+                        "pesimista": task["pessimistic"]
+                    })
+
+        nueva_estimacion = Estimaciones(id_caso_uso, caso_uso)
+        id_estimacion = nueva_estimacion.create()
+
+        # Creación de entregables relacionados con la estimación
+        for ent in entregables:
+            nuevo_entregable = Entregables(id_estimacion, ent['nombre'], None, None, 9, None, None, 1, fecha_creacion, fecha_creacion, usuario)
+            id_entregable = nuevo_entregable.create()
+
+            # Creación de actividades relacionadas a cda entregable
+            for act in actividades:
+                if ent['id'] == act['id_entregable']:
+                    nueva_actividad = Actividades(id_entregable, act['nombre'], None, 9, None, None, None, None, None, None, None, None, fecha_creacion, fecha_creacion, usuario)
+                    id_actividad = nueva_actividad.create()
+
+                    # Creación de tareas relacionadas a cada actividad
+                    for tra in tareas:
+                        if act['id'] == tra['id_actividad']:
+                            optimista = tra['optimista']
+                            mas_probable = tra['mas_probable']
+                            pesimista = tra['pesimista']
+                            estimada = (optimista + 4*mas_probable + pesimista) / 6
+
+                            nueva_tarea = Tareas(id_actividad, tra['nombre'], None, 9, None, optimista, mas_probable, pesimista, estimada, None, None, None, None, None, fecha_creacion, fecha_creacion, usuario)
+
+                            nueva_tarea.create()
+
+        resources = data['costs']['resources']['items']
+        freelance = data['costs']['freelance']['items']
+
+        for rec in resources:
+            nuevo_recurso = Costos_recursos(id_estimacion, rec['type'], rec['concept'], rec['periodicity'], rec['currency'], rec['quantity'], rec['cost'])
+            nuevo_recurso.create()
+
+        for fre in freelance:
+            nuevo_freelance = Costos_freelance(id_estimacion, fre['specialty'], fre['level'], fre['rate'], fre['activity'], fre['hours'])
+            nuevo_freelance.create()
+
+        return jsonify({'status': 'success', 'message': 'Estimación guardada exitosamente'})
+
+    except Exception as e:
+        app.logger.error(f"Error al guardar estimación: {str(e)}")
+        return jsonify({'status': 'error', 'message': str(e)}), 500
 
 # endregion
 

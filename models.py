@@ -1585,12 +1585,232 @@ class Proyectos_destacados:
 
 # endregion
 
+# //////////////////////////////////////////////////
+# //////////////////////////////////////////////////
+# //////////////////////////////////////////////////
+# ///////////////aun sin agregar////////////////////
+# //////////////////////////////////////////////////
+# //////////////////////////////////////////////////
+# //////////////////////////////////////////////////
 
+#  region ESTADOS
 
+class Estados:
 
+    def __init__(self, nombre, descripcion, entidad):
+        self.nombre = nombre
+        self.descripcion = descripcion
+        self.entidad = entidad
 
+# endregion
 
+# region ESTIMACIONES
 
+class Estimaciones:
+
+    def __init__(self, id_caso_uso, nombre_caso_uso):
+        self.id_caso_uso = id_caso_uso
+        self.nombre_caso_uso = nombre_caso_uso
+
+    def create(self):
+        conn = mydb('nova_flow')
+        mycursor = conn.cursor()
+
+        query = "INSERT INTO estimaciones (id_caso_uso, nombre_caso_uso) VALUES (%s, %s);"
+        values = (self.id_caso_uso, self.nombre_caso_uso)
+
+        mycursor.execute(query, values)
+        conn.commit()
+
+        id = mycursor.lastrowid
+
+        mycursor.close()
+        conn.close()
+
+        return id
+    
+# endregion
+
+# region ENTREGABLES
+
+class Entregables:
+
+    def __init__(self, id_estimacion, nombre, descripcion, criterios_aceptacion, estado, fecha_entrega_estimada, fecha_entregado, version, fecha_creacion, fecha_actualizacion, actualizado_por):
+        self.id_estimacion = id_estimacion
+        self.nombre = nombre
+        self.descripcion = descripcion
+        self.criterios_aceptacion = criterios_aceptacion
+        self.estado = estado
+        self.fecha_entrega_estimada = fecha_entrega_estimada
+        self.fecha_entregado = fecha_entregado
+        self.version = version
+        self.fecha_creacion = fecha_creacion
+        self.fecha_actualizacion = fecha_actualizacion
+        self.actualizado_por = actualizado_por
+
+    def create(self):
+        conn = mydb('nova_flow')
+        mycursor = conn.cursor()
+
+        query = "INSERT INTO entregables (id_estimacion, nombre, descripcion, criterios_aceptacion, estado, fecha_entrega_estimada, fecha_entregado, version, fecha_creacion, fecha_actualizacion, actualizado_por) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);"
+        values = (self.id_estimacion, self.nombre, self.descripcion, self.criterios_aceptacion, self.estado, self.fecha_entrega_estimada, self.fecha_entregado, self.version, self.fecha_creacion, self.fecha_actualizacion, self.actualizado_por)
+
+        mycursor.execute(query, values)
+        conn.commit()
+
+        id = mycursor.lastrowid
+
+        mycursor.close()
+        conn.close()
+
+        return id
+
+# endregion
+
+# region ACTIVIDADES
+
+class Actividades:
+
+    def __init__(self, id_entregable, nombre, descripcion, estado, fecha_inicio_estimada, fecha_fin_estimada, fecha_inicio_real, fecha_fin_real, id_usuario_responsable, prioridad, orden, observaciones, fecha_creacion, fecha_actualizacion, actualizado_por):
+        self.id_entregable = id_entregable
+        self.nombre = nombre
+        self.descripcion = descripcion
+        self.estado = estado
+        self.fecha_inicio_estimada = fecha_inicio_estimada
+        self.fecha_fin_estimada = fecha_fin_estimada
+        self.fecha_inicio_real = fecha_inicio_real
+        self.fecha_fin_real = fecha_fin_real
+        self.id_usuario_responsable = id_usuario_responsable
+        self.prioridad = prioridad
+        self.orden = orden
+        self.observaciones = observaciones
+        self.fecha_creacion = fecha_creacion
+        self.fecha_actualizacion = fecha_actualizacion
+        self.actualizado_por = actualizado_por
+
+    def create(self):
+        conn = mydb('nova_flow')
+        mycursor = conn.cursor()
+
+        query = "INSERT INTO actividades (id_entregable, nombre, descripcion, estado, fecha_inicio_estimada, fecha_fin_estimada, fecha_inicio_real, fecha_fin_real, id_usuario_responsable, prioridad, orden, observaciones, fecha_creacion, fecha_actualizacion, actualizado_por) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);"
+        values = (self.id_entregable, self.nombre, self.descripcion, self.estado, self.fecha_inicio_estimada, self.fecha_fin_estimada, self.fecha_inicio_real, self.fecha_fin_real, self.id_usuario_responsable, self.prioridad, self.orden, self.observaciones, self.fecha_creacion, self.fecha_actualizacion, self.actualizado_por)
+
+        mycursor.execute(query, values)
+        conn.commit()
+
+        id = mycursor.lastrowid
+
+        mycursor.close()
+        conn.close()
+
+        return id
+
+# endregion
+
+# region TAREAS
+
+class Tareas:
+
+    def __init__(self, id_actividad, nombre, descripcion, estado, id_usuario_responsable, duracion_optimista, duracion_mas_probable, duracion_pesimista, duracion_estimada, fecha_inicio, fecha_fin, es_critica, orden, observaciones, fecha_creacion, fecha_actualizacion, actualizado_por):
+        self.id_actividad = id_actividad
+        self.nombre = nombre
+        self.descripcion = descripcion
+        self.estado = estado
+        self.id_usuario_responsable = id_usuario_responsable
+        self.duracion_optimista = duracion_optimista
+        self.duracion_mas_probable = duracion_mas_probable
+        self.duracion_pesimista = duracion_pesimista
+        self.duracion_estimada = duracion_estimada
+        self.fecha_inicio = fecha_inicio
+        self.fecha_fin = fecha_fin
+        self.es_critica = es_critica
+        self.orden = orden
+        self.observaciones = observaciones
+        self.fecha_creacion = fecha_creacion
+        self.fecha_actualizacion = fecha_actualizacion
+        self.actualizado_por = actualizado_por 
+
+    def create(self):
+        conn = mydb('nova_flow')
+        mycursor = conn.cursor()
+
+        query = "INSERT INTO tareas (id_actividad, nombre, descripcion, estado, id_usuario_responsable, duracion_optimista, duracion_mas_probable, duracion_pesimista, duracion_estimada, fecha_inicio, fecha_fin, es_critica, orden, observaciones, fecha_creacion, fecha_actualizacion, actualizado_por) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);"
+        values = (self.id_actividad, self.nombre, self.descripcion, self.estado, self.id_usuario_responsable, self.duracion_optimista, self.duracion_mas_probable, self.duracion_pesimista, self.duracion_estimada, self.fecha_inicio, self.fecha_fin, self.es_critica, self.orden, self.observaciones, self.fecha_creacion, self.fecha_actualizacion, self.actualizado_por)
+
+        mycursor.execute(query, values)
+        conn.commit()
+
+        id = mycursor.lastrowid
+
+        mycursor.close()
+        conn.close()
+
+        return id
+
+# endregion
+
+# region COSTOS RECURSOS
+
+class Costos_recursos:
+
+    def __init__(self, id_estimacion, tipo, concepto, periodicidad, divisa, cantidad, costo):
+        self.id_estimacion = id_estimacion
+        self.tipo = tipo 
+        self.concepto = concepto
+        self.periodicidad = periodicidad
+        self.divisa = divisa
+        self.cantidad = cantidad
+        self.costo = costo
+
+    def create(self):
+        conn = mydb('nova_flow')
+        mycursor = conn.cursor()
+
+        query = "INSERT INTO costos_recursos (id_estimacion, tipo, concepto, periodicidad, divisa, cantidad, costo) VALUES(%s, %s, %s, %s, %s, %s, %s);"
+        values = (self.id_estimacion, self.tipo, self.concepto, self.periodicidad, self.divisa, self.cantidad, self.costo)
+
+        mycursor.execute(query, values)
+        conn.commit()
+
+        id = mycursor.lastrowid
+
+        mycursor.close()
+        conn.close()
+
+        return id
+
+# endregion
+
+# region COSTOS FREELANCE
+
+class Costos_freelance:
+
+    def __init__(self, id_estimacion, especialidad, nivel, costo_hora, actividad, horas):
+        self.id_estimacion = id_estimacion
+        self.especialidad = especialidad
+        self.nivel = nivel
+        self.costo_hora = costo_hora
+        self.actividad = actividad
+        self.horas = horas
+
+    def create(self):
+        conn = mydb('nova_flow')
+        mycursor = conn.cursor()
+
+        query = "INSERT INTO costos_freelance (id_estimacion, especialidad, nivel, costo_hora, actividad, horas) VALUES(%s, %s, %s, %s, %s, %s);"
+        values = (self.id_estimacion, self.especialidad, self.nivel, self.costo_hora, self.actividad, self.horas)
+
+        mycursor.execute(query, values)
+        conn.commit()
+
+        id = mycursor.lastrowid
+
+        mycursor.close()
+        conn.close()
+
+        return id
+
+# endregion
 
 
 

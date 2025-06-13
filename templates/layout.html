@@ -288,7 +288,7 @@
                     {'name': 'Mis Proyectos', 'icon': 'briefcase', 'url': '/mis-proyectos'}, 
                     {'name': 'Actividades', 'icon': 'activity', 'url': '/actividades'}, 
                     {'name': 'Propuestas', 'icon': 'file-text', 'url': '/propuestas'} ] %} 
-                    {% else %} {% set navigation = [] %} {% endif %}
+                {% else %} {% set navigation = [] %} {% endif %}
 
                 <!-- Loop through main menu items -->
                 {% for item in navigation %} {% if item.submenu %}

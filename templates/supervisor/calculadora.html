@@ -9,7 +9,7 @@
             <select class="form-control" id="projectSelector" onchange="updateProjectData()">
                 <option value="">Seleccione un proyecto...</option>
                 {% for proyecto in proyectos %}
-                <option value="{{ proyecto.id }}">{{ proyecto.nombre }}</option>
+                <option value="{{ proyecto[0] }}">{{ proyecto[4] }}</option>
                 {% endfor %}
             </select>
         </div>
@@ -876,21 +876,28 @@ function saveProjectData() {
         }
     };
 
-    fetch('/proyectos/calculadora', {
+    fetch('/api/calculadora', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(data)
     })
-    .then(response => response.json())
-    .then(data => {        alert('Proyecto guardado exitosamente');
+    .then(async response => {
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error('Respuesta del servidor no válida: ' + errorText);
+        }
+        return response.json();
+    })
+    .then(data => {
+        location.reload();
     })
     .catch(error => {
-        console.error('Error:', error);
-        alert('Error al guardar el proyecto');
+        console.error('❌ Error:', error.message);
+        alert('❌ Error al guardar: ' + error.message);
     });
-}
+    }
 
 function updateSummary() {
     let totalEntregables = projectData.entregables.length;
@@ -990,6 +997,10 @@ function updateRate() {
             range = 'Rango: 12-17 USD/hora';
             break;
         case 'senior':
+            rate = 24; // Default to middle of range
+            range = 'Rango: 20-28 USD/hora';
+            break;
+        case 'Expert':
             rate = 24; // Default to middle of range
             range = 'Rango: 20-28 USD/hora';
             break;
