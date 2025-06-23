@@ -1,7 +1,16 @@
+from app import db
 from flask_login import UserMixin
-from config import workbench_db as mydb
+from datetime import datetime
+from sqlalchemy.sql import text
+from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy.orm import aliased
+from sqlalchemy import func
+from werkzeug.security import generate_password_hash, check_password_hash
+from sqlalchemy import Column, Integer, String, ForeignKey, Date, Boolean, Float, Text, DateTime
+from sqlalchemy.orm import relationship, declarative_base
+import datetime
 
-# region modelos de testeo
+# region MODELOS DE TESTEO
 
 class User(UserMixin):
     def __init__(self, id, username, email, password, role):
@@ -175,324 +184,11 @@ Consultor.CONSULTORES = [
 ]
  #endregion
 
-# region ORGANIZACIONES
-
-class Organizaciones:
-
-    def __init__(self, nombre, id_industria, fecha_registro, estado, contacto_principal, tamaño, empleados):
-        self.nombre = nombre
-        self.id_industria = id_industria
-        self.fecha_registro = fecha_registro
-        self.estado = estado
-        self.contacto_principal = contacto_principal
-        self.tamaño = tamaño
-        self.empleados = empleados
-
-    def create(self):
-        conn = mydb('nova_flow')
-        mycursor = conn.cursor()
-
-        query = """
-        INSERT INTO organizaciones (
-            nombre, id_industria, fecha_registro, estado, contacto_principal, tamaño, empleados
-        ) VALUES(
-            %s, %s, %s, %s, %s, %s, %s
-        );
-        """
-        values = (
-            self.nombre, self.id_industria, self.fecha_registro, self.estado, self.contacto_principal, self.tamaño, self.empleados
-        )
-        
-        mycursor.execute(query, values)
-        conn.commit()
-
-        id = mycursor.lastrowid
-        
-        mycursor.close()
-        conn.close()
-
-        return id
-    
-    @staticmethod
-    def get_all():
-        conn = mydb('nova_flow')
-        mycursor = conn.cursor()
-
-        mycursor.execute('SELECT * FROM organizaciones WHERE estado = "activo";')
-        data = mycursor.fetchall()
-
-        mycursor.close()
-        conn.close()
-
-        return data
-
-    @staticmethod
-    def get_table_orgs():
-        conn = mydb('nova_flow')
-        mycursor = conn.cursor()
-
-        query = """
-            SELECT 
-                org.nombre AS "Organización",
-                ind.nombre AS "Industria",
-                org.estado AS "Estado",
-                CONCAT(reg.nombre, " (", reg.codigo, ")") AS "Región",
-                CONCAT(sreg.nombre, " (", sreg.codigo, ")") AS "Sub-Región",
-                sede.pais AS "Pais",
-                sede.nombre_sede AS "Sede"
-            FROM 
-                nova_flow.organizaciones org
-            LEFT JOIN nova_flow.industrias ind ON org.id_industria = ind.id_industria
-            LEFT JOIN nova_flow.sedes sede ON sede.id_organizacion = org.id
-            LEFT JOIN nova_flow.subregiones sreg ON sede.subregion = sreg.id
-            LEFT JOIN nova_flow.regiones reg ON sreg.id_region = reg.id"""
-        
-        mycursor.execute(query)
-        data = mycursor.fetchall()
-
-        mycursor.close()
-        conn.close()
-
-        return data
-
-# endregion
-
-# region SEDES
-
-class Sedes:
-    
-    def __init__(self, id_organizacion, nombre_sede, subregion, direccion, ciudad, codigo_postal, pais):
-        self.id_organizacion = id_organizacion
-        self.nombre_sede = nombre_sede
-        self.subregion = subregion
-        self.direccion = direccion
-        self.ciudad = ciudad
-        self.codigo_postal = codigo_postal
-        self.pais = pais
-
-    def create(self):
-        conn = mydb('nova_flow')
-        mycursor = conn.cursor()
-
-        query = "INSERT INTO sedes (id_organizacion, nombre_sede, subregion, direccion, ciudad, codigo_postal, pais) VALUES(%s, %s, %s, %s, %s, %s, %s);"
-        values = (self.id_organizacion, self.nombre_sede, self.subregion, self.direccion, self.ciudad, self.codigo_postal, self.pais)
-
-        mycursor.execute(query, values)
-        conn.commit()
-
-        id = mycursor.lastrowid
-
-        mycursor.close()
-        conn.close()
-
-        return id
-    
-    @staticmethod
-    def get_all():
-        conn = mydb('nova_flow')
-        mycursor = conn.cursor()
-
-        mycursor.execute('SELECT * FROM sedes;')
-        data = mycursor.fetchall()
-
-        mycursor.close()
-        conn.close()
-
-        return data
-    
-    @staticmethod
-    def get_orgs():
-        conn = mydb('nova_flow')
-        mycursor = conn.cursor()
-
-        query = """
-            SELECT
-                se.id_sede,
-                CONCAT(se.nombre_sede, " (", org.nombre, ")")
-            FROM nova_flow.sedes se
-            LEFT JOIN nova_flow.organizaciones org ON se.id_organizacion = org.id"""
-        
-        mycursor.execute(query)
-        data = mycursor.fetchall()
-
-        mycursor.close()
-        conn.close()
-
-        return data
-
-# endregion
-
-# region SUBREGIONES
-
-class Subregiones:
-
-    def __init__(self, nombre, codigo, descripcion, id_region, activo):
-        self.nombre = nombre
-        self.codigo = codigo
-        self.descripcion = descripcion
-        self.id_region = id_region
-        self.activo = activo
-
-    def create(self):
-        conn = mydb('nova_flow')
-        mycursor = conn.cursor()
-
-        query = 'INSERT INTO subregiones (nombre, codigo, descripcion, id_region, activo) VALUES(%s, %s, %s, %s, %s)'
-        values = (self.nombre, self.codigo, self.descripcion, self.id_region, self.activo)
-
-        mycursor.execute(query, values)
-        conn.commit()
-
-        mycursor.close()
-        conn.close()
-
-    @staticmethod
-    def get_all():
-        conn = mydb('nova_flow')
-        mycursor = conn.cursor()
-
-        mycursor.execute('SELECT * FROM subregiones WHERE activo = "1";')
-        data = mycursor.fetchall()
-
-        mycursor.close()
-        conn.close()
-
-        return data
-
-# endregion
-
-# region REGIONES
-
-class Regiones:
-
-    def __init__(self, nombre, codigo, descripcion, activo):
-        self.nombre = nombre
-        self.codigo = codigo
-        self.descripcion = descripcion
-        self.activo = activo
-
-    def create(self):
-        conn = mydb('nova_flow')
-        mycursor = conn.cursor()
-
-        query = 'INSERT INTO regiones (nombre, codigo, descripcion, activo) VALUES(%s, %s, %s, %s)'
-        values = (self.nombre, self.codigo, self.descripcion, self.activo)
-
-        mycursor.execute(query, values)
-        conn.commit()
-
-        mycursor.close()
-        conn.close()
-
-    @staticmethod
-    def get_all():
-        conn = mydb('nova_flow')
-        mycursor = conn.cursor()
-
-        mycursor.execute('SELECT * FROM regiones WHERE activo = "1"')
-        data = mycursor.fetchall()
-
-        mycursor.close()
-        conn.close()
-
-        return data
-
-# endregion
-
-# region COLABORADORES
-
-class Colaboradores:
-
-    def __init__(self, id_usuario, id_organizacion, cargo, rol_laboral):
-        self.id_usuario = id_usuario
-        self.id_organizacion = id_organizacion
-        self.cargo = cargo
-        self.rol_laboral = rol_laboral
-
-    def create(self):
-        conn = mydb('nova_flow')
-        mycursor = conn.cursor()
-
-        query = "INSERT INTO colaboradores (id_usuario, id_organizacion, cargo, rol_laboral) VALUES(%s, %s, %s, %s);"
-        values = (self.id_usuario, self.id_organizacion, self.cargo, self.rol_laboral)
-        
-        mycursor.execute(query, values)
-        conn.commit()
-
-        id = mycursor.lastrowid
-
-        mycursor.close()
-        conn.close()
-
-        return id
-
-# endregion
-
-# region INDUSTRIAS
-
-class Industrias:
-
-    def __init__(self, nombre, grupo_general, sector, nota):
-        self.nombre = nombre
-        self.grupo_general = grupo_general
-        self.sector = sector
-        self.nota = nota
-
-    def create(self):
-        conn = mydb('nova_flow')
-        mycursor = conn.cursor()
-
-        query = "INSERT INTO industrias (nombre, grupo_general, sector, nota) VALUES(%s, %s, %s, %s);"
-        values = (self.nombre, self.grupo_general, self.sector, self.nota)
-
-        mycursor.execute(query, values)
-        conn.commit()
-
-        mycursor.close()
-        conn.close()
-
-    @staticmethod
-    def get_all():
-        conn = mydb('nova_flow')
-        mycursor = conn.cursor()
-
-        mycursor.execute("SELECT * FROM industrias ORDER BY sector ASC;")
-        data = mycursor.fetchall()
-
-        mycursor.close()
-        conn.close()
-
-        return data
-
-# endregion
+# region ORM
 
 # region ACCESO DE USUARIOS
 
-from werkzeug.security import generate_password_hash, check_password_hash
-from flask_login import UserMixin
-
 class UserAcces(UserMixin):
-
-    @staticmethod
-    def check_password(password, contraseña_hash):
-        """Verifica si la contraseña proporcionada coincide con el hash almacenado
-
-        Args:
-            password (str): contraseña del usuario
-
-        Returns:
-            byte: contraseña hasheada
-        """
-        return check_password_hash(contraseña_hash, password)
-    
-    @staticmethod
-    def set_password_hash(password):
-        """Establece una nueva contraseña hasheada
-
-        Args:
-            password (str): contraseña del usuario por defecto
-        """
-        return generate_password_hash(password)
 
     def __init__(self, id, nombre, organizacion, sede, correo, contraseña, rol, estado, ultimo_login):
         self.id = id
@@ -513,564 +209,612 @@ class UserAcces(UserMixin):
         return self.estado == 'activo'
 
     @staticmethod
-    def get_by_access(user):
-        conn = mydb('nova_flow')
-        mycursor = conn.cursor()
+    def check_password(password, contraseña_hash):
+        return check_password_hash(contraseña_hash, password)
 
-        query = """
-            SELECT 
-                us.id_usuario AS "id",
-                us.nombre AS "nombre",
-                org.nombre AS "organizacion",
-                sede.nombre_sede AS "sede",
-                us.correo AS "correo",
-                us.contraseña AS "contraseña",
-                rol.nombre AS "rol",
-                us.estado,
-                us.ultimo_login
-            FROM 
-                nova_flow.usuarios us
-            LEFT JOIN 
-                nova_flow.organizaciones org ON us.id_organizacion = org.id
-            LEFT JOIN 
-                nova_flow.sedes sede ON us.id_sede = sede.id_sede
-            LEFT JOIN 
-                nova_flow.roles rol ON us.id_rol = rol.id_rol
-            WHERE
-                us.correo = %s
-            AND 
-                us.estado = %s"""
-        values = (user, "activo")
-
-        mycursor.execute(query, values)
-        data = mycursor.fetchone()
-
-        mycursor.close()
-        conn.close()
-
-        return data
-    
     @staticmethod
-    def get_access_by_id(id):
-        conn = mydb('nova_flow')
-        mycursor = conn.cursor()
+    def set_password_hash(password):
+        return generate_password_hash(password)
 
-        query = "SELECT * FROM usuarios WHERE id_usuario = %s;"        
-        values = (int(id),)
+    @staticmethod
+    def get_by_access(correo):
+        current_user = (
+            db.session.query(Usuario)
+            .filter_by(correo=correo, estado='activo')
+            .outerjoin(Organizacion, Usuario.id_organizacion == Organizacion.id)
+            .outerjoin(Sede, Usuario.id_sede == Sede.id)
+            .outerjoin(Rol, Usuario.id_rol == Rol.id)
+            .first()
+        )
 
-        mycursor.execute(query, values)
-        data = mycursor.fetchone()
-
-        mycursor.close()
-        conn.close()
-
-        return data
+        if current_user:
+            return UserAcces(
+                id=current_user.id,
+                nombre=current_user.nombre,
+                organizacion=current_user.organizacion.nombre if current_user.organizacion else None,
+                sede=current_user.sede.nombre_sede if current_user.sede else None,
+                correo=current_user.correo,
+                contraseña=current_user.contraseña,
+                rol=current_user.rol.nombre if current_user.rol else None,
+                estado=current_user.estado,
+                ultimo_login=current_user.ultimo_login
+            )
+        return None
 
     @staticmethod
     def get_by_id(user_id):
-        row = UserAcces.get_access_by_id(user_id)
+        current_user = Usuario.query.get(user_id)
 
-        if row[6] == 1:
-            role = "Aliado"
-        elif row[6] == 2:
-            role = "Gestor"
-        elif row[6] == 3:
-            role = "Supervisor"
-        elif row[6] == 4:
-            role = "Freelance"
-        elif row[6] == 5:
-            role = "Empleado"
+        if not current_user:
+            return None
 
-        if row:
-            return UserAcces(
-                id=row[0],
-                nombre=row[1],
-                organizacion=row[2],
-                sede=row[3],
-                correo=row[4],
-                contraseña="No disponible",
-                rol=role,
-                estado=row[7],
-                ultimo_login=row[8]
-            )
-        
-        return None
+        rol_nombre = current_user.rol.nombre if current_user.rol else "Sin rol"
+
+        return UserAcces(
+            id=current_user.id,
+            nombre=current_user.nombre,
+            organizacion=current_user.organizacion.nombre if current_user.organizacion else None,
+            sede=current_user.sede.nombre_sede if current_user.sede else None,
+            correo=current_user.correo,
+            contraseña="No disponible",
+            rol=rol_nombre,
+            estado=current_user.estado,
+            ultimo_login=current_user.ultimo_login
+        )
 
 # endregion
 
-# region USUARIOS
+# region Usuario
 
-class Usuario:
+class Usuario(db.Model):
+    __tablename__ = 'usuarios'
 
+    id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String)
+    id_organizacion = db.Column(db.Integer, db.ForeignKey('organizaciones.id'))
+    id_sede = db.Column(db.Integer, db.ForeignKey('sedes.id'))
+    correo = db.Column(db.String, unique=True)
+    contrasena = db.Column(db.String)
+    id_rol = db.Column(db.Integer, db.ForeignKey('roles.id'))
+    estado = db.Column(db.Integer, db.ForeignKey('estados.id'))
+    ultimo_login = db.Column(db.DateTime)
+
+    # Relaciones Directas
+    rel_organizaciones = db.relationship('Organizacion', foreign_keys=[id_organizacion], back_populates="rel_usuario")
+    rel_sedes = db.relationship('Sede', foreign_keys=[id_sede], back_populates='rel_usuario')
+    rel_roles = db.relationship('Rol', foreign_keys=[id_rol], back_populates='rel_usuario')
+    rel_estados = db.relationship('Estado', foreign_keys=[estado], back_populates='rel_usuario')
+
+    # Relaciones Inversas
+    rel_colaborador = db.relationship('Colaborador', back_populates='rel_usuarios')
+    rel_consultor = db.relationship('Consultor', back_populates='rel_usuarios')
+    rel_persona_cliente = db.relationship('PersonaCliente', back_populates='rel_usuarios')
+    rel_miembro_comunidad = db.relationship('MiembroComunidad', back_populates='rel_usuarios')
+    rel_caso_uso = db.relationship('CasoUso', back_populates='rel_usuarios')
+    rel_exp_laboral = db.relationship('ExpLaboral', back_populates='rel_usuarios')
+    rel_educacion = db.relationship('Educacion', back_populates='rel_usuarios')
+    rel_certificacion = db.relationship('Certificacion', back_populates='rel_usuarios')
+    rel_proyecto_destacado = db.relationship('ProyectoDestacado', back_populates='rel_usuarios')
+    rel_entregable = db.relationship('Entregable', back_populates='rel_usuarios')
+    
+    actividades_actualizadas = db.relationship(
+        'Actividad',
+        back_populates='rel_usuario_actualiza',
+        foreign_keys='Actividad.actualizado_por',
+        lazy=True
+    )
+
+    actividades_asignadas = db.relationship(
+        'Actividad',
+        back_populates='rel_usuario_responsable',
+        foreign_keys='Actividad.id_usuario_responsable',
+        lazy=True
+    )
+
+    tareas_asignadas = db.relationship(
+        'Tarea',
+        back_populates='rel_usuario_responsable',
+        foreign_keys='Tarea.id_usuario_responsable'
+    )
+
+    tareas_actualizadas = db.relationship(
+        'Tarea',
+        back_populates='actualizado_por_usuario',
+        foreign_keys='Tarea.actualizado_por'
+    )
+
+    # --- Métodos de seguridad ---
     @staticmethod
     def check_password(password, contraseña_hash):
-        """Verifica si la contraseña proporcionada coincide con el hash almacenado
-
-        Args:
-            password (str): contraseña del usuario
-
-        Returns:
-            byte: contraseña hasheada
-        """
         return check_password_hash(contraseña_hash, password)
-    
+
     @staticmethod
     def set_password_hash(password):
-        """Establece una nueva contraseña hasheada
-
-        Args:
-            password (str): contraseña del usuario por defecto
-        """
         return generate_password_hash(password)
 
+    # --- Guardar usuario ---
+    def save(self):
+        self.contraseña = Usuario.set_password_hash(self.contraseña)
+        db.session.add(self)
+        db.session.commit()
+        return self.id
 
-    def __init__(self, nombre, id_organizacion, id_sede, correo, contraseña, id_rol, estado='activo', ultimo_login=None):
-        self.nombre = nombre
-        self.id_organizacion = id_organizacion
-        self.id_sede = id_sede
-        self.correo = correo
-        self.contraseña = contraseña
-        self.id_rol = id_rol
-        self.estado = estado
-        self.ultimo_login = ultimo_login
-
-    def create(self):
-        password = Usuario.set_password_hash(self.contraseña)
-        conn = mydb('nova_flow')
-        mycursor = conn.cursor()
-
-        query = """
-        INSERT INTO usuarios (
-            nombre, id_organizacion, id_sede, correo, contraseña, id_rol, estado, ultimo_login
-        ) VALUES(%s, %s, %s, %s, %s, %s, %s, %s);
-        """
-        values = (
-            self.nombre, self.id_organizacion, self.id_sede, self.correo, password,
-            self.id_rol, self.estado, self.ultimo_login
-        )
-
-        mycursor.execute(query, values)
-        conn.commit()
-
-        id = mycursor.lastrowid
-
-        mycursor.close()
-        conn.close()
-
-        return id
-    
-    def update_rol(id, rol):
-        conn = mydb('nova_flow')
-        mycursor = conn.cursor()
-
-        mycursor.execute('UPDATE usuarios SET id_rol = '+str(rol)+' WHERE id_usuario = '+str(id)+';')
-        conn.commit()
-
-        mycursor.close()
-        conn.close()
-
-    @staticmethod
-    def get_id_by_correo(correo):
-        conn = mydb('nova_flow')
-        mycursor = conn.cursor()
-        
-        query = "SELECT id_usuario FROM usuarios WHERE correo = "+str(correo)+" AND estado = 'activo';"
-
-        mycursor.execute(query)
-        data = mycursor.fetchone()
-
-        mycursor.close()
-        conn.close()
-
-        return data
+    # --- Métodos funcionales ---
+    def update_rol(self, nuevo_rol_id):
+        self.id_rol = nuevo_rol_id
+        db.session.commit()
 
     @staticmethod
     def get_by_id(id):
-        conn = mydb('nova_flow')
-        mycursor = conn.cursor(dictionary=True)
-        
-        query = "SELECT * FROM usuarios WHERE id_usuario = "+str(id)+";"
+        return Usuario.query.get(id)
 
-        mycursor.execute(query)
-        data = mycursor.fetchone()
-
-        mycursor.close()
-        conn.close()
-
-        return data
+    @staticmethod
+    def get_id_by_correo(correo):
+        user = Usuario.query.filter_by(correo=correo, estado='activo').first()
+        return user.id if user else None
 
     @staticmethod
     def get_organizaciones():
-        conn = mydb('nova_flow')
-        mycursor = conn.cursor()
-
-        query = """SELECT MIN(id_usuario) AS id_usuario, organizacion
-                    FROM usuarios
-                    WHERE estado = 'activo'
-                    GROUP BY organizacion
-                    ORDER BY organizacion ASC;"""
-
-        mycursor.execute(query)
-        data = mycursor.fetchall()
-
-        mycursor.close()
-        conn.close()
-
-        return data
+        return (
+            db.session.query(
+                func.min(Usuario.id).label("id_usuario"),
+                Organizacion.nombre.label("organizacion")
+            )
+            .join(Organizacion, Usuario.id_organizacion == Organizacion.id)
+            .filter(Usuario.estado == 'activo')
+            .group_by(Organizacion.nombre)
+            .order_by(Organizacion.nombre.asc())
+            .all()
+        )
 
     @staticmethod
     def get_table_users():
-        conn = mydb('nova_flow')
-        mycursor = conn.cursor()
-
-        query = """
-            SELECT 
-                u.id_usuario AS 'id',
-                u.nombre AS 'Nombre',
-                o.nombre AS 'Organización',
-                s.nombre_sede AS 'Sede',
-                u.correo AS "Usuario",
-                r.nombre AS 'Rol',
-                u.estado AS 'Estado'
-            FROM nova_flow.usuarios u
-            LEFT JOIN nova_flow.organizaciones o ON u.id_organizacion = o.id
-            LEFT JOIN nova_flow.sedes s ON u.id_sede = s.id_sede
-            LEFT JOIN nova_flow.roles r ON u.id_rol = r.id_rol;"""
-        
-        mycursor.execute(query)
-        data = mycursor.fetchall()
-
-        mycursor.close()
-        conn.close()
-
-        return data
+        return (
+            db.session.query(
+                Usuario.id.label("id"),
+                Usuario.nombre.label("Nombre"),
+                Organizacion.nombre.label("Organización"),
+                Sede.nombre_sede.label("Sede"),
+                Usuario.correo.label("Usuario"),
+                Rol.nombre.label("Rol"),
+                Usuario.estado.label("Estado")
+            )
+            .outerjoin(Organizacion, Usuario.id_organizacion == Organizacion.id)
+            .outerjoin(Sede, Usuario.id_sede == Sede.id_sede)
+            .outerjoin(Rol, Usuario.id_rol == Rol.id)
+            .all()
+        )
 
     @staticmethod
     def get_tbl_consultores():
-        conn = mydb('nova_flow')
-        mycursor = conn.cursor()
+        return (
+            db.session.query(
+                Usuario.id.label("id_usuario"),
+                Usuario.nombre,
+                Consultor.especialidad,
+                Consultor.disponibilidad,
+                func.round((Consultor.nivel_segun_usuario + Consultor.nivel_segun_gestor) / 2).label("nivel"),
+                Consultor.ciudad,
+                Consultor.tarifa_hora.label("tarifa")
+            )
+            .join(Consultor, Usuario.id == Consultor.id_usuario)
+            .filter(Usuario.id_rol == 4)
+            .all()
+        )
 
-        query = """
-            SELECT 
-                us.id_usuario,
-                us.nombre,
-                con.especialidad,
-                con.disponibilidad,
-                ROUND((con.nivel_segun_usuario + con.nivel_segun_gestor) / 2),
-                con.ciudad,
-                con.tarifa_hora AS "tarifa"
-            FROM nova_flow.usuarios us
-            LEFT JOIN nova_flow.consultores con ON us.id_usuario = con.id_usuario
-            WHERE us.id_rol = '4'"""
-        mycursor.execute(query)
-        data = mycursor.fetchall()
-
-        mycursor.close()
-        conn.close()
-
-        return data
-   
 # endregion
 
-# region PORTAFOLIO
+# region Organizacion
 
-class Portafolio:
-    
-    def __init__(self, nombre, categoria, familia, descripcion, tipo, estado, fecha_creacion, fecha_actualizacion):
-        self.nombre = nombre
-        self.categoria = categoria
-        self.familia = familia
-        self.descripcion = descripcion
-        self.tipo = tipo
-        self.estado = estado
-        self. fecha_creacion = fecha_creacion
-        self.fecha_actualizacion = fecha_actualizacion
+class Organizacion(db.Model):
+    __tablename__ = 'organizaciones'
 
-    def create (self):
-        conn = mydb('nova_flow')
-        mycursor = conn.cursor()
+    id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String)
+    id_industria = db.Column(db.Integer, db.ForeignKey('industrias.id'))
+    fecha_registro = db.Column(Date)
+    estado = db.Column(db.Integer, db.ForeignKey('estados.id'))
+    contacto_principal = db.Column(db.String)
+    tamano = db.Column(db.String)
+    empleados = db.Column(db.Integer)
 
-        query = "INSERT INTO portafolio (nombre, categoria, familia, descripcion, tipo, estado, fecha_creacion, fecha_actualizacion) VALUES(%s, %s, %s, %s, %s, %s, %s, %s);"
-        values = (self.nombre, self.categoria, self.familia, self.descripcion, self.tipo, self.estado, self.fecha_creacion, self.fecha_actualizacion)
+    # Relación Directa
+    rel_industrias = db.relationship('Industria', foreign_keys=[id_industria], back_populates='rel_organizacion')
+    rel_estados = db.relationship('Estado', foreign_keys=[estado], back_populates='rel_organizacion')
 
-        mycursor.execute(query, values)
-        conn.commit()
+    # Relación Inversa
+    rel_usuario = db.relationship('Usuario', back_populates='rel_organizaciones', lazy=True)
+    rel_sede = db.relationship('Sede', back_populates='rel_organizaciones')
+    rel_colaborador = db.relationship('Colaborador', back_populates='rel_organizaciones')
+    rel_cuenta = db.relationship('Cuenta', back_populates='rel_organizaciones')
 
-        id = mycursor.lastrowid
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+        return self.id
 
-        mycursor.close()
-        conn.close()
-
-        return id
+    @staticmethod
+    def get_all_activos():
+        return Organizacion.query.filter_by(estado='activo').all()
     
     @staticmethod
+    def get_table_orgs():
+        # Alias para claridad
+        sreg = aliased(Subregion)
+        reg = aliased(Region)
+
+        query = (
+            db.session.query(
+                Organizacion.nombre.label("Organización"),
+                Industria.nombre.label("Industria"),
+                Organizacion.estado.label("Estado"),
+                func.concat(reg.nombre, " (", reg.codigo, ")").label("Región"),
+                func.concat(sreg.nombre, " (", sreg.codigo, ")").label("Sub-Región"),
+                Sede.pais.label("Pais"),
+                Sede.nombre_sede.label("Sede"),
+            )
+            .outerjoin(Industria, Organizacion.id_industria == Industria.id_industria)
+            .outerjoin(Sede, Sede.id_organizacion == Organizacion.id)
+            .outerjoin(sreg, Sede.subregion == sreg.id)
+            .outerjoin(reg, sreg.id_region == reg.id)
+        )
+
+        return query.all()
+    
+# endregion
+
+# region Sede
+
+class Sede(db.Model):
+    __tablename__ = 'sedes'
+
+    id = db.Column(db.Integer, primary_key=True)
+    id_organizacion = db.Column(db.Integer, db.ForeignKey('organizaciones.id'))
+    nombre_sede = db.Column(db.String)
+    subregion_id = db.Column(db.Integer, db.ForeignKey('subregiones.id'))
+    direccion = db.Column(db.String)
+    ciudad = db.Column(db.String)
+    codigo_postal = db.Column(db.String)
+    pais = db.Column(db.String)
+    estado = db.Column(db.Integer, db.ForeignKey('estados.id'))
+
+    # Relaciones Directas
+    rel_organizaciones = db.relationship('Organizacion', back_populates='rel_sede')
+    rel_subregiones = db.relationship('Subregion', back_populates='rel_sede')
+    rel_estados = db.relationship('Estado', back_populates='rel_sede')
+
+    # Relaciones Inversas
+    rel_usuario = db.relationship('Usuario', back_populates='rel_sedes')
+    rel_persona_cliente = db.relationship('PersonaCliente', back_populates='rel_sedes')
+    rel_caso_uso = db.relationship('CasoUso', back_populates='rel_sedes')
+    rel_comunidad_aliado = db.relationship('ComunidadAliado', back_populates='rel_sedes')
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+        return self.id_sede
+
+    @staticmethod
     def get_all():
-        conn = mydb('nova_flow')
-        mycursor = conn.cursor()
+        return Sede.query.all()
 
-        mycursor.execute("SELECT * FROM portafolio;")
-        data = mycursor.fetchall()
-
-        mycursor.close()
-        conn.close()
-
-        return data
+    @staticmethod
+    def get_orgs():
+        query = text("""
+            SELECT
+                se.id_sede,
+                CONCAT(se.nombre_sede, " (", org.nombre, ")") AS nombre_completo
+            FROM sedes se
+            LEFT JOIN organizaciones org ON se.id_organizacion = org.id
+        """)
+        result = db.session.execute(query)
+        return result.fetchall()
 
 # endregion
 
-# region CONSULTORES
+# region SubRegion
 
-class Consultores:
+class Subregion(db.Model):
+    __tablename__ = 'subregiones'
+
+    id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String)
+    codigo = db.Column(db.String)
+    descripcion = db.Column(db.Text)
+    id_region = db.Column(db.Integer, db.ForeignKey('regiones.id'))
+    activo = db.Column(db.Boolean)
+
+    # Relaciones Directas
+    rel_regiones = db.relationship('Region', back_populates='rel_subregion')
+
+    # Relaciones Inversas
+    rel_sede = db.relationship('Sede', back_populates='rel_subregiones')
+    rel_cuenta = db.relationship('Cuenta', back_populates='rel_subregiones')
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+        return self.id
+
+    @staticmethod
+    def get_all_activos():
+        return Subregion.query.filter_by(activo=True).all()
+
+# endregion
+
+# region Region
+
+class Region(db.Model):
+    __tablename__ = 'regiones'
+
+    id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String)
+    codigo = db.Column(db.String)
+    descripcion = db.Column(db.Text)
+    activo = db.Column(db.Boolean)
+
+    # Relaciones Inversas
+    rel_subregion = db.relationship('Subregion', back_populates='rel_regiones')
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+        return self.id
+
+    @staticmethod
+    def get_all_activos():
+        return Region.query.filter_by(activo=True).all()
+
+# endregion
+
+# region Colaborador
+
+class Colaborador(db.Model):
+    __tablename__ = 'colaboradores'
+
+    id = db.Column(db.Integer, primary_key=True)
+    id_usuario = db.Column(db.Integer, db.ForeignKey('usuarios.id'), nullable=False)
+    id_organizacion = db.Column(db.Integer, db.ForeignKey('organizaciones.id'), nullable=False)
+    cargo = db.Column(db.String(255))
+    rol_laboral = db.Column(db.String(255))
+
+    # Relaciones Directas
+    rel_usuarios = db.relationship('Usuario', back_populates='rel_colaborador')
+    rel_organizaciones = db.relationship('Organizacion', back_populates='rel_colaborador')
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+        return self.id
+
+# endregion
+
+# region Industria
+
+class Industria(db.Model):
+    __tablename__ = 'industrias'
+
+    id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String(255), nullable=False)
+    grupo_general = db.Column(db.String(255))
+    sector = db.Column(db.String(255))
+    nota = db.Column(db.Text)
+
+    # Relación Inversa
+    rel_organizacion = db.relationship('Organizacion', back_populates='rel_industrias')
+    rel_cuenta = db.relationship('Cuenta', back_populates='rel_industrias')
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+        return self.id_industria
+
+    @staticmethod
+    def get_all():
+        return Industria.query.order_by(Industria.sector.asc()).all()
+
+# endregion
+
+# region Portafolio
+
+class Portafolio(db.Model):
+    __tablename__ = 'portafolio'
+
+    id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String(255), nullable=False)
+    categoria = db.Column(db.String(255))
+    familia = db.Column(db.String(255))
+    descripcion = db.Column(db.Text)
+    tipo = db.Column(db.String(255))
+    estado = db.Column(db.Integer, db.ForeignKey('estados.id'))
+    fecha_creacion = db.Column(db.Date, default=datetime.date.today)
+    fecha_actualizacion = db.Column(db.Date, onupdate=datetime.date.today)
+
+    # Relaciones Directas
+    rel_estado = db.relationship('Estado', back_populates='rel_portafolios')
+    rel_caso_uso = db.relationship('CasoUso', back_populates='rel_portafolios')
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+        return self.id
+
+    @staticmethod
+    def get_all():
+        return Portafolio.query.all()
     
-    def __init__(self, id_usuario, especialidad, disponibilidad, nivel_segun_usuario, nivel_segun_gestor, fecha_incorporacion, direccion, ciudad, codigo_postal, pais, tarifa_hora, resumen_perfil):
-        self.id_usuario = id_usuario
+# endregion
+
+# region Consultor
+
+class Consultor(db.Model):
+    __tablename__ = 'consultores'
+
+    id = db.Column(db.Integer, primary_key=True)
+    id_usuario = db.Column(db.Integer, db.ForeignKey('usuarios.id'), unique=True, nullable=False)
+
+    especialidad = db.Column(db.String(255))
+    disponibilidad = db.Column(db.String(100))
+    nivel_segun_usuario = db.Column(db.String(100))
+    nivel_segun_gestor = db.Column(db.String(100))
+    fecha_incorporacion = db.Column(db.Date)
+    direccion = db.Column(db.String(255))
+    ciudad = db.Column(db.String(100))
+    codigo_postal = db.Column(db.String(20))
+    pais = db.Column(db.String(100))
+    tarifa_hora = db.Column(db.Float)
+    resumen_perfil = db.Column(db.Text)
+    celular = db.Column(db.String(50))
+    linkedin = db.Column(db.String(255))
+
+    # Relaciones Directas
+    rel_usuarios = db.relationship('Usuario', back_populates='rel_consultor')
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+        return self.id
+
+    def update_info(self, celular, linkedin, especialidad, nivel, direccion, ciudad, codigo_postal, pais, tarifa_hora, resumen):
+        self.celular = celular
+        self.linkedin = linkedin
         self.especialidad = especialidad
-        self.disponibilidad = disponibilidad
-        self.ns_usuario = nivel_segun_usuario
-        self.ns_gestor = nivel_segun_gestor
-        self.fecha_incorporacion = fecha_incorporacion
-        self.direccion = direccion 
+        self.nivel_segun_usuario = nivel
+        self.direccion = direccion
         self.ciudad = ciudad
         self.codigo_postal = codigo_postal
         self.pais = pais
         self.tarifa_hora = tarifa_hora
-        self.resumen_perfil = resumen_perfil
-
-    def create(self):
-        conn = mydb('nova_flow')
-        mycursor = conn.cursor()
-
-        query = "INSERT INTO consultores (id_usuario, especialidad, disponibilidad, nivel_segun_usuario, nivel_segun_gestor, fecha_incorporacion, direccion, ciudad, codigo_postal ,pais, tarifa_hora, resumen_perfil) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);"
-        values = (self.id_usuario, self.especialidad, self.disponibilidad, self.ns_usuario, self.ns_gestor, self.fecha_incorporacion, self.direccion, self.ciudad, self.codigo_postal, self.pais, self.tarifa_hora, self.resumen_perfil)
-
-        mycursor.execute(query, values)
-        conn.commit()
-
-        id = mycursor.lastrowid
-
-        mycursor.close()
-        conn.close()
-
-        return id
-    
-    def update(celular, linkedin, especialidad, nivel, direccion, ciudad, codigo_postal, pais, tarifa_hora, resumen, id):
-        conn = mydb('nova_flow')
-        mycursor = conn.cursor()
-
-        query = """
-        UPDATE consultores SET celular = %(celular)s, 
-            linkedin = %(linkedin)s, 
-            nivel_segun_usuario = %(nivel)s, 
-            direccion = %(direccion)s, 
-            ciudad = %(ciudad)s, 
-            codigo_postal = %(codigo_postal)s, 
-            pais = %(pais)s, 
-            tarifa_hora = %(tarifa_hora)s, 
-            resumen_perfil = %(resumen)s 
-        WHERE id_usuario = %(id)s
-        """
-        values = {
-            'celular': celular,
-            'linkedin': linkedin,
-            'especialidad': especialidad,
-            'nivel': nivel,
-            'direccion': direccion,
-            'ciudad': ciudad,
-            'codigo_postal': codigo_postal,
-            'pais': pais,
-            'tarifa_hora': tarifa_hora,
-            'resumen': resumen,
-            'id': id
-        }
-
-        mycursor.execute(query, values)
-        conn.commit()
-
-        mycursor.close()
-        conn.close()
+        self.resumen_perfil = resumen
+        db.session.commit()
 
     @staticmethod
-    def get_by_id(id):
-        conn = mydb('nova_flow')
-        mycursor = conn.cursor(dictionary=True)
-
-        mycursor.execute('SELECT * FROM consultores WHERE id_usuario = '+str(id)+'')
-        data = mycursor.fetchone()
-
-        mycursor.close()
-        conn.close()
-
-        return data
+    def get_by_usuario_id(id_usuario):
+        try:
+            return Consultor.query.filter_by(id_usuario=id_usuario).one()
+        except NoResultFound:
+            return None
 
 # endregion
 
-# region COMUNIDADES
+# region comunidad
 
-class Comunidades:
-    
-    def __init__(self, nombre, descripcion, tipo):
-        self.nombre = nombre
-        self.descripcion = descripcion
-        self.tipo = tipo
+class Comunidad(db.Model):
+    __tablename__ = 'comunidades'
 
-    def create(self):
-        conn = mydb('nova_flow')
-        mycursor = conn.cursor()
+    id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String(255), nullable=False)
+    descripcion = db.Column(db.Text)
+    tipo = db.Column(db.String(100))
 
-        query = "INSERT INTO comunidades (nombre, descripcion, tipo) VALUES(%s, %s, %s);"
-        values = (self.nombre, self.descripcion, self.tipo)
+    # Relaciones Inversas
+    rel_miembro_comunidad = db.relationship('MiembroComunidad', back_populates='rel_comunidades')
+    rel_comunidad_aliado = db.relationship('ComunidadAliado', back_populates='rel_comunidades')
 
-        mycursor.execute(query, values)
-        conn.commit()
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+        return self.id
 
-        id = mycursor.lastrowid
-
-        mycursor.close()
-        conn.close()
-
-        return id
-    
     @staticmethod
     def get_all():
-        conn = mydb('nova_flow')
-        mycursor = conn.cursor()
-
-        mycursor.execute('SELECT * FROM comunidades;')
-        data = mycursor.fetchall()
-
-        mycursor.close()
-        conn.close()
-
-        return data
+        return Comunidad.query.all()
 
 # endregion
 
-# region MIEMBROS COMUNIDAD
+# region PersonaCliente
 
-class Miembros_comunidad:
-    
-    def __init__(self, id_comunidad, id_usuario, rol_en_comunidad, fecha_union):
-        self.id_comunidad = id_comunidad
-        self.id_usuario = id_usuario
-        self.rol_en_comunidad = rol_en_comunidad
-        self.fecha_union = fecha_union
+class PersonaCliente(db.Model):
+    __tablename__ = 'personas_cliente'
 
-    def create(self):
-        conn = mydb('nova_flow')
-        mycursor = conn.cursor()
+    id = db.Column(db.Integer, primary_key=True)
+    id_sede = db.Column(db.Integer, db.ForeignKey('sedes.id'), nullable=False)
+    id_usuario = db.Column(db.Integer, db.ForeignKey('usuarios.id'), nullable=False)
+    rol_en_cliente = db.Column(db.String(100))
+    fecha_asignacion = db.Column(db.Date)
 
-        query = "INSERT INTO miembros_comunidad (id_comunidad, id_usuario, rol_en_comunidad, fecha_union) VALUES(%s, %s, %s, %s)"
-        values = (self.id_comunidad, self.id_usuario, self.rol_en_comunidad, self.fecha_union)
+    # Relaciones Directas
+    rel_sedes = db.relationship('Sede', back_populates='rel_persona_cliente')
+    rel_usuarios = db.relationship('Usuario', back_populates='rel_persona_cliente')
 
-        mycursor.execute(query, values)
-        conn.commit()
-
-        id = mycursor.lastrowid
-
-        mycursor.close()
-        conn.close()
-
-        return id
-
-# endregion
-
-# region PERSONAS CLIENTE
-
-class Personas_cliente:
-    
-    def __init__(self, id_sede, id_usuario, rol_en_cliente, fecha_asignacion):
-        self.id_sede = id_sede
-        self.id_usuario = id_usuario
-        self.rol_en_cliente = rol_en_cliente
-        self.fecha_asignacion = fecha_asignacion
-
-    def create(self):
-        conn = mydb('nova_flow')
-        mycursor = conn.cursor()
-
-        query = "INSERT INTO personas_cliente (id_sede, id_usuario, rol_en_cliente, fecha_asignacion) VALUES(%s, %s, %s, %s);"
-        values = (self.id_sede, self.id_usuario, self.rol_en_cliente, self.fecha_asignacion)
-
-        mycursor.execute(query, values)
-        conn.commit()
-
-        id = mycursor.lastrowid
-
-        mycursor.close()
-        conn.close()
-
-        return id
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+        return self.id
 
     @staticmethod
-    def get_consultores_aliado(id):
-        conn = mydb('nova_flow')
-        mycursor = conn.cursor()
+    def get_consultores_aliado(id_sede):
+        from sqlalchemy.sql import text
 
-        query = """
+        query = text("""
             SELECT 
-                u.id_usuario,
+                u.id AS id_usuario,
                 u.nombre
             FROM personas_cliente pc
-            JOIN usuarios u ON pc.id_usuario = u.id_usuario
-            WHERE pc.id_sede = %(id_sede)s
+            JOIN usuarios u ON pc.id_usuario = u.id
+            WHERE pc.id_sede = :id_sede
 
             UNION
 
             SELECT 
-                u.id_usuario,
+                u.id AS id_usuario,
                 u.nombre
             FROM comunidad_aliado ca
             JOIN miembros_comunidad mc ON ca.id_comunidad = mc.id_comunidad
-            JOIN usuarios u ON mc.id_usuario = u.id_usuario
-            WHERE ca.id_sede = %(id_sede)s;
-            """
-        
-        # Parámetros como diccionario
-        params = {'id_sede': id}
+            JOIN usuarios u ON mc.id_usuario = u.id
+            WHERE ca.id_sede = :id_sede
+        """)
 
-        mycursor.execute(query, params)
-        data = mycursor.fetchall()
-
-        mycursor.close()
-        conn.close()
-
-        return data
+        result = db.session.execute(query, {'id_sede': id_sede})
+        return result.fetchall()
 
 # endregion
 
-# region COMUNIDAD ALIADO
+# region MiembroComunidad
 
-class Comunidad_aliado:
-    
-    def __init__(self, id_sede, id_comunidad, fecha_asignacion, observaciones):
-        self.id_sede = id_sede
-        self.id_comunidad = id_comunidad
-        self.fecha_asignacion = fecha_asignacion
-        self.observaciones = observaciones
+class MiembroComunidad(db.Model):
+    __tablename__ = 'miembros_comunidad'
 
-    def create(self):
-        conn = mydb('nova_flow')
-        mycursor = conn.cursor()
+    id = db.Column(db.Integer, primary_key=True)
+    id_comunidad = db.Column(db.Integer, db.ForeignKey('comunidades.id'), nullable=False)
+    id_usuario = db.Column(db.Integer, db.ForeignKey('usuarios.id'), nullable=False)
+    rol_en_comunidad = db.Column(db.String(100))
+    fecha_union = db.Column(db.Date)
 
-        query = "INSERT INTO comunidad_aliado (id_sede, id_comunidad, fecha_asignacion, observaciones) VALUES(%s, %s, %s, %s);"
-        values = (self.id_sede, self.id_comunidad, self.fecha_asignacion, self.observaciones)
+    # Relaciones Directas
+    rel_comunidades = db.relationship('Comunidad', back_populates='rel_miembro_comunidad')
+    rel_usuarios = db.relationship('Usuario', back_populates='rel_miembro_comunidad')
 
-        mycursor.execute(query, values)
-        conn.commit()
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+        return self.id
 
-        id = mycursor.lastrowid
+# endregion
 
-        mycursor.close()
-        conn.close()
+# region ComunidadAliado
 
-        return id
+class ComunidadAliado(db.Model):
+    __tablename__ = 'comunidad_aliado'
+
+    id = db.Column(db.Integer, primary_key=True)
+    id_sede = db.Column(db.Integer, db.ForeignKey('sedes.id'), nullable=False)
+    id_comunidad = db.Column(db.Integer, db.ForeignKey('comunidades.id'), nullable=False)
+    fecha_asignacion = db.Column(db.Date)
+    observaciones = db.Column(db.Text)
+
+    # Relaciones Directas
+    rel_sedes = db.relationship('Sede', back_populates='rel_comunidad_aliado')
+    rel_comunidades = db.relationship('Comunidad', back_populates='rel_comunidad_aliado')
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+        return self.id
 
     @staticmethod
     def get_asignaciones_estrategicas():
-        conn = mydb('nova_flow')
-        mycursor = conn.cursor()
-
-        query = """
+        query = text("""
             SELECT 
                 s.nombre_sede AS nombre_organizacion,
                 c.nombre AS nombre_comunidad,
@@ -1078,11 +822,11 @@ class Comunidad_aliado:
                 u.nombre AS usuario,
                 'Comunidad' AS tipo_asignacion,
                 mc.rol_en_comunidad AS rol
-            FROM nova_flow.comunidad_aliado ca
-            JOIN nova_flow.sedes s ON ca.id_sede = s.id_sede
-            JOIN nova_flow.comunidades c ON ca.id_comunidad = c.id
-            JOIN nova_flow.miembros_comunidad mc ON ca.id_comunidad = mc.id_comunidad
-            JOIN nova_flow.usuarios u ON mc.id_usuario = u.id_usuario
+            FROM comunidad_aliado ca
+            JOIN sedes s ON ca.id_sede = s.id_sede
+            JOIN comunidades c ON ca.id_comunidad = c.id
+            JOIN miembros_comunidad mc ON ca.id_comunidad = mc.id_comunidad
+            JOIN usuarios u ON mc.id_usuario = u.id
 
             UNION ALL
 
@@ -1093,737 +837,561 @@ class Comunidad_aliado:
                 u.nombre AS usuario,
                 'Individual' AS tipo_asignacion,
                 pc.rol_en_cliente AS rol
-            FROM nova_flow.personas_cliente pc
-            JOIN nova_flow.sedes s ON pc.id_sede = s.id_sede
-            JOIN nova_flow.usuarios u ON pc.id_usuario = u.id_usuario
+            FROM personas_cliente pc
+            JOIN sedes s ON pc.id_sede = s.id_sede
+            JOIN usuarios u ON pc.id_usuario = u.id
 
             ORDER BY nombre_organizacion, tipo_asignacion, usuario;
-        """
-
-        mycursor.execute(query)
-        data = mycursor.fetchall()
-
-        mycursor.close()
-        conn.close()
-
-        return data
+        """)
+        return db.session.execute(query).fetchall()
 
     @staticmethod
     def get_asignaciones_operativas():
-        conn = mydb('nova_flow')
-        mycursor = conn.cursor()
-
-        query = """
+        query = text("""
             SELECT 
-                org.nombre_sede AS "organizacion",
-                us.nombre AS "nombre_usuario",
-                cli.nombre AS "Cuenta",
-                cu.caso_uso AS "caso_uso",
-                cu.estado AS "estado"
+                org.nombre_sede AS organizacion,
+                us.nombre AS nombre_usuario,
+                cli.nombre AS Cuenta,
+                cu.caso_uso AS caso_uso,
+                cu.estado AS estado
             FROM caso_uso cu
             LEFT JOIN sedes org ON cu.id_aliado = org.id_sede
-            LEFT JOIN usuarios us ON cu.id_usuario = us.id_usuario
+            LEFT JOIN usuarios us ON cu.id_usuario = us.id
             LEFT JOIN cuentas cli ON cu.id_cuenta = cli.id
-            """
-        
-        mycursor.execute(query)
-        data = mycursor.fetchall()
-
-        mycursor.close()
-        conn.close()
-
-        return data
+        """)
+        return db.session.execute(query).fetchall()
 
 # endregion
 
-# region CASOS DE USO
+# region CasoUso
 
-class Casos_uso:
+class CasoUso(db.Model):
+    __tablename__ = 'caso_uso'
 
-    def __init__(self, id_aliado, id_usuario, id_cuenta, caso_uso, descripcion, impacto, puntuacion_impacto, puntuacion_tecnica, tags, estado, id_producto, fecha_inicio, fecha_cierre, monto_venta, costos_proyecto, margen_estimado_porcentaje, margen_estimado_bruto, feedback):
-        self.id_aliado = id_aliado
-        self.id_usuario = id_usuario
-        self.id_cuenta = id_cuenta
-        self.caso_uso = caso_uso
-        self.descripcion = descripcion
-        self.impacto = impacto
-        self.puntuacion_impacto = puntuacion_impacto
-        self.puntuacion_tecnica = puntuacion_tecnica
-        self.tags = tags
-        self.estado = estado
-        self.id_producto = id_producto
-        self.fecha_inicio = fecha_inicio
-        self.fecha_cierre = fecha_cierre
-        self.monto_venta = monto_venta
-        self.costos_proyecto = costos_proyecto
-        self.margen_estimado_porcentaje = margen_estimado_porcentaje
-        self.margen_estimado_bruto = margen_estimado_bruto
-        self.feedback = feedback
+    id = db.Column(db.Integer, primary_key=True)
+    id_aliado = db.Column(db.Integer, db.ForeignKey('sedes.id'), nullable=False)
+    id_usuario = db.Column(db.Integer, db.ForeignKey('usuarios.id'), nullable=False)
+    id_cuenta = db.Column(db.Integer, db.ForeignKey('cuentas.id'), nullable=False)
+    caso_uso = db.Column(db.String(255), nullable=False)
+    descripcion = db.Column(db.Text)
+    impacto = db.Column(db.String(255))
+    puntuacion_impacto = db.Column(db.Integer)
+    puntuacion_tecnica = db.Column(db.Integer)
+    tags = db.Column(db.String(255))
+    estado = db.Column(db.Integer, db.ForeignKey('estados.id'))
+    id_producto = db.Column(db.Integer, db.ForeignKey('portafolio.id'))
+    fecha_inicio = db.Column(db.Date)
+    fecha_cierre = db.Column(db.Date)
+    monto_venta = db.Column(db.Float)
+    costos_proyecto = db.Column(db.Float)
+    margen_estimado_porcentaje = db.Column(db.Float)
+    margen_estimado_bruto = db.Column(db.Float)
+    feedback = db.Column(db.Text)
 
-    def create(self):
-        conn = mydb('nova_flow')
-        mycursor = conn.cursor()
+    # Relaciones Directas
+    rel_sedes = db.relationship('Sede', back_populates='rel_caso_uso')
+    rel_usuarios = db.relationship('Usuario', back_populates='rel_caso_uso')
+    rel_cuentas = db.relationship('Cuenta', back_populates='rel_caso_uso')
+    rel_estados = db.relationship('Estado', back_populates='rel_caso_uso')
+    rel_portafolios = db.relationship('Portafolio', back_populates='rel_caso_uso')
+    rel_estimacion = db.relationship('Estimacion', back_populates='rel_casos_uso')
 
-        query = "INSERT INTO caso_uso (id_aliado, id_usuario, id_cuenta, caso_uso, descripcion, impacto, puntuacion_impacto, puntuacion_tecnica, tags, estado, id_producto, fecha_inicio, fecha_cierre, monto_venta, costos_proyecto, margen_estimado_porcentaje, margen_estimado_bruto, feedback) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);"
-        values = (self.id_aliado, self.id_usuario, self.id_cuenta, self.caso_uso, self.descripcion, self.impacto, self.puntuacion_impacto, self.puntuacion_tecnica, self.tags, self.estado, self.id_producto, self.fecha_inicio, self.fecha_cierre, self.monto_venta, self.costos_proyecto, self.margen_estimado_porcentaje, self.margen_estimado_bruto, self.feedback)
-        
-        mycursor.execute(query, values)
-        conn.commit()
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+        return self.id
 
-        id = mycursor.lastrowid
-
-        mycursor.close()
-        conn.close()
-
-        return id
-
-    def update(campo, valor, id):
-        conn = mydb('nova_flow')
-        mycursor = conn.cursor()
-
-        query = f"UPDATE caso_uso SET {campo} = %s WHERE (id = %s);"
-        values = (valor, id)
-
-        mycursor.execute(query, values)
-        conn.commit()
-
-        mycursor.close()
-        conn.close()
+    def update_field(self, campo: str, valor):
+        setattr(self, campo, valor)
+        db.session.commit()
 
     @staticmethod
-    def get_projects(id):
-        conn = mydb('nova_flow')
-        mycursor = conn.cursor(dictionary=True)
-
-        query = """
-            SELECT 
-                cu.id,
-                us.nombre AS nombre_usuario,
-                c.nombre AS nombre_cuenta,
-                cu.caso_uso,
-                cu.descripcion,
-                cu.impacto,
-                cu.puntuacion_impacto AS p_impacto,
-                cu.puntuacion_tecnica AS p_tecnica,
-                cu.tags,
-                cu.estado,
-                pr.nombre AS producto,
-                cu.fecha_inicio,
-                cu.fecha_cierre,
-                cu.monto_venta,
-                cu.costos_proyecto,
-                cu.margen_estimado_porcentaje AS mep,
-                cu.margen_estimado_bruto AS meb
-            FROM nova_flow.caso_uso cu
-            LEFT JOIN nova_flow.usuarios us ON cu.id_usuario = us.id_usuario
-            LEFT JOIN nova_flow.cuentas c ON cu.id_cuenta = c.id
-            LEFT JOIN nova_flow.portafolio pr ON cu.id_producto = pr.id
-            WHERE cu.id_aliado = %(id)s
-            """
-        values = {'id': id}
-
-        mycursor.execute(query, values)
-        data = mycursor.fetchall()
-
-        mycursor.close()
-        conn.close()
-
-        return data
+    def get_projects(id_aliado):
+        return (
+            db.session.query(CasoUso)
+            .filter_by(id_aliado=id_aliado)
+            .join(Usuario, CasoUso.id_usuario == Usuario.id)
+            .join(Cuenta, CasoUso.id_cuenta == Cuenta.id)
+            .join(Portafolio, CasoUso.id_producto == Portafolio.id)
+            .with_entities(
+                CasoUso.id,
+                Usuario.nombre.label("nombre_usuario"),
+                Cuenta.nombre.label("nombre_cuenta"),
+                CasoUso.caso_uso,
+                CasoUso.descripcion,
+                CasoUso.impacto,
+                CasoUso.puntuacion_impacto.label("p_impacto"),
+                CasoUso.puntuacion_tecnica.label("p_tecnica"),
+                CasoUso.tags,
+                CasoUso.estado,
+                Portafolio.nombre.label("producto"),
+                CasoUso.fecha_inicio,
+                CasoUso.fecha_cierre,
+                CasoUso.monto_venta,
+                CasoUso.costos_proyecto,
+                CasoUso.margen_estimado_porcentaje.label("mep"),
+                CasoUso.margen_estimado_bruto.label("meb"),
+            )
+            .all()
+        )
 
     @staticmethod
-    def get_projects_to_sup(id):
-        conn = mydb('nova_flow')
-        mycursor = conn.cursor()
-
-        mycursor.execute('SELECT * FROM caso_uso WHERE id_usuario = '+str(id)+';')
-        data = mycursor.fetchall()
-
-        mycursor.close()
-        conn.close()
-
-        return data
+    def get_projects_to_sup(id_usuario):
+        return CasoUso.query.filter_by(id_usuario=id_usuario).all()
 
     @staticmethod
     def get_by_id(id):
-        conn = mydb('nova_flow')
-        mycursor = conn.cursor()
-
-        mycursor.execute('SELECT * FROM caso_uso WHERE id = '+str(id)+';')
-        data = mycursor.fetchone()
-
-        mycursor.close()
-        conn.close()
-
-        return data
+        return CasoUso.query.get(id)
 
 # endregion
 
-# region CUENTAS
+# region Cuenta
 
-class Cuentas:
+class Cuenta(db.Model):
+    __tablename__ = 'cuentas'
 
-    def __init__(self, id_organizacion, nombre, industria, subregion, fecha_alta, fecha_modificacion, fecha_baja, codigo, id_segmentacion, estado):
-        self.id_organizacion = id_organizacion
-        self.nombre = nombre
-        self.industria = industria
-        self.subregion = subregion
-        self.fecha_alta = fecha_alta
-        self.fecha_modificacion = fecha_modificacion
-        self.fecha_baja = fecha_baja
-        self.codigo = codigo
-        self.id_segmentacion = id_segmentacion
-        self.estado = estado
+    id = db.Column(db.Integer, primary_key=True)
+    id_organizacion = db.Column(db.Integer, db.ForeignKey('organizaciones.id'), nullable=False)
+    nombre = db.Column(db.String(255), nullable=False)
+    industria = db.Column(db.Integer, db.ForeignKey('industrias.id'))
+    subregion = db.Column(db.Integer, db.ForeignKey('subregiones.id'))
+    fecha_alta = db.Column(db.Date)
+    fecha_modificacion = db.Column(db.Date)
+    fecha_baja = db.Column(db.Date)
+    codigo = db.Column(db.String(100))
+    id_segmentacion = db.Column(db.Integer, db.ForeignKey('segmentacion.id'))
+    estado = db.Column(db.Integer, db.ForeignKey('estados.id'))
 
-    def create(self):
-        conn = mydb('nova_flow')
-        mycursor = conn.cursor()
+    # Relaciones Directas
+    rel_organizaciones = db.relationship('Organizacion', back_populates='rel_cuenta')
+    rel_industrias = db.relationship('Industria', back_populates='rel_cuenta')
+    rel_subregiones = db.relationship('Subregion', back_populates='rel_cuenta')
+    rel_segmentaciones = db.relationship('Segmentacion', back_populates='rel_cuenta')
+    rel_estados = db.relationship('Estado', back_populates='rel_cuenta')
 
-        query = "INSERT INTO cuentas (id_organizacion, nombre, industria, subregion, fecha_alta, fecha_modificacion, fecha_baja, codigo, id_segmentacion, estado) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s);"
-        values = (self.id_organizacion, self.nombre, self.industria, self.subregion, self.fecha_alta, self.fecha_modificacion, self.fecha_baja, self.codigo, self.id_segmentacion, self.estado)
+    # Relaciones inversas
+    rel_caso_uso = db.relationship('CasoUso', back_populates='rel_cuentas')
 
-        mycursor.execute(query, values)
-        conn.commit()
-
-        id = mycursor.lastrowid
-
-        mycursor.close()
-        conn.close()
-
-        return id
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+        return self.id
 
     @staticmethod
     def get_all_tbl():
-        conn = mydb('nova_flow')
-        mycursor = conn.cursor()
-
-        query = """
-            SELECT 
-                cu.id,
-                cu.nombre,
-                CONCAT(ind.nombre, " ", ind.grupo_general) AS "industria",
-                cu.estado,
-                COUNT(pro.id_cuenta) AS "proyectos_activos"
-            FROM nova_flow.cuentas cu
-            LEFT JOIN nova_flow.industrias ind ON cu.industria = ind.id_industria
-            LEFT JOIN nova_flow.caso_uso pro ON cu.id = pro.id_cuenta
-            GROUP BY cu.id, cu.nombre, ind.nombre, ind.grupo_general, cu.estado;"""
-
-        mycursor.execute(query)
-        data = mycursor.fetchall()
-
-        mycursor.close()
-        conn.close()
-
-        return data
+        return (
+            db.session.query(
+                Cuenta.id,
+                Cuenta.nombre,
+                (Industria.nombre + " " + Industria.grupo_general).label("industria"),
+                Cuenta.estado,
+                func.count(CasoUso.id).label("proyectos_activos")
+            )
+            .outerjoin(Industria, Cuenta.industria == Industria.id_industria)
+            .outerjoin(CasoUso, Cuenta.id == CasoUso.id_cuenta)
+            .group_by(Cuenta.id, Cuenta.nombre, Industria.nombre, Industria.grupo_general, Cuenta.estado)
+            .all()
+        )
 
     @staticmethod
-    def get_cuentas_by_aliado(aliado):
-        conn = mydb('nova_flow')
-        mycursor = conn.cursor()
-
-        mycursor.execute('SELECT * FROM cuentas WHERE id_organizacion = '+str(aliado)+';')
-        data = mycursor.fetchall()
-
-        mycursor.close()
-        conn.close()
-
-        return data
+    def get_cuentas_by_aliado(id_organizacion):
+        return Cuenta.query.filter_by(id_organizacion=id_organizacion).all()
 
 # endregion
 
-# region SEGMENTACIONES
+# region Segmentacion
 
-class Segmentacion:
+class Segmentacion(db.Model):
+    __tablename__ = 'segmentacion'
 
-    def __init__(self, clasificacion, descripcion):
-        self.clasificacion = clasificacion
-        self.descripcion = descripcion
+    id = db.Column(db.Integer, primary_key=True)
+    clasificacion = db.Column(db.String(255), nullable=False)
+    descripcion = db.Column(db.Text)
 
-    def create(self):
-        conn = mydb('nova_flow')
-        mycursor = conn.cursor()
+    # Relaciones inversas
+    rel_cuenta = db.relationship('Cuenta', back_populates='rel_segmentaciones')
 
-        query = "INSERT INTO segmentacion (clasificacion, descripcion) VALUES(%s, %s);"
-        values = (self.clasificacion, self.descripcion)
-
-        mycursor.execute(query, values)
-        conn.commit()
-
-        mycursor.close()
-        conn.close()
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+        return self.id
 
     @staticmethod
     def get_all():
-        conn = mydb('nova_flow')
-        mycursor = conn.cursor()
-
-        mycursor.execute('SELECT * FROM segmentacion;')
-        data = mycursor.fetchall()
-
-        mycursor.close()
-        conn.close()
-
-        return data
+        return Segmentacion.query.all()
 
 # endregion
 
-# region ROLES
+# region Rol
 
-class Roles:
+class Rol(db.Model):
+    __tablename__ = 'roles'
 
-    def __init__(self, nombre):
-        self.nombre = nombre
+    id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String(100), nullable=False)
 
-    def create(self):
-        conn = mydb('nova_flow')
-        mycursor = conn.cursor()
+    # Relación Inversa
+    rel_usuario = db.relationship('Usuario', back_populates='rel_roles')
 
-        query = "INSERT INTO roles (nombre) VALUES(%s);"
-        values = (self.nombre,)
-
-        mycursor.execute(query, values)
-        conn.commit()
-
-        mycursor.close()
-        conn.close()
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+        return self.id
 
 # endregion
 
-# region EXPERIENCIA LABORAL
+# region ExpLaboral
 
-class Exp_laboral:
+class ExpLaboral(db.Model):
+    __tablename__ = 'experiencia_laboral'
 
-    def __init__(self, id_usuario, cargo, empresa, descripcion, fecha_inicio, fecha_fin, ubicacion, tipo_empleo, sector, logros):
-        self.id_usuario = id_usuario
-        self.cargo = cargo
-        self.empresa = empresa
-        self.descripcion = descripcion
-        self.fecha_inicio = fecha_inicio
-        self.fecha_fin = fecha_fin
-        self.ubicacion = ubicacion
-        self.tipo_empleo = tipo_empleo
-        self.sector = sector
-        self.logros = logros
+    id = db.Column(db.Integer, primary_key=True)
+    id_usuario = db.Column(db.Integer, db.ForeignKey('usuarios.id'), nullable=False)
+    cargo = db.Column(db.String(255))
+    empresa = db.Column(db.String(255))
+    descripcion = db.Column(db.Text)
+    fecha_inicio = db.Column(db.Date)
+    fecha_fin = db.Column(db.Date)
+    ubicacion = db.Column(db.String(255))
+    tipo_empleo = db.Column(db.String(100))
+    sector = db.Column(db.String(100))
+    logros = db.Column(db.Text)
 
-    def create(self):
-        conn = mydb('nova_flow')
-        mycursor = conn.cursor()
+    # Relaciones Directas
+    rel_usuarios = db.relationship('Usuario', back_populates='rel_exp_laboral')
 
-        query = "INSERT INTO experiencia_laboral (id_usuario, cargo, empresa, descripcion, fecha_inicio, fecha_fin, ubicacion, tipo_empleo, sector, logros) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s);"
-        values = (self.id_usuario, self.cargo, self.empresa, self.descripcion, self.fecha_inicio, self.fecha_fin, self.ubicacion, self.tipo_empleo, self.sector, self.logros)
-
-        mycursor.execute(query, values)
-        conn.commit()
-
-        id = mycursor.lastrowid
-
-        mycursor.close()
-        conn.close()
-
-        return id
-
-    def get_by_id_usuario(id):
-        conn = mydb('nova_flow')
-        mycursor = conn.cursor(dictionary=True)
-        
-        query = "SELECT * FROM experiencia_laboral WHERE id_usuario = %(id)s;"
-        values = {'id': id}
-
-        mycursor.execute(query, values)
-        data = mycursor.fetchall()
-
-        mycursor.close()
-        conn.close()
-
-        return data
-
-# endregion
-
-# region EDUCACIÓN
-
-class Educacion:
-
-    def __init__(self, id_usuario, institucion, titulo, area_estudio, fecha_inicio, fecha_fin, descripcion):
-        self.id_usuario = id_usuario
-        self.institucion = institucion
-        self.titulo = titulo
-        self.area_estudio = area_estudio
-        self.fecha_inicio = fecha_inicio
-        self.fecha_fin = fecha_fin
-        self.descripcion = descripcion
-
-    def create(self):
-        conn = mydb('nova_flow')
-        mycursor = conn.cursor(dictionary=True)
-
-        query = "INSERT INTO educacion (id_usuario, institucion, titulo, area_estudio, fecha_inicio, fecha_fin, descripcion) VALUES(%s, %s, %s, %s, %s, %s, %s);"
-        values = (self.id_usuario, self.institucion, self.titulo, self.area_estudio, self.fecha_inicio, self.fecha_fin, self.descripcion)
-
-        mycursor.execute(query, values)
-        conn.commit()
-
-        id = mycursor.lastrowid
-
-        mycursor.close()
-        conn.close()
-
-        return id
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+        return self.id
 
     @staticmethod
-    def get_by_id_usuario(id):
-        conn = mydb('nova_flow')
-        mycursor = conn.cursor(dictionary=True)
-
-        query = "SELECT * FROM educacion WHERE id_usuario = %(id)s;"
-        values = {'id': id}
-
-        mycursor.execute(query, values)
-        data = mycursor.fetchall()
-
-        mycursor.close()
-        conn.close()
-
-        return data
+    def get_by_id_usuario(id_usuario):
+        return ExpLaboral.query.filter_by(id_usuario=id_usuario).all()
 
 # endregion
 
-# region CERTIFICACIONES
+# region Educacion
 
-class Certificaciones:
+class Educacion(db.Model):
+    __tablename__ = 'educacion'
 
-    def __init__(self, id_usuario, nombre, entidad, fecha_obtencion, fecha_vencimiento, url_certificado, id_credencial, descripcion):
-        self.id_usuario = id_usuario
-        self.nombre = nombre
-        self.entidad = entidad
-        self.fecha_obtencion = fecha_obtencion
-        self.fecha_vencimiento = fecha_vencimiento
-        self.url_certificado = url_certificado
-        self.id_credencial = id_credencial
-        self.descripcion = descripcion
+    id = db.Column(db.Integer, primary_key=True)
+    id_usuario = db.Column(db.Integer, db.ForeignKey('usuarios.id'), nullable=False)
+    institucion = db.Column(db.String(255))
+    titulo = db.Column(db.String(255))
+    area_estudio = db.Column(db.String(255))
+    fecha_inicio = db.Column(db.Date)
+    fecha_fin = db.Column(db.Date)
+    descripcion = db.Column(db.Text)
 
-    def create(self):
-        conn = mydb('nova_flow')
-        mycursor = conn.cursor()
+    # Relaciones Directas
+    rel_usuarios = db.relationship('Usuario', back_populates='rel_educacion')
 
-        query = "INSERT INTO certificaciones (id_usuario, nombre, entidad, fecha_obtencion, fecha_vencimiento, url_certificado, id_credencial, descripcion) VALUES(%s, %s, %s, %s, %s, %s, %s, %s);"
-        values = (self.id_usuario, self.nombre, self.entidad, self.fecha_obtencion, self.fecha_vencimiento, self.url_certificado, self.id_credencial, self.descripcion)
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+        return self.id
 
-        mycursor.execute(query, values)
-        conn.commit()
+    @staticmethod
+    def get_by_id_usuario(id_usuario):
+        return Educacion.query.filter_by(id_usuario=id_usuario).all()
 
-        id = mycursor.lastrowid
+# endregion
 
-        mycursor.close()
-        conn.close()
+# region Certificacion
 
-        return id
+class Certificacion(db.Model):
+    __tablename__ = 'certificaciones'
+
+    id = db.Column(db.Integer, primary_key=True)
+    id_usuario = db.Column(db.Integer, db.ForeignKey('usuarios.id'), nullable=False)
+    nombre = db.Column(db.String(255))
+    entidad = db.Column(db.String(255))
+    fecha_obtencion = db.Column(db.Date)
+    fecha_vencimiento = db.Column(db.Date)
+    url_certificado = db.Column(db.String(255))
+    id_credencial = db.Column(db.String(255))
+    descripcion = db.Column(db.Text)
+
+    # Relaciones Directas
+    rel_usuarios = db.relationship('Usuario', back_populates='rel_certificacion')
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+        return self.id
+
+    @staticmethod
+    def get_by_id_usuario(id_usuario):
+        return Certificacion.query.filter_by(id_usuario=id_usuario).all()
+
+# endregion
+
+# region ProyectoDestacado
+
+class ProyectoDestacado(db.Model):
+    __tablename__ = 'proyectos_destacados'
+
+    id = db.Column(db.Integer, primary_key=True)
+    id_usuario = db.Column(db.Integer, db.ForeignKey('usuarios.id'), nullable=False)
+    nombre = db.Column(db.String(255), nullable=False)
+    descripcion = db.Column(db.Text)
+    tecnologias_usadas = db.Column(db.String(255))
+    fecha_inicio = db.Column(db.Date)
+    fecha_fin = db.Column(db.Date)
+    link_portafolio = db.Column(db.String(255))
+
+    # Relaciones Directas
+    rel_usuarios = db.relationship('Usuario', back_populates='rel_proyecto_destacado')
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+        return self.id
+
+    @staticmethod
+    def get_by_id_usuario(id_usuario):
+        return ProyectoDestacado.query.filter_by(id_usuario=id_usuario).all()
+
+# endregion
+
+# region Estado
+
+class Estado(db.Model):
+    __tablename__ = 'estados'
+
+    id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String(100), nullable=False)
+    descripcion = db.Column(db.Text)
+    entidad = db.Column(db.String(100))
+
+    # Relaciones Inversas
+    rel_usuario = db.relationship('Usuario', back_populates='rel_estados')
+    rel_organizacion = db.relationship('Organizacion', back_populates='rel_estados')
+    rel_sede = db.relationship('Sede', back_populates='rel_estados')
+    rel_portafolios = db.relationship('Portafolio', back_populates='rel_estado')
+    rel_caso_uso = db.relationship('CasoUso', back_populates='rel_estados')
+    rel_cuenta = db.relationship('Cuenta', back_populates='rel_estados')
+    rel_entregable = db.relationship('Entregable', back_populates='rel_estados')
+    rel_actividad = db.relationship('Actividad', back_populates='rel_estados')
+    rel_tareas = db.relationship('Tarea', back_populates='rel_estado', lazy=True)
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+        return self.id
+
+# endregion
+
+# region Estimacion
+
+class Estimacion(db.Model):
+    __tablename__ = 'estimaciones'
+
+    id = db.Column(db.Integer, primary_key=True)
+    id_caso_uso = db.Column(db.Integer, db.ForeignKey('caso_uso.id'), nullable=False)
+    nombre_caso_uso = db.Column(db.String(255), nullable=False)
+
+    # Relaciones Directas
+    rel_casos_uso = db.relationship('CasoUso', back_populates='rel_estimacion')
+
+    # Relaciones Inversas
+    rel_entregable = db.relationship('Entregable', back_populates='rel_estimaciones')
+    rel_costo_recurso = db.relationship('CostoRecurso', back_populates='rel_estimaciones')
+    rel_costo_freelance = db.relationship('CostoFreelance', back_populates='rel_estimaciones')
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+        return self.id
+
+# endregion
+
+# region Entregable
+
+class Entregable(db.Model):
+    __tablename__ = 'entregables'
+
+    id = db.Column(db.Integer, primary_key=True)
+    id_estimacion = db.Column(db.Integer, db.ForeignKey('estimaciones.id'), nullable=False)
+    nombre = db.Column(db.String(255), nullable=False)
+    descripcion = db.Column(db.Text)
+    criterios_aceptacion = db.Column(db.Text)
+    estado = db.Column(db.Integer, db.ForeignKey('estados.id'))
+    fecha_entrega_estimada = db.Column(db.Date)
+    fecha_entregado = db.Column(db.Date)
+    version = db.Column(db.String(50))
+    fecha_creacion = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+    fecha_actualizacion = db.Column(db.DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
+    actualizado_por = db.Column(db.Integer, db.ForeignKey('usuarios.id'))
+
+    # Relaciones Directas
+    rel_estimaciones = db.relationship('Estimacion', back_populates='rel_entregable')
+    rel_estados = db.relationship('Estado', back_populates='rel_entregable')
+    rel_usuarios = db.relationship('Usuario', back_populates='rel_entregable')
+
+    # Relaciones Inversas
+    rel_actividad = db.relationship('Actividad', back_populates='rel_entregables')
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+        return self.id
+
+# endregion
+
+# region Actividad
+
+class Actividad(db.Model):
+    __tablename__ = 'actividades'
+
+    id = db.Column(db.Integer, primary_key=True)
+    id_entregable = db.Column(db.Integer, db.ForeignKey('entregables.id'), nullable=False)
+    nombre = db.Column(db.String(255), nullable=False)
+    descripcion = db.Column(db.Text)
+    estado = db.Column(db.Integer, db.ForeignKey('estados.id'))
+    fecha_inicio_estimada = db.Column(db.Date)
+    fecha_fin_estimada = db.Column(db.Date)
+    fecha_inicio_real = db.Column(db.Date)
+    fecha_fin_real = db.Column(db.Date)
+    id_usuario_responsable = db.Column(db.Integer, db.ForeignKey('usuarios.id'), nullable=False)
+    prioridad = db.Column(db.String(50))
+    orden = db.Column(db.Integer)
+    observaciones = db.Column(db.Text)
+    fecha_creacion = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+    fecha_actualizacion = db.Column(db.DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
+    actualizado_por = db.Column(db.Integer, db.ForeignKey('usuarios.id'))
+
+    # Relaciones Directas
+    rel_entregables = db.relationship('Entregable', back_populates='rel_actividad')
+    rel_estados = db.relationship('Estado', back_populates='rel_actividad')
+
+    rel_usuario_responsable = db.relationship(
+        'Usuario',
+        back_populates='actividades_asignadas',
+        foreign_keys=[id_usuario_responsable]
+    )
+
+    rel_usuario_actualiza = db.relationship(
+        'Usuario',
+        back_populates='actividades_actualizadas',
+        foreign_keys=[actualizado_por]
+    )
     
-    @staticmethod
-    def get_by_id_usuario(id):
-        conn = mydb('nova_flow')
-        mycursor = conn.cursor(dictionary=True)
+    tareas = db.relationship(
+        'Tarea',
+        back_populates='rel_actividad',
+        lazy=True
+    )
 
-        query = "SELECT * FROM certificaciones WHERE id_usuario = %(id)s;"
-        values = {'id': id}
-
-        mycursor.execute(query, values)
-        data = mycursor.fetchall()
-
-        mycursor.close()
-        conn.close()
-
-        return data
-
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+        return self.id
 
 # endregion
 
-# region PROYECTOS DESTACADOS
+# region Tarea
 
-class Proyectos_destacados:
+class Tarea(db.Model):
+    __tablename__ = 'tareas'
 
-    def __init__(self, id_usuario, nombre, descripcion, tecnologias_usadas, fecha_inicio, fecha_fin, link_portafolio):
-        self.id_usuario = id_usuario
-        self.nombre = nombre
-        self.descripcion = descripcion
-        self.tecnologias_usadas = tecnologias_usadas
-        self.fecha_inicio = fecha_inicio
-        self.fecha_fin = fecha_fin
-        self.link_portafolio = link_portafolio
+    id = db.Column(db.Integer, primary_key=True)
+    id_actividad = db.Column(db.Integer, db.ForeignKey('actividades.id'), nullable=False)
+    nombre = db.Column(db.String(255), nullable=False)
+    descripcion = db.Column(db.Text)
+    estado = db.Column(db.Integer, db.ForeignKey('estados.id'))
+    id_usuario_responsable = db.Column(db.Integer, db.ForeignKey('usuarios.id'), nullable=False)
 
-    def create(self):
-        conn = mydb('nova_flow')
-        mycursor = conn.cursor()
+    duracion_optimista = db.Column(db.Float)
+    duracion_mas_probable = db.Column(db.Float)
+    duracion_pesimista = db.Column(db.Float)
+    duracion_estimada = db.Column(db.Float)
 
-        query = "INSERT INTO proyectos_destacados (id_usuario, nombre, descripcion, tecnologias_usadas, fecha_inicio, fecha_fin, link_portafolio) VALUES(%s, %s, %s, %s, %s, %s, %s);"
-        values = (self.id_usuario, self.nombre, self.descripcion, self.tecnologias_usadas, self.fecha_inicio, self.fecha_fin, self.link_portafolio)
+    fecha_inicio = db.Column(db.Date)
+    fecha_fin = db.Column(db.Date)
+    es_critica = db.Column(db.Boolean, default=False)
+    orden = db.Column(db.Integer)
+    observaciones = db.Column(db.Text)
 
-        mycursor.execute(query, values)
-        conn.commit()
+    fecha_creacion = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+    fecha_actualizacion = db.Column(db.DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
+    actualizado_por = db.Column(db.Integer, db.ForeignKey('usuarios.id'))
 
-        id = mycursor.lastrowid
+    # Relaciones Directas
+    rel_actividad = db.relationship(
+        'Actividad',
+        back_populates='tareas',
+        foreign_keys=[id_actividad]
+    )
+    rel_estado = db.relationship('Estado', back_populates='rel_tareas', lazy=True)
 
-        mycursor.close()
-        conn.close()
+    rel_usuario_responsable = db.relationship(
+        'Usuario',
+        back_populates='tareas_asignadas',
+        foreign_keys=[id_usuario_responsable]
+    )
 
-        return id
+    actualizado_por_usuario = db.relationship(
+        'Usuario',
+        back_populates='tareas_actualizadas',
+        foreign_keys=[actualizado_por]
+    )
 
-    @staticmethod
-    def get_by_id_usuario(id):
-        conn = mydb('nova_flow')
-        mycursor = conn.cursor(dictionary=True)
-
-        query = "SELECT * FROM proyectos_destacados WHERE id_usuario = %(id)s;"
-        values = {'id': id}
-
-        mycursor.execute(query, values)
-        data = mycursor.fetchall()
-
-        mycursor.close()
-        conn.close()
-
-        return data
-
-# endregion
-
-# //////////////////////////////////////////////////
-# //////////////////////////////////////////////////
-# //////////////////////////////////////////////////
-# ///////////////aun sin agregar////////////////////
-# //////////////////////////////////////////////////
-# //////////////////////////////////////////////////
-# //////////////////////////////////////////////////
-
-#  region ESTADOS
-
-class Estados:
-
-    def __init__(self, nombre, descripcion, entidad):
-        self.nombre = nombre
-        self.descripcion = descripcion
-        self.entidad = entidad
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+        return self.id
 
 # endregion
 
-# region ESTIMACIONES
+# region CostoRecurso
 
-class Estimaciones:
+class CostoRecurso(db.Model):
+    __tablename__ = 'costos_recursos'
 
-    def __init__(self, id_caso_uso, nombre_caso_uso):
-        self.id_caso_uso = id_caso_uso
-        self.nombre_caso_uso = nombre_caso_uso
+    id = db.Column(db.Integer, primary_key=True)
+    id_estimacion = db.Column(db.Integer, db.ForeignKey('estimaciones.id'), nullable=False)
+    tipo = db.Column(db.String(100))              # Ej: 'humano', 'infraestructura', etc.
+    concepto = db.Column(db.String(255))          # Ej: 'Backend Developer', 'Licencia', etc.
+    periodicidad = db.Column(db.String(50))       # Ej: 'mensual', 'único', etc.
+    divisa = db.Column(db.String(10))             # Ej: 'COP', 'USD', etc.
+    cantidad = db.Column(db.Float)
+    costo = db.Column(db.Float)                   # Valor unitario
 
-    def create(self):
-        conn = mydb('nova_flow')
-        mycursor = conn.cursor()
+    # Estimaciones Directas
+    rel_estimaciones = db.relationship('Estimacion', back_populates='rel_costo_recurso')
 
-        query = "INSERT INTO estimaciones (id_caso_uso, nombre_caso_uso) VALUES (%s, %s);"
-        values = (self.id_caso_uso, self.nombre_caso_uso)
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+        return self.id
 
-        mycursor.execute(query, values)
-        conn.commit()
+# endregion 
 
-        id = mycursor.lastrowid
+# region CostoFreelance
 
-        mycursor.close()
-        conn.close()
+class CostoFreelance(db.Model):
+    __tablename__ = 'costos_freelance'
 
-        return id
-    
-# endregion
+    id = db.Column(db.Integer, primary_key=True)
+    id_estimacion = db.Column(db.Integer, db.ForeignKey('estimaciones.id'), nullable=False)
+    especialidad = db.Column(db.String(100))           # Ej: 'Data Scientist', 'UX Designer'
+    nivel = db.Column(db.String(100))                  # Ej: 'Junior', 'Senior'
+    costo_hora = db.Column(db.Float)                   # Valor por hora
+    actividad = db.Column(db.String(255))              # Descripción breve de la tarea
+    horas = db.Column(db.Float)                        # Total de horas estimadas
 
-# region ENTREGABLES
+    # Relaciones Directas
+    rel_estimaciones = db.relationship('Estimacion', back_populates='rel_costo_freelance')
 
-class Entregables:
-
-    def __init__(self, id_estimacion, nombre, descripcion, criterios_aceptacion, estado, fecha_entrega_estimada, fecha_entregado, version, fecha_creacion, fecha_actualizacion, actualizado_por):
-        self.id_estimacion = id_estimacion
-        self.nombre = nombre
-        self.descripcion = descripcion
-        self.criterios_aceptacion = criterios_aceptacion
-        self.estado = estado
-        self.fecha_entrega_estimada = fecha_entrega_estimada
-        self.fecha_entregado = fecha_entregado
-        self.version = version
-        self.fecha_creacion = fecha_creacion
-        self.fecha_actualizacion = fecha_actualizacion
-        self.actualizado_por = actualizado_por
-
-    def create(self):
-        conn = mydb('nova_flow')
-        mycursor = conn.cursor()
-
-        query = "INSERT INTO entregables (id_estimacion, nombre, descripcion, criterios_aceptacion, estado, fecha_entrega_estimada, fecha_entregado, version, fecha_creacion, fecha_actualizacion, actualizado_por) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);"
-        values = (self.id_estimacion, self.nombre, self.descripcion, self.criterios_aceptacion, self.estado, self.fecha_entrega_estimada, self.fecha_entregado, self.version, self.fecha_creacion, self.fecha_actualizacion, self.actualizado_por)
-
-        mycursor.execute(query, values)
-        conn.commit()
-
-        id = mycursor.lastrowid
-
-        mycursor.close()
-        conn.close()
-
-        return id
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+        return self.id
 
 # endregion
 
-# region ACTIVIDADES
-
-class Actividades:
-
-    def __init__(self, id_entregable, nombre, descripcion, estado, fecha_inicio_estimada, fecha_fin_estimada, fecha_inicio_real, fecha_fin_real, id_usuario_responsable, prioridad, orden, observaciones, fecha_creacion, fecha_actualizacion, actualizado_por):
-        self.id_entregable = id_entregable
-        self.nombre = nombre
-        self.descripcion = descripcion
-        self.estado = estado
-        self.fecha_inicio_estimada = fecha_inicio_estimada
-        self.fecha_fin_estimada = fecha_fin_estimada
-        self.fecha_inicio_real = fecha_inicio_real
-        self.fecha_fin_real = fecha_fin_real
-        self.id_usuario_responsable = id_usuario_responsable
-        self.prioridad = prioridad
-        self.orden = orden
-        self.observaciones = observaciones
-        self.fecha_creacion = fecha_creacion
-        self.fecha_actualizacion = fecha_actualizacion
-        self.actualizado_por = actualizado_por
-
-    def create(self):
-        conn = mydb('nova_flow')
-        mycursor = conn.cursor()
-
-        query = "INSERT INTO actividades (id_entregable, nombre, descripcion, estado, fecha_inicio_estimada, fecha_fin_estimada, fecha_inicio_real, fecha_fin_real, id_usuario_responsable, prioridad, orden, observaciones, fecha_creacion, fecha_actualizacion, actualizado_por) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);"
-        values = (self.id_entregable, self.nombre, self.descripcion, self.estado, self.fecha_inicio_estimada, self.fecha_fin_estimada, self.fecha_inicio_real, self.fecha_fin_real, self.id_usuario_responsable, self.prioridad, self.orden, self.observaciones, self.fecha_creacion, self.fecha_actualizacion, self.actualizado_por)
-
-        mycursor.execute(query, values)
-        conn.commit()
-
-        id = mycursor.lastrowid
-
-        mycursor.close()
-        conn.close()
-
-        return id
-
 # endregion
-
-# region TAREAS
-
-class Tareas:
-
-    def __init__(self, id_actividad, nombre, descripcion, estado, id_usuario_responsable, duracion_optimista, duracion_mas_probable, duracion_pesimista, duracion_estimada, fecha_inicio, fecha_fin, es_critica, orden, observaciones, fecha_creacion, fecha_actualizacion, actualizado_por):
-        self.id_actividad = id_actividad
-        self.nombre = nombre
-        self.descripcion = descripcion
-        self.estado = estado
-        self.id_usuario_responsable = id_usuario_responsable
-        self.duracion_optimista = duracion_optimista
-        self.duracion_mas_probable = duracion_mas_probable
-        self.duracion_pesimista = duracion_pesimista
-        self.duracion_estimada = duracion_estimada
-        self.fecha_inicio = fecha_inicio
-        self.fecha_fin = fecha_fin
-        self.es_critica = es_critica
-        self.orden = orden
-        self.observaciones = observaciones
-        self.fecha_creacion = fecha_creacion
-        self.fecha_actualizacion = fecha_actualizacion
-        self.actualizado_por = actualizado_por 
-
-    def create(self):
-        conn = mydb('nova_flow')
-        mycursor = conn.cursor()
-
-        query = "INSERT INTO tareas (id_actividad, nombre, descripcion, estado, id_usuario_responsable, duracion_optimista, duracion_mas_probable, duracion_pesimista, duracion_estimada, fecha_inicio, fecha_fin, es_critica, orden, observaciones, fecha_creacion, fecha_actualizacion, actualizado_por) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);"
-        values = (self.id_actividad, self.nombre, self.descripcion, self.estado, self.id_usuario_responsable, self.duracion_optimista, self.duracion_mas_probable, self.duracion_pesimista, self.duracion_estimada, self.fecha_inicio, self.fecha_fin, self.es_critica, self.orden, self.observaciones, self.fecha_creacion, self.fecha_actualizacion, self.actualizado_por)
-
-        mycursor.execute(query, values)
-        conn.commit()
-
-        id = mycursor.lastrowid
-
-        mycursor.close()
-        conn.close()
-
-        return id
-
-# endregion
-
-# region COSTOS RECURSOS
-
-class Costos_recursos:
-
-    def __init__(self, id_estimacion, tipo, concepto, periodicidad, divisa, cantidad, costo):
-        self.id_estimacion = id_estimacion
-        self.tipo = tipo 
-        self.concepto = concepto
-        self.periodicidad = periodicidad
-        self.divisa = divisa
-        self.cantidad = cantidad
-        self.costo = costo
-
-    def create(self):
-        conn = mydb('nova_flow')
-        mycursor = conn.cursor()
-
-        query = "INSERT INTO costos_recursos (id_estimacion, tipo, concepto, periodicidad, divisa, cantidad, costo) VALUES(%s, %s, %s, %s, %s, %s, %s);"
-        values = (self.id_estimacion, self.tipo, self.concepto, self.periodicidad, self.divisa, self.cantidad, self.costo)
-
-        mycursor.execute(query, values)
-        conn.commit()
-
-        id = mycursor.lastrowid
-
-        mycursor.close()
-        conn.close()
-
-        return id
-
-# endregion
-
-# region COSTOS FREELANCE
-
-class Costos_freelance:
-
-    def __init__(self, id_estimacion, especialidad, nivel, costo_hora, actividad, horas):
-        self.id_estimacion = id_estimacion
-        self.especialidad = especialidad
-        self.nivel = nivel
-        self.costo_hora = costo_hora
-        self.actividad = actividad
-        self.horas = horas
-
-    def create(self):
-        conn = mydb('nova_flow')
-        mycursor = conn.cursor()
-
-        query = "INSERT INTO costos_freelance (id_estimacion, especialidad, nivel, costo_hora, actividad, horas) VALUES(%s, %s, %s, %s, %s, %s);"
-        values = (self.id_estimacion, self.especialidad, self.nivel, self.costo_hora, self.actividad, self.horas)
-
-        mycursor.execute(query, values)
-        conn.commit()
-
-        id = mycursor.lastrowid
-
-        mycursor.close()
-        conn.close()
-
-        return id
-
-# endregion
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

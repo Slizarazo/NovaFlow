@@ -261,10 +261,8 @@
                             <td>{{ pr[5] }}</td>
                             <td>
                                 <span class="badge 
-                                    {% if pr[6] == 'propuesta' %}bg-info
-                                    {% elif pr[6] == 'planificacion' %}bg-primary
-                                    {% elif pr[6] == 'ejecucion' %}bg-warning
-                                    {% elif pr[6] == 'cierre' %}bg-success
+                                    {% if pr[6] == 'En revisión' %}bg-warning
+                                    {% elif pr[6] == 'activo' %}bg-success
                                     {% else %}bg-secondary{% endif %}">
                                     {{ pr[6]|capitalize }}
                                 </span>

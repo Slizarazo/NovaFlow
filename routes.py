@@ -6,11 +6,12 @@ from flask_login import login_user, logout_user, login_required, current_user
 from app import app
 from controllers import *
 from models import User, Aliado, Proyecto, Consultor, DatosDashboard
-from models import Usuario, Organizaciones, Industrias, Colaboradores, Subregiones, Sedes, Regiones, Portafolio, Consultores, Comunidades, Miembros_comunidad, Comunidad_aliado, Personas_cliente, UserAcces, Cuentas, Segmentacion, Casos_uso, Exp_laboral, Educacion, Certificaciones, Proyectos_destacados, Estimaciones, Entregables, Actividades, Tareas, Costos_recursos, Costos_freelance
+from models import Usuario, Portafolio, UserAcces, Segmentacion, Educacion, Organizacion, Industria, Subregion, Sede, Region, Comunidad, ComunidadAliado, CasoUso, Cuenta, PersonaCliente, Consultor, ExpLaboral, Certificacion, ProyectoDestacado, Colaborador, MiembroComunidad, Estimacion, Entregable, Actividad, Tarea, CostoRecurso, CostoFreelance
 from config import Config
 from graphs import *
 from datetime import datetime, date
 import logging, json
+from app import db
 
 # region DATOS DEMOSTRACIÓN
 
@@ -101,10 +102,10 @@ def logout():
 @role_required('Gestor')
 def aliados_usuarios():
     users = User.get_all_users() if hasattr(User, 'get_all_users') else []
-    industrias = Industrias.get_all()
-    regiones = Subregiones.get_all()
-    sedes = Sedes.get_all()
-    organizaciones = Organizaciones.get_all()
+    industrias = Industria.query.all()
+    regiones = Subregion.query.all()
+    sedes = Sede.query.all()
+    organizaciones = Organizacion.query.all()
     tabla_usuarios = Usuario.get_table_users()
     return render_template('gestor/usuarios.html',
                          title='Gestión de Usuarios',
@@ -121,12 +122,12 @@ def aliados_usuarios():
 @login_required
 @role_required('Gestor')
 def gestor_organizaciones():
-    industrias = Industrias.get_all()
-    regiones = Subregiones.get_all()
-    organizaciones = Organizaciones.get_all()
-    table_orgs = Organizaciones.get_table_orgs()
-    regiones = Regiones.get_all()
-    subregiones = Subregiones.get_all()
+    industrias = Industria.query.all()
+    regiones = Subregion.query.all()
+    organizaciones = Organizacion.query.all()
+    table_orgs = Organizacion.get_table_orgs()
+    regiones = Region.query.all()
+    subregiones = Subregion.query.all()
     return render_template('gestor/organizaciones.html',
                          title='Gestión de Aliados',
                          subregiones=subregiones,
@@ -153,15 +154,15 @@ def gestor_portfolio():
 @role_required('Gestor')
 def gestor_asignaciones():
     consultores = Usuario.get_tbl_consultores()
-    aliados = Sedes.get_orgs()
-    comunidades = Comunidades.get_all()
+    aliados = Sede.get_orgs()
+    comunidades = Comunidad.query.get_all()
     proyectos = {p.id: p for p in Proyecto.PROYECTOS}
-    casos_uso_e = Comunidad_aliado.get_asignaciones_estrategicas()
-    casos_uso_o = Comunidad_aliado.get_asignaciones_operativas()
+    CasoUso_e = ComunidadAliado.get_asignaciones_estrategicas()
+    CasoUso_o = ComunidadAliado.get_asignaciones_operativas()
     return render_template('gestor/asignaciones.html',
                          title='Asignaciones de Consultores',
-                         casos_uso_e=casos_uso_e,
-                         casos_uso_o=casos_uso_o,
+                         CasoUso_e=CasoUso_e,
+                         CasoUso_o=CasoUso_o,
                          consultores=consultores,
                          comunidades=comunidades,
                          aliados=aliados,
@@ -177,7 +178,7 @@ def gestor_asignaciones():
 @login_required
 @role_required('Aliado')
 def proyectos_general():
-    proyectos = Casos_uso.get_projects(current_user.sede)
+    proyectos = CasoUso.get_projects(current_user.sede)
     estados = {
         'oportunidad': [p for p in proyectos if str(p['estado']) == "1"],
         'propuesta': [p for p in proyectos if str(p['estado']) == "2"],
@@ -188,8 +189,8 @@ def proyectos_general():
         'evaluacion': [p for p in proyectos if str(p['estado']) == '7'],
         'finalizados': [p for p in proyectos if str(p['estado']) == '8']
     }
-    cuentas = Cuentas.get_cuentas_by_aliado(current_user.organizacion)
-    consultores = Personas_cliente.get_consultores_aliado(current_user.sede)
+    cuentas = Cuenta.get_cuentas_by_aliado(current_user.organizacion)
+    consultores = PersonaCliente.get_consultores_aliado(current_user.sede)
     return render_template('aliados/general.html',
                          title='Gestión de Proyectos',
                          cuentas=cuentas,
@@ -202,10 +203,10 @@ def proyectos_general():
 @app.route('/cuentas/clientes')
 @login_required
 def cuentas_clientes():
-    industrias = Industrias.get_all()
-    regiones = Subregiones.get_all()
+    industrias = Industria.query.all()
+    regiones = Subregion.query.all()
     segmentacion = Segmentacion.get_all()
-    cuentas = Cuentas.get_all_tbl()
+    cuentas = Cuenta.get_all_tbl()
     return render_template('aliados/clientes.html',
                          title='Gestión de Clientes',
                          cuentas=cuentas,
@@ -214,7 +215,6 @@ def cuentas_clientes():
                          regiones=regiones,
                          config=app.config,
                          rol=current_user.rol)
-
 
 # endregion
 
@@ -225,7 +225,7 @@ def cuentas_clientes():
 def supervisor_funnel():
     if current_user.rol == 'Supervisor':
         # Obtener proyectos y agrupar por estado
-        proyectos = Casos_uso.get_projects_to_sup(current_user.id)
+        proyectos = CasoUso.get_projects_to_sup(current_user.id)
         estados = {
             'oportunidad': [p for p in proyectos if str(p[10]) == '1'],
             'propuesta': [p for p in proyectos if str(p[10]) == '2'],
@@ -319,7 +319,7 @@ def proyectos_gestion():
 @app.route('/proyectos/calculadora', methods=['GET'])
 @login_required
 def proyectos_calculadora():
-    proyectos = Casos_uso.get_projects_to_sup(current_user.id)
+    proyectos = CasoUso.get_projects_to_sup(current_user.id)
     return render_template('supervisor/calculadora.html',
                          title='Calculadora de Tiempos',
                          proyectos=proyectos,
@@ -337,11 +337,11 @@ def consultor_perfil():
     id = current_user.id
 
     usuario = Usuario.get_by_id(id)
-    consultor = Consultores.get_by_id(id)
-    exp_lab = Exp_laboral.get_by_id_usuario(id)
+    consultor = Consultor.get_by_usuario_id(id)
+    exp_lab = ExpLaboral.get_by_id_usuario(id)
     educacion = Educacion.get_by_id_usuario(id)
-    certificaciones = Certificaciones.get_by_id_usuario(id)
-    pro_destacados = Proyectos_destacados.get_by_id_usuario(id)
+    certificaciones = Certificacion.get_by_id_usuario(id)
+    pro_destacados = ProyectoDestacado.get_by_id_usuario(id)
     tecnologias = [{'id': x['id'], 'tecs':list_tecs(x['tecnologias_usadas'])} for x in pro_destacados]
     return render_template('consultor/perfil.html',
                          title='Perfil del Consultor',
@@ -964,7 +964,6 @@ def dashboard_community():
         evaluaciones_consultores=evaluaciones_consultores,
         usar_datos_extendidos=USAR_DATOS_EXTENDIDOS)
 
-
 # endregion
 
 # region API
@@ -987,26 +986,74 @@ def create_user():
         print(f"Tipo de usuario: {tipo}")
 
         if tipo == 'gestor':
-            nuevo_usuario = Usuario(data.get('nombre_completo'), data.get('organizacion'), data.get('sede'), data.get('correo'), 'password', 2, 'activo', None)
+            nuevo_usuario = Usuario(
+                data.get('nombre_completo'), 
+                data.get('organizacion'), 
+                data.get('sede'), 
+                data.get('correo'), 
+                'password', 
+                2, 
+                'activo', 
+                None)
             nuevo_usuario.create()
 
         elif tipo == 'aliado':
-            nuevo_usuario = Usuario(data.get('nombre_completo'), data.get('organizacion'), data.get('sede'), data.get('correo'), "password", 1, 'activo', None)
+            nuevo_usuario = Usuario(
+                data.get('nombre_completo'), 
+                data.get('organizacion'), 
+                data.get('sede'), 
+                data.get('correo'), 
+                "password", 
+                1, 
+                'activo', 
+                None)
             nuevo_usuario.create()
 
         elif tipo == 'empleado':
-            nuevo_usuario = Usuario(data.get('nombre_completo'), data.get('organizacion'), data.get('sede'), data.get('correo'), "password", 5, 'activo', None)
+            nuevo_usuario = Usuario(
+                data.get('nombre_completo'), 
+                data.get('organizacion'), 
+                data.get('sede'), 
+                data.get('correo'), 
+                "password", 
+                5, 
+                'activo', 
+                None)
             id_usuario = nuevo_usuario.create()
 
-            nuevo_colaborador = Colaboradores(id_usuario, data.get('organizacion'), data.get('cargo'), data.get('rol_laboral'))
-            nuevo_colaborador.create()
+            nuevo_colaborador = Colaborador(
+                id_usuario, 
+                data.get('organizacion'), 
+                data.get('cargo'), 
+                data.get('rol_laboral'))
+            nuevo_colaborador.save()
         
         elif tipo == 'freelance':
-            nuevo_usuario = Usuario(data.get('nombre_completo'), None, None, data.get('correo'), "password", 4, 'activo', None)
+            nuevo_usuario = Usuario(
+                data.get('nombre_completo'), 
+                None, 
+                None, 
+                data.get('correo'), 
+                "password", 
+                4, 
+                'activo', 
+                None)
             id = nuevo_usuario.create()
 
-            nuevo_consultor = Consultores(id, data.get('especialidad'), 90, data.get('freelanceNivel'), data.get('freelanceNivel'), formato, None, None, None, None, None, None)
-            nuevo_consultor.create()
+            nuevo_consultor = Consultor(
+                id, 
+                data.get('especialidad'), 
+                90, 
+                data.get('freelanceNivel'), 
+                data.get('freelanceNivel'), 
+                formato, 
+                None, 
+                None, 
+                None, 
+                None, 
+                None, 
+                None)
+            nuevo_consultor.save()
 
         return jsonify({'status': 'success', 'message': 'Usuario creado exitosamente'})
 
@@ -1029,7 +1076,7 @@ def create_organizacion():
 
         if data.get('tipo') == 'organizacion':
             # Crear organización
-            nueva_organizacion = Organizaciones(
+            nueva_organizacion = Organizacion(
                 data.get('nombre'),
                 data.get('industria'),
                 formato,
@@ -1038,10 +1085,10 @@ def create_organizacion():
                 data.get('tamano'),
                 data.get('empleados')
             )
-            id_org = nueva_organizacion.create()
+            id_org = nueva_organizacion.save()
 
             # Crear sede principal
-            nueva_sede = Sedes(
+            nueva_sede = Sede(
                 id_org,
                 data.get('nombreSede'),
                 data.get('region'),
@@ -1050,11 +1097,11 @@ def create_organizacion():
                 data.get('codigo_postal'),
                 data.get('pais')
             )
-            nueva_sede.create()
+            nueva_sede.save()
 
         elif data.get('tipo') == "sede":
             # Crear sede
-            nueva_sede = Sedes(
+            nueva_sede = Sede(
                 data.get('organizacion'),
                 data.get('nombreSede'),
                 data.get('region'),
@@ -1063,7 +1110,7 @@ def create_organizacion():
                 data.get('codigo_postal'),
                 data.get('pais')
             )
-            nueva_sede.create()
+            nueva_sede.save()
 
         return jsonify({'status': 'success', 'message': 'Organización creada exitosamente'})
 
@@ -1085,18 +1132,20 @@ def create_producto():
 
         print('📥 Datos recibidos:', data)
 
+        estado = data.get('estado') if data.get('estado') == "activo" else "En Revisión"
+
         nuevo_producto = Portafolio(
             data.get('nombre'),
             data.get('categoria'),
             data.get('familia'),
             data.get('descripcion'),
             data.get('tipo'),
-            data.get('estado'),
+            estado,
             formato,
-            None  # fecha_actualizacion inicialmente nula
+            fecha_actual  # fecha_actualizacion inicialmente nula
         )
 
-        nuevo_producto.create()
+        nuevo_producto.save()
 
         return jsonify({'status': 'success', 'message': 'Producto o servicio creado exitosamente'})
     
@@ -1120,22 +1169,33 @@ def create_asignacion():
 
         if tipo == 'freelance':
             
-            asignar_freelance = Personas_cliente(data.get('id_sede'), data.get('id_usuario'), data.get('rol_en_cliente'), formato)
-            asignar_freelance.create()
+            asignar_freelance = PersonaCliente(
+                data.get('id_sede'), 
+                data.get('id_usuario'), 
+                data.get('rol_en_cliente'), 
+                formato)
+            asignar_freelance.save()
 
         elif tipo == 'comunidad':
             
-            nueva_asignacion = Comunidad_aliado(data.get('id_sede'), data.get('id_comunidad'), formato, None)
-            nueva_asignacion.create()
+            nueva_asignacion = ComunidadAliado(
+                data.get('id_sede'), 
+                data.get('id_comunidad'), 
+                formato, 
+                None)
+            nueva_asignacion.save()
 
         elif tipo == 'crear_comunidad':
 
-            nueva_comunidad = Comunidades(data.get('nombre'), data.get('descripcion'), data.get('tipo_comunidad'))
-            id = nueva_comunidad.create()
+            nueva_comunidad = Comunidad(
+                data.get('nombre'), 
+                data.get('descripcion'), 
+                data.get('tipo_comunidad'))
+            id = nueva_comunidad.save()
             miembros = data.get('miembros', [])
 
             for miembro in miembros:
-                nuevo_miembro = Miembros_comunidad(id, miembro.get('usuario'), miembro.get('rol'), formato)
+                nuevo_miembro = MiembroComunidad(id, miembro.get('usuario'), miembro.get('rol'), formato)
                 nuevo_miembro.create()
 
         return jsonify({'status': 'success', 'message': 'Asignación creada exitosamente'})
@@ -1165,8 +1225,8 @@ def create_oportunidad():
         impacto = data.get('impacto')
         usuario = data.get('idSupervisor')
 
-        nuevo_caso_uso = Casos_uso(current_user.sede, usuario, cuenta, caso_uso, descripcion, impacto, None, None, None, 1, None, None, None, None, None, None, None, None)
-        nuevo_caso_uso.create()
+        nuevo_caso_uso = CasoUso(current_user.sede, usuario, cuenta, caso_uso, descripcion, impacto, None, None, None, 1, None, None, None, None, None, None, None, None)
+        nuevo_caso_uso.save()
 
         print(f"Nueva oportunidad - Cuenta: {cuenta}, Caso de uso: {caso_uso}")
         print(f"Descripción: {descripcion}")
@@ -1190,8 +1250,18 @@ def create_cliente():
 
         print(f"Datos del cliente: {data}")
         
-        nueva_cuenta = Cuentas(current_user.organizacion, data.get('nombre'), data.get('industria'), data.get('region'), None, None, None, data.get('codigo'), data.get('sector'), 'activo')
-        nueva_cuenta.create()
+        nueva_cuenta = Cuenta(
+            current_user.organizacion, 
+            data.get('nombre'), 
+            data.get('industria'), 
+            data.get('region'), 
+            None, 
+            None, 
+            None, 
+            data.get('codigo'), 
+            data.get('sector'), 
+            'activo')
+        nueva_cuenta.save()
 
         return jsonify({'status': 'success', 'message': 'Cliente creado exitosamente'})
 
@@ -1215,7 +1285,13 @@ def update_oportunidad():
         valor = data.get('valor')
 
         if campo and valor and proyecto_id:
-            Casos_uso.update(campo, valor, proyecto_id)
+            proyecto = CasoUso.query.get(proyecto_id)
+            if proyecto:
+                setattr(proyecto, campo, valor)
+                db.session.commit()
+            else:
+                # manejar error si no se encuentra
+                raise ValueError("Caso de uso no encontrado.")
             return jsonify({'status': 'success', 'message': f'Campo {campo} actualizado'})
         else:
             return jsonify({'status': 'error', 'message': 'Faltan datos en la solicitud'}), 400
@@ -1235,23 +1311,28 @@ def cambio_estado_caso_uso():
         nuevo_estado = data['estado']
 
         # Consultar estado actual del caso de uso
-        estado_actual = Casos_uso.get_by_id(id_caso)
+        estado_actual = CasoUso.get_by_id(id_caso)
+        caso = CasoUso.query.get(id_caso)
 
         # Validación de rol: Aliado
         if current_user.rol == "Aliado":
             if estado_actual[10] == '2' and nuevo_estado == 'aprobado':
-                Casos_uso.update('estado', '3', id_caso)
+                if caso:
+                    setattr('estado', 3)
             elif estado_actual[10] == '3' and nuevo_estado == 'propuesta':
-                Casos_uso.update('estado', '2', id_caso)
+                if caso:
+                    setattr('estado', '2')
             else:
                 return jsonify({'error': 'Transición no permitida para Aliado'}), 403
 
         # Validación de rol: Supervisor
         else:
             if estado_actual[10] == '1' and nuevo_estado == 'propuesta':
-                Casos_uso.update('estado', '2', id_caso)
+                if caso:
+                    setattr('estado', '2')
             elif estado_actual[10] == '2' and nuevo_estado == 'oportunidad':
-                Casos_uso.update('estado', '1', id_caso)
+                if caso:
+                    setattr('estado', '1')
             else:
                 return jsonify({'error': 'Transición no permitida para Supervisor'}), 403
 
@@ -1312,19 +1393,19 @@ def crear_estimacion():
                         "pesimista": task["pessimistic"]
                     })
 
-        nueva_estimacion = Estimaciones(id_caso_uso, caso_uso)
-        id_estimacion = nueva_estimacion.create()
+        nueva_estimacion = Estimacion(id_caso_uso, caso_uso)
+        id_estimacion = nueva_estimacion.save()
 
         # Creación de entregables relacionados con la estimación
         for ent in entregables:
-            nuevo_entregable = Entregables(id_estimacion, ent['nombre'], None, None, 9, None, None, 1, fecha_creacion, fecha_creacion, usuario)
-            id_entregable = nuevo_entregable.create()
+            nuevo_entregable = Entregable(id_estimacion, ent['nombre'], None, None, 9, None, None, 1, fecha_creacion, fecha_creacion, usuario)
+            id_entregable = nuevo_entregable.save()
 
             # Creación de actividades relacionadas a cda entregable
             for act in actividades:
                 if ent['id'] == act['id_entregable']:
-                    nueva_actividad = Actividades(id_entregable, act['nombre'], None, 9, None, None, None, None, None, None, None, None, fecha_creacion, fecha_creacion, usuario)
-                    id_actividad = nueva_actividad.create()
+                    nueva_actividad = Actividad(id_entregable, act['nombre'], None, 9, None, None, None, None, None, None, None, None, fecha_creacion, fecha_creacion, usuario)
+                    id_actividad = nueva_actividad.save()
 
                     # Creación de tareas relacionadas a cada actividad
                     for tra in tareas:
@@ -1334,20 +1415,20 @@ def crear_estimacion():
                             pesimista = tra['pesimista']
                             estimada = (optimista + 4*mas_probable + pesimista) / 6
 
-                            nueva_tarea = Tareas(id_actividad, tra['nombre'], None, 9, None, optimista, mas_probable, pesimista, estimada, None, None, None, None, None, fecha_creacion, fecha_creacion, usuario)
+                            nueva_tarea = Tarea(id_actividad, tra['nombre'], None, 9, None, optimista, mas_probable, pesimista, estimada, None, None, None, None, None, fecha_creacion, fecha_creacion, usuario)
 
-                            nueva_tarea.create()
+                            nueva_tarea.save()
 
         resources = data['costs']['resources']['items']
         freelance = data['costs']['freelance']['items']
 
         for rec in resources:
-            nuevo_recurso = Costos_recursos(id_estimacion, rec['type'], rec['concept'], rec['periodicity'], rec['currency'], rec['quantity'], rec['cost'])
-            nuevo_recurso.create()
+            nuevo_recurso = CostoRecurso(id_estimacion, rec['type'], rec['concept'], rec['periodicity'], rec['currency'], rec['quantity'], rec['cost'])
+            nuevo_recurso.save()
 
         for fre in freelance:
-            nuevo_freelance = Costos_freelance(id_estimacion, fre['specialty'], fre['level'], fre['rate'], fre['activity'], fre['hours'])
-            nuevo_freelance.create()
+            nuevo_freelance = CostoFreelance(id_estimacion, fre['specialty'], fre['level'], fre['rate'], fre['activity'], fre['hours'])
+            nuevo_freelance.save()
 
         return jsonify({'status': 'success', 'message': 'Estimación guardada exitosamente'})
 
@@ -1381,7 +1462,7 @@ def update_informacion_personal():
         tarifa_hora = data.get('tarifa_hora').replace("$", "").replace("USD", "").strip()
         resumen = data.get('resumen')
 
-        Consultores.update(telefono, linkedin, especialidad, nivel, direccion, ciudad, codigo_postal, pais, tarifa_hora, resumen, userId)
+        Consultor.update_info(telefono, linkedin, especialidad, nivel, direccion, ciudad, codigo_postal, pais, tarifa_hora, resumen, userId)
 
         return jsonify({
             'status': 'success', 
@@ -1433,8 +1514,8 @@ def create_experiencia_laboral():
         if not trabajo_actual and not fecha_fin:
             return jsonify({'status': 'error', 'message': 'Debe especificar fecha de fin o marcar como trabajo actual'}), 400
 
-        nueva_experiencia = Exp_laboral(current_user.id, puesto, empresa, descripcion, fecha_inicio, fecha_fin, ubicacion, tipo_empleo, sector, logros)
-        nueva_experiencia.create()
+        nueva_experiencia = ExpLaboral(current_user.id, puesto, empresa, descripcion, fecha_inicio, fecha_fin, ubicacion, tipo_empleo, sector, logros)
+        nueva_experiencia.save()
 
         return jsonify({
             'status': 'success', 
@@ -1474,7 +1555,7 @@ def api_educacion():
         fecha_fin = data.get('fecha_fin') if data.get('fecha_fin') else None
         
         nueva_educacion = Educacion(current_user.id, data.get('institucion'), data.get('titulo'), data.get('area_estudio'), data.get('fecha_inicio'), fecha_fin, data.get('descripcion'))
-        nueva_educacion.create()
+        nueva_educacion.save()
 
         return jsonify({
             'status': 'success',
@@ -1495,7 +1576,7 @@ def api_certificaciones():
         
         fecha_vencimiento = data.get('fecha_vencimiento') if data.get('fecha_vencimiento') else None
 
-        nuevo_cert = Certificaciones(current_user.id, data.get('nombre'), data.get('organizacion'), data.get('fecha_obtencion'), fecha_vencimiento, data.get('url_verificacion'), data.get('credencial'), data.get('descripcion'))
+        nuevo_cert = Certificacion(current_user.id, data.get('nombre'), data.get('organizacion'), data.get('fecha_obtencion'), fecha_vencimiento, data.get('url_verificacion'), data.get('credencial'), data.get('descripcion'))
         nuevo_cert.create()
         
         return jsonify({"status": "success", "message": "Certificación guardada correctamente"})
@@ -1508,16 +1589,14 @@ def add_proyecto_destacado():
     try:
         data = request.get_json()
 
-        print(data)
-
         # Validar campos requeridos
         required_fields = ['titulo', 'fecha_inicio', 'descripcion']
         for field in required_fields:
             if not data.get(field):
                 return jsonify({'status': 'error', 'message': f'El campo {field} es requerido'})
 
-        nuevo_pd = Proyectos_destacados(current_user.id, data.get('titulo'), data.get('descripcion'), data.get('tecnologias'), data.get('fecha_inicio'), data.get('fecha_fin'), data.get('url_proyecto'))
-        nuevo_pd.create()
+        nuevo_pd = ProyectoDestacado(current_user.id, data.get('titulo'), data.get('descripcion'), data.get('tecnologias'), data.get('fecha_inicio'), data.get('fecha_fin'), data.get('url_proyecto'))
+        nuevo_pd.save()
 
         return jsonify({'status': 'success', 'message': 'Proyecto destacado agregado correctamente'})
 

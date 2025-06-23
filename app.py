@@ -4,6 +4,10 @@ from flask import Flask
 from flask_login import LoginManager
 from config import Config
 from datetime import timedelta
+from flask_sqlalchemy import SQLAlchemy
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
@@ -20,6 +24,24 @@ app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'  # Permite que se mantengan en red
 app.config['SESSION_COOKIE_HTTPONLY'] = True  # Seguridad JS
 app.config['REMEMBER_COOKIE_DURATION'] = timedelta(days=1)
 
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-secret-key-change-this')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///survey_platform.db')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+    'pool_pre_ping': True,
+    'pool_recycle': 300,
+    'pool_timeout': 20,
+    'max_overflow': 0,
+    'pool_size': 5,
+    'connect_args': {
+        'connect_timeout': 10
+    }
+}
+
+print("Conexión a base de datos:", os.environ.get("DATABASE_URL"))
+
+# Initialize extensions
+db = SQLAlchemy(app)
 
 # Aplicar la configuración de Config a la app
 # app.config.from_object(Config)
