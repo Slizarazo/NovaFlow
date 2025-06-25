@@ -87,7 +87,7 @@ CREATE TABLE IF NOT EXISTS neuron.consultores (
     id INT PRIMARY KEY AUTO_INCREMENT,
     id_usuario INT,
     especialidad VARCHAR(255),
-    disponibilidad VARCHAR(255),
+    disponibilidad INT,
     nivel_segun_usuario FLOAT,
     nivel_segun_gestor FLOAT,
     fecha_incorporacion DATE,
@@ -428,6 +428,18 @@ INSERT INTO neuron.estados (id, nombre, descripcion, entidad) VALUES
 (22, 'Bloqueado', 'Usuario con acceso restringido por intentos fallidos de autenticación o incidentes.', 'usuario'),
 (23, 'Verificado', 'Usuario que ha completado validaciones requeridas (correo, identidad, etc.).', 'usuario'),
 (24, 'No Verificado', 'Usuario pendiente de verificación de datos clave.', 'usuario');
+
+INSERT INTO neuron.estados (id, nombre, descripcion, entidad) VALUES
+(25, 'Idea', 'El producto o servicio ha sido propuesto pero aún no se ha evaluado formalmente.', 'portafolio'),
+(26, 'En análisis', 'Se están evaluando su viabilidad técnica, comercial o estratégica.', 'portafolio'),
+(27, 'Planeado', 'Se ha aprobado y planificado su desarrollo, con tiempos y recursos asignados.', 'portafolio'),
+(28, 'En desarrollo', 'Está siendo construido, diseñado o implementado.', 'portafolio'),
+(29, 'En pruebas', 'Se encuentra en fase de validación técnica o funcional antes de ser lanzado.', 'portafolio'),
+(30, 'Disponible', 'Ya está en uso o comercialización, accesible para los clientes o usuarios.', 'portafolio'),
+(31, 'En mejora continua', 'Está activo, pero se encuentra en proceso de recibir mejoras incrementales.', 'portafolio'),
+(32, 'Obsoleto', 'Aún existe, pero ha sido reemplazado o ya no recibe mejoras.', 'portafolio'),
+(33, 'Suspendido', 'Se ha pausado temporalmente su desarrollo, uso o comercialización.', 'portafolio'),
+(34, 'Descontinuado', 'Se ha retirado completamente del mercado o del portafolio.', 'portafolio');
 
 INSERT INTO neuron.roles (id, nombre) VALUES
 (1, 'Aliado'),

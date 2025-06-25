@@ -188,12 +188,16 @@
 
 {% block content %}
 <div class="dashboard-container">
+    <!-- Encabezado y botones cabecera -->
     <div class="dashboard-section-title">
         <h4>Asignaciones de Consultores</h4>
         <div class="action-buttons">
+            <!-- Botón Nueva Asignación -->
             <button type="button" class="action-button" data-bs-toggle="modal" data-bs-target="#addAssignmentModal" title="Nueva Asignación">
                 <i data-feather="plus"></i>
             </button>
+
+            <!-- Gestión de Datos -->
             <div class="dropdown">
                 <button type="button" class="action-button dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" title="Gestión de Datos" onclick="showDataManagementModal()">
                     <i data-feather="database"></i>
@@ -329,7 +333,7 @@
         </div>
     </div>
     
-    <!-- Current Assignments -->
+    <!-- Asignaciones Actuales -->
     <div class="dashboard-section-title">
         <h4>Asignaciones Actuales</h4>
     </div>
@@ -340,7 +344,7 @@
         <div class="col-md-6">
             <h6 class="mb-3">Asignaciones Operativas</h6>
             <div class="d-flex flex-wrap gap-3">
-                {% for asignacion in casos_uso_o %}
+                {% for asignacion in CasoUso_o %}
                 <div class="card shadow-sm p-3" style="min-width: 250px; max-width: 300px; margin: 5px;">
                     <h6 class="mb-1">{{ asignacion[1] }}</h6>
                     <small class="text-muted d-block">Organización: {{ asignacion[0] }}</small>
@@ -371,7 +375,7 @@
         <div class="col-md-6">
             <h6 class="mb-3">Asignaciones Estratégicas</h6>
             <div class="d-flex flex-wrap gap-3">
-                {% for n in casos_uso_e %}
+                {% for n in CasoUso_e %}
                 <div class="card shadow-sm p-3" style="min-width: 250px; max-width: 300px; margin: 5px;">
                     <h6 class="mb-1">{{ n[3] }}</h6>
                     <small class="text-muted d-block mb-1">Organización: {{ n[0] }}</small>
@@ -393,7 +397,7 @@
 
     </div>
     
-    <!-- Consultant Retention Process -->
+    <!-- Proceso de Retencion de Talento -->
     <div class="dashboard-section-title mt-3">
         <h4>Proceso de Retención de Talento (bajo validación)</h4>
     </div>
@@ -620,6 +624,7 @@
                     <div id="assignmentTypeSelection">
                         <h6 style="color: #4a5568; font-weight: 600; margin-bottom: 20px;">Tipo de Asignación</h6>
                         <div class="d-grid gap-3">
+                            <!-- Botón Asignar Comunidad -->
                             <button type="button" class="btn btn-outline-primary btn-lg assignment-option-btn" onclick="selectAssignmentType('comunidad')">
                                 <div class="d-flex align-items-center w-100">
                                     <i data-feather="users" style="width: 24px; height: 24px; margin-right: 15px; color: #667eea; flex-shrink: 0;"></i>
@@ -629,6 +634,8 @@
                                     </div>
                                 </div>
                             </button>
+
+                            <!-- Botón Asignar Freelance -->
                             <button type="button" class="btn btn-outline-primary btn-lg assignment-option-btn" onclick="selectAssignmentType('freelance')">
                                 <div class="d-flex align-items-center w-100">
                                     <i data-feather="user" style="width: 24px; height: 24px; margin-right: 15px; color: #667eea; flex-shrink: 0;"></i>
@@ -638,6 +645,8 @@
                                     </div>
                                 </div>
                             </button>
+
+                            <!-- Botón Crear Comunidad -->
                             <button type="button" class="btn btn-outline-primary btn-lg assignment-option-btn" onclick="selectAssignmentType('crear_comunidad')">
                                 <div class="d-flex align-items-center w-100">
                                     <i data-feather="users" style="width: 24px; height: 24px; margin-right: 15px; color: #667eea; flex-shrink: 0;"></i>
@@ -650,8 +659,7 @@
                         </div>
                     </div>
                     
-                    
-                    
+                    <!-- Formulario Asignar Freelance -->
                     <div id="freelanceForm" style="display: none;">
                         <button type="button" class="btn btn-link p-0 mb-3" onclick="backToTypeSelection()" style="color: #667eea; text-decoration: none;">
                             <i data-feather="arrow-left" style="width: 16px; height: 16px; margin-right: 5px;"></i>
@@ -698,6 +706,7 @@
                         </form>
                     </div>
                     
+                    <!-- Formulario Asignar Comunidad -->
                     <div id="comunidadForm">
                         <button type="button" class="btn btn-link p-0 mb-3" onclick="backToTypeSelection()">
                             <i data-feather="arrow-left"></i>
@@ -722,13 +731,14 @@
                                 <select class="form-select" id="comunidadSelect" required>
                                     <option value="">Seleccionar comunidad...</option>
                                     {% for com in comunidades %}
-                                    <option value="{{ com[0] }}">{{ com[1] }}</option>
+                                    <option value="{{ com.id }}">{{ com.nombre }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
                         </form>
                     </div>
-
+                    
+                    <!-- Formulario Crear Comunidad -->
                     <div id="crearComunidadForm" style="display: none;">
                         <button type="button" class="btn btn-link p-0 mb-3" onclick="backToTypeSelection()" style="color: #667eea; text-decoration: none;">
                             <i data-feather="arrow-left" style="width: 16px; height: 16px; margin-right: 5px;"></i>

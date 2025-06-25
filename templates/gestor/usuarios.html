@@ -105,19 +105,18 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Example users -->
                         {% for tu in tabla_usuarios %}
-                        <tr data-organizacion="{{ tu[2] }}" data-rol="{{ tu[5] }}" data-estado="{{ tu[6] }}">
-                            <td>{{ tu[1] }}</td>
-                            <td>{{ tu[4] }}</td>
-                            <td>{{ tu[2] }}</td>
-                            <td>{{ tu[5] }}</td>
-                            {% if tu[6] == 'Pendiente' %}
-                            <td><span class="badge bg-warning">{{ tu[6] }}</span></td>
-                            {% elif tu[6] == "activo" %}
-                            <td><span class="badge bg-success">{{ tu[6] }}</span></td>
-                            {% elif tu[6] == "Inactivo" %}
-                            <td><span class="badge bg-danger">{{ tu[6] }}</span></td>
+                        <tr data-organizacion="{{ tu.rel_organizaciones.nombre }}" data-rol="{{ tu.rel_roles.nombre }}" data-estado="{{ tu.rel_estados.nombre }}">
+                            <td>{{ tu.nombre }}</td>
+                            <td>{{ tu.correo }}</td>
+                            <td>{{ tu.rel_organizaciones.nombre }}</td>
+                            <td>{{ tu.rel_roles.nombre }}</td>
+                            {% if tu.rel_estados.nombre == 'Pendiente' %}
+                            <td><span class="badge bg-warning">{{ tu.rel_estados.nombre }}</span></td>
+                            {% elif tu.rel_estados.nombre == "Activo" %}
+                            <td><span class="badge bg-success">{{ tu.rel_estados.nombre }}</span></td>
+                            {% elif tu.rel_estados.nombre == "Inactivo" %}
+                            <td><span class="badge bg-danger">{{ tu.rel_estados.nombre }}</span></td>
                             {% endif %}
                             <td>
                                 <div class="btn-group">
@@ -233,7 +232,7 @@
                                 <select class="form-select" id="gestorOrganizacion">
                                     <option value="">Seleccionar...</option>
                                     {% for o in organizaciones %}
-                                    <option value="{{ o[0] }}">{{ o[1] }}</option>
+                                    <option value="{{ o.id }}">{{ o.nombre }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
@@ -243,8 +242,8 @@
                                     <select class="form-select" id="gestorSede">
                                     <option value="">Seleccionar...</option>
                                     {% for org in organizaciones %}{% for sede in sedes %}
-                                    {% if org[0] == sede[1] %}
-                                    <option value="{{ org[0] }}">{{ org[1] }} {{ sede[2] }}</option>
+                                    {% if org.id == sede.id_organizacion %}
+                                    <option value="{{ sede.id }}">{{ org.nombre }} - {{ sede.nombre_sede }}</option>
                                     {% endif %}
                                     {% endfor %}{% endfor %}
                                 </select>
@@ -268,7 +267,7 @@
                                 <select class="form-select" id="aliadoOrganizacion">
                                     <option value="">Seleccionar...</option>
                                     {% for o in organizaciones %}
-                                    <option value="{{ o[0] }}">{{ o[1] }}</option>
+                                    <option value="{{ o.id }}">{{ o.nombre }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
@@ -277,9 +276,9 @@
                                 <select class="form-select" id="aliadoSede">
                                     <option value="">Seleccionar...</option>
                                     {% for s in sedes %}
-                                    <option value="{{ s[0] }}">
-                                        {% for org in organizaciones %}{% if org[0] == s[1] %}
-                                        {{ org[1] }} - {{ s[2] }}
+                                    <option value="{{ s.id }}">
+                                        {% for org in organizaciones %}{% if org.id == s.id_organizacion %}
+                                        {{ org.nombre }} - {{ s.nombre_sede }}
                                         {% endif %}{% endfor %}
                                     </option>
                                     {% endfor %}
@@ -299,7 +298,7 @@
                                     <select class="form-select" id="aliadoRegion">
                                         <option value="">Seleccionar...</option>
                                         {% for r in regiones %}
-                                        <option value="{{ r[0] }}">{{ r[1] }} ({{ r[2] }})</option>
+                                        <option value="{{ r.id }}">{{ r.nombre }} ({{ r.codigo }})</option>
                                         {% endfor %}
                                     </select>
                                 </div>
@@ -322,7 +321,7 @@
                                 <select class="form-select" id="empleadoOrganizacion">
                                     <option value="">Seleccionar...</option>
                                     {% for o in organizaciones %}
-                                    <option value="{{ o[0] }}">{{ o[1] }}</option>
+                                    <option value="{{ o.id }}">{{ o.nombre }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
@@ -331,9 +330,9 @@
                                 <select class="form-select" id="empleadoSede">
                                     <option value="">Seleccionar...</option>
                                     {% for s in sedes %}
-                                    <option value="{{ s[0] }}">
-                                        {% for org in organizaciones %}{% if org[0] == s[1] %}
-                                        {{ org[1] }} - {{ s[2] }}
+                                    <option value="{{ s.id }}">
+                                        {% for org in organizaciones %}{% if org.id == s.id_organizacion %}
+                                        {{ org.nombre }} - {{ s.nombre_sede }}
                                         {% endif %}{% endfor %}
                                     </option>
                                     {% endfor %}

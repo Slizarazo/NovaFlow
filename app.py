@@ -25,7 +25,7 @@ app.config['SESSION_COOKIE_HTTPONLY'] = True  # Seguridad JS
 app.config['REMEMBER_COOKIE_DURATION'] = timedelta(days=1)
 
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-secret-key-change-this')
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///survey_platform.db')
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root@localhost/neuron'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
     'pool_pre_ping': True,
@@ -37,8 +37,6 @@ app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
         'connect_timeout': 10
     }
 }
-
-print("Conexión a base de datos:", os.environ.get("DATABASE_URL"))
 
 # Initialize extensions
 db = SQLAlchemy(app)

@@ -92,7 +92,7 @@
                         <select class="form-control" id="id_supervisor" name="supervisor" required style="border: 1px solid #ddd; border-radius: 8px; padding: 0.75rem; font-size: 0.95rem; width: 100%; background-color: #f8f9fa;">
                             <option value="">Seleccionar supervisor...</option>
                             {% for sup in consultores %}
-                            <option value="{{ sup[0] }}">{{ sup[1] }}</option>
+                            <option value="{{ sup.id_usuario }}">{{ sup.nombre }}</option>
                             {% endfor %}
                         </select>
                     </div>
@@ -101,7 +101,7 @@
                         <select class="form-control" id="cuenta" name="cuenta" required style="border: 1px solid #ddd; border-radius: 8px; padding: 0.75rem; font-size: 0.95rem; width: 100%; background-color: #f8f9fa;">
                             <option value="">Seleccionar cuenta...</option>
                             {% for cuenta in cuentas %}
-                            <option value="{{ cuenta[0] }}">{{ cuenta[2] }}</option>
+                            <option value="{{ cuenta.id }}">{{ cuenta.nombre }}</option>
                             {% endfor %}
                         </select>
                     </div>
@@ -163,14 +163,14 @@
             </thead>
             <tbody>
                 <tr>
-                    {% for estado, id in [('1','oportunidad'), ('2','propuesta'), ('3','aprobado'), ('4','desarrollo'), ('5','testing'), ('6','cierre'), ('7','evaluacion')] %}
+                    {% for estado, id in [(1,'oportunidad'), (2,'propuesta'), (3,'aprobado'), (4,'desarrollo'), (5,'testing'), (6,'cierre'), (7,'evaluacion')] %}
                     <td id="col-{{ id }}" class="estado-columna" style="min-width: 200px;">
                         {% for proy in proyectos %}
-                            {% if proy['estado'] == estado %}
-                            <div class="card mb-2" data-id="{{ proy['id'] }}" onclick="openProyectoModal({{ proy['id'] }}, '{{ id }}')" data-estado="{{ proy['estado'] }}">
+                            {% if proy.estado == estado %}
+                            <div class="card mb-2" data-id="{{ proy.id }}" onclick="openProyectoModal({{ proy.id }}, '{{ id }}')" data-estado="{{ proy.estado }}">
                                 <div class="card-body p-2">
-                                    <h6 class="card-title mb-1">{{ proy['descripcion'] }}</h6>
-                                    <small class="text-muted">ID: {{ proy['id'] }}</small>
+                                    <h6 class="card-title mb-1">{{ proy.descripcion }}</h6>
+                                    <small class="text-muted">ID: {{ proy.id }}</small>
                                 </div>
                             </div>
                             {% endif %}
@@ -271,7 +271,7 @@
 <script>
     const proyectosData = {
         {% for proy in proyectos %}
-            {{ proy['id'] }}: {{ proy | tojson }},
+            {{ proy.id }}: {{ proy | tojson }}{{ "," if not loop.last else "" }}
         {% endfor %}
     };
 </script>
@@ -290,22 +290,22 @@ function openProyectoModal(proyectoId, estado) {
 
     // Llenar los campos del modal
     document.getElementById('modal_id').textContent = proyecto['id'];
-    document.getElementById('modal_id_usuario').textContent = proyecto['nombre_usuario'];
-    document.getElementById('modal_id_cuenta').textContent = proyecto['nombre_cuenta'];
+    document.getElementById('modal_id_usuario').textContent = proyecto['usuario'];
+    document.getElementById('modal_id_cuenta').textContent = proyecto['cuenta'];
     document.getElementById('modal_caso_uso').textContent = proyecto['caso_uso'];
     document.getElementById('modal_descripcion').textContent = proyecto['descripcion'];
     document.getElementById('modal_impacto').textContent = proyecto['impacto'];
-    document.getElementById('modal_punt_impacto').textContent = proyecto['p_impacto'];
-    document.getElementById('modal_punt_tecnica').textContent = proyecto['p_tecnica'];
+    document.getElementById('modal_punt_impacto').textContent = proyecto['puntuacion_impacto'];
+    document.getElementById('modal_punt_tecnica').textContent = proyecto['puntuacion_tecnica'];
     document.getElementById('modal_tags').textContent = proyecto['tags'];
     document.getElementById('modal_estado').textContent = estado;
     document.getElementById('modal_id_producto').textContent = proyecto['producto'];
     document.getElementById('modal_fecha_inicio').textContent = proyecto['fecha_inicio'];
-    document.getElementById('modal_fecha_cierre').textContent = proyecto['fecha_fin'];
+    document.getElementById('modal_fecha_cierre').textContent = proyecto['fecha_cierre'];
     document.getElementById('modal_monto_venta').textContent = formatoMoneda.format(proyecto['monto_venta']);
     document.getElementById('modal_costos_proyecto').textContent = formatoMoneda.format(proyecto['costos_proyecto']);
-    document.getElementById('modal_margen_porcentaje').textContent = proyecto['mep'];
-    document.getElementById('modal_margen_bruto').textContent = proyecto['meb'];
+    document.getElementById('modal_margen_porcentaje').textContent = proyecto['margen_estimado_porcentaje'];
+    document.getElementById('modal_margen_bruto').textContent = proyecto['margen_estimado_bruto'];
 
     // Mostrar el modal (usando Bootstrap 5)
     const modal = new bootstrap.Modal(document.getElementById('proyectoDetallesModal'));

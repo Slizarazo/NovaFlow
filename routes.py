@@ -6,7 +6,7 @@ from flask_login import login_user, logout_user, login_required, current_user
 from app import app
 from controllers import *
 from models import User, Aliado, Proyecto, Consultor, DatosDashboard
-from models import Usuario, Portafolio, UserAcces, Segmentacion, Educacion, Organizacion, Industria, Subregion, Sede, Region, Comunidad, ComunidadAliado, CasoUso, Cuenta, PersonaCliente, Consultor, ExpLaboral, Certificacion, ProyectoDestacado, Colaborador, MiembroComunidad, Estimacion, Entregable, Actividad, Tarea, CostoRecurso, CostoFreelance
+from models import Usuario, Portafolio, UserAcces, Segmentacion, Educacion, Organizacion, Industria, Subregion, Sede, Region, Comunidad, ComunidadAliado, CasoUso, Cuenta, PersonaCliente, Consultor, ExpLaboral, Certificacion, ProyectoDestacado, Colaborador, MiembroComunidad, Estimacion, Entregable, Actividad, Tarea, CostoRecurso, CostoFreelance, Estado
 from config import Config
 from graphs import *
 from datetime import datetime, date
@@ -53,22 +53,27 @@ def login():
         username = request.form.get('username')
         password = request.form.get('password')
 
-        usuario = UserAcces.get_by_access(username)
+        usuario = Usuario.get_id_by_correo(username)
         
-        if usuario and UserAcces.check_password(password, usuario[5]):
+        if usuario and UserAcces.check_password(password, usuario.contrasena):
             user_acces = UserAcces(
-                usuario[0],
-                usuario[1],
-                usuario[2],
-                usuario[3],
-                usuario[4],
-                usuario[5],
-                usuario[6],
-                usuario[7],
-                usuario[8]
+                usuario.id,
+                usuario.nombre,
+                usuario.rel_organizaciones.nombre if usuario.rel_organizaciones else None,
+                usuario.rel_sedes.nombre_sede if usuario.rel_sedes else None,
+                usuario.correo,
+                usuario.contrasena,
+                usuario.rel_roles.nombre if usuario.rel_roles else None,
+                usuario.rel_estados.nombre if usuario.estado else None,
+                usuario.ultimo_login
             )
 
             login_user(user_acces)
+
+            if current_user.is_authenticated:
+                print(f"Sesión iniciada para: {current_user.nombre}")
+            else:
+                print("No se inició sesión.")
 
             if current_user.rol == 'Freelance':
                 return redirect(url_for('consultor_perfil'))
@@ -106,7 +111,7 @@ def aliados_usuarios():
     regiones = Subregion.query.all()
     sedes = Sede.query.all()
     organizaciones = Organizacion.query.all()
-    tabla_usuarios = Usuario.get_table_users()
+    tabla_usuarios = Usuario.query.all()
     return render_template('gestor/usuarios.html',
                          title='Gestión de Usuarios',
                          tabla_usuarios=tabla_usuarios,
@@ -128,6 +133,7 @@ def gestor_organizaciones():
     table_orgs = Organizacion.get_table_orgs()
     regiones = Region.query.all()
     subregiones = Subregion.query.all()
+    paises = Sede.get_paises()
     return render_template('gestor/organizaciones.html',
                          title='Gestión de Aliados',
                          subregiones=subregiones,
@@ -136,6 +142,7 @@ def gestor_organizaciones():
                          regiones=regiones,
                          organizaciones=organizaciones,
                          config=app.config,
+                         paises=paises,
                          rol=current_user.rol)
 
 @app.route('/gestor/portfolio')
@@ -143,10 +150,12 @@ def gestor_organizaciones():
 @role_required('Gestor')
 def gestor_portfolio():
     portafolio = Portafolio.get_all()
-    return render_template('gestor/portfolio.html',
+    estados = Estado.query.filter_by(entidad='portafolio').all()
+    return render_template('gestor/portafolio.html',
                          title='Portafolio',
                          portafolio=portafolio,
                          config=app.config,
+                         estados=estados,
                          rol=current_user.rol)
 
 @app.route('/gestor/asignaciones')
@@ -155,7 +164,7 @@ def gestor_portfolio():
 def gestor_asignaciones():
     consultores = Usuario.get_tbl_consultores()
     aliados = Sede.get_orgs()
-    comunidades = Comunidad.query.get_all()
+    comunidades = Comunidad.query.all()
     proyectos = {p.id: p for p in Proyecto.PROYECTOS}
     CasoUso_e = ComunidadAliado.get_asignaciones_estrategicas()
     CasoUso_o = ComunidadAliado.get_asignaciones_operativas()
@@ -178,23 +187,27 @@ def gestor_asignaciones():
 @login_required
 @role_required('Aliado')
 def proyectos_general():
-    proyectos = CasoUso.get_projects(current_user.sede)
+    sede = Sede.query.filter_by(nombre_sede=current_user.sede).one()
+    organizacion = Organizacion.query.filter_by(nombre=current_user.organizacion).one()
+
+    proyectos = CasoUso.query.filter_by(id_aliado=sede.id).all()
     estados = {
-        'oportunidad': [p for p in proyectos if str(p['estado']) == "1"],
-        'propuesta': [p for p in proyectos if str(p['estado']) == "2"],
-        'aprobado': [p for p in proyectos if str(p['estado']) == "3"],
-        'desarrollo': [p for p in proyectos if str(p['estado']) == '4'],
-        'testing': [p for p in proyectos if str(p['estado']) == '5'],
-        'cierre': [p for p in proyectos if str(p['estado']) == '6'],
-        'evaluacion': [p for p in proyectos if str(p['estado']) == '7'],
-        'finalizados': [p for p in proyectos if str(p['estado']) == '8']
+        'oportunidad': [p for p in proyectos if p.estado == 1],
+        'propuesta': [p for p in proyectos if str(p.estado) == 2],
+        'aprobado': [p for p in proyectos if str(p.estado) == 3],
+        'desarrollo': [p for p in proyectos if str(p.estado) == 4],
+        'testing': [p for p in proyectos if str(p.estado) == 5],
+        'cierre': [p for p in proyectos if str(p.estado) == 6],
+        'evaluacion': [p for p in proyectos if str(p.estado) == 7]
     }
-    cuentas = Cuenta.get_cuentas_by_aliado(current_user.organizacion)
-    consultores = PersonaCliente.get_consultores_aliado(current_user.sede)
+    proyectos_serializados = [p.to_dict() for p in proyectos]
+    print(proyectos_serializados)
+    cuentas = Cuenta.get_cuentas_by_aliado(organizacion.id)
+    consultores = PersonaCliente.get_consultores_aliado(sede.id)
     return render_template('aliados/general.html',
                          title='Gestión de Proyectos',
                          cuentas=cuentas,
-                         proyectos=proyectos,
+                         proyectos=proyectos_serializados,
                          estados=estados,
                          consultores=consultores,
                          config=app.config,
@@ -987,72 +1000,74 @@ def create_user():
 
         if tipo == 'gestor':
             nuevo_usuario = Usuario(
-                data.get('nombre_completo'), 
-                data.get('organizacion'), 
-                data.get('sede'), 
-                data.get('correo'), 
-                'password', 
-                2, 
-                'activo', 
-                None)
-            nuevo_usuario.create()
+                nombre=data.get('nombre_completo'), 
+                id_organizacion=data.get('organizacion'), 
+                id_sede=data.get('sede'), 
+                correo=data.get('correo'), 
+                contrasena='password', 
+                id_rol=2, 
+                estado=17, 
+                ultimo_login=None)
+            nuevo_usuario.save()
 
         elif tipo == 'aliado':
             nuevo_usuario = Usuario(
-                data.get('nombre_completo'), 
-                data.get('organizacion'), 
-                data.get('sede'), 
-                data.get('correo'), 
-                "password", 
-                1, 
-                'activo', 
-                None)
-            nuevo_usuario.create()
+                nombre=data.get('nombre_completo'), 
+                id_organizacion=data.get('organizacion'), 
+                id_sede=data.get('sede'), 
+                correo=data.get('correo'), 
+                contrasena="password", 
+                id_rol=1, 
+                estado=17, 
+                ultimo_login=None)
+            nuevo_usuario.save()
 
         elif tipo == 'empleado':
             nuevo_usuario = Usuario(
-                data.get('nombre_completo'), 
-                data.get('organizacion'), 
-                data.get('sede'), 
-                data.get('correo'), 
-                "password", 
-                5, 
-                'activo', 
-                None)
-            id_usuario = nuevo_usuario.create()
+                nombre=data.get('nombre_completo'), 
+                id_organizacion=data.get('organizacion'), 
+                id_sede=data.get('sede'), 
+                correo=data.get('correo'), 
+                contrasena="password", 
+                id_rol=5, 
+                estado=17, 
+                ultimo_login=None)
+            id_usuario = nuevo_usuario.save()
 
             nuevo_colaborador = Colaborador(
-                id_usuario, 
-                data.get('organizacion'), 
-                data.get('cargo'), 
-                data.get('rol_laboral'))
+                id_usuario=id_usuario, 
+                id_organizacion=data.get('organizacion'), 
+                cargo=data.get('cargo'), 
+                rol_laboral=data.get('rol_laboral'))
             nuevo_colaborador.save()
         
         elif tipo == 'freelance':
             nuevo_usuario = Usuario(
-                data.get('nombre_completo'), 
-                None, 
-                None, 
-                data.get('correo'), 
-                "password", 
-                4, 
-                'activo', 
-                None)
-            id = nuevo_usuario.create()
+                nombre=data.get('nombre_completo'), 
+                id_organizacion=None, 
+                id_sede=None, 
+                correo=data.get('correo'), 
+                contrasena="password", 
+                id_rol=4, 
+                estado=17, 
+                ultimo_login=None)
+            id = nuevo_usuario.save()
 
             nuevo_consultor = Consultor(
-                id, 
-                data.get('especialidad'), 
-                90, 
-                data.get('freelanceNivel'), 
-                data.get('freelanceNivel'), 
-                formato, 
-                None, 
-                None, 
-                None, 
-                None, 
-                None, 
-                None)
+                id_usuario=id, 
+                especialidad=data.get('especialidad'), 
+                disponibilidad=90, 
+                nivel_segun_usuario=data.get('freelanceNivel'), 
+                nivel_segun_gestor=data.get('freelanceNivel'), 
+                fecha_incorporacion=formato, 
+                direccion=None, 
+                ciudad=None, 
+                codigo_postal=None, 
+                pais=None, 
+                tarifa_hora=None, 
+                resumen_perfil=None,
+                celular=None,
+                linkedin=None)
             nuevo_consultor.save()
 
         return jsonify({'status': 'success', 'message': 'Usuario creado exitosamente'})
@@ -1074,41 +1089,52 @@ def create_organizacion():
         fecha_actual = datetime.now()
         formato = fecha_actual.strftime('%Y-%m-%d')
 
+        if data.get('estado') == 'activo':
+            est = 17
+        elif data.get('estado') == "inactivo":
+            est = 18
+        else: 
+            est = 19
+
         if data.get('tipo') == 'organizacion':
             # Crear organización
             nueva_organizacion = Organizacion(
-                data.get('nombre'),
-                data.get('industria'),
-                formato,
-                data.get('estado'),
-                data.get('contacto'),
-                data.get('tamano'),
-                data.get('empleados')
+                nombre=data.get('nombre'),
+                id_industria=data.get('industria'),
+                fecha_registro=formato,
+                estado=est,
+                contacto_principal=data.get('contacto'),
+                tamaño=data.get('tamano'),
+                empleados=data.get('empleados')
             )
+            print(nueva_organizacion)
             id_org = nueva_organizacion.save()
 
             # Crear sede principal
             nueva_sede = Sede(
-                id_org,
-                data.get('nombreSede'),
-                data.get('region'),
-                data.get('direccion'),
-                data.get('ciudad'),
-                data.get('codigo_postal'),
-                data.get('pais')
+                id_organizacion=id_org,
+                nombre_sede=data.get('nombreSede'),
+                subregion_id=data.get('region'),
+                direccion=data.get('direccion'),
+                ciudad=data.get('ciudad'),
+                codigo_postal=data.get('codigo_postal'),
+                pais=data.get('pais'),
+                estado=17
             )
+            print(nueva_sede)
             nueva_sede.save()
 
         elif data.get('tipo') == "sede":
             # Crear sede
             nueva_sede = Sede(
-                data.get('organizacion'),
-                data.get('nombreSede'),
-                data.get('region'),
-                data.get('direccion'),
-                data.get('ciudad'),
-                data.get('codigo_postal'),
-                data.get('pais')
+                id_organizacion=data.get('organizacion'),
+                nombre_sede=data.get('nombreSede'),
+                subregion_id=data.get('region'),
+                direccion=data.get('direccion'),
+                ciudad=data.get('ciudad'),
+                codigo_postal=data.get('codigo_postal'),
+                pais=data.get('pais'),
+                estado=17
             )
             nueva_sede.save()
 
@@ -1132,17 +1158,15 @@ def create_producto():
 
         print('📥 Datos recibidos:', data)
 
-        estado = data.get('estado') if data.get('estado') == "activo" else "En Revisión"
-
         nuevo_producto = Portafolio(
-            data.get('nombre'),
-            data.get('categoria'),
-            data.get('familia'),
-            data.get('descripcion'),
-            data.get('tipo'),
-            estado,
-            formato,
-            fecha_actual  # fecha_actualizacion inicialmente nula
+            nombre=data.get('nombre'),
+            categoria=data.get('categoria'),
+            familia=data.get('familia'),
+            descripcion=data.get('descripcion'),
+            tipo=data.get('tipo'),
+            estado=data.get('estado'),
+            fecha_creacion=formato,
+            fecha_actualizacion=fecha_actual
         )
 
         nuevo_producto.save()
@@ -1170,33 +1194,37 @@ def create_asignacion():
         if tipo == 'freelance':
             
             asignar_freelance = PersonaCliente(
-                data.get('id_sede'), 
-                data.get('id_usuario'), 
-                data.get('rol_en_cliente'), 
-                formato)
+                id_sede=data.get('id_sede'), 
+                id_usuario=data.get('id_usuario'), 
+                rol_en_cliente=data.get('rol_en_cliente'), 
+                fecha_asignacion=formato)
             asignar_freelance.save()
 
         elif tipo == 'comunidad':
             
             nueva_asignacion = ComunidadAliado(
-                data.get('id_sede'), 
-                data.get('id_comunidad'), 
-                formato, 
-                None)
+                id_sede=data.get('id_sede'), 
+                id_comunidad=data.get('id_comunidad'), 
+                fecha_asignacion=formato, 
+                observaciones=None)
             nueva_asignacion.save()
 
         elif tipo == 'crear_comunidad':
 
             nueva_comunidad = Comunidad(
-                data.get('nombre'), 
-                data.get('descripcion'), 
-                data.get('tipo_comunidad'))
+                nombre=data.get('nombre'), 
+                descripcion=data.get('descripcion'), 
+                tipo=data.get('tipo_comunidad'))
             id = nueva_comunidad.save()
             miembros = data.get('miembros', [])
 
             for miembro in miembros:
-                nuevo_miembro = MiembroComunidad(id, miembro.get('usuario'), miembro.get('rol'), formato)
-                nuevo_miembro.create()
+                nuevo_miembro = MiembroComunidad(
+                    id_comunidad=id, 
+                    id_usuario=miembro.get('usuario'), 
+                    rol_en_comunidad=miembro.get('rol'), 
+                    fecha_union=formato)
+                nuevo_miembro.save()
 
         return jsonify({'status': 'success', 'message': 'Asignación creada exitosamente'})
 
@@ -1219,18 +1247,28 @@ def create_oportunidad():
         if not data:
             return jsonify({'status': 'error', 'message': 'No se recibieron datos'}), 400
 
-        cuenta = data.get('cuenta')
-        caso_uso = data.get('casoUso')
-        descripcion = data.get('descripcion')
-        impacto = data.get('impacto')
-        usuario = data.get('idSupervisor')
+        sede = Sede.query.filter_by(nombre_sede=current_user.sede).one()
 
-        nuevo_caso_uso = CasoUso(current_user.sede, usuario, cuenta, caso_uso, descripcion, impacto, None, None, None, 1, None, None, None, None, None, None, None, None)
+        nuevo_caso_uso = CasoUso(
+            id_aliado=sede.id, 
+            id_usuario=data.get('idSupervisor'), 
+            id_cuenta=data.get('cuenta'), 
+            caso_uso=data.get('casoUso'),
+            descripcion=data.get('descripcion'), 
+            impacto=data.get('impacto'), 
+            puntuacion_impacto=None, 
+            puntuacion_tecnica=None, 
+            tags=None, 
+            estado=1, 
+            id_producto=None, 
+            fecha_inicio=None, 
+            fecha_cierre=None, 
+            monto_venta=None, 
+            costos_proyecto=None, 
+            margen_estimado_porcentaje=None, 
+            margen_estimado_bruto=None, 
+            feedback=None)
         nuevo_caso_uso.save()
-
-        print(f"Nueva oportunidad - Cuenta: {cuenta}, Caso de uso: {caso_uso}")
-        print(f"Descripción: {descripcion}")
-        print(f"Impacto: {impacto}")
 
         return jsonify({'status': 'success', 'message': 'Oportunidad creada exitosamente'})
 
@@ -1249,18 +1287,20 @@ def create_cliente():
             return jsonify({'status': 'error', 'message': 'No se recibieron datos'}), 400
 
         print(f"Datos del cliente: {data}")
+
+        organizacion = Organizacion.query.filter_by(nombre=current_user.organizacion).one()
         
         nueva_cuenta = Cuenta(
-            current_user.organizacion, 
-            data.get('nombre'), 
-            data.get('industria'), 
-            data.get('region'), 
-            None, 
-            None, 
-            None, 
-            data.get('codigo'), 
-            data.get('sector'), 
-            'activo')
+            id_organizacion=organizacion.id, 
+            nombre=data.get('nombre'), 
+            industria=data.get('industria'), 
+            subregion=data.get('region'), 
+            fecha_alta=None, 
+            fecha_modificacion=None, 
+            fecha_baja=None, 
+            codigo=data.get('codigo'), 
+            id_segmentacion=data.get('sector'), 
+            estado=17)
         nueva_cuenta.save()
 
         return jsonify({'status': 'success', 'message': 'Cliente creado exitosamente'})

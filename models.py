@@ -206,7 +206,7 @@ class UserAcces(UserMixin):
 
     @property
     def is_active(self):
-        return self.estado == 'activo'
+        return self.estado.lower() == 'activo'
 
     @staticmethod
     def check_password(password, contraseña_hash):
@@ -218,49 +218,38 @@ class UserAcces(UserMixin):
 
     @staticmethod
     def get_by_access(correo):
-        current_user = (
-            db.session.query(Usuario)
-            .filter_by(correo=correo, estado='activo')
-            .outerjoin(Organizacion, Usuario.id_organizacion == Organizacion.id)
-            .outerjoin(Sede, Usuario.id_sede == Sede.id)
-            .outerjoin(Rol, Usuario.id_rol == Rol.id)
-            .first()
-        )
-
-        if current_user:
+        user = Usuario.query.filter_by(correo=correo, estado=17).first()
+        if user:
             return UserAcces(
-                id=current_user.id,
-                nombre=current_user.nombre,
-                organizacion=current_user.organizacion.nombre if current_user.organizacion else None,
-                sede=current_user.sede.nombre_sede if current_user.sede else None,
-                correo=current_user.correo,
-                contraseña=current_user.contraseña,
-                rol=current_user.rol.nombre if current_user.rol else None,
-                estado=current_user.estado,
-                ultimo_login=current_user.ultimo_login
+                id=user.id,
+                nombre=user.nombre,
+                organizacion=user.rel_organizaciones.nombre if user.rel_organizaciones else None,
+                sede=user.rel_sedes.nombre_sede if user.rel_sedes else None,
+                correo=user.correo,
+                contraseña=user.contrasena,
+                rol=user.rel_roles.nombre if user.rel_roles else None,
+                estado=user.rel_estados.nombre if user.rel_estados else None,
+                ultimo_login=user.ultimo_login
             )
         return None
 
     @staticmethod
     def get_by_id(user_id):
-        current_user = Usuario.query.get(user_id)
-
-        if not current_user:
+        user = Usuario.query.get(user_id)
+        if not user:
             return None
-
-        rol_nombre = current_user.rol.nombre if current_user.rol else "Sin rol"
-
         return UserAcces(
-            id=current_user.id,
-            nombre=current_user.nombre,
-            organizacion=current_user.organizacion.nombre if current_user.organizacion else None,
-            sede=current_user.sede.nombre_sede if current_user.sede else None,
-            correo=current_user.correo,
-            contraseña="No disponible",
-            rol=rol_nombre,
-            estado=current_user.estado,
-            ultimo_login=current_user.ultimo_login
+            id=user.id,
+            nombre=user.nombre,
+            organizacion=user.rel_organizaciones.nombre if user.rel_organizaciones else None,
+            sede=user.rel_sedes.nombre_sede if user.rel_sedes else None,
+            correo=user.correo,
+            contraseña=user.contrasena,
+            rol=user.rel_roles.nombre if user.rel_roles else None,
+            estado=user.rel_estados.nombre if user.rel_estados else None,
+            ultimo_login=user.ultimo_login
         )
+
 
 # endregion
 
@@ -280,22 +269,22 @@ class Usuario(db.Model):
     ultimo_login = db.Column(db.DateTime)
 
     # Relaciones Directas
-    rel_organizaciones = db.relationship('Organizacion', foreign_keys=[id_organizacion], back_populates="rel_usuario")
-    rel_sedes = db.relationship('Sede', foreign_keys=[id_sede], back_populates='rel_usuario')
-    rel_roles = db.relationship('Rol', foreign_keys=[id_rol], back_populates='rel_usuario')
-    rel_estados = db.relationship('Estado', foreign_keys=[estado], back_populates='rel_usuario')
+    rel_organizaciones = db.relationship('Organizacion', foreign_keys=[id_organizacion], back_populates="rel_usuario", lazy='joined')
+    rel_sedes = db.relationship('Sede', foreign_keys=[id_sede], back_populates='rel_usuario', lazy='joined')
+    rel_roles = db.relationship('Rol', foreign_keys=[id_rol], back_populates='rel_usuario', lazy='joined')
+    rel_estados = db.relationship('Estado', foreign_keys=[estado], back_populates='rel_usuario', lazy='joined')
 
     # Relaciones Inversas
-    rel_colaborador = db.relationship('Colaborador', back_populates='rel_usuarios')
-    rel_consultor = db.relationship('Consultor', back_populates='rel_usuarios')
-    rel_persona_cliente = db.relationship('PersonaCliente', back_populates='rel_usuarios')
-    rel_miembro_comunidad = db.relationship('MiembroComunidad', back_populates='rel_usuarios')
-    rel_caso_uso = db.relationship('CasoUso', back_populates='rel_usuarios')
-    rel_exp_laboral = db.relationship('ExpLaboral', back_populates='rel_usuarios')
-    rel_educacion = db.relationship('Educacion', back_populates='rel_usuarios')
-    rel_certificacion = db.relationship('Certificacion', back_populates='rel_usuarios')
-    rel_proyecto_destacado = db.relationship('ProyectoDestacado', back_populates='rel_usuarios')
-    rel_entregable = db.relationship('Entregable', back_populates='rel_usuarios')
+    rel_colaborador = db.relationship('Colaborador', back_populates='rel_usuarios', lazy='joined')
+    rel_consultor = db.relationship('Consultor', back_populates='rel_usuarios', lazy='joined')
+    rel_persona_cliente = db.relationship('PersonaCliente', back_populates='rel_usuarios', lazy='joined')
+    rel_miembro_comunidad = db.relationship('MiembroComunidad', back_populates='rel_usuarios', lazy='joined')
+    rel_caso_uso = db.relationship('CasoUso', back_populates='rel_usuarios', lazy='joined')
+    rel_exp_laboral = db.relationship('ExpLaboral', back_populates='rel_usuarios', lazy='joined')
+    rel_educacion = db.relationship('Educacion', back_populates='rel_usuarios', lazy='joined')
+    rel_certificacion = db.relationship('Certificacion', back_populates='rel_usuarios', lazy='joined')
+    rel_proyecto_destacado = db.relationship('ProyectoDestacado', back_populates='rel_usuarios', lazy='joined')
+    rel_entregable = db.relationship('Entregable', back_populates='rel_usuarios', lazy='joined')
     
     actividades_actualizadas = db.relationship(
         'Actividad',
@@ -334,7 +323,7 @@ class Usuario(db.Model):
 
     # --- Guardar usuario ---
     def save(self):
-        self.contraseña = Usuario.set_password_hash(self.contraseña)
+        self.contrasena = Usuario.set_password_hash(self.contrasena)
         db.session.add(self)
         db.session.commit()
         return self.id
@@ -350,8 +339,8 @@ class Usuario(db.Model):
 
     @staticmethod
     def get_id_by_correo(correo):
-        user = Usuario.query.filter_by(correo=correo, estado='activo').first()
-        return user.id if user else None
+        user = Usuario.query.filter_by(correo=correo, estado=17).first()
+        return user if user else None
 
     @staticmethod
     def get_organizaciones():
@@ -364,24 +353,6 @@ class Usuario(db.Model):
             .filter(Usuario.estado == 'activo')
             .group_by(Organizacion.nombre)
             .order_by(Organizacion.nombre.asc())
-            .all()
-        )
-
-    @staticmethod
-    def get_table_users():
-        return (
-            db.session.query(
-                Usuario.id.label("id"),
-                Usuario.nombre.label("Nombre"),
-                Organizacion.nombre.label("Organización"),
-                Sede.nombre_sede.label("Sede"),
-                Usuario.correo.label("Usuario"),
-                Rol.nombre.label("Rol"),
-                Usuario.estado.label("Estado")
-            )
-            .outerjoin(Organizacion, Usuario.id_organizacion == Organizacion.id)
-            .outerjoin(Sede, Usuario.id_sede == Sede.id_sede)
-            .outerjoin(Rol, Usuario.id_rol == Rol.id)
             .all()
         )
 
@@ -415,18 +386,18 @@ class Organizacion(db.Model):
     fecha_registro = db.Column(Date)
     estado = db.Column(db.Integer, db.ForeignKey('estados.id'))
     contacto_principal = db.Column(db.String)
-    tamano = db.Column(db.String)
+    tamaño = db.Column(db.String)
     empleados = db.Column(db.Integer)
 
     # Relación Directa
-    rel_industrias = db.relationship('Industria', foreign_keys=[id_industria], back_populates='rel_organizacion')
-    rel_estados = db.relationship('Estado', foreign_keys=[estado], back_populates='rel_organizacion')
+    rel_industrias = db.relationship('Industria', foreign_keys=[id_industria], back_populates='rel_organizacion', lazy='joined')
+    rel_estados = db.relationship('Estado', foreign_keys=[estado], back_populates='rel_organizacion', lazy='joined')
 
     # Relación Inversa
-    rel_usuario = db.relationship('Usuario', back_populates='rel_organizaciones', lazy=True)
-    rel_sede = db.relationship('Sede', back_populates='rel_organizaciones')
-    rel_colaborador = db.relationship('Colaborador', back_populates='rel_organizaciones')
-    rel_cuenta = db.relationship('Cuenta', back_populates='rel_organizaciones')
+    rel_usuario = db.relationship('Usuario', back_populates='rel_organizaciones', lazy='joined')
+    rel_sede = db.relationship('Sede', back_populates='rel_organizaciones', lazy='joined')
+    rel_colaborador = db.relationship('Colaborador', back_populates='rel_organizaciones', lazy='joined')
+    rel_cuenta = db.relationship('Cuenta', back_populates='rel_organizaciones', lazy='joined')
 
     def save(self):
         db.session.add(self)
@@ -453,9 +424,9 @@ class Organizacion(db.Model):
                 Sede.pais.label("Pais"),
                 Sede.nombre_sede.label("Sede"),
             )
-            .outerjoin(Industria, Organizacion.id_industria == Industria.id_industria)
+            .outerjoin(Industria, Organizacion.id_industria == Industria.id)
             .outerjoin(Sede, Sede.id_organizacion == Organizacion.id)
-            .outerjoin(sreg, Sede.subregion == sreg.id)
+            .outerjoin(sreg, Sede.subregion_id == sreg.id)
             .outerjoin(reg, sreg.id_region == reg.id)
         )
 
@@ -492,7 +463,7 @@ class Sede(db.Model):
     def save(self):
         db.session.add(self)
         db.session.commit()
-        return self.id_sede
+        return self.id
 
     @staticmethod
     def get_all():
@@ -502,10 +473,20 @@ class Sede(db.Model):
     def get_orgs():
         query = text("""
             SELECT
-                se.id_sede,
+                se.id,
                 CONCAT(se.nombre_sede, " (", org.nombre, ")") AS nombre_completo
             FROM sedes se
             LEFT JOIN organizaciones org ON se.id_organizacion = org.id
+        """)
+        result = db.session.execute(query)
+        return result.fetchall()
+    
+    @staticmethod
+    def get_paises():
+        query = text("""
+            SELECT DISTINCT
+                pais
+            FROM sedes
         """)
         result = db.session.execute(query)
         return result.fetchall()
@@ -607,7 +588,7 @@ class Industria(db.Model):
     def save(self):
         db.session.add(self)
         db.session.commit()
-        return self.id_industria
+        return self.id
 
     @staticmethod
     def get_all():
@@ -716,10 +697,6 @@ class Comunidad(db.Model):
         db.session.commit()
         return self.id
 
-    @staticmethod
-    def get_all():
-        return Comunidad.query.all()
-
 # endregion
 
 # region PersonaCliente
@@ -823,7 +800,7 @@ class ComunidadAliado(db.Model):
                 'Comunidad' AS tipo_asignacion,
                 mc.rol_en_comunidad AS rol
             FROM comunidad_aliado ca
-            JOIN sedes s ON ca.id_sede = s.id_sede
+            JOIN sedes s ON ca.id = s.id
             JOIN comunidades c ON ca.id_comunidad = c.id
             JOIN miembros_comunidad mc ON ca.id_comunidad = mc.id_comunidad
             JOIN usuarios u ON mc.id_usuario = u.id
@@ -838,7 +815,7 @@ class ComunidadAliado(db.Model):
                 'Individual' AS tipo_asignacion,
                 pc.rol_en_cliente AS rol
             FROM personas_cliente pc
-            JOIN sedes s ON pc.id_sede = s.id_sede
+            JOIN sedes s ON pc.id_sede = s.id
             JOIN usuarios u ON pc.id_usuario = u.id
 
             ORDER BY nombre_organizacion, tipo_asignacion, usuario;
@@ -855,7 +832,7 @@ class ComunidadAliado(db.Model):
                 cu.caso_uso AS caso_uso,
                 cu.estado AS estado
             FROM caso_uso cu
-            LEFT JOIN sedes org ON cu.id_aliado = org.id_sede
+            LEFT JOIN sedes org ON cu.id_aliado = org.id
             LEFT JOIN usuarios us ON cu.id_usuario = us.id
             LEFT JOIN cuentas cli ON cu.id_cuenta = cli.id
         """)
@@ -905,35 +882,33 @@ class CasoUso(db.Model):
         setattr(self, campo, valor)
         db.session.commit()
 
-    @staticmethod
-    def get_projects(id_aliado):
-        return (
-            db.session.query(CasoUso)
-            .filter_by(id_aliado=id_aliado)
-            .join(Usuario, CasoUso.id_usuario == Usuario.id)
-            .join(Cuenta, CasoUso.id_cuenta == Cuenta.id)
-            .join(Portafolio, CasoUso.id_producto == Portafolio.id)
-            .with_entities(
-                CasoUso.id,
-                Usuario.nombre.label("nombre_usuario"),
-                Cuenta.nombre.label("nombre_cuenta"),
-                CasoUso.caso_uso,
-                CasoUso.descripcion,
-                CasoUso.impacto,
-                CasoUso.puntuacion_impacto.label("p_impacto"),
-                CasoUso.puntuacion_tecnica.label("p_tecnica"),
-                CasoUso.tags,
-                CasoUso.estado,
-                Portafolio.nombre.label("producto"),
-                CasoUso.fecha_inicio,
-                CasoUso.fecha_cierre,
-                CasoUso.monto_venta,
-                CasoUso.costos_proyecto,
-                CasoUso.margen_estimado_porcentaje.label("mep"),
-                CasoUso.margen_estimado_bruto.label("meb"),
-            )
-            .all()
-        )
+    # En tu modelo CasoUso
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'id_aliado': self.id_aliado,
+            'aliado': self.rel_sedes.nombre_sede if self.rel_sedes else None,
+            'id_usuario': self.id_usuario,
+            'usuario': self.rel_usuarios.nombre if self.rel_usuarios else None,
+            'id_cuenta': self.id_cuenta,
+            'cuenta': self.rel_cuentas.nombre if self.rel_cuentas else None,
+            'caso_uso': self.caso_uso,
+            'descripcion': self.descripcion,
+            'impacto': self.impacto,
+            'puntuacion_impacto': self.puntuacion_impacto,
+            'puntuacion_tecnica': self.puntuacion_tecnica,
+            'tags': self.tags,
+            'estado': self.estado,
+            'id_producto': self.id_producto,
+            'producto': self.rel_portafolios.nombre if self.rel_portafolios else None,
+            'fecha_inicio': self.fecha_inicio,
+            'fecha_cierre': self.fecha_cierre,
+            'monto_venta': self.monto_venta,
+            'costos_proyecto': self.costos_proyecto,
+            'margen_estimado_porcentaje': self.margen_estimado_porcentaje,
+            'margen_estimado_bruto': self.margen_estimado_bruto,
+            'feedback': self.feedback
+        }
 
     @staticmethod
     def get_projects_to_sup(id_usuario):
@@ -987,7 +962,7 @@ class Cuenta(db.Model):
                 Cuenta.estado,
                 func.count(CasoUso.id).label("proyectos_activos")
             )
-            .outerjoin(Industria, Cuenta.industria == Industria.id_industria)
+            .outerjoin(Industria, Cuenta.industria == Industria.id)
             .outerjoin(CasoUso, Cuenta.id == CasoUso.id_cuenta)
             .group_by(Cuenta.id, Cuenta.nombre, Industria.nombre, Industria.grupo_general, Cuenta.estado)
             .all()

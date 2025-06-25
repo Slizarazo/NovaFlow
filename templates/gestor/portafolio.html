@@ -175,6 +175,27 @@
     transition: all 0.3s ease;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
+
+.badge {
+    color: #fff;
+    padding: 0.4em 0.7em;
+    border-radius: 0.4rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.badge-idea { background-color: #00bcd4; }
+.badge-analisis { background-color: #2196f3; }
+.badge-planeado { background-color: #0d47a1; }
+.badge-desarrollo { background-color: #ff9800; }
+.badge-pruebas { background-color: #ffc107; color: #000; }
+.badge-disponible { background-color: #4caf50; }
+.badge-mejora { background-color: #009688; }
+.badge-obsoleto { background-color: #616161; }
+.badge-suspendido { background-color: #f44336; }
+.badge-descontinuado { background-color: #000; }
+.badge-otro { background-color: #9e9e9e; }
+
 </style>
 {% endblock %}
 
@@ -228,13 +249,14 @@
         </form>
     </div>
     
-    <!-- Projects Table -->
+    <!-- Projects Table Title -->
     <div class="row mb-4">
         <div class="col-12">
             <h5 class="mb-3">Proyectos Activos</h5>
         </div>
     </div>
-    
+
+    <!-- Projects Table -->
     <div class="card" id="projectsTable">
         <div class="card-body p-0">
             <div class="table-responsive">
@@ -254,20 +276,28 @@
                     <tbody>
                         {% for pr in portafolio %}
                         <tr>
-                            <td>{{ pr[1] }}</td>
-                            <td>{{ pr[2] |capitalize }}</td>
-                            <td>{{ pr[3] }}</td>
-                            <td>{{ pr[4] }}</td>
-                            <td>{{ pr[5] }}</td>
+                            <td>{{ pr.nombre }}</td>
+                            <td>{{ pr.categoria |capitalize }}</td>
+                            <td>{{ pr.familia }}</td>
+                            <td>{{ pr.descripcion }}</td>
+                            <td>{{ pr.tipo }}</td>
                             <td>
                                 <span class="badge 
-                                    {% if pr[6] == 'En revisión' %}bg-warning
-                                    {% elif pr[6] == 'activo' %}bg-success
-                                    {% else %}bg-secondary{% endif %}">
-                                    {{ pr[6]|capitalize }}
+                                    {% if pr.rel_estado.nombre == 'Idea' %}badge-idea
+                                    {% elif pr.rel_estado.nombre == 'En análisis' %}badge-analisis
+                                    {% elif pr.rel_estado.nombre == 'Planeado' %}badge-planeado
+                                    {% elif pr.rel_estado.nombre == 'En desarrollo' %}badge-desarrollo
+                                    {% elif pr.rel_estado.nombre == 'En pruebas' %}badge-pruebas
+                                    {% elif pr.rel_estado.nombre == 'Disponible' %}badge-disponible
+                                    {% elif pr.rel_estado.nombre == 'En mejora continua' %}badge-mejora
+                                    {% elif pr.rel_estado.nombre == 'Obsoleto' %}badge-obsoleto
+                                    {% elif pr.rel_estado.nombre == 'Suspendido' %}badge-suspendido
+                                    {% elif pr.rel_estado.nombre == 'Descontinuado' %}badge-descontinuado
+                                    {% else %}badge-otro{% endif %}">
+                                    {{ pr.rel_estado.nombre }}
                                 </span>
                             </td>
-                            <td>{{ pr[8] }}</td>
+                            <td>{{ pr.fecha_actualizacion }}</td>
                             <td>
                                 <div class="d-flex">
                                     <button class="btn btn-sm btn-outline-primary me-1">
@@ -439,7 +469,7 @@
     }
     </style>
 
-    <!-- Modal Añadir Aliado -->
+    <!-- Modal Añadir Producto/Servicio -->
     <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel" aria-hidden="true">
         <div class="modal-dialog" >
             <div class="modal-content">
@@ -497,8 +527,9 @@
                                 <label for="productEstado" class="form-label">Estado</label>
                                 <select class="form-select" id="productEstado" required>
                                     <option value="">Seleccionar estado...</option>
-                                    <option value="activo">Activo</option>
-                                    <option value="en_revision">En Revisión</option>
+                                    {% for est in estados %}
+                                    <option value="{{ est.id }}">{{ est.nombre }}</option>
+                                    {% endfor %}
                                 </select>
                             </div>
                         </form>

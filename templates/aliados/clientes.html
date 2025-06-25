@@ -75,7 +75,7 @@
                             <select class="form-select" id="clienteIndustria" required>
                                 <option value="">Seleccionar industria...</option>
                                 {% for ind in industrias %}
-                                <option value="{{ ind[0] }}">{{ ind[1] }} ({{ ind[2] }})</option>
+                                <option value="{{ ind.id }}">{{ ind.nombre }} ({{ ind.grupo_general }})</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -85,7 +85,7 @@
                             <select class="form-select" id="clienteRegion" required>
                                 <option value="">Seleccionar región...</option>
                                 {% for reg in regiones %}
-                                <option value="{{ reg[0] }}">{{ reg[1] }} ({{ reg[2] }})</option>
+                                <option value="{{ reg.id }}">{{ reg.nombre }} ({{ reg.codigo }})</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -100,7 +100,7 @@
                             <select class="form-select" id="clienteSector" required>
                                 <option value="">Seleccionar sector...</option>
                                 {% for seg in segmentacion %}
-                                <option value="{{ seg[0] }}">{{ seg[1] }}</option>
+                                <option value="{{ seg.id }}">{{ seg.clasificacion }}</option>
                                 {% endfor %}
                             </select>
                         </div>
